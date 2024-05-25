@@ -1,0 +1,30 @@
+<resources>
+<!-- App Identifier -->
+    <string name="app_name" translatable="false">Mini Retail App</string>
+<!-- Theme -->
+    <string name="str_theme">Theme</string>
+    <string name="str_theme_system">System Theme</string>
+    <string name="str_theme_light">Light Theme</string>
+    <string name="str_theme_dark">Dark Theme</string>
+<!-- Dynamic Colors -->
+    <string name="str_dynamic_color">Dynamic Color</string>
+    <string name="str_dynamic_color_enabled">Active</string>
+    <string name="str_dynamic_color_disabled">Inactive</string>
+<!-- Languages -->
+    <string name="str_lang">Language</string>
+    <string name="str_lang_en">English Language</string>
+    <string name="str_lang_in">Indonesian Language</string>
+<!-- Size -->
+    <string name="str_size">Size</string>
+    <string name="str_size_small">Small</string>
+    <string name="str_size_medium">Medium</string>
+    <string name="str_size_large">Large</string>
+    <string name="str_size_extra_large">Extra Large</string>
+<!-- Network -->
+    <string name="str_network">Network</string>
+    <string name="str_network_not_connected">Network Not Connected</string>
+<!-- Onboarding -->
+    <string name="str_onboarding">Onboarding Pages</string>
+    <string name="str_onboarding_show">Show Onboarding Pages</string>
+    <string name="str_onboarding_hide">Hide Onboarding Pages</string>
+</resources>

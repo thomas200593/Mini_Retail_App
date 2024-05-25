@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="str_theme">Tema</string>
+    <string name="str_theme_system">Tema Sistem</string>
+    <string name="str_theme_light">Tema Terang</string>
+    <string name="str_theme_dark">Tema Gelap</string>
+    <string name="str_dynamic_color">Warna Dinamis</string>
+    <string name="str_dynamic_color_enabled">Aktif</string>
+    <string name="str_dynamic_color_disabled">Non Aktif</string>
+    <string name="str_lang">Bahasa</string>
+    <string name="str_lang_en">Bahasa Inggris</string>
+    <string name="str_lang_in">Bahasa Indonesia</string>
+    <string name="str_size">Ukuran</string>
+    <string name="str_size_small">Kecil</string>
+    <string name="str_size_medium">Sedang</string>
+    <string name="str_size_large">Besar</string>
+    <string name="str_size_extra_large">Ekstra Besar</string>
+    <string name="str_network">Jaringan</string>
+    <string name="str_network_not_connected">Jaringan Tidak Terhubung</string>
+    <string name="str_onboarding">Halaman Onboarding</string>
+    <string name="str_onboarding_show">Tampilkan Halaman Onboarding</string>
+    <string name="str_onboarding_hide">Sembunyikan Halaman Onboarding</string>
+</resources>

@@ -1,0 +1,41 @@
+package com.thomas200593.mini_retail_app.features.app_config.entity
+
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
+import com.thomas200593.mini_retail_app.R
+import com.thomas200593.mini_retail_app.core.ui.common.AppIcon.Font.large
+import com.thomas200593.mini_retail_app.core.ui.common.AppIcon.Font.medium
+import com.thomas200593.mini_retail_app.core.ui.common.AppIcon.Font.small
+import com.thomas200593.mini_retail_app.core.ui.common.AppIcon.Font.x_large
+
+enum class Font(
+    val code: String,
+    val sizeFactor: Int,
+    @StringRes val stringResource: Int,
+    @DrawableRes val iconDrawableResource: Int
+) {
+    SMALL(
+        code = "font_size_small",
+        sizeFactor = -2,
+        stringResource = R.string.str_size_small,
+        iconDrawableResource = small
+    ),
+    MEDIUM(
+        code = "font_size_medium",
+        sizeFactor = 0,
+        stringResource = R.string.str_size_medium,
+        iconDrawableResource = medium
+    ),
+    LARGE(
+        code = "font_size_large",
+        sizeFactor = 2,
+        stringResource = R.string.str_size_large,
+        iconDrawableResource = large
+    ),
+    EXTRA_LARGE(
+        code = "font_size_x_large",
+        sizeFactor = 4,
+        stringResource = R.string.str_size_extra_large,
+        iconDrawableResource = x_large
+    )
+}
