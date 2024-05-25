@@ -31,8 +31,10 @@ object JWTHelper {
         try {
             Timber.d("Called %s.isValidToken()", TAG)
             if(idToken.isEmpty() || idToken.isBlank()){
+                Timber.d("Token is empty!")
                 false
             }else{
+                Timber.d("Validating Token...")
                 val jwt = JWT(idToken)
                 val hdrAlg = jwt.header["alg"]
                 val hdrTyp = jwt.header["typ"]
