@@ -152,6 +152,7 @@ dependencies {
     implementation(libs.tracing.trace)
     implementation(libs.androidx.credentials)
     implementation(libs.androidx.credentials.play.services.auth)
+    implementation(libs.googleid)
 
     testImplementation(libs.junit)
     testImplementation(libs.androidx.room.testing)

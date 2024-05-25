@@ -29,7 +29,7 @@ fun rememberAppState(
             windowsSizeClass = windowsSizeClass,
             networkMonitor = networkMonitor,
             coroutineScope = coroutineScope,
-            navController = navController,
+            navController = navController
         )
     }
 

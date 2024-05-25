@@ -91,7 +91,7 @@ class MainActivity: AppCompatActivity() {
 
             val appState = rememberAppState(
                 windowsSizeClass = calculateWindowSizeClass(activity = this),
-                networkMonitor = networkMonitor
+                networkMonitor = networkMonitor,
             )
 
             CompositionLocalProvider {

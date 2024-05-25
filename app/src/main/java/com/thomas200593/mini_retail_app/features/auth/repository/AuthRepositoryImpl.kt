@@ -1,13 +1,21 @@
 package com.thomas200593.mini_retail_app.features.auth.repository
 
 import com.thomas200593.mini_retail_app.core.data.local.datastore.AppDataStorePreferences
+import com.thomas200593.mini_retail_app.core.util.JWTHelper
+import com.thomas200593.mini_retail_app.features.auth.entity.AuthSessionToken
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
-    appDataStore: AppDataStorePreferences,
+    appDataStore: AppDataStorePreferences
 ): AuthRepository {
-    override val isSessionValid: Flow<Boolean> =
-        appDataStore.readUserSession
+    override val authState: Flow<Boolean> =
+        appDataStore.authState
+
+    override val authSessionToken: Flow<AuthSessionToken> =
+        appDataStore.authSessionToken
+
+    override suspend fun validateAuthSessionToken(authSessionToken: AuthSessionToken) =
+        JWTHelper.isJWTTokenValid(authSessionToken.idToken.orEmpty())
+
 }
