@@ -6,4 +6,10 @@ sealed class ScreenGraphs(
     data object Initial: ScreenGraphs(
         route = AppRoutes.APP_ROUTE_INITIAL
     )
+    data object Onboarding: ScreenGraphs(
+        route = AppRoutes.APP_ROUTE_ONBOARDING
+    )
+    data object Auth: ScreenGraphs(
+        route = AppRoutes.APP_ROUTE_AUTH
+    )
 }

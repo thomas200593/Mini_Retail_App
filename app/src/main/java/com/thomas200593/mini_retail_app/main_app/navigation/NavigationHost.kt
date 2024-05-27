@@ -21,6 +21,6 @@ fun NavigationHost(
         route = G_ROOT,
         startDestination = G_INITIAL,
     ){
-        initialNavGraph()
+        initialNavGraph(appState)
     }
 }

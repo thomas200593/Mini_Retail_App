@@ -2,6 +2,7 @@ package com.thomas200593.mini_retail_app.features.initial.ui
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -37,7 +38,9 @@ fun InitialScreen(
                 false -> {
                     when(shouldShowOnboarding){
                         Onboarding.SHOW -> {
-                            Text(text = "Invalid Session, Go to Onboarding")
+                            LaunchedEffect(key1 = uiState) {
+                                onNavigateToOnboardingScreen()
+                            }
                         }
                         Onboarding.HIDE -> {
                             Text(text = "Invalid Session, Go to Login")

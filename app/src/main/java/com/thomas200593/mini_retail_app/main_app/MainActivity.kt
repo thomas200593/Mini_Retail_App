@@ -44,7 +44,6 @@ private const val TAG = "MainActivity"
 class MainActivity: AppCompatActivity() {
 
     @Inject lateinit var networkMonitor: NetworkMonitor
-
     private val viewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {

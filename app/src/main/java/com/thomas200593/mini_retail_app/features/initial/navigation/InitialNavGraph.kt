@@ -3,11 +3,15 @@ package com.thomas200593.mini_retail_app.features.initial.navigation
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import com.thomas200593.mini_retail_app.features.auth.navigation.authNavGraph
 import com.thomas200593.mini_retail_app.features.initial.ui.InitialScreen
+import com.thomas200593.mini_retail_app.features.onboarding.navigation.navigateToOnboardingScreen
+import com.thomas200593.mini_retail_app.features.onboarding.navigation.onBoardingNavGraph
 import com.thomas200593.mini_retail_app.main_app.navigation.NavigationGraphs.G_INITIAL
 import com.thomas200593.mini_retail_app.main_app.navigation.ScreenGraphs
+import com.thomas200593.mini_retail_app.main_app.ui.AppState
 
-fun NavGraphBuilder.initialNavGraph() {
+fun NavGraphBuilder.initialNavGraph(appState: AppState) {
     navigation(
         route = G_INITIAL,
         startDestination = ScreenGraphs.Initial.route
@@ -15,11 +19,16 @@ fun NavGraphBuilder.initialNavGraph() {
         composable(
             route = ScreenGraphs.Initial.route
         ){
+            //TODO Fix This
             InitialScreen(
                 //onNavigateToLogin
-                //onNavigateToOnboardingPages
+                onNavigateToOnboardingScreen = {
+                    appState.navController.navigateToOnboardingScreen()
+                }
                 //onNavigateToDashboard
             )
         }
+        onBoardingNavGraph()
+        authNavGraph()
     }
 }
