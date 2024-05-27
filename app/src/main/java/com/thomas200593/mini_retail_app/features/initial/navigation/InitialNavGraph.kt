@@ -11,7 +11,11 @@ import com.thomas200593.mini_retail_app.main_app.navigation.NavigationGraphs.G_I
 import com.thomas200593.mini_retail_app.main_app.navigation.ScreenGraphs
 import com.thomas200593.mini_retail_app.main_app.ui.AppState
 
-fun NavGraphBuilder.initialNavGraph(appState: AppState) {
+fun NavGraphBuilder.initialNavGraph(
+    appState: AppState,
+    onNavigateToOnboardingScreen: () -> Unit,
+    onNavigateToAuthScreen: () -> Unit,
+) {
     navigation(
         route = G_INITIAL,
         startDestination = ScreenGraphs.Initial.route
@@ -21,11 +25,9 @@ fun NavGraphBuilder.initialNavGraph(appState: AppState) {
         ){
             //TODO Fix This
             InitialScreen(
-                //onNavigateToLogin
-                onNavigateToOnboardingScreen = {
-                    appState.navController.navigateToOnboardingScreen()
-                }
                 //onNavigateToDashboard
+                onNavigateToOnboardingScreen = onNavigateToOnboardingScreen,
+                onNavigateToAuthScreen = onNavigateToAuthScreen
             )
         }
         onBoardingNavGraph()

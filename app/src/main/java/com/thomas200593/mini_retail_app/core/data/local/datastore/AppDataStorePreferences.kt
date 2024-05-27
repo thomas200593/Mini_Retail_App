@@ -2,6 +2,7 @@ package com.thomas200593.mini_retail_app.core.data.local.datastore
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
 import com.thomas200593.mini_retail_app.core.data.local.datastore.AppConfigDataStorePreferencesKeys.dsAppConfigDynamicColor
 import com.thomas200593.mini_retail_app.core.data.local.datastore.AppConfigDataStorePreferencesKeys.dsAppConfigFontSize
 import com.thomas200593.mini_retail_app.core.data.local.datastore.AppConfigDataStorePreferencesKeys.dsAppConfigLanguage
@@ -20,6 +21,7 @@ import com.thomas200593.mini_retail_app.features.app_config.entity.Font.MEDIUM
 import com.thomas200593.mini_retail_app.features.app_config.entity.Language
 import com.thomas200593.mini_retail_app.features.app_config.entity.Language.EN
 import com.thomas200593.mini_retail_app.features.app_config.entity.Onboarding
+import com.thomas200593.mini_retail_app.features.app_config.entity.Onboarding.HIDE
 import com.thomas200593.mini_retail_app.features.app_config.entity.Onboarding.SHOW
 import com.thomas200593.mini_retail_app.features.app_config.entity.Theme
 import com.thomas200593.mini_retail_app.features.app_config.entity.Theme.SYSTEM
@@ -27,10 +29,11 @@ import com.thomas200593.mini_retail_app.features.auth.entity.AuthSessionToken
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class AppDataStorePreferences @Inject constructor(
-    datastore: DataStore<Preferences>,
+    private val datastore: DataStore<Preferences>,
     @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
 ){
     val currentAppConfigData = datastore.data
@@ -68,4 +71,10 @@ class AppDataStorePreferences @Inject constructor(
                 idToken = data[dsAuthSessionToken]
             )
         }
+
+    suspend fun hideOnboarding() = withContext(ioDispatcher){
+        datastore.edit {
+            it[dsAppShouldShowOnboardingPages] = HIDE.name
+        }
+    }
 }

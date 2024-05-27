@@ -41,7 +41,7 @@ private fun ScreenContent(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         //Top Column
-
+        Text(text = "Auth Screen")
         //Center Image Column
 
         //App Metadata Column

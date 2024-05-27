@@ -28,6 +28,7 @@ fun NavController.navigateToOnboardingScreen(){
         route = NavigationGraphs.G_ONBOARDING,
         navOptions = NavOptions.Builder()
             .setLaunchSingleTop(true)
+            .setRestoreState(true)
             .build()
     )
 }

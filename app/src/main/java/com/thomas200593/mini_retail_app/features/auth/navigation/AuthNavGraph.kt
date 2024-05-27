@@ -1,6 +1,8 @@
 package com.thomas200593.mini_retail_app.features.auth.navigation
 
+import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.thomas200593.mini_retail_app.features.auth.ui.AuthScreen
@@ -18,4 +20,14 @@ fun NavGraphBuilder.authNavGraph(){
             AuthScreen()
         }
     }
+}
+
+fun NavController.navigateToAuthScreen(){
+    this.navigate(
+        route = NavigationGraphs.G_AUTH,
+        navOptions = NavOptions.Builder()
+            .setLaunchSingleTop(true)
+            .setRestoreState(true)
+            .build()
+    )
 }

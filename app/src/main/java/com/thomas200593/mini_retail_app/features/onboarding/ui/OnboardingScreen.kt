@@ -17,8 +17,10 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -29,15 +31,20 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.thomas200593.mini_retail_app.features.onboarding.entity.Onboarding
 import com.thomas200593.mini_retail_app.features.onboarding.entity.Onboarding.Tags.TAG_ONBOARD_SCREEN_IMAGE_VIEW
 import com.thomas200593.mini_retail_app.features.onboarding.entity.Onboarding.Tags.TAG_ONBOARD_SCREEN_NAV_BUTTON
 import com.thomas200593.mini_retail_app.features.onboarding.entity.Onboarding.Tags.TAG_ONBOARD_TAG_ROW
+import kotlinx.coroutines.launch
 
 @Composable
-fun OnboardingScreen(){
+fun OnboardingScreen(
+    viewModel: OnboardingViewModel = hiltViewModel()
+){
     val onboardPages = Onboarding.pageList
     val currentPage = remember { mutableIntStateOf(0) }
+    val scope = rememberCoroutineScope()
 
     Column(
         modifier = Modifier
@@ -68,7 +75,9 @@ fun OnboardingScreen(){
                 currentPage.intValue++
             },
             onFinishedOnboarding = {
-
+                scope.launch {
+                    viewModel.hideOnboarding()
+                }
             }
         )
 
