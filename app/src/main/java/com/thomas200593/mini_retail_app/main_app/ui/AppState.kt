@@ -5,9 +5,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.util.trace
+import androidx.navigation.NavDestination
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navOptions
 import com.thomas200593.mini_retail_app.core.design_system.util.NetworkMonitor
+import com.thomas200593.mini_retail_app.features.business.navigation.navigateToBusiness
+import com.thomas200593.mini_retail_app.features.dashboard.navigation.navigateToDashboard
+import com.thomas200593.mini_retail_app.features.report_analysis.navigation.navigateToReportAnalysis
+import com.thomas200593.mini_retail_app.features.user_profile.navigation.navigateToUserProfile
+import com.thomas200593.mini_retail_app.main_app.navigation.NavigationGraphs
+import com.thomas200593.mini_retail_app.main_app.navigation.TopLevelDestination
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
@@ -47,4 +58,43 @@ class AppState(
             initialValue = false,
             started = SharingStarted.WhileSubscribed(1_000)
         )
+
+    val currentDestination: NavDestination?
+        @Composable get() = navController
+            .currentBackStackEntryAsState()
+            .value?.destination
+
+    val currentTopLevelDestination: TopLevelDestination?
+        @Composable get() = when(currentDestination?.route){
+            NavigationGraphs.G_DASHBOARD -> TopLevelDestination.DASHBOARD
+            NavigationGraphs.G_BUSINESS -> TopLevelDestination.BUSINESS
+            NavigationGraphs.G_REPORT_ANALYSIS -> TopLevelDestination.REPORT_ANALYSIS
+            NavigationGraphs.G_USER_PROFILE -> TopLevelDestination.USER_PROFILE
+            else -> null
+        }
+
+    val topLevelDestination: List<TopLevelDestination> = TopLevelDestination.entries
+
+    fun navigateToTopLevelDestination(topLevelDestination: TopLevelDestination){
+        trace("Navigation: ${topLevelDestination.name}"){
+            val topLevelDestinationNavOptions = navOptions {
+                popUpTo(navController.graph.findStartDestination().id){
+                    saveState = true
+                }
+                launchSingleTop = true
+                restoreState = true
+            }
+
+            when(topLevelDestination){
+                TopLevelDestination.DASHBOARD -> navController
+                    .navigateToDashboard(topLevelDestinationNavOptions)
+                TopLevelDestination.BUSINESS -> navController
+                    .navigateToBusiness(topLevelDestinationNavOptions)
+                TopLevelDestination.REPORT_ANALYSIS -> navController
+                    .navigateToReportAnalysis(topLevelDestinationNavOptions)
+                TopLevelDestination.USER_PROFILE -> navController
+                    .navigateToUserProfile(topLevelDestinationNavOptions)
+            }
+        }
+    }
 }

@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.thomas200593.mini_retail_app.core.ui.component.DotsLoadingAnimation
+import com.thomas200593.mini_retail_app.core.ui.common.AppShapes.DotsLoadingAnimation
 import com.thomas200593.mini_retail_app.features.app_config.entity.Onboarding
 
 @Composable
@@ -26,36 +26,24 @@ fun InitialScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     when(uiState){
-        InitialUiState.Loading -> {
-            InitialLoadingScreenContent()
-        }
+        InitialUiState.Loading -> { ScreenContent() }
         is InitialUiState.Success -> {
             val isSessionValid = (uiState as InitialUiState.Success).isSessionValid
             val shouldShowOnboarding = (uiState as InitialUiState.Success).shouldShowOnboarding
             when(isSessionValid){
                 true -> {
                     when(shouldShowOnboarding){
-                        Onboarding.SHOW -> {
-                            Text(text = "Valid Session, Go to Onboarding")
-                        }
-                        Onboarding.HIDE -> {
-                            Text(text = "Valid Session, Go to Dashboard")
-                        }
+                        Onboarding.SHOW -> { Text(text = "Valid Session, Go to Onboarding") }
+                        Onboarding.HIDE -> { Text(text = "Valid Session, Go to Dashboard") }
                     }
                 }
                 false -> {
                     when(shouldShowOnboarding){
                         Onboarding.SHOW -> {
-                            LaunchedEffect(key1 = uiState) {
-                                //TODO single launch
-                                onNavigateToOnboardingScreen()
-                            }
+                            LaunchedEffect(key1 = uiState) { onNavigateToOnboardingScreen() }
                         }
                         Onboarding.HIDE -> {
-                            LaunchedEffect(key1 = uiState) {
-                                //TODO single launch
-                                onNavigateToAuthScreen()
-                            }
+                            LaunchedEffect(key1 = uiState) { onNavigateToAuthScreen() }
                         }
                     }
                 }
@@ -65,9 +53,11 @@ fun InitialScreen(
 }
 
 @Composable
-fun InitialLoadingScreenContent() {
+private fun ScreenContent(
+    modifier: Modifier = Modifier
+) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .padding(16.dp),
         verticalArrangement = Arrangement.Center,

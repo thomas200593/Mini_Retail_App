@@ -18,6 +18,7 @@ import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -32,6 +33,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.thomas200593.mini_retail_app.features.onboarding.entity.Onboarding
 import com.thomas200593.mini_retail_app.features.onboarding.entity.Onboarding.Tags.TAG_ONBOARD_SCREEN_IMAGE_VIEW
 import com.thomas200593.mini_retail_app.features.onboarding.entity.Onboarding.Tags.TAG_ONBOARD_SCREEN_NAV_BUTTON
@@ -40,11 +42,15 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun OnboardingScreen(
-    viewModel: OnboardingViewModel = hiltViewModel()
+    viewModel: OnboardingViewModel = hiltViewModel(),
+    onOnboardingFinished: () -> Unit = {}
 ){
+    val scope = rememberCoroutineScope()
     val onboardPages = Onboarding.pageList
     val currentPage = remember { mutableIntStateOf(0) }
-    val scope = rememberCoroutineScope()
+    val onboardingFinished by viewModel.onboardingFinished.collectAsStateWithLifecycle()
+
+    LaunchedEffect(onboardingFinished) { if(onboardingFinished) onOnboardingFinished() }
 
     Column(
         modifier = Modifier
@@ -52,41 +58,28 @@ fun OnboardingScreen(
             .testTag(Onboarding.Tags.TAG_ONBOARD_SCREEN)
     ) {
         OnboardingImageView(
-            modifier = Modifier
-                .weight(1.0f)
-                .fillMaxWidth(),
+            modifier = Modifier.weight(1.0f).fillMaxWidth(),
             currentPage = onboardPages[currentPage.intValue]
         )
 
         OnboardingDetails(
-            modifier = Modifier
-                .weight(1.0f)
-                .padding(16.dp),
+            modifier = Modifier.weight(1.0f).padding(16.dp),
             currentPage = onboardPages[currentPage.intValue]
         )
 
         OnBoardNavButton(
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(top = 16.dp),
+            modifier = Modifier.align(Alignment.CenterHorizontally).padding(top = 16.dp),
             currentPage = currentPage.intValue,
             noOfPages = onboardPages.size,
-            onNextClicked = {
-                currentPage.intValue++
-            },
-            onFinishedOnboarding = {
-                scope.launch {
-                    viewModel.hideOnboarding()
-                }
-            }
+            onNextClicked = { currentPage.intValue++ },
+            onFinishedOnboarding = { scope.launch { viewModel.hideOnboarding() } }
         )
 
         TabSelector(
             onboardPages = onboardPages,
-            currentPage = currentPage.intValue
-        ) { index ->
-            currentPage.intValue = index
-        }
+            currentPage = currentPage.intValue,
+            onTabSelected = { index -> currentPage.intValue = index }
+        )
     }
 }
 
@@ -123,17 +116,10 @@ fun OnBoardNavButton(
     onFinishedOnboarding: () -> Unit
 ) {
     Button(
-        onClick = {
-            if (currentPage < noOfPages - 1) {
-                onNextClicked()
-            } else {
-                // Handle onboarding completion
-                onFinishedOnboarding()
-            }
-        }, modifier = modifier.testTag(TAG_ONBOARD_SCREEN_NAV_BUTTON)
-    ) {
-        Text(text = if (currentPage < noOfPages - 1) "Next" else "Get Started")
-    }
+        modifier = modifier.testTag(TAG_ONBOARD_SCREEN_NAV_BUTTON),
+        onClick = { if (currentPage < noOfPages - 1) onNextClicked() else onFinishedOnboarding() },
+        content = { Text(text = if (currentPage < noOfPages - 1) "Next" else "Get Started") }
+    )
 }
 
 
@@ -141,8 +127,7 @@ fun OnBoardNavButton(
 fun OnboardingImageView(modifier: Modifier = Modifier, currentPage: Onboarding.OnboardingPage) {
     val imageRes = currentPage.imageRes
     Box(
-        modifier = modifier
-            .testTag(TAG_ONBOARD_SCREEN_IMAGE_VIEW + currentPage.title)
+        modifier = modifier.testTag(TAG_ONBOARD_SCREEN_IMAGE_VIEW + currentPage.title)
     ) {
         Image(
             painter = painterResource(id = imageRes),

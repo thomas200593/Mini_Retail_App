@@ -1,5 +1,6 @@
 package com.thomas200593.mini_retail_app.features.initial.navigation
 
+import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
@@ -30,7 +31,19 @@ fun NavGraphBuilder.initialNavGraph(
                 onNavigateToAuthScreen = onNavigateToAuthScreen
             )
         }
-        onBoardingNavGraph()
+        onBoardingNavGraph(
+            onOnboardingFinished = { appState.navController.navigateToInitial() }
+        )
         authNavGraph()
+    }
+}
+
+fun NavController.navigateToInitial(){
+    this.navigate(
+        route = G_INITIAL
+    ){
+        popUpTo(G_INITIAL){
+            inclusive = true
+        }
     }
 }
