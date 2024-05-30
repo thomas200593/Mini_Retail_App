@@ -3,6 +3,7 @@ package com.thomas200593.mini_retail_app.core.ui.common
 import androidx.annotation.DrawableRes
 import com.thomas200593.mini_retail_app.R.drawable.app_flag_gb_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_flag_id_48px
+import com.thomas200593.mini_retail_app.R.drawable.app_icon_48x48
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_dynamic_color_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_dynamic_color_disabled_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_dynamic_color_enabled_48px
@@ -10,6 +11,7 @@ import com.thomas200593.mini_retail_app.R.drawable.app_icon_language_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_onboarding_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_onboarding_hide_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_onboarding_show_48px
+import com.thomas200593.mini_retail_app.R.drawable.app_icon_settings_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_text_lg_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_text_md_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_text_size_48px
@@ -21,6 +23,12 @@ import com.thomas200593.mini_retail_app.R.drawable.app_icon_theme_light_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_theme_system_48px
 
 object AppIcon {
+    object App{
+        @DrawableRes val app = +app_icon_48x48
+    }
+    object Setting{
+        @DrawableRes val settings = +app_icon_settings_48px
+    }
     object Theme{
         @DrawableRes val theme = +app_icon_theme_48px
         @DrawableRes val system = +app_icon_theme_system_48px
