@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.thomas200593.mini_retail_app.core.ui.common.AppShapes.DotsLoadingAnimation
+import com.thomas200593.mini_retail_app.core.ui.common.Shapes.DotsLoadingAnimation
 import com.thomas200593.mini_retail_app.features.app_config.entity.Onboarding
 
 @Composable

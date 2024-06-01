@@ -3,8 +3,8 @@ package com.thomas200593.mini_retail_app.features.app_config.entity
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import com.thomas200593.mini_retail_app.R
-import com.thomas200593.mini_retail_app.core.ui.common.AppIcon.Onboarding.hide
-import com.thomas200593.mini_retail_app.core.ui.common.AppIcon.Onboarding.show
+import com.thomas200593.mini_retail_app.core.ui.common.Icons.Onboarding.hide
+import com.thomas200593.mini_retail_app.core.ui.common.Icons.Onboarding.show
 
 enum class Onboarding(
     val code: String,

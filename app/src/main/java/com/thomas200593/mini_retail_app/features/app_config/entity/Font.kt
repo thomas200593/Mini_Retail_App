@@ -3,10 +3,10 @@ package com.thomas200593.mini_retail_app.features.app_config.entity
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import com.thomas200593.mini_retail_app.R
-import com.thomas200593.mini_retail_app.core.ui.common.AppIcon.Font.large
-import com.thomas200593.mini_retail_app.core.ui.common.AppIcon.Font.medium
-import com.thomas200593.mini_retail_app.core.ui.common.AppIcon.Font.small
-import com.thomas200593.mini_retail_app.core.ui.common.AppIcon.Font.x_large
+import com.thomas200593.mini_retail_app.core.ui.common.Icons.Font.large
+import com.thomas200593.mini_retail_app.core.ui.common.Icons.Font.medium
+import com.thomas200593.mini_retail_app.core.ui.common.Icons.Font.small
+import com.thomas200593.mini_retail_app.core.ui.common.Icons.Font.x_large
 
 enum class Font(
     val code: String,

@@ -1,3 +1,6 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+import java.util.Properties
+
 plugins {
     // Android Application
     alias(libs.plugins.android.application)
@@ -32,6 +35,10 @@ android {
     }
 
     buildTypes {
+        val apiKeyFile = project.rootProject.file("apikey.properties")
+        val properties = Properties()
+        properties.load(apiKeyFile.inputStream())
+
         debug {
             isMinifyEnabled = false
             isShrinkResources = false
@@ -53,6 +60,11 @@ android {
                 type = "String",
                 name = "APP_LOCAL_DATABASE_FILENAME",
                 value = "\"app_local_database.db\""
+            )
+            buildConfigField(
+                type = "String",
+                name = "GOOGLE_AUTH_WEB_ID",
+                value = properties.getProperty("GOOGLE_OAUTH2_WEB_CLIENT_ID_DEBUG").orEmpty()
             )
         }
         release {
@@ -76,6 +88,11 @@ android {
                 type = "String",
                 name = "APP_LOCAL_DATABASE_FILENAME",
                 value = "\"app_local_database.db\""
+            )
+            buildConfigField(
+                type = "String",
+                name = "GOOGLE_AUTH_WEB_ID",
+                value = properties.getProperty("GOOGLE_OAUTH2_WEB_CLIENT_ID_RELEASE").orEmpty()
             )
         }
     }

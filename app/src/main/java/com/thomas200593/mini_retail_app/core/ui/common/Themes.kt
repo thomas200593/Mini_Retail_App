@@ -14,16 +14,16 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat.getInsetsController
-import com.thomas200593.mini_retail_app.core.ui.common.AppType.personalizedTypography
+import com.thomas200593.mini_retail_app.core.ui.common.Types.personalizedTypography
 import com.thomas200593.mini_retail_app.features.app_config.entity.DynamicColor
 import com.thomas200593.mini_retail_app.features.app_config.entity.Font
 import com.thomas200593.mini_retail_app.features.app_config.entity.Font.MEDIUM
 import com.thomas200593.mini_retail_app.features.app_config.entity.Theme
 import com.thomas200593.mini_retail_app.main_app.MainActivityUiState
 
-object AppTheme{
-    private val lightScheme = AppColor.lightScheme
-    private val darkScheme = AppColor.darkScheme
+object Themes{
+    private val lightScheme = Colors.lightScheme
+    private val darkScheme = Colors.darkScheme
     private val shapes = Shapes()
 
     /**

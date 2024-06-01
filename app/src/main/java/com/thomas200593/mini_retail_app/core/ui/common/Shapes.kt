@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
 
-object AppShapes {
+object Shapes {
     @Composable
     fun DotsLoadingAnimation(
         modifier: Modifier = Modifier,

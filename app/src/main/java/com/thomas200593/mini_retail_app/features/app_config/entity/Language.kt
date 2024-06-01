@@ -3,8 +3,8 @@ package com.thomas200593.mini_retail_app.features.app_config.entity
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import com.thomas200593.mini_retail_app.R
-import com.thomas200593.mini_retail_app.core.ui.common.AppIcon.Language.en
-import com.thomas200593.mini_retail_app.core.ui.common.AppIcon.Language.id
+import com.thomas200593.mini_retail_app.core.ui.common.Icons.Language.en
+import com.thomas200593.mini_retail_app.core.ui.common.Icons.Language.id
 
 enum class Language(
     val langCode: String,

@@ -3,9 +3,9 @@ package com.thomas200593.mini_retail_app.features.app_config.entity
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import com.thomas200593.mini_retail_app.R
-import com.thomas200593.mini_retail_app.core.ui.common.AppIcon.Theme.dark
-import com.thomas200593.mini_retail_app.core.ui.common.AppIcon.Theme.light
-import com.thomas200593.mini_retail_app.core.ui.common.AppIcon.Theme.system
+import com.thomas200593.mini_retail_app.core.ui.common.Icons.Theme.dark
+import com.thomas200593.mini_retail_app.core.ui.common.Icons.Theme.light
+import com.thomas200593.mini_retail_app.core.ui.common.Icons.Theme.system
 
 enum class Theme (
     val codeValue: String,

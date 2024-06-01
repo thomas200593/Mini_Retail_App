@@ -7,8 +7,9 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
-    appDataStore: AppDataStorePreferences
+    private val appDataStore: AppDataStorePreferences
 ): AuthRepository {
+
     override val authState: Flow<Boolean> =
         appDataStore.authState
 
@@ -16,6 +17,9 @@ class AuthRepositoryImpl @Inject constructor(
         appDataStore.authSessionToken
 
     override suspend fun validateAuthSessionToken(authSessionToken: AuthSessionToken) =
-        JWTHelper.isJWTTokenValid(authSessionToken.idToken.orEmpty())
+        JWTHelper.validateJWTToken(authSessionToken.idToken.orEmpty())
 
+    override suspend fun saveAuthState(authState: Boolean){
+        appDataStore.saveAuthState(authState)
+    }
 }

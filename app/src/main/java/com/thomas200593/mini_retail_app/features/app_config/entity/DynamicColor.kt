@@ -3,8 +3,8 @@ package com.thomas200593.mini_retail_app.features.app_config.entity
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import com.thomas200593.mini_retail_app.R
-import com.thomas200593.mini_retail_app.core.ui.common.AppIcon.DynamicColor.disabled
-import com.thomas200593.mini_retail_app.core.ui.common.AppIcon.DynamicColor.enabled
+import com.thomas200593.mini_retail_app.core.ui.common.Icons.DynamicColor.disabled
+import com.thomas200593.mini_retail_app.core.ui.common.Icons.DynamicColor.enabled
 
 enum class DynamicColor (
     val code: String,

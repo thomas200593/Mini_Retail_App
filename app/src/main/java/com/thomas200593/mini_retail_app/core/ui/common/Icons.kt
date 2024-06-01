@@ -1,6 +1,7 @@
 package com.thomas200593.mini_retail_app.core.ui.common
 
 import androidx.annotation.DrawableRes
+import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.R.drawable.app_flag_gb_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_flag_id_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_48x48
@@ -22,18 +23,17 @@ import com.thomas200593.mini_retail_app.R.drawable.app_icon_theme_dark_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_theme_light_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_theme_system_48px
 
-object AppIcon {
+object Icons {
     object App{
         @DrawableRes val app = +app_icon_48x48
     }
-    object Setting{
-        @DrawableRes val settings = +app_icon_settings_48px
+    object DynamicColor {
+        @DrawableRes val dynamic_color = +app_icon_dynamic_color_48px
+        @DrawableRes val disabled = +app_icon_dynamic_color_enabled_48px
+        @DrawableRes val enabled = +app_icon_dynamic_color_disabled_48px
     }
-    object Theme{
-        @DrawableRes val theme = +app_icon_theme_48px
-        @DrawableRes val system = +app_icon_theme_system_48px
-        @DrawableRes val light = +app_icon_theme_light_48px
-        @DrawableRes val dark = +app_icon_theme_dark_48px
+    object Google {
+        @DrawableRes val google_logo = +R.drawable.app_icon_google_g_48px
     }
     object Font {
         @DrawableRes val font = +app_icon_text_size_48px
@@ -47,14 +47,18 @@ object AppIcon {
         @DrawableRes val en = +app_flag_gb_48px
         @DrawableRes val id = +app_flag_id_48px
     }
-    object DynamicColor {
-        @DrawableRes val dynamic_color = +app_icon_dynamic_color_48px
-        @DrawableRes val disabled = +app_icon_dynamic_color_enabled_48px
-        @DrawableRes val enabled = +app_icon_dynamic_color_disabled_48px
-    }
     object Onboarding {
         @DrawableRes val onboarding = +app_icon_onboarding_48px
         @DrawableRes val show = +app_icon_onboarding_show_48px
         @DrawableRes val hide = +app_icon_onboarding_hide_48px
+    }
+    object Setting{
+        @DrawableRes val settings = +app_icon_settings_48px
+    }
+    object Theme{
+        @DrawableRes val theme = +app_icon_theme_48px
+        @DrawableRes val system = +app_icon_theme_system_48px
+        @DrawableRes val light = +app_icon_theme_light_48px
+        @DrawableRes val dark = +app_icon_theme_dark_48px
     }
 }

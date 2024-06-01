@@ -1,5 +1,11 @@
 package com.thomas200593.mini_retail_app.features.auth.ui
 
+import android.app.Activity
+import androidx.activity.compose.ManagedActivityResultLauncher
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.IntentSenderRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,24 +17,28 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.shapes
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.thomas200593.mini_retail_app.BuildConfig
 import com.thomas200593.mini_retail_app.R
-import com.thomas200593.mini_retail_app.core.ui.common.AppIcon
-import com.thomas200593.mini_retail_app.core.ui.common.AppIcon.Setting.settings
-import com.thomas200593.mini_retail_app.core.ui.common.AppTheme
+import com.thomas200593.mini_retail_app.core.ui.common.Icons
+import com.thomas200593.mini_retail_app.core.ui.common.Icons.Setting.settings
+import com.thomas200593.mini_retail_app.core.ui.component.Button.SignInWithGoogleButton
 import timber.log.Timber
 
 private const val TAG = "AuthScreen"
@@ -38,12 +48,63 @@ fun AuthScreen(
     viewModel: AuthViewModel = hiltViewModel()
 ){
     Timber.d("Called : %s", TAG)
-    ScreenContent()
+
+    val authState by viewModel.authState.collectAsStateWithLifecycle()
+    val activity = LocalContext.current as Activity
+
+    ScreenContent(
+        authState = authState,
+        onSignInWithGoogle = {
+            viewModel.saveAuthState(true)
+        }
+    )
+
+    AuthStartActivityForResult(
+        activity = activity,
+        key = authState,
+        launcher = { activityLauncher ->
+            if(authState){
+                viewModel.handleSignIn(
+                    activity = activity,
+                    launchActivityResult = { it ->
+                        activityLauncher.launch(it)
+                    },
+                    accountNotFound= {
+                        viewModel.saveAuthState(authState = false)
+                    }
+                )
+            }
+        }
+    )
+}
+
+@Composable
+fun AuthStartActivityForResult(
+    activity: Activity,
+    key: Any,
+    launcher: (ManagedActivityResultLauncher<IntentSenderRequest, ActivityResult>) -> Unit
+) {
+    val activityLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.StartIntentSenderForResult()
+    ) { result ->
+        try {
+            if(result.resultCode == Activity.RESULT_OK){
+
+            }
+            else{ }
+        }catch (e: Exception){ }
+    }
+
+    LaunchedEffect(key) {
+        launcher(activityLauncher)
+    }
 }
 
 @Composable
 private fun ScreenContent(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    authState: Boolean,
+    onSignInWithGoogle: () -> Unit
 ){
     Surface(
         modifier = modifier
@@ -66,6 +127,7 @@ private fun ScreenContent(
             val startGuideline = createGuidelineFromStart(16.dp)
             val endGuideline = createGuidelineFromEnd(16.dp)
             val topGuideline = createGuidelineFromTop(16.dp)
+            val bottomGuideline = createGuidelineFromBottom(0.1f)
 
             //Layout Central Partition
             val centralGuideline = createGuidelineFromTop(.4f)
@@ -98,7 +160,7 @@ private fun ScreenContent(
                 contentAlignment = Alignment.Center
             ){
                 Image(
-                    imageVector = ImageVector.vectorResource(id = AppIcon.App.app),
+                    imageVector = ImageVector.vectorResource(id = Icons.App.app),
                     contentDescription = stringResource(id = R.string.app_name),
                     alignment = Alignment.Center,
                     modifier = Modifier
@@ -141,8 +203,9 @@ private fun ScreenContent(
                         start.linkTo(startGuideline)
                         end.linkTo(endGuideline)
                         top.linkTo(txtAppVersion.bottom, 30.dp)
+                        bottom.linkTo(btnAuth.top)
                     },
-                shape = MaterialTheme.shapes.small,
+                shape = shapes.small,
                 color = MaterialTheme.colorScheme.secondaryContainer,
                 shadowElevation = 5.dp
             ) {
@@ -156,28 +219,39 @@ private fun ScreenContent(
             //.App Welcome Message
 
             //Auth Button
-
+            Surface(
+                modifier = Modifier
+                    .fillMaxWidth(0.9f)
+                    .constrainAs(btnAuth) {
+                        start.linkTo(startGuideline)
+                        end.linkTo(endGuideline)
+                        top.linkTo(txtAppWelcomeMessage.bottom, 36.dp)
+                        bottom.linkTo(bottomGuideline, 16.dp)
+                    },
+                shape = shapes.medium,
+            ) {
+                SignInWithGoogleButton(
+                    btnLoadingState = authState,
+                    onClick = {
+                        onSignInWithGoogle()
+                    }
+                )
+            }
             //.Auth Button
 
             //Terms and Conditions
-
+            Text(
+                text = BuildConfig.GOOGLE_AUTH_WEB_ID,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier
+                    .constrainAs(txtTermsAndConditions){
+                        top.linkTo(bottomGuideline)
+                        bottom.linkTo(parent.bottom)
+                        centerHorizontallyTo(parent)
+                    }
+            )
             //.Terms and Conditions
         }
-    }
-}
-
-@Preview
-@Composable
-fun AuthScreenPortraitPreview(){
-    AppTheme.ApplicationTheme {
-        AuthScreen()
-    }
-}
-
-@Preview(device = "spec:parent=pixel_5,orientation=landscape")
-@Composable
-fun AuthScreenLandscapePreview(){
-    AppTheme.ApplicationTheme {
-        AuthScreen()
     }
 }

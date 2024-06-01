@@ -27,7 +27,7 @@ object JWTHelper {
         "JWT"
     )
 
-    suspend fun isJWTTokenValid(idToken: String) = withContext(Dispatchers.IO){
+    suspend fun validateJWTToken(idToken: String) = withContext(Dispatchers.IO){
         try {
             Timber.d("Called %s.isValidToken()", TAG)
             if(idToken.isEmpty() || idToken.isBlank()){

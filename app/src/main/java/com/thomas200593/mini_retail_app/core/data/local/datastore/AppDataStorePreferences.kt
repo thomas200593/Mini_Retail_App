@@ -77,4 +77,10 @@ class AppDataStorePreferences @Inject constructor(
             it[dsAppShouldShowOnboardingPages] = HIDE.name
         }
     }
+
+    suspend fun saveAuthState(authState: Boolean) = withContext(ioDispatcher){
+        datastore.edit {
+            it[dsAuthState] = authState
+        }
+    }
 }

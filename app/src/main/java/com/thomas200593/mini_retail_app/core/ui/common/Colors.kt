@@ -4,7 +4,7 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.graphics.Color
 
-object AppColor {
+object Colors {
     private val primaryLight = Color(0xFF00696A)
     private val onPrimaryLight = Color(0xFFFFFFFF)
     private val primaryContainerLight = Color(0xFF9CF1F1)

@@ -30,7 +30,7 @@ class InitialViewModel @Inject constructor(
         .combine(authRepository.authSessionToken){ currentConfig, authToken ->
             InitialUiState.Success(
                 shouldShowOnboarding = currentConfig.showOnboardingPages,
-                isSessionValid = JWTHelper.isJWTTokenValid(authToken.idToken.orEmpty())
+                isSessionValid = JWTHelper.validateJWTToken(authToken.idToken.orEmpty())
             )
         }
         .onEach {

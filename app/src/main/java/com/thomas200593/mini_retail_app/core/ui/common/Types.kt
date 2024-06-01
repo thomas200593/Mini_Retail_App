@@ -9,7 +9,7 @@ import androidx.compose.ui.text.font.FontWeight.Companion.SemiBold
 import androidx.compose.ui.unit.sp
 import com.thomas200593.mini_retail_app.features.app_config.entity.Font
 
-object AppType{
+object Types{
 
     private const val LINE_HEIGHT_MULTIPLIER = 1.15
 
