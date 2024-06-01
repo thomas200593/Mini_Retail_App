@@ -1,11 +1,6 @@
 package com.thomas200593.mini_retail_app.features.auth.ui
 
-import android.app.Activity
-import androidx.activity.compose.ManagedActivityResultLauncher
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.ActivityResult
-import androidx.activity.result.IntentSenderRequest
-import androidx.activity.result.contract.ActivityResultContracts
+import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,8 +16,8 @@ import androidx.compose.material3.MaterialTheme.shapes
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -32,13 +27,19 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.credentials.CredentialManager
+import androidx.credentials.GetCredentialRequest
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.google.android.libraries.identity.googleid.GetGoogleIdOption
+import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.thomas200593.mini_retail_app.BuildConfig
 import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.core.ui.common.Icons
 import com.thomas200593.mini_retail_app.core.ui.common.Icons.Setting.settings
 import com.thomas200593.mini_retail_app.core.ui.component.Button.SignInWithGoogleButton
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 private const val TAG = "AuthScreen"
@@ -50,61 +51,27 @@ fun AuthScreen(
     Timber.d("Called : %s", TAG)
 
     val authState by viewModel.authState.collectAsStateWithLifecycle()
-    val activity = LocalContext.current as Activity
+    val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+    val idToken by viewModel.token.collectAsStateWithLifecycle()
 
     ScreenContent(
-        authState = authState,
         onSignInWithGoogle = {
-            viewModel.saveAuthState(true)
-        }
+            viewModel.updateToken(it)
+        },
+        idToken = idToken,
+        context = context,
+        coroutineScope = coroutineScope
     )
-
-    AuthStartActivityForResult(
-        activity = activity,
-        key = authState,
-        launcher = { activityLauncher ->
-            if(authState){
-                viewModel.handleSignIn(
-                    activity = activity,
-                    launchActivityResult = { it ->
-                        activityLauncher.launch(it)
-                    },
-                    accountNotFound= {
-                        viewModel.saveAuthState(authState = false)
-                    }
-                )
-            }
-        }
-    )
-}
-
-@Composable
-fun AuthStartActivityForResult(
-    activity: Activity,
-    key: Any,
-    launcher: (ManagedActivityResultLauncher<IntentSenderRequest, ActivityResult>) -> Unit
-) {
-    val activityLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.StartIntentSenderForResult()
-    ) { result ->
-        try {
-            if(result.resultCode == Activity.RESULT_OK){
-
-            }
-            else{ }
-        }catch (e: Exception){ }
-    }
-
-    LaunchedEffect(key) {
-        launcher(activityLauncher)
-    }
 }
 
 @Composable
 private fun ScreenContent(
     modifier: Modifier = Modifier,
-    authState: Boolean,
-    onSignInWithGoogle: () -> Unit
+    onSignInWithGoogle: (String) -> Unit,
+    idToken: String,
+    context: Context,
+    coroutineScope: CoroutineScope
 ){
     Surface(
         modifier = modifier
@@ -114,15 +81,8 @@ private fun ScreenContent(
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
         ) {
-            val (
-                btnConf,
-                iconApp,
-                txtAppTitle,
-                txtAppVersion,
-                txtAppWelcomeMessage,
-                btnAuth,
-                txtTermsAndConditions
-            ) = createRefs()
+            val (btnConf, iconApp, txtAppTitle, txtAppVersion, txtAppWelcomeMessage, btnAuth,
+                txtTermsAndConditions) = createRefs()
 
             val startGuideline = createGuidelineFromStart(16.dp)
             val endGuideline = createGuidelineFromEnd(16.dp)
@@ -231,9 +191,27 @@ private fun ScreenContent(
                 shape = shapes.medium,
             ) {
                 SignInWithGoogleButton(
-                    btnLoadingState = authState,
                     onClick = {
-                        onSignInWithGoogle()
+                        //TODO Move this to MVVM
+                        val credentialManager = CredentialManager.create(context)
+                        val googleIdOpt = GetGoogleIdOption.Builder()
+                            .setFilterByAuthorizedAccounts(false)
+                            .setServerClientId(BuildConfig.GOOGLE_AUTH_WEB_ID)
+                            .build()
+                        val request = GetCredentialRequest.Builder()
+                            .addCredentialOption(googleIdOpt)
+                            .build()
+                        coroutineScope.launch{
+                            try {
+                                val result = credentialManager.getCredential(request = request, context = context)
+                                val credential = result.credential
+                                val googleIdCredential = GoogleIdTokenCredential.createFrom(credential.data)
+                                val googleIdToken = googleIdCredential.idToken
+                                onSignInWithGoogle(googleIdToken)
+                            }catch (e: Exception){
+                                Timber.e(e)
+                            }
+                        }
                     }
                 )
             }
@@ -241,7 +219,7 @@ private fun ScreenContent(
 
             //Terms and Conditions
             Text(
-                text = BuildConfig.GOOGLE_AUTH_WEB_ID,
+                text = idToken,
                 fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier
