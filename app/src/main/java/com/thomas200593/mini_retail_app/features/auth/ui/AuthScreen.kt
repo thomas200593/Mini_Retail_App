@@ -1,6 +1,5 @@
 package com.thomas200593.mini_retail_app.features.auth.ui
 
-import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -27,19 +26,14 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.credentials.CredentialManager
-import androidx.credentials.GetCredentialRequest
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.google.android.libraries.identity.googleid.GetGoogleIdOption
-import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.thomas200593.mini_retail_app.BuildConfig
 import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.core.ui.common.Icons
 import com.thomas200593.mini_retail_app.core.ui.common.Icons.Setting.settings
 import com.thomas200593.mini_retail_app.core.ui.component.Button.SignInWithGoogleButton
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
+import com.thomas200593.mini_retail_app.features.auth.entity.AuthSessionToken
 import timber.log.Timber
 
 private const val TAG = "AuthScreen"
@@ -49,29 +43,23 @@ fun AuthScreen(
     viewModel: AuthViewModel = hiltViewModel()
 ){
     Timber.d("Called : %s", TAG)
-
-    val authState by viewModel.authState.collectAsStateWithLifecycle()
+    val idToken by viewModel.idToken.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
-    val idToken by viewModel.token.collectAsStateWithLifecycle()
 
     ScreenContent(
-        onSignInWithGoogle = {
-            viewModel.updateToken(it)
+        onSignInWithGoogleButton = {
+            viewModel.authSignInWithGoogle(context, coroutineScope)
         },
-        idToken = idToken,
-        context = context,
-        coroutineScope = coroutineScope
+        authSessionToken = idToken
     )
 }
 
 @Composable
 private fun ScreenContent(
     modifier: Modifier = Modifier,
-    onSignInWithGoogle: (String) -> Unit,
-    idToken: String,
-    context: Context,
-    coroutineScope: CoroutineScope
+    onSignInWithGoogleButton: () -> Unit,
+    authSessionToken: AuthSessionToken
 ){
     Surface(
         modifier = modifier
@@ -171,8 +159,7 @@ private fun ScreenContent(
             ) {
                 Text(
                     text = "Welcome to Application! To continue, please sign in into Your Account.",
-                    modifier = Modifier
-                        .padding(12.dp),
+                    modifier = Modifier.padding(12.dp),
                     color = MaterialTheme.colorScheme.onSecondaryContainer
                 )
             }
@@ -192,34 +179,15 @@ private fun ScreenContent(
             ) {
                 SignInWithGoogleButton(
                     onClick = {
-                        //TODO Move this to MVVM
-                        val credentialManager = CredentialManager.create(context)
-                        val googleIdOpt = GetGoogleIdOption.Builder()
-                            .setFilterByAuthorizedAccounts(false)
-                            .setServerClientId(BuildConfig.GOOGLE_AUTH_WEB_ID)
-                            .build()
-                        val request = GetCredentialRequest.Builder()
-                            .addCredentialOption(googleIdOpt)
-                            .build()
-                        coroutineScope.launch{
-                            try {
-                                val result = credentialManager.getCredential(request = request, context = context)
-                                val credential = result.credential
-                                val googleIdCredential = GoogleIdTokenCredential.createFrom(credential.data)
-                                val googleIdToken = googleIdCredential.idToken
-                                onSignInWithGoogle(googleIdToken)
-                            }catch (e: Exception){
-                                Timber.e(e)
-                            }
-                        }
-                    }
+                        onSignInWithGoogleButton()
+                    },
                 )
             }
             //.Auth Button
 
             //Terms and Conditions
             Text(
-                text = idToken,
+                text = authSessionToken.idToken.orEmpty(),
                 fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier

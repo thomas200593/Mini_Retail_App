@@ -15,6 +15,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.thomas200593.mini_retail_app.core.ui.common.Shapes.DotsLoadingAnimation
 import com.thomas200593.mini_retail_app.features.app_config.entity.Onboarding
+import com.thomas200593.mini_retail_app.features.initial.ui.InitialUiState.Success
 
 @Composable
 fun InitialScreen(
@@ -27,9 +28,9 @@ fun InitialScreen(
 
     when(uiState){
         InitialUiState.Loading -> { ScreenContent() }
-        is InitialUiState.Success -> {
-            val isSessionValid = (uiState as InitialUiState.Success).isSessionValid
-            val shouldShowOnboarding = (uiState as InitialUiState.Success).shouldShowOnboarding
+        is Success -> {
+            val isSessionValid = (uiState as Success).isSessionValid
+            val shouldShowOnboarding = (uiState as Success).shouldShowOnboarding
             when(isSessionValid){
                 true -> {
                     when(shouldShowOnboarding){
