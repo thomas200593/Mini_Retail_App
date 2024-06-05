@@ -22,8 +22,8 @@ object AppConfigDataStorePreferencesKeys {
 }
 
 object AuthDataStorePreferencesKeys {
-    val dsAuthState = booleanPreferencesKey(
-        name = "DS_AUTH_STATE"
+    val dsSignedInState = booleanPreferencesKey(
+        name = "DS_SIGNED_IN_STATE"
     )
     val dsAuthProvider = stringPreferencesKey(
         name = "DS_AUTH_PROVIDER"

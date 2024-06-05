@@ -1,5 +1,6 @@
 package com.thomas200593.mini_retail_app.features.auth.ui
 
+import android.app.Activity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -33,6 +34,7 @@ import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.core.ui.common.Icons
 import com.thomas200593.mini_retail_app.core.ui.common.Icons.Setting.settings
 import com.thomas200593.mini_retail_app.core.ui.component.Button.SignInWithGoogleButton
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 private const val TAG = "AuthScreen"
@@ -42,32 +44,37 @@ fun AuthScreen(
     viewModel: AuthViewModel = hiltViewModel()
 ){
     Timber.d("Called : %s", TAG)
-    val authState by viewModel.authState.collectAsStateWithLifecycle()
-    val context = LocalContext.current
+    val activityContext = (LocalContext.current as Activity)
     val coroutineScope = rememberCoroutineScope()
-    val authResult by viewModel.authResult.collectAsStateWithLifecycle()
-
-//    val idToken by viewModel.idToken.collectAsStateWithLifecycle()
-//    ScreenContent(
-//        onSignInWithGoogleButton = {
-//            viewModel.authSignInWithGoogle(context, coroutineScope)
-//        },
-//        authSessionToken = idToken
-//    )
+    val idToken by viewModel.idToken.collectAsStateWithLifecycle()
+    val authState by viewModel.authState.collectAsStateWithLifecycle()
 
     ScreenContent(
         authState = authState,
         onSignInWithGoogleButton = {
-            viewModel.saveAuthState(true)
+            coroutineScope.launch {
+                viewModel.updateAuthState(true)
+            }
+            coroutineScope.launch {
+                startAuthWithGoogleForResult(
+                    activityContext = activityContext,
+                    coroutineScope = coroutineScope,
+                    onResultReceived = {
+                        viewModel.updateAuthState(true)
+                        viewModel.verifyTokenBackend(it)
+                    },
+                    onError = {
+                        viewModel.updateAuthState(false)
+                        viewModel.errorToken(it)
+                    },
+                    onDialogDismissed = {
+                        viewModel.updateAuthState(false)
+                        viewModel.dismissToken(it)
+                    }
+                )
+            }
         },
-        authResultUiState = authResult
-    )
-
-    StartAuthWithGoogleForResult(
-        key = authState,
-        onStartAuthWithGoogleLaunched = {
-            viewModel.authenticateWithGoogle(context = context)
-        },
+        idToken = idToken
     )
 }
 
@@ -75,8 +82,8 @@ fun AuthScreen(
 private fun ScreenContent(
     modifier: Modifier = Modifier,
     onSignInWithGoogleButton: () -> Unit,
-    authState: Boolean,
-    authResultUiState: AuthResultUiState
+    idToken: String,
+    authState: Boolean
 ){
     Surface(
         modifier = modifier
@@ -205,13 +212,12 @@ private fun ScreenContent(
 
             //Terms and Conditions
             Text(
-                text = authResultUiState.toString(),
+                text = idToken,
                 fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier
                     .constrainAs(txtTermsAndConditions){
                         top.linkTo(bottomGuideline)
-                        bottom.linkTo(parent.bottom)
                         centerHorizontallyTo(parent)
                     }
             )
@@ -219,151 +225,3 @@ private fun ScreenContent(
         }
     }
 }
-
-/*
-@Composable
-private fun ScreenContentBackup(
-    modifier: Modifier = Modifier,
-    onSignInWithGoogleButton: () -> Unit,
-    authSessionToken: AuthSessionToken
-){
-    Surface(
-        modifier = modifier
-    ) {
-        ConstraintLayout(
-            modifier = modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-        ) {
-            val (btnConf, iconApp, txtAppTitle, txtAppVersion, txtAppWelcomeMessage, btnAuth,
-                txtTermsAndConditions) = createRefs()
-
-            val startGuideline = createGuidelineFromStart(16.dp)
-            val endGuideline = createGuidelineFromEnd(16.dp)
-            val topGuideline = createGuidelineFromTop(16.dp)
-            val bottomGuideline = createGuidelineFromBottom(0.1f)
-
-            //Layout Central Partition
-            val centralGuideline = createGuidelineFromTop(.4f)
-
-            //Config Button
-            Icon(
-                imageVector = ImageVector.vectorResource(settings),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(48.dp)
-                    .padding(8.dp)
-                    .constrainAs(btnConf) {
-                        start.linkTo(startGuideline)
-                        top.linkTo(topGuideline)
-                    },
-                tint = MaterialTheme.colorScheme.onSurface
-            )
-            //.Config Button
-
-            //App Icon
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth(.6f)
-                    .height(150.dp)
-                    .constrainAs(iconApp) {
-                        start.linkTo(startGuideline)
-                        end.linkTo(endGuideline)
-                        bottom.linkTo(centralGuideline)
-                    },
-                contentAlignment = Alignment.Center
-            ){
-                Image(
-                    imageVector = ImageVector.vectorResource(id = Icons.App.app),
-                    contentDescription = stringResource(id = R.string.app_name),
-                    alignment = Alignment.Center,
-                    modifier = Modifier
-                )
-            }
-            //.App Icon
-
-            //App Name
-            Text(
-                text = stringResource(id = R.string.app_name),
-                fontSize = MaterialTheme.typography.headlineLarge.fontSize,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier
-                    .constrainAs(txtAppTitle){
-                        top.linkTo(centralGuideline)
-                        centerHorizontallyTo(parent)
-                    }
-            )
-            //.App Name
-
-            //App Version
-            Text(
-                text = "${BuildConfig.VERSION_NAME} - ${BuildConfig.BUILD_TYPE}",
-                fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier
-                    .constrainAs(txtAppVersion){
-                        top.linkTo(txtAppTitle.bottom)
-                        centerHorizontallyTo(parent)
-                    }
-            )
-            //.App Version
-
-            //App Welcome Message
-            Surface(
-                modifier = Modifier
-                    .fillMaxWidth(0.9f)
-                    .constrainAs(txtAppWelcomeMessage) {
-                        start.linkTo(startGuideline)
-                        end.linkTo(endGuideline)
-                        top.linkTo(txtAppVersion.bottom, 30.dp)
-                        bottom.linkTo(btnAuth.top)
-                    },
-                shape = shapes.small,
-                color = MaterialTheme.colorScheme.secondaryContainer,
-                shadowElevation = 5.dp
-            ) {
-                Text(
-                    text = "Welcome to Application! To continue, please sign in into Your Account.",
-                    modifier = Modifier.padding(12.dp),
-                    color = MaterialTheme.colorScheme.onSecondaryContainer
-                )
-            }
-            //.App Welcome Message
-
-            //Auth Button
-            Surface(
-                modifier = Modifier
-                    .fillMaxWidth(0.9f)
-                    .constrainAs(btnAuth) {
-                        start.linkTo(startGuideline)
-                        end.linkTo(endGuideline)
-                        top.linkTo(txtAppWelcomeMessage.bottom, 36.dp)
-                        bottom.linkTo(bottomGuideline, 16.dp)
-                    },
-                shape = shapes.medium,
-            ) {
-                SignInWithGoogleButton(
-                    onClick = {
-                        onSignInWithGoogleButton()
-                    },
-                )
-            }
-            //.Auth Button
-
-            //Terms and Conditions
-            Text(
-                text = "Auth Provider : ${authSessionToken.authProvider}; Auth Token : ${authSessionToken.idToken}",
-                fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier
-                    .constrainAs(txtTermsAndConditions){
-                        top.linkTo(bottomGuideline)
-                        bottom.linkTo(parent.bottom)
-                        centerHorizontallyTo(parent)
-                    }
-            )
-            //.Terms and Conditions
-        }
-    }
-}*/

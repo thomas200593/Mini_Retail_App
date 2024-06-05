@@ -10,7 +10,7 @@ import com.thomas200593.mini_retail_app.core.data.local.datastore.AppConfigDataS
 import com.thomas200593.mini_retail_app.core.data.local.datastore.AppConfigDataStorePreferencesKeys.dsAppShouldShowOnboardingPages
 import com.thomas200593.mini_retail_app.core.data.local.datastore.AuthDataStorePreferencesKeys.dsAuthProvider
 import com.thomas200593.mini_retail_app.core.data.local.datastore.AuthDataStorePreferencesKeys.dsAuthSessionToken
-import com.thomas200593.mini_retail_app.core.data.local.datastore.AuthDataStorePreferencesKeys.dsAuthState
+import com.thomas200593.mini_retail_app.core.data.local.datastore.AuthDataStorePreferencesKeys.dsSignedInState
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.AppDispatchers.IO
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatcher
 import com.thomas200593.mini_retail_app.features.app_config.entity.CurrentAppConfig
@@ -60,7 +60,7 @@ class AppDataStorePreferences @Inject constructor(
     val authState = datastore.data
         .flowOn(ioDispatcher)
         .map { data ->
-            data[dsAuthState] ?: false
+            data[dsSignedInState] ?: false
         }
 
     val authSessionToken = datastore.data
@@ -75,12 +75,6 @@ class AppDataStorePreferences @Inject constructor(
     suspend fun hideOnboarding() = withContext(ioDispatcher){
         datastore.edit {
             it[dsAppShouldShowOnboardingPages] = HIDE.name
-        }
-    }
-
-    suspend fun saveAuthState(authState: Boolean) = withContext(ioDispatcher){
-        datastore.edit {
-            it[dsAuthState] = authState
         }
     }
 }
