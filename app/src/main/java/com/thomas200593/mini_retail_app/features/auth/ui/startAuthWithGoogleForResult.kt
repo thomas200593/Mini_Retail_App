@@ -9,6 +9,7 @@ import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
 import com.thomas200593.mini_retail_app.BuildConfig
+import com.thomas200593.mini_retail_app.core.util.JWTHelper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -19,17 +20,18 @@ suspend fun startAuthWithGoogleForResult(
     onError: (Throwable) -> Unit,
     onDialogDismissed: (Throwable) -> Unit
 ){
-    val credentialManager = CredentialManager.create(activityContext)
-    val googleIdOptions = GetGoogleIdOption.Builder()
-        .setFilterByAuthorizedAccounts(false)
-        //.setNonce("") //TODO Generate Nonce to prevent Replay Attack
-        .setAutoSelectEnabled(false)
-        .setServerClientId(BuildConfig.GOOGLE_AUTH_WEB_ID)
-        .build()
-    val request = GetCredentialRequest.Builder()
-        .addCredentialOption(googleIdOptions)
-        .build()
     coroutineScope.launch {
+        val credentialManager = CredentialManager.create(activityContext)
+        val googleIdOptions = GetGoogleIdOption.Builder()
+            .setFilterByAuthorizedAccounts(false)
+            .setNonce(JWTHelper.generateGoogleOAuthTokenNonce())
+            .setAutoSelectEnabled(false)
+            .setServerClientId(BuildConfig.GOOGLE_AUTH_WEB_ID)
+            .build()
+        val request = GetCredentialRequest.Builder()
+            .addCredentialOption(googleIdOptions)
+            .build()
+
         try{
             val result = credentialManager.getCredential(context = activityContext, request = request)
             val credential = result.credential

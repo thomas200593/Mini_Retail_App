@@ -5,7 +5,9 @@ import com.auth0.android.jwt.JWT
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
+import java.security.MessageDigest
 import java.time.Instant
+import java.util.UUID
 
 private const val TAG = "JWTHelper"
 object JWTHelper {
@@ -56,5 +58,14 @@ object JWTHelper {
             Timber.e("Exception: %s", e)
             false
         }
+    }
+
+    suspend fun generateGoogleOAuthTokenNonce() = withContext(Dispatchers.IO){
+        val rawNonce = UUID.randomUUID().toString()
+        val bytes = rawNonce.toByteArray()
+        val md = MessageDigest.getInstance("SHA-256")
+        val digest = md.digest(bytes)
+        val hashedNonce = digest.fold(""){ str, it -> str + "%02x".format(it) }
+        hashedNonce
     }
 }

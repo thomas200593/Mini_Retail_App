@@ -25,6 +25,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -99,7 +100,6 @@ private fun ScreenContent(
             val startGuideline = createGuidelineFromStart(16.dp)
             val endGuideline = createGuidelineFromEnd(16.dp)
             val topGuideline = createGuidelineFromTop(16.dp)
-            val bottomGuideline = createGuidelineFromBottom(0.1f)
 
             //Layout Central Partition
             val centralGuideline = createGuidelineFromTop(.4f)
@@ -128,6 +128,7 @@ private fun ScreenContent(
                         start.linkTo(startGuideline)
                         end.linkTo(endGuideline)
                         bottom.linkTo(centralGuideline)
+                        top.linkTo(btnConf.bottom)
                     },
                 contentAlignment = Alignment.Center
             ){
@@ -197,7 +198,6 @@ private fun ScreenContent(
                         start.linkTo(startGuideline)
                         end.linkTo(endGuideline)
                         top.linkTo(txtAppWelcomeMessage.bottom, 36.dp)
-                        bottom.linkTo(bottomGuideline, 16.dp)
                     },
                 shape = shapes.medium,
             ) {
@@ -211,16 +211,24 @@ private fun ScreenContent(
             //.Auth Button
 
             //Terms and Conditions
-            Text(
-                text = idToken,
-                fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.onSurface,
+            Surface(
                 modifier = Modifier
-                    .constrainAs(txtTermsAndConditions){
-                        top.linkTo(bottomGuideline)
-                        centerHorizontallyTo(parent)
+                    .fillMaxWidth(0.9f)
+                    .constrainAs(txtTermsAndConditions) {
+                        top.linkTo(btnAuth.bottom, 16.dp)
+                        start.linkTo(startGuideline)
+                        end.linkTo(endGuideline)
                     }
-            )
+            ){
+                Text(
+                    text = idToken,
+                    modifier = Modifier.padding(12.dp),
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onTertiaryContainer,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
             //.Terms and Conditions
         }
     }
