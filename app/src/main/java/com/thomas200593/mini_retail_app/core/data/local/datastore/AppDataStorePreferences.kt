@@ -25,6 +25,7 @@ import com.thomas200593.mini_retail_app.features.app_config.entity.Onboarding.SH
 import com.thomas200593.mini_retail_app.features.app_config.entity.Theme
 import com.thomas200593.mini_retail_app.features.app_config.entity.Theme.SYSTEM
 import com.thomas200593.mini_retail_app.features.auth.entity.AuthSessionToken
+import com.thomas200593.mini_retail_app.features.auth.entity.OAuthProvider
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
@@ -60,7 +61,9 @@ class AppDataStorePreferences @Inject constructor(
         .flowOn(ioDispatcher)
         .map { data ->
             AuthSessionToken(
-                authProvider = data[dsAuthProvider],
+                authProvider = data[dsAuthProvider] ?.let { oAuthProvider ->
+                    OAuthProvider.valueOf(oAuthProvider)
+                } ?: OAuthProvider.GOOGLE,
                 idToken = data[dsAuthSessionToken]
             )
         }
@@ -80,7 +83,7 @@ class AppDataStorePreferences @Inject constructor(
     suspend fun saveAuthSessionToken(authSessionToken: AuthSessionToken) = withContext(ioDispatcher){
         datastore.edit {
             it[dsAuthSessionToken] = authSessionToken.idToken!!
-            it[dsAuthProvider] = authSessionToken.authProvider!!
+            it[dsAuthProvider] = authSessionToken.authProvider?.name!!
         }
     }
 }

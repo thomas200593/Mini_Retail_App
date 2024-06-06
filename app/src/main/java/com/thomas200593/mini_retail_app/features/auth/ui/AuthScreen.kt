@@ -1,6 +1,7 @@
 package com.thomas200593.mini_retail_app.features.auth.ui
 
 import android.app.Activity
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -37,9 +38,10 @@ import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
 import com.thomas200593.mini_retail_app.core.ui.common.Icons
 import com.thomas200593.mini_retail_app.core.ui.common.Icons.Setting.settings
-import com.thomas200593.mini_retail_app.core.ui.component.Button.Google.SignInWithGoogleButton
-import com.thomas200593.mini_retail_app.core.ui.component.Button.Google.handleSignInWithGoogleButton
+import com.thomas200593.mini_retail_app.core.ui.component.Button
+import com.thomas200593.mini_retail_app.core.ui.component.Button.Google.SignInWithGoogle
 import com.thomas200593.mini_retail_app.features.auth.entity.AuthSessionToken
+import com.thomas200593.mini_retail_app.features.auth.entity.OAuth2UserMetadata
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -52,28 +54,36 @@ fun AuthScreen(
     Timber.d("Called : %s", TAG)
     val activityContext = (LocalContext.current as Activity)
     val coroutineScope = rememberCoroutineScope()
-    val authSIWGButtonState by viewModel.authSIWGButtonState.collectAsStateWithLifecycle()
-    val session by viewModel.authSessionToken
+    val stateSIWGButton by viewModel.stateSIWGButton.collectAsStateWithLifecycle()
+    val authSessionTokenState by viewModel.authSessionTokenState
 
     LaunchedEffect(Unit) {
         viewModel.onOpen()
     }
 
-    LaunchedEffect(key1 = session) {
-        when(session){
+    LaunchedEffect(authSessionTokenState) {
+        when(authSessionTokenState){
             is RequestState.Success -> {
-
+                val authSessionToken = (authSessionTokenState as RequestState.Success).data
+                if(authSessionToken != null){
+                    val userData = viewModel.mapAuthSessionTokenToUserData(authSessionToken)
+                    val email = userData?.oAuth2UserMetadata as OAuth2UserMetadata.Google
+                    Toast.makeText(activityContext, "Logged in using: $email", Toast.LENGTH_LONG).show()
+                    //TODO NAVIGATE TO DASHBOARD
+                }else{
+                    viewModel.clearAuthSessionToken()
+                }
             }
             else -> Unit
         }
     }
 
     ScreenContent(
-        authSIWGButtonState = authSIWGButtonState,
+        stateSIWGButton = stateSIWGButton,
         onSignInWithGoogleButton = {
             coroutineScope.launch {
                 viewModel.updateAuthSIWGButtonState(true)
-                handleSignInWithGoogleButton(
+                Button.Google.handleSignIn(
                     activityContext = activityContext,
                     coroutineScope = coroutineScope,
                     onResultReceived = {
@@ -88,7 +98,7 @@ fun AuthScreen(
                 )
             }
         },
-        session = session
+        authSessionTokenState = authSessionTokenState
     )
 }
 
@@ -96,8 +106,8 @@ fun AuthScreen(
 private fun ScreenContent(
     modifier: Modifier = Modifier,
     onSignInWithGoogleButton: () -> Unit,
-    authSIWGButtonState: Boolean,
-    session: RequestState<AuthSessionToken>,
+    stateSIWGButton: Boolean,
+    authSessionTokenState: RequestState<AuthSessionToken>,
     ){
     Surface(
         modifier = modifier
@@ -214,9 +224,9 @@ private fun ScreenContent(
                     },
                 shape = shapes.medium,
             ) {
-                SignInWithGoogleButton(
+                SignInWithGoogle(
                     onClick = { onSignInWithGoogleButton() },
-                    btnLoadingState = authSIWGButtonState
+                    btnLoadingState = stateSIWGButton
                 )
             }
             //.Auth Button
@@ -232,7 +242,7 @@ private fun ScreenContent(
                     }
             ){
                 Text(
-                    text = session.toString(),
+                    text = authSessionTokenState.toString(),
                     modifier = Modifier.padding(12.dp),
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.onTertiaryContainer,

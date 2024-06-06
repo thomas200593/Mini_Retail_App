@@ -1,6 +1,5 @@
 package com.thomas200593.mini_retail_app.core.data.local.datastore
 
-import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 
 object AppConfigDataStorePreferencesKeys {
@@ -22,9 +21,6 @@ object AppConfigDataStorePreferencesKeys {
 }
 
 object AuthDataStorePreferencesKeys {
-    val dsSignedInState = booleanPreferencesKey(
-        name = "DS_SIGNED_IN_STATE"
-    )
     val dsAuthProvider = stringPreferencesKey(
         name = "DS_AUTH_PROVIDER"
     )

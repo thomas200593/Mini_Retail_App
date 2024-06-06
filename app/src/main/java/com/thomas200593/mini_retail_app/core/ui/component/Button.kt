@@ -31,10 +31,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.credentials.ClearCredentialStateRequest
 import androidx.credentials.CredentialManager
 import androidx.credentials.GetCredentialRequest
-import androidx.credentials.exceptions.ClearCredentialException
 import androidx.credentials.exceptions.GetCredentialCancellationException
 import androidx.credentials.exceptions.GetCredentialException
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
@@ -43,16 +41,16 @@ import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingExcept
 import com.thomas200593.mini_retail_app.BuildConfig
 import com.thomas200593.mini_retail_app.core.ui.common.Icons.Google.google_logo
 import com.thomas200593.mini_retail_app.core.util.JWTHelper
+import com.thomas200593.mini_retail_app.core.util.JWTHelper.GoogleOAuth2.validateToken
 import com.thomas200593.mini_retail_app.features.auth.entity.AuthSessionToken
+import com.thomas200593.mini_retail_app.features.auth.entity.OAuthProvider
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 object Button {
     object Google{
         @Composable
-        fun SignInWithGoogleButton(
+        fun SignInWithGoogle(
             modifier: Modifier = Modifier,
             primaryText: String = "Sign in with Google",
             secondaryText: String = "Please wait...",
@@ -115,7 +113,7 @@ object Button {
             }
         }
 
-        suspend fun handleSignInWithGoogleButton(
+        suspend fun handleSignIn(
             activityContext: Activity,
             coroutineScope: CoroutineScope,
             onResultReceived: (AuthSessionToken) -> Unit,
@@ -126,7 +124,7 @@ object Button {
                 val credentialManager = CredentialManager.create(activityContext)
                 val googleIdOptions = GetGoogleIdOption.Builder()
                     .setFilterByAuthorizedAccounts(false)
-                    .setNonce(JWTHelper.generateGoogleOAuthTokenNonce())
+                    .setNonce(JWTHelper.GoogleOAuth2.generateTokenNonce())
                     .setAutoSelectEnabled(false)
                     .setServerClientId(BuildConfig.GOOGLE_AUTH_WEB_ID)
                     .build()
@@ -134,18 +132,18 @@ object Button {
                     .addCredentialOption(googleIdOptions)
                     .build()
                 try{
-                    val result = credentialManager.getCredential(
-                        context = activityContext,
-                        request = credentialRequest
-                    )
+                    val result = credentialManager
+                        .getCredential(context = activityContext, request = credentialRequest)
                     val credential = result.credential
                     val googleIdCredential = GoogleIdTokenCredential.createFrom(credential.data)
-                    val authProvider = "GOOGLE_OAUTH2_TOKEN"
+                    val authProvider = OAuthProvider.GOOGLE
                     val idToken = googleIdCredential.idToken
                     val authSessionToken = AuthSessionToken(authProvider, idToken)
-                    if(JWTHelper.validateJWTToken(authSessionToken.idToken.orEmpty())){
+                    if(validateToken(authSessionToken)){
                         onResultReceived(authSessionToken)
-                    }else{ onError(Throwable("Session Expired.")) }
+                    }else{
+                        onError(Throwable("Token Validation Failed."))
+                    }
                 }
                 catch (e: GetCredentialException){ onError(e) }
                 catch (e: GoogleIdTokenParsingException){ onError(e) }

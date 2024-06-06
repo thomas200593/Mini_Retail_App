@@ -15,6 +15,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -23,11 +24,11 @@ class AuthViewModel @Inject constructor(
     @Dispatcher(AppDispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
-    private val _authSessionToken: MutableState<RequestState<AuthSessionToken>> = mutableStateOf(Idle)
-    val authSessionToken = _authSessionToken
+    private val _authSessionTokenState: MutableState<RequestState<AuthSessionToken>> = mutableStateOf(Idle)
+    val authSessionTokenState = _authSessionTokenState
 
-    private val _authSIWGButtonState = MutableStateFlow(false)
-    val authSIWGButtonState = _authSIWGButtonState
+    private val _stateSIWGButton = MutableStateFlow(false)
+    val stateSIWGButton = _stateSIWGButton
 
     fun onOpen() = viewModelScope.launch(ioDispatcher) {
         clearAuthSessionToken()
@@ -36,11 +37,11 @@ class AuthViewModel @Inject constructor(
     fun verifyAndSaveAuthSession(authSessionToken: AuthSessionToken){
         updateAuthSIWGButtonState(true)
         viewModelScope.launch(ioDispatcher){
-            _authSessionToken.value = Loading
+            _authSessionTokenState.value = Loading
             if(authRepository.validateAuthSessionToken(authSessionToken)){
                 viewModelScope.launch {
                     authRepository.saveAuthSessionToken(authSessionToken)
-                    _authSessionToken.value = RequestState.Success(authSessionToken)
+                    _authSessionTokenState.value = RequestState.Success(authSessionToken)
                 }
             }else{
                 viewModelScope.launch {
@@ -51,11 +52,16 @@ class AuthViewModel @Inject constructor(
     }
 
     fun updateAuthSIWGButtonState(authState: Boolean) {
-        _authSIWGButtonState.value = authState
+        _stateSIWGButton.value = authState
     }
 
     fun clearAuthSessionToken() = viewModelScope.launch(ioDispatcher) {
         updateAuthSIWGButtonState(false)
         authRepository.clearAuthSessionToken()
     }
+
+    suspend fun mapAuthSessionTokenToUserData(authSessionToken: AuthSessionToken) =
+        withContext(ioDispatcher){
+            authRepository.mapAuthSessionTokenToUserData(authSessionToken)
+        }
 }
