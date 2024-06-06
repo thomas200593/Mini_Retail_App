@@ -9,7 +9,9 @@ import com.thomas200593.mini_retail_app.features.auth.ui.AuthScreen
 import com.thomas200593.mini_retail_app.main_app.navigation.NavigationGraphs
 import com.thomas200593.mini_retail_app.main_app.navigation.ScreenGraphs
 
-fun NavGraphBuilder.authNavGraph(){
+fun NavGraphBuilder.authNavGraph(
+    onNavigateToInitial: () -> Unit
+){
     navigation(
         route = NavigationGraphs.G_AUTH,
         startDestination = ScreenGraphs.Auth.route
@@ -17,7 +19,9 @@ fun NavGraphBuilder.authNavGraph(){
         composable(
             route = ScreenGraphs.Auth.route
         ){
-            AuthScreen()
+            AuthScreen(
+                onNavigateToInitial = onNavigateToInitial
+            )
         }
     }
 }

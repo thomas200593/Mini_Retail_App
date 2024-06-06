@@ -6,7 +6,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.thomas200593.mini_retail_app.features.auth.navigation.authNavGraph
 import com.thomas200593.mini_retail_app.features.initial.ui.InitialScreen
-import com.thomas200593.mini_retail_app.features.onboarding.navigation.navigateToOnboardingScreen
 import com.thomas200593.mini_retail_app.features.onboarding.navigation.onBoardingNavGraph
 import com.thomas200593.mini_retail_app.main_app.navigation.NavigationGraphs.G_INITIAL
 import com.thomas200593.mini_retail_app.main_app.navigation.ScreenGraphs
@@ -34,7 +33,9 @@ fun NavGraphBuilder.initialNavGraph(
         onBoardingNavGraph(
             onOnboardingFinished = { appState.navController.navigateToInitial() }
         )
-        authNavGraph()
+        authNavGraph(
+            onNavigateToInitial = { appState.navController.navigateToInitial() }
+        )
     }
 }
 

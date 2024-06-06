@@ -49,7 +49,8 @@ private const val TAG = "AuthScreen"
 
 @Composable
 fun AuthScreen(
-    viewModel: AuthViewModel = hiltViewModel()
+    viewModel: AuthViewModel = hiltViewModel(),
+    onNavigateToInitial: () -> Unit
 ){
     Timber.d("Called : %s", TAG)
     val activityContext = (LocalContext.current as Activity)
@@ -67,9 +68,11 @@ fun AuthScreen(
                 val authSessionToken = (authSessionTokenState as RequestState.Success).data
                 if(authSessionToken != null){
                     val userData = viewModel.mapAuthSessionTokenToUserData(authSessionToken)
-                    val email = userData?.oAuth2UserMetadata as OAuth2UserMetadata.Google
-                    Toast.makeText(activityContext, "Logged in using: $email", Toast.LENGTH_LONG).show()
-                    //TODO NAVIGATE TO DASHBOARD
+                    val googleUserData = userData?.oAuth2UserMetadata as OAuth2UserMetadata.Google
+                    val email = googleUserData.email
+                    Toast.makeText(activityContext, "Welcome $email", Toast.LENGTH_LONG).show()
+                    //Navigate to Initial
+                    onNavigateToInitial()
                 }else{
                     viewModel.clearAuthSessionToken()
                 }
