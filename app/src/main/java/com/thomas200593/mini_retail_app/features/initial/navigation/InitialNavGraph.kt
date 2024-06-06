@@ -23,7 +23,6 @@ fun NavGraphBuilder.initialNavGraph(
         composable(
             route = ScreenGraphs.Initial.route
         ){
-            //TODO Fix This
             InitialScreen(
                 //onNavigateToDashboard
                 onNavigateToOnboardingScreen = onNavigateToOnboardingScreen,

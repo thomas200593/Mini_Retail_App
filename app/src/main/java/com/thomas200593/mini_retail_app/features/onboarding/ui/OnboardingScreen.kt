@@ -50,7 +50,11 @@ fun OnboardingScreen(
     val currentPage = remember { mutableIntStateOf(0) }
     val onboardingFinished by viewModel.onboardingFinished.collectAsStateWithLifecycle()
 
-    LaunchedEffect(onboardingFinished) { if(onboardingFinished) onOnboardingFinished() }
+    LaunchedEffect(onboardingFinished) {
+        if(onboardingFinished) {
+            onOnboardingFinished()
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -58,17 +62,23 @@ fun OnboardingScreen(
             .testTag(Onboarding.Tags.TAG_ONBOARD_SCREEN)
     ) {
         OnboardingImageView(
-            modifier = Modifier.weight(1.0f).fillMaxWidth(),
+            modifier = Modifier
+                .weight(1.0f)
+                .fillMaxWidth(),
             currentPage = onboardPages[currentPage.intValue]
         )
 
         OnboardingDetails(
-            modifier = Modifier.weight(1.0f).padding(16.dp),
+            modifier = Modifier
+                .weight(1.0f)
+                .padding(16.dp),
             currentPage = onboardPages[currentPage.intValue]
         )
 
         OnBoardNavButton(
-            modifier = Modifier.align(Alignment.CenterHorizontally).padding(top = 16.dp),
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(top = 16.dp),
             currentPage = currentPage.intValue,
             noOfPages = onboardPages.size,
             onNextClicked = { currentPage.intValue++ },
