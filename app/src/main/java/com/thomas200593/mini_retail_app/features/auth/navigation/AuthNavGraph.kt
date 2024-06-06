@@ -5,6 +5,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.thomas200593.mini_retail_app.features.auth.ui.AuthScreen
+import com.thomas200593.mini_retail_app.features.dashboard.navigation.dashboardNavGraph
 import com.thomas200593.mini_retail_app.main_app.navigation.NavigationGraphs.G_AUTH
 import com.thomas200593.mini_retail_app.main_app.navigation.NavigationGraphs.G_INITIAL
 import com.thomas200593.mini_retail_app.main_app.navigation.ScreenGraphs
@@ -23,6 +24,8 @@ fun NavGraphBuilder.authNavGraph(
                 onNavigateToInitial = onNavigateToInitial
             )
         }
+
+        dashboardNavGraph()
     }
 }
 
@@ -33,7 +36,7 @@ fun NavController.navigateToAuthScreen(){
         launchSingleTop = true
         restoreState = true
         popUpTo(G_INITIAL){
-            inclusive
+            inclusive = true
         }
     }
 }

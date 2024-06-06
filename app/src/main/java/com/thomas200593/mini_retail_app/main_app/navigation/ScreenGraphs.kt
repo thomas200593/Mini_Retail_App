@@ -12,4 +12,7 @@ sealed class ScreenGraphs(
     data object Auth: ScreenGraphs(
         route = AppRoutes.APP_ROUTE_AUTH
     )
+    data object Dashboard: ScreenGraphs(
+        route = AppRoutes.APP_ROUTE_DASHBOARD
+    )
 }

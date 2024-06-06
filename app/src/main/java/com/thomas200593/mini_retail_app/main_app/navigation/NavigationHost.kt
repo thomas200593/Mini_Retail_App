@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import com.thomas200593.mini_retail_app.features.auth.navigation.navigateToAuthScreen
+import com.thomas200593.mini_retail_app.features.dashboard.navigation.navigateToDashboardScreen
 import com.thomas200593.mini_retail_app.features.initial.navigation.initialNavGraph
 import com.thomas200593.mini_retail_app.features.onboarding.navigation.navigateToOnboardingScreen
 import com.thomas200593.mini_retail_app.main_app.navigation.NavigationGraphs.G_INITIAL
@@ -26,7 +27,10 @@ fun NavigationHost(
         initialNavGraph(
             appState,
             onNavigateToOnboardingScreen = navController::navigateToOnboardingScreen,
-            onNavigateToAuthScreen = navController::navigateToAuthScreen
+            onNavigateToAuthScreen = navController::navigateToAuthScreen,
+            onNavigateToDashboardScreen = {
+                //TODO FIX THIS ROUTE
+            }
         )
     }
 }

@@ -15,6 +15,7 @@ fun NavGraphBuilder.initialNavGraph(
     appState: AppState,
     onNavigateToOnboardingScreen: () -> Unit,
     onNavigateToAuthScreen: () -> Unit,
+    onNavigateToDashboardScreen: () -> Unit
 ) {
     navigation(
         route = G_INITIAL,
@@ -24,9 +25,9 @@ fun NavGraphBuilder.initialNavGraph(
             route = ScreenGraphs.Initial.route
         ){
             InitialScreen(
-                //onNavigateToDashboard
                 onNavigateToOnboardingScreen = onNavigateToOnboardingScreen,
-                onNavigateToAuthScreen = onNavigateToAuthScreen
+                onNavigateToAuthScreen = onNavigateToAuthScreen,
+                onNavigateToDashboardScreen = onNavigateToDashboardScreen,
             )
         }
         onBoardingNavGraph(

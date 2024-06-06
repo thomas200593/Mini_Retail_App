@@ -4,8 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -21,9 +19,9 @@ import com.thomas200593.mini_retail_app.features.initial.ui.InitialUiState.Succe
 @Composable
 fun InitialScreen(
     viewModel: InitialViewModel = hiltViewModel(),
-    onNavigateToOnboardingScreen: () -> Unit = {},
-    onNavigateToAuthScreen: () -> Unit = {},
-    onNavigateToDashboardScreen: () -> Unit = {}
+    onNavigateToOnboardingScreen: () -> Unit,
+    onNavigateToAuthScreen: () -> Unit,
+    onNavigateToDashboardScreen: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -36,10 +34,10 @@ fun InitialScreen(
                 true -> {
                     when(shouldShowOnboarding){
                         Onboarding.SHOW -> {
-                            Text(text = "Valid Session, Go to Onboarding")
+                            LaunchedEffect(key1 = uiState) { onNavigateToOnboardingScreen() }
                         }
                         Onboarding.HIDE -> {
-                            Text(text = "Valid Session, Go to Dashboard")
+                            LaunchedEffect(key1 = uiState) { onNavigateToDashboardScreen() }
                         }
                     }
                 }

@@ -17,7 +17,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
 import com.thomas200593.mini_retail_app.core.design_system.util.NetworkMonitor
 import com.thomas200593.mini_retail_app.features.business.navigation.navigateToBusiness
-import com.thomas200593.mini_retail_app.features.dashboard.navigation.navigateToDashboard
+import com.thomas200593.mini_retail_app.features.dashboard.navigation.navigateToDashboardScreen
 import com.thomas200593.mini_retail_app.features.report_analysis.navigation.navigateToReportAnalysis
 import com.thomas200593.mini_retail_app.features.user_profile.navigation.navigateToUserProfile
 import com.thomas200593.mini_retail_app.main_app.navigation.NavigationGraphs
@@ -103,7 +103,7 @@ class AppState(
 
             when(topLevelDestination){
                 TopLevelDestination.DASHBOARD -> navController
-                    .navigateToDashboard(topLevelDestinationNavOptions)
+                    .navigateToDashboardScreen(topLevelDestinationNavOptions)
                 TopLevelDestination.BUSINESS -> navController
                     .navigateToBusiness(topLevelDestinationNavOptions)
                 TopLevelDestination.REPORT_ANALYSIS -> navController

@@ -71,7 +71,6 @@ fun AuthScreen(
                     val googleUserData = userData?.oAuth2UserMetadata as OAuth2UserMetadata.Google
                     val email = googleUserData.email
                     Toast.makeText(activityContext, "Welcome $email", Toast.LENGTH_LONG).show()
-                    //Navigate to Initial
                     onNavigateToInitial()
                 }else{
                     viewModel.clearAuthSessionToken()
