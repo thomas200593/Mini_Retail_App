@@ -2,11 +2,14 @@ package com.thomas200593.mini_retail_app.main_app.ui
 
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.Stable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.util.trace
 import androidx.navigation.NavDestination
+import androidx.navigation.NavGraph
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -46,10 +49,10 @@ fun rememberAppState(
 
 @Stable
 class AppState(
-    val navController: NavHostController,
-    coroutineScope: CoroutineScope,
     val windowsSizeClass: WindowSizeClass,
-    networkMonitor: NetworkMonitor
+    networkMonitor: NetworkMonitor,
+    coroutineScope: CoroutineScope,
+    val navController: NavHostController,
 ) {
     val isNetworkOffline = networkMonitor.isNetworkOnline
         .map(Boolean::not)
@@ -63,6 +66,19 @@ class AppState(
         @Composable get() = navController
             .currentBackStackEntryAsState()
             .value?.destination
+
+    val currentRoute
+        get() = navController.currentDestination?.route
+
+    val windowsSizeTypeClass: MutableState<WindowSizeClass>
+        get() = mutableStateOf(windowsSizeClass)
+
+    private val NavGraph.startDestination: NavDestination?
+        get() = findNode(startDestinationId)
+
+    private tailrec fun findStartDestination(graph: NavDestination): NavDestination {
+        return if (graph is NavGraph) findStartDestination(graph.startDestination!!) else graph
+    }
 
     val currentTopLevelDestination: TopLevelDestination?
         @Composable get() = when(currentDestination?.route){
