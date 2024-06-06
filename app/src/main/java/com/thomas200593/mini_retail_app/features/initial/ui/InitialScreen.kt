@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -34,8 +35,12 @@ fun InitialScreen(
             when(isSessionValid){
                 true -> {
                     when(shouldShowOnboarding){
-                        Onboarding.SHOW -> { Text(text = "Valid Session, Go to Onboarding") }
-                        Onboarding.HIDE -> { Text(text = "Valid Session, Go to Dashboard") }
+                        Onboarding.SHOW -> {
+                            Text(text = "Valid Session, Go to Onboarding")
+                        }
+                        Onboarding.HIDE -> {
+                            Text(text = "Valid Session, Go to Dashboard")
+                        }
                     }
                 }
                 false -> {

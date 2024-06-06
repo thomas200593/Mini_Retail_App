@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.AppDispatchers
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatcher
-import com.thomas200593.mini_retail_app.core.util.JWTHelper
 import com.thomas200593.mini_retail_app.features.app_config.entity.Onboarding
 import com.thomas200593.mini_retail_app.features.app_config.repository.AppConfigRepository
 import com.thomas200593.mini_retail_app.features.auth.repository.AuthRepository
@@ -30,7 +29,7 @@ class InitialViewModel @Inject constructor(
         .combine(authRepository.authSessionToken){ currentConfig, authToken ->
             InitialUiState.Success(
                 shouldShowOnboarding = currentConfig.showOnboardingPages,
-                isSessionValid = JWTHelper.validateJWTToken(authToken.idToken.orEmpty())
+                isSessionValid = authRepository.validateAuthSessionToken(authToken)
             )
         }
         .onEach {

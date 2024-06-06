@@ -16,6 +16,7 @@ import androidx.compose.material3.MaterialTheme.shapes
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -25,6 +26,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -32,9 +34,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.thomas200593.mini_retail_app.BuildConfig
 import com.thomas200593.mini_retail_app.R
+import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
 import com.thomas200593.mini_retail_app.core.ui.common.Icons
 import com.thomas200593.mini_retail_app.core.ui.common.Icons.Setting.settings
-import com.thomas200593.mini_retail_app.core.ui.component.Button.SignInWithGoogleButton
+import com.thomas200593.mini_retail_app.core.ui.component.Button.Google.SignInWithGoogleButton
+import com.thomas200593.mini_retail_app.core.ui.component.Button.Google.handleSignInWithGoogleButton
+import com.thomas200593.mini_retail_app.features.auth.entity.AuthSessionToken
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -47,35 +52,43 @@ fun AuthScreen(
     Timber.d("Called : %s", TAG)
     val activityContext = (LocalContext.current as Activity)
     val coroutineScope = rememberCoroutineScope()
-    val idToken by viewModel.idToken.collectAsStateWithLifecycle()
-    val authState by viewModel.authState.collectAsStateWithLifecycle()
+    val authSIWGButtonState by viewModel.authSIWGButtonState.collectAsStateWithLifecycle()
+    val session by viewModel.authSessionToken
+
+    LaunchedEffect(Unit) {
+        viewModel.onOpen()
+    }
+
+    LaunchedEffect(key1 = session) {
+        when(session){
+            is RequestState.Success -> {
+
+            }
+            else -> Unit
+        }
+    }
 
     ScreenContent(
-        authState = authState,
+        authSIWGButtonState = authSIWGButtonState,
         onSignInWithGoogleButton = {
             coroutineScope.launch {
-                viewModel.updateAuthState(true)
-            }
-            coroutineScope.launch {
-                startAuthWithGoogleForResult(
+                viewModel.updateAuthSIWGButtonState(true)
+                handleSignInWithGoogleButton(
                     activityContext = activityContext,
                     coroutineScope = coroutineScope,
                     onResultReceived = {
-                        viewModel.updateAuthState(true)
-                        viewModel.verifyTokenBackend(it)
+                        viewModel.verifyAndSaveAuthSession(it)
                     },
                     onError = {
-                        viewModel.updateAuthState(false)
-                        viewModel.errorToken(it)
+                        viewModel.clearAuthSessionToken()
                     },
                     onDialogDismissed = {
-                        viewModel.updateAuthState(false)
-                        viewModel.dismissToken(it)
+                        viewModel.clearAuthSessionToken()
                     }
                 )
             }
         },
-        idToken = idToken
+        session = session
     )
 }
 
@@ -83,9 +96,9 @@ fun AuthScreen(
 private fun ScreenContent(
     modifier: Modifier = Modifier,
     onSignInWithGoogleButton: () -> Unit,
-    idToken: String,
-    authState: Boolean
-){
+    authSIWGButtonState: Boolean,
+    session: RequestState<AuthSessionToken>,
+    ){
     Surface(
         modifier = modifier
     ) {
@@ -202,10 +215,8 @@ private fun ScreenContent(
                 shape = shapes.medium,
             ) {
                 SignInWithGoogleButton(
-                    onClick = {
-                        onSignInWithGoogleButton()
-                    },
-                    btnLoadingState = authState
+                    onClick = { onSignInWithGoogleButton() },
+                    btnLoadingState = authSIWGButtonState
                 )
             }
             //.Auth Button
@@ -221,12 +232,13 @@ private fun ScreenContent(
                     }
             ){
                 Text(
-                    text = idToken,
+                    text = session.toString(),
                     modifier = Modifier.padding(12.dp),
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.onTertiaryContainer,
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+                    overflow = TextOverflow.Ellipsis,
+                    textAlign = TextAlign.Center
                 )
             }
             //.Terms and Conditions

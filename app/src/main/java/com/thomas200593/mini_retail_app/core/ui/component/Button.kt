@@ -1,5 +1,6 @@
 package com.thomas200593.mini_retail_app.core.ui.component
 
+import android.app.Activity
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
@@ -30,71 +31,125 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.credentials.ClearCredentialStateRequest
+import androidx.credentials.CredentialManager
+import androidx.credentials.GetCredentialRequest
+import androidx.credentials.exceptions.ClearCredentialException
+import androidx.credentials.exceptions.GetCredentialCancellationException
+import androidx.credentials.exceptions.GetCredentialException
+import com.google.android.libraries.identity.googleid.GetGoogleIdOption
+import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
+import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
+import com.thomas200593.mini_retail_app.BuildConfig
 import com.thomas200593.mini_retail_app.core.ui.common.Icons.Google.google_logo
+import com.thomas200593.mini_retail_app.core.util.JWTHelper
+import com.thomas200593.mini_retail_app.features.auth.entity.AuthSessionToken
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 object Button {
-    @Composable
-    fun SignInWithGoogleButton(
-        modifier: Modifier = Modifier,
-        primaryText: String = "Sign in with Google",
-        secondaryText: String = "Please wait...",
-        googleIcon: Int = google_logo,
-        btnLoadingState: Boolean = false,
-        btnShape: Shape = MaterialTheme.shapes.medium,
-        btnBorderStrokeWidth: Dp = 1.dp,
-        btnBorderColor: Color = Color(0xFF747775),
-        btnColor: Color = MaterialTheme.colorScheme.surface,
-        btnShadowElevation: Dp = 9.dp,
-        progressIndicatorColor: Color = MaterialTheme.colorScheme.primary,
-        onClick: () -> Unit
-    ){
-        var btnText by remember { mutableStateOf(primaryText) }
-        LaunchedEffect(btnLoadingState) {
-            btnText = if(btnLoadingState) secondaryText else primaryText
-        }
-        Surface(
-            modifier = modifier
-                .clickable(
-                    enabled = !btnLoadingState,
-                    onClick = onClick
-                ),
-            shape = btnShape,
-            border = BorderStroke(width = btnBorderStrokeWidth, color = btnBorderColor),
-            color = btnColor,
-            shadowElevation = btnShadowElevation
-        ) {
-            Row(
-                modifier = Modifier
-                    .padding(10.dp)
-                    .animateContentSize(
-                        animationSpec = tween(
-                            durationMillis = 300,
-                            easing = LinearOutSlowInEasing
-                        )
+    object Google{
+        @Composable
+        fun SignInWithGoogleButton(
+            modifier: Modifier = Modifier,
+            primaryText: String = "Sign in with Google",
+            secondaryText: String = "Please wait...",
+            googleIcon: Int = google_logo,
+            btnLoadingState: Boolean = false,
+            btnShape: Shape = MaterialTheme.shapes.medium,
+            btnBorderStrokeWidth: Dp = 1.dp,
+            btnBorderColor: Color = Color(0xFF747775),
+            btnColor: Color = MaterialTheme.colorScheme.surface,
+            btnShadowElevation: Dp = 9.dp,
+            progressIndicatorColor: Color = MaterialTheme.colorScheme.primary,
+            onClick: () -> Unit
+        ){
+            var btnText by remember { mutableStateOf(primaryText) }
+            LaunchedEffect(btnLoadingState) { btnText = if(btnLoadingState) secondaryText else primaryText }
+            Surface(
+                modifier = modifier
+                    .clickable(
+                        enabled = !btnLoadingState,
+                        onClick = onClick
                     ),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ){
-                Icon(
-                    imageVector = ImageVector.vectorResource(id = googleIcon),
-                    contentDescription = null,
+                shape = btnShape,
+                border = BorderStroke(width = btnBorderStrokeWidth, color = btnBorderColor),
+                color = btnColor,
+                shadowElevation = btnShadowElevation
+            ) {
+                Row(
                     modifier = Modifier
-                        .size(20.dp)
-                        .padding(start = 2.dp),
-                    tint = Color.Unspecified
-                )
-                Text(
-                    text = btnText,
-                    modifier = Modifier.padding(start = 10.dp, end = 2.dp)
-                )
-                if(btnLoadingState){
-                    Spacer(modifier = Modifier.width(16.dp))
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(16.dp),
-                        strokeWidth = 2.dp,
-                        color = progressIndicatorColor
+                        .padding(10.dp)
+                        .animateContentSize(
+                            animationSpec = tween(
+                                durationMillis = 300,
+                                easing = LinearOutSlowInEasing
+                            )
+                        ),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ){
+                    Icon(
+                        imageVector = ImageVector.vectorResource(id = googleIcon),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(20.dp)
+                            .padding(start = 2.dp),
+                        tint = Color.Unspecified
                     )
+                    Text(
+                        text = btnText,
+                        modifier = Modifier.padding(start = 10.dp, end = 2.dp)
+                    )
+                    if(btnLoadingState){
+                        Spacer(modifier = Modifier.width(16.dp))
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(16.dp),
+                            strokeWidth = 2.dp,
+                            color = progressIndicatorColor
+                        )
+                    }
                 }
+            }
+        }
+
+        suspend fun handleSignInWithGoogleButton(
+            activityContext: Activity,
+            coroutineScope: CoroutineScope,
+            onResultReceived: (AuthSessionToken) -> Unit,
+            onError: (Throwable) -> Unit,
+            onDialogDismissed: (Throwable) -> Unit
+        ){
+            coroutineScope.launch {
+                val credentialManager = CredentialManager.create(activityContext)
+                val googleIdOptions = GetGoogleIdOption.Builder()
+                    .setFilterByAuthorizedAccounts(false)
+                    .setNonce(JWTHelper.generateGoogleOAuthTokenNonce())
+                    .setAutoSelectEnabled(false)
+                    .setServerClientId(BuildConfig.GOOGLE_AUTH_WEB_ID)
+                    .build()
+                val credentialRequest = GetCredentialRequest.Builder()
+                    .addCredentialOption(googleIdOptions)
+                    .build()
+                try{
+                    val result = credentialManager.getCredential(
+                        context = activityContext,
+                        request = credentialRequest
+                    )
+                    val credential = result.credential
+                    val googleIdCredential = GoogleIdTokenCredential.createFrom(credential.data)
+                    val authProvider = "GOOGLE_OAUTH2_TOKEN"
+                    val idToken = googleIdCredential.idToken
+                    val authSessionToken = AuthSessionToken(authProvider, idToken)
+                    if(JWTHelper.validateJWTToken(authSessionToken.idToken.orEmpty())){
+                        onResultReceived(authSessionToken)
+                    }else{ onError(Throwable("Session Expired.")) }
+                }
+                catch (e: GetCredentialException){ onError(e) }
+                catch (e: GoogleIdTokenParsingException){ onError(e) }
+                catch (e: GetCredentialCancellationException){ onDialogDismissed(e) }
             }
         }
     }
