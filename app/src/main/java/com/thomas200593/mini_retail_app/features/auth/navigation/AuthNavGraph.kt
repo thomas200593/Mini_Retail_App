@@ -5,7 +5,6 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.thomas200593.mini_retail_app.features.auth.ui.AuthScreen
-import com.thomas200593.mini_retail_app.main_app.navigation.NavigationGraphs
 import com.thomas200593.mini_retail_app.main_app.navigation.NavigationGraphs.G_AUTH
 import com.thomas200593.mini_retail_app.main_app.navigation.NavigationGraphs.G_INITIAL
 import com.thomas200593.mini_retail_app.main_app.navigation.ScreenGraphs
@@ -14,7 +13,7 @@ fun NavGraphBuilder.authNavGraph(
     onNavigateToInitial: () -> Unit
 ){
     navigation(
-        route = NavigationGraphs.G_AUTH,
+        route = G_AUTH,
         startDestination = ScreenGraphs.Auth.route
     ){
         composable(
@@ -28,13 +27,6 @@ fun NavGraphBuilder.authNavGraph(
 }
 
 fun NavController.navigateToAuthScreen(){
-//    this.navigate(
-//        route = NavigationGraphs.G_AUTH,
-//        navOptions = NavOptions.Builder()
-//            .setLaunchSingleTop(true)
-//            .setRestoreState(true)
-//            .build()
-//    )
     this.navigate(
         route = G_AUTH
     ){

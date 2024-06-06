@@ -43,8 +43,10 @@ fun NavController.navigateToInitial(){
     this.navigate(
         route = G_INITIAL
     ){
+        launchSingleTop = true
+        restoreState = true
         popUpTo(G_INITIAL){
-            inclusive = true
+            inclusive
         }
     }
 }
