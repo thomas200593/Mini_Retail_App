@@ -25,6 +25,7 @@ import timber.log.Timber
 private const val TAG = "AppBar"
 object AppBar {
     private class TopAppBarViewModel: ViewModel(){
+        var navIconState by mutableStateOf(null as (@Composable () -> Unit)?, referentialEqualityPolicy() )
         var titleState by mutableStateOf(null as (@Composable () -> Unit)?, referentialEqualityPolicy())
         var actionState by mutableStateOf(null as (@Composable RowScope.() -> Unit)?, referentialEqualityPolicy())
     }
@@ -50,6 +51,15 @@ object AppBar {
     }
 
     @Composable
+    fun ProvideTopAppBarNavigationIcon(navIcon: @Composable () -> Unit){
+        Timber.d("Called %s.ProvideNavigationIcon()", TAG)
+        val actionViewModel = viewModel(initializer = { TopAppBarViewModel() })
+        SideEffect {
+            actionViewModel.navIconState = navIcon
+        }
+    }
+
+    @Composable
     fun RowScope.TopAppBarAction(navBackStackEntry: NavBackStackEntry?){
         Timber.d("Called %s.TopAppBarAction()", TAG)
         val stateHolder = rememberSaveableStateHolder()
@@ -65,6 +75,15 @@ object AppBar {
         navBackStackEntry?.LocalOwnersProvider(stateHolder) {
             val actionViewModel = viewModel(initializer = { TopAppBarViewModel() })
             actionViewModel.titleState?.let { it() }
+        }
+    }
+
+    @Composable
+    fun TopAppBarNavIcon(navBackStackEntry: NavBackStackEntry?){
+        val stateHolder = rememberSaveableStateHolder()
+        navBackStackEntry?.LocalOwnersProvider(stateHolder){
+            val actionViewModel = viewModel(initializer = { TopAppBarViewModel() })
+            actionViewModel.navIconState?.let { it() }
         }
     }
 
@@ -86,19 +105,8 @@ object AppBar {
         )
         TopAppBar(
             modifier = modifier,
-            navigationIcon =
-            {
-            //TODO MAKE IT DYNAMIC
-                /*val backPressDispatcher = LocalOnBackPressedDispatcherOwner.current
-                IconButton(
-                    onClick = { backPressDispatcher?.onBackPressedDispatcher?.onBackPressed() },
-                    content = {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                            contentDescription = "arrowBack"
-                        )
-                    }
-                )*/
+            navigationIcon = {
+                TopAppBarNavIcon(currentContentBackStackEntry)
             },
             title = {
                 TopAppBarTitle(currentContentBackStackEntry)
