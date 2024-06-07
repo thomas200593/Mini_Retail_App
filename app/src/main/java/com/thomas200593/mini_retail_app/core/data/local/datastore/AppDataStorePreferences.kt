@@ -57,6 +57,12 @@ class AppDataStorePreferences @Inject constructor(
             )
         }
 
+    suspend fun hideOnboarding() = withContext(ioDispatcher){
+        datastore.edit {
+            it[dsAppShouldShowOnboardingPages] = HIDE.name
+        }
+    }
+
     val authSessionToken = datastore.data
         .flowOn(ioDispatcher)
         .map { data ->
@@ -67,12 +73,6 @@ class AppDataStorePreferences @Inject constructor(
                 idToken = data[dsAuthSessionToken]
             )
         }
-
-    suspend fun hideOnboarding() = withContext(ioDispatcher){
-        datastore.edit {
-            it[dsAppShouldShowOnboardingPages] = HIDE.name
-        }
-    }
 
     suspend fun clearAuthSessionToken() = withContext((ioDispatcher)){
         datastore.edit {

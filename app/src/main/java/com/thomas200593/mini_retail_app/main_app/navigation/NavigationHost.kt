@@ -2,12 +2,12 @@ package com.thomas200593.mini_retail_app.main_app.navigation
 
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
+import androidx.navigation.NavOptions
 import androidx.navigation.compose.NavHost
-import com.thomas200593.mini_retail_app.features.auth.navigation.navigateToAuthScreen
-import com.thomas200593.mini_retail_app.features.dashboard.navigation.navigateToDashboardScreen
+import com.thomas200593.mini_retail_app.features.auth.navigation.navigateToAuth
+import com.thomas200593.mini_retail_app.features.dashboard.navigation.navigateToDashboard
 import com.thomas200593.mini_retail_app.features.initial.navigation.initialNavGraph
-import com.thomas200593.mini_retail_app.features.onboarding.navigation.navigateToOnboardingScreen
+import com.thomas200593.mini_retail_app.features.onboarding.navigation.navigateToOnboarding
 import com.thomas200593.mini_retail_app.main_app.navigation.NavigationGraphs.G_INITIAL
 import com.thomas200593.mini_retail_app.main_app.navigation.NavigationGraphs.G_ROOT
 import com.thomas200593.mini_retail_app.main_app.ui.AppState
@@ -15,8 +15,7 @@ import com.thomas200593.mini_retail_app.main_app.ui.AppState
 @Composable
 fun NavigationHost(
     appState: AppState,
-    onShowSnackBar: suspend (String, String, SnackbarDuration?) -> Boolean,
-    modifier: Modifier = Modifier
+    onShowSnackBar: suspend (String, String, SnackbarDuration?) -> Boolean
 ) {
     val navController = appState.navController
     NavHost(
@@ -26,10 +25,17 @@ fun NavigationHost(
     ){
         initialNavGraph(
             appState,
-            onNavigateToOnboardingScreen = navController::navigateToOnboardingScreen,
-            onNavigateToAuthScreen = navController::navigateToAuthScreen,
-            onNavigateToDashboardScreen = {
-                //TODO FIX THIS ROUTE
+            onNavigateToOnboarding = navController::navigateToOnboarding,
+            onNavigateToAuth = navController::navigateToAuth,
+            onNavigateToDashboard = {
+                navController
+                    .navigateToDashboard(
+                        navOptions = NavOptions.Builder()
+                            .setPopUpTo(route = G_INITIAL, inclusive = true, saveState = true)
+                            .setLaunchSingleTop(true)
+                            .setRestoreState(true)
+                            .build()
+                    )
             }
         )
     }

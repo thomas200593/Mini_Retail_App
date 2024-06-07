@@ -3,6 +3,7 @@ package com.thomas200593.mini_retail_app.features.auth.ui
 import android.app.Activity
 import android.widget.Toast
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -50,7 +51,8 @@ private const val TAG = "AuthScreen"
 @Composable
 fun AuthScreen(
     viewModel: AuthViewModel = hiltViewModel(),
-    onNavigateToInitial: () -> Unit
+    onNavigateToInitial: () -> Unit,
+    onNavigateToAppConfig: () -> Unit,
 ){
     Timber.d("Called : %s", TAG)
     val activityContext = (LocalContext.current as Activity)
@@ -82,6 +84,7 @@ fun AuthScreen(
 
     ScreenContent(
         stateSIWGButton = stateSIWGButton,
+        onNavigateToAppConfigScreen = onNavigateToAppConfig,
         onSignInWithGoogleButton = {
             coroutineScope.launch {
                 viewModel.updateAuthSIWGButtonState(true)
@@ -107,10 +110,11 @@ fun AuthScreen(
 @Composable
 private fun ScreenContent(
     modifier: Modifier = Modifier,
+    onNavigateToAppConfigScreen: () -> Unit,
     onSignInWithGoogleButton: () -> Unit,
     stateSIWGButton: Boolean,
-    authSessionTokenState: RequestState<AuthSessionToken>,
-    ){
+    authSessionTokenState: RequestState<AuthSessionToken>
+){
     Surface(
         modifier = modifier
     ) {
@@ -139,7 +143,10 @@ private fun ScreenContent(
                     .constrainAs(btnConf) {
                         start.linkTo(startGuideline)
                         top.linkTo(topGuideline)
-                    },
+                    }
+                    .clickable(
+                        onClick = { onNavigateToAppConfigScreen() },
+                    ),
                 tint = MaterialTheme.colorScheme.onSurface
             )
             //.Config Button

@@ -27,7 +27,7 @@ fun NavGraphBuilder.onBoardingNavGraph(
     }
 }
 
-fun NavController.navigateToOnboardingScreen(){
+fun NavController.navigateToOnboarding(){
     this.navigate(
         route = G_ONBOARDING
     ){

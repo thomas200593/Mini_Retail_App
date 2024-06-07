@@ -13,12 +13,12 @@ import javax.inject.Inject
 class OnboardingViewModel @Inject constructor(
     private val onboardingRepository: OnboardingRepository
 ): ViewModel(){
-    private val _onboardingFinished: MutableStateFlow<Boolean> = MutableStateFlow(false)
-    val onboardingFinished: StateFlow<Boolean> = _onboardingFinished
+    private val _isOnboardingFinished: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val isOnboardingFinished: StateFlow<Boolean> = _isOnboardingFinished
 
     suspend fun hideOnboarding() = viewModelScope.launch {
         onboardingRepository.hideOnboarding().also {
-            _onboardingFinished.value = true
+            _isOnboardingFinished.value = true
         }
     }
 }

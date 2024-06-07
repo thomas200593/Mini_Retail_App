@@ -24,7 +24,7 @@ fun NavGraphBuilder.dashboardNavGraph(){
     }
 }
 
-fun NavController.navigateToDashboardScreen(navOptions: NavOptions) {
+fun NavController.navigateToDashboard(navOptions: NavOptions) {
     this.navigate(
         route = G_DASHBOARD,
         navOptions

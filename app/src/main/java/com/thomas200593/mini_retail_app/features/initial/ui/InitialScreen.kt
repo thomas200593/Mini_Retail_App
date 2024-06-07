@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -19,9 +20,9 @@ import com.thomas200593.mini_retail_app.features.initial.ui.InitialUiState.Succe
 @Composable
 fun InitialScreen(
     viewModel: InitialViewModel = hiltViewModel(),
-    onNavigateToOnboardingScreen: () -> Unit,
+    onNavigateToOnboarding: () -> Unit,
     onNavigateToAuthScreen: () -> Unit,
-    onNavigateToDashboardScreen: () -> Unit
+    onNavigateToDashboard: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -34,17 +35,17 @@ fun InitialScreen(
                 true -> {
                     when(shouldShowOnboarding){
                         Onboarding.SHOW -> {
-                            LaunchedEffect(key1 = uiState) { onNavigateToOnboardingScreen() }
+                            LaunchedEffect(key1 = uiState) { onNavigateToOnboarding() }
                         }
                         Onboarding.HIDE -> {
-                            LaunchedEffect(key1 = uiState) { onNavigateToDashboardScreen() }
+                            LaunchedEffect(key1 = uiState) { onNavigateToDashboard() }
                         }
                     }
                 }
                 false -> {
                     when(shouldShowOnboarding){
                         Onboarding.SHOW -> {
-                            LaunchedEffect(key1 = uiState) { onNavigateToOnboardingScreen() }
+                            LaunchedEffect(key1 = uiState) { onNavigateToOnboarding() }
                         }
                         Onboarding.HIDE -> {
                             LaunchedEffect(key1 = uiState) { onNavigateToAuthScreen() }

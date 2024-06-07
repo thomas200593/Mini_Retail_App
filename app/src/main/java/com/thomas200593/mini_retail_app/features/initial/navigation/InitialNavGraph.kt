@@ -13,9 +13,9 @@ import com.thomas200593.mini_retail_app.main_app.ui.AppState
 
 fun NavGraphBuilder.initialNavGraph(
     appState: AppState,
-    onNavigateToOnboardingScreen: () -> Unit,
-    onNavigateToAuthScreen: () -> Unit,
-    onNavigateToDashboardScreen: () -> Unit
+    onNavigateToOnboarding: () -> Unit,
+    onNavigateToAuth: () -> Unit,
+    onNavigateToDashboard: () -> Unit
 ) {
     navigation(
         route = G_INITIAL,
@@ -25,16 +25,17 @@ fun NavGraphBuilder.initialNavGraph(
             route = ScreenGraphs.Initial.route
         ){
             InitialScreen(
-                onNavigateToOnboardingScreen = onNavigateToOnboardingScreen,
-                onNavigateToAuthScreen = onNavigateToAuthScreen,
-                onNavigateToDashboardScreen = onNavigateToDashboardScreen,
+                onNavigateToOnboarding = onNavigateToOnboarding,
+                onNavigateToAuthScreen = onNavigateToAuth,
+                onNavigateToDashboard = onNavigateToDashboard
             )
         }
         onBoardingNavGraph(
             onOnboardingFinished = { appState.navController.navigateToInitial() }
         )
         authNavGraph(
-            onNavigateToInitial = { appState.navController.navigateToInitial() }
+            onNavigateToInitial = { appState.navController.navigateToInitial() },
+            appState = appState
         )
     }
 }
@@ -46,7 +47,7 @@ fun NavController.navigateToInitial(){
         launchSingleTop = true
         restoreState = true
         popUpTo(G_INITIAL){
-            inclusive
+            inclusive = true
         }
     }
 }

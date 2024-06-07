@@ -48,10 +48,10 @@ fun OnboardingScreen(
     val scope = rememberCoroutineScope()
     val onboardPages = Onboarding.pageList
     val currentPage = remember { mutableIntStateOf(0) }
-    val onboardingFinished by viewModel.onboardingFinished.collectAsStateWithLifecycle()
+    val isOnboardingFinished by viewModel.isOnboardingFinished.collectAsStateWithLifecycle()
 
-    LaunchedEffect(onboardingFinished) {
-        if(onboardingFinished) {
+    LaunchedEffect(isOnboardingFinished) {
+        if(isOnboardingFinished) {
             onOnboardingFinished()
         }
     }

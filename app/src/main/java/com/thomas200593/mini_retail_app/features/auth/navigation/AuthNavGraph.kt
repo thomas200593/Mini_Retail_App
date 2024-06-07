@@ -4,14 +4,18 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import com.thomas200593.mini_retail_app.features.app_config.navigation.appConfigNavGraph
+import com.thomas200593.mini_retail_app.features.app_config.navigation.navigateToAppConfig
 import com.thomas200593.mini_retail_app.features.auth.ui.AuthScreen
 import com.thomas200593.mini_retail_app.features.dashboard.navigation.dashboardNavGraph
 import com.thomas200593.mini_retail_app.main_app.navigation.NavigationGraphs.G_AUTH
 import com.thomas200593.mini_retail_app.main_app.navigation.NavigationGraphs.G_INITIAL
 import com.thomas200593.mini_retail_app.main_app.navigation.ScreenGraphs
+import com.thomas200593.mini_retail_app.main_app.ui.AppState
 
 fun NavGraphBuilder.authNavGraph(
-    onNavigateToInitial: () -> Unit
+    onNavigateToInitial: () -> Unit,
+    appState: AppState
 ){
     navigation(
         route = G_AUTH,
@@ -21,15 +25,16 @@ fun NavGraphBuilder.authNavGraph(
             route = ScreenGraphs.Auth.route
         ){
             AuthScreen(
-                onNavigateToInitial = onNavigateToInitial
+                onNavigateToInitial = onNavigateToInitial,
+                onNavigateToAppConfig = { appState.navController.navigateToAppConfig() }
             )
         }
-
+        appConfigNavGraph(appState = appState)
         dashboardNavGraph()
     }
 }
 
-fun NavController.navigateToAuthScreen(){
+fun NavController.navigateToAuth(){
     this.navigate(
         route = G_AUTH
     ){
