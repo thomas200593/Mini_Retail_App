@@ -88,8 +88,7 @@ internal fun AppScreen(
                     )
                 }
             )
-        },
-        bottomBar = {}
+        }
     )
 }
 
