@@ -19,7 +19,7 @@ import com.thomas200593.mini_retail_app.features.app_config.entity.DynamicColor
 import com.thomas200593.mini_retail_app.features.app_config.entity.Font
 import com.thomas200593.mini_retail_app.features.app_config.entity.Font.MEDIUM
 import com.thomas200593.mini_retail_app.features.app_config.entity.Theme
-import com.thomas200593.mini_retail_app.main_app.MainActivityUiState
+import com.thomas200593.mini_retail_app.app.MainActivityUiState
 
 object Themes{
     private val lightScheme = Colors.lightScheme

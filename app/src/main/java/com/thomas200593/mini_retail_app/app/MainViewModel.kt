@@ -1,10 +1,10 @@
-package com.thomas200593.mini_retail_app.main_app
+package com.thomas200593.mini_retail_app.app
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.thomas200593.mini_retail_app.features.app_config.entity.CurrentAppConfig
 import com.thomas200593.mini_retail_app.features.app_config.repository.AppConfigRepository
-import com.thomas200593.mini_retail_app.main_app.MainActivityUiState.*
+import com.thomas200593.mini_retail_app.app.MainActivityUiState.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow

@@ -20,7 +20,7 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import com.thomas200593.mini_retail_app.core.ui.component.BottomBar.BottomNavigationBarDefaults.navigationContentColor
 import com.thomas200593.mini_retail_app.core.ui.component.BottomBar.BottomNavigationBarDefaults.navigationIndicatorColor
 import com.thomas200593.mini_retail_app.core.ui.component.BottomBar.BottomNavigationBarDefaults.navigationSelectedItemColor
-import com.thomas200593.mini_retail_app.main_app.navigation.TopLevelDestination
+import com.thomas200593.mini_retail_app.app.navigation.TopLevelDestination
 
 object BottomBar {
     @Composable

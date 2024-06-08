@@ -8,10 +8,10 @@ import com.thomas200593.mini_retail_app.features.app_config.navigation.appConfig
 import com.thomas200593.mini_retail_app.features.app_config.navigation.navigateToAppConfig
 import com.thomas200593.mini_retail_app.features.auth.ui.AuthScreen
 import com.thomas200593.mini_retail_app.features.dashboard.navigation.dashboardNavGraph
-import com.thomas200593.mini_retail_app.main_app.navigation.NavigationGraphs.G_AUTH
-import com.thomas200593.mini_retail_app.main_app.navigation.NavigationGraphs.G_INITIAL
-import com.thomas200593.mini_retail_app.main_app.navigation.ScreenGraphs
-import com.thomas200593.mini_retail_app.main_app.ui.AppState
+import com.thomas200593.mini_retail_app.app.navigation.NavigationGraphs.G_AUTH
+import com.thomas200593.mini_retail_app.app.navigation.NavigationGraphs.G_INITIAL
+import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs
+import com.thomas200593.mini_retail_app.app.ui.AppState
 
 fun NavGraphBuilder.authNavGraph(
     onNavigateToInitial: () -> Unit,

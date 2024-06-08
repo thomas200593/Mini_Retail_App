@@ -5,9 +5,9 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.thomas200593.mini_retail_app.features.app_config.ui.AppConfigScreen
-import com.thomas200593.mini_retail_app.main_app.navigation.NavigationGraphs
-import com.thomas200593.mini_retail_app.main_app.navigation.ScreenGraphs
-import com.thomas200593.mini_retail_app.main_app.ui.AppState
+import com.thomas200593.mini_retail_app.app.navigation.NavigationGraphs
+import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs
+import com.thomas200593.mini_retail_app.app.ui.AppState
 
 fun NavGraphBuilder.appConfigNavGraph(
     appState: AppState

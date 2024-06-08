@@ -1,4 +1,4 @@
-package com.thomas200593.mini_retail_app.main_app.ui
+package com.thomas200593.mini_retail_app.app.ui
 
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
@@ -27,7 +27,7 @@ import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.core.ui.component.BottomBar.BottomBar
-import com.thomas200593.mini_retail_app.main_app.navigation.NavigationHost
+import com.thomas200593.mini_retail_app.app.navigation.NavigationHost
 import timber.log.Timber
 
 private const val TAG = "AppScreen"

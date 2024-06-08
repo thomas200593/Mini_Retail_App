@@ -1,4 +1,4 @@
-package com.thomas200593.mini_retail_app.main_app
+package com.thomas200593.mini_retail_app.app
 
 import androidx.multidex.MultiDexApplication
 import com.thomas200593.mini_retail_app.core.util.TimberLog

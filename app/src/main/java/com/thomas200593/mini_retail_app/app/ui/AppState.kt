@@ -1,4 +1,4 @@
-package com.thomas200593.mini_retail_app.main_app.ui
+package com.thomas200593.mini_retail_app.app.ui
 
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
@@ -16,8 +16,8 @@ import com.thomas200593.mini_retail_app.features.business.navigation.navigateToB
 import com.thomas200593.mini_retail_app.features.dashboard.navigation.navigateToDashboard
 import com.thomas200593.mini_retail_app.features.report_analysis.navigation.navigateToReportAnalysis
 import com.thomas200593.mini_retail_app.features.user_profile.navigation.navigateToUserProfile
-import com.thomas200593.mini_retail_app.main_app.navigation.ScreenGraphs
-import com.thomas200593.mini_retail_app.main_app.navigation.TopLevelDestination
+import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs
+import com.thomas200593.mini_retail_app.app.navigation.TopLevelDestination
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map

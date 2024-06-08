@@ -6,8 +6,8 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.thomas200593.mini_retail_app.features.business.ui.BusinessScreen
-import com.thomas200593.mini_retail_app.main_app.navigation.NavigationGraphs.G_BUSINESS
-import com.thomas200593.mini_retail_app.main_app.navigation.ScreenGraphs
+import com.thomas200593.mini_retail_app.app.navigation.NavigationGraphs.G_BUSINESS
+import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs
 
 fun NavGraphBuilder.businessNavGraph(){
     navigation(

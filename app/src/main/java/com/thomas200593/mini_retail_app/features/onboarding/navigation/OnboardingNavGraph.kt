@@ -5,9 +5,9 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.thomas200593.mini_retail_app.features.onboarding.ui.OnboardingScreen
-import com.thomas200593.mini_retail_app.main_app.navigation.NavigationGraphs.G_INITIAL
-import com.thomas200593.mini_retail_app.main_app.navigation.NavigationGraphs.G_ONBOARDING
-import com.thomas200593.mini_retail_app.main_app.navigation.ScreenGraphs
+import com.thomas200593.mini_retail_app.app.navigation.NavigationGraphs.G_INITIAL
+import com.thomas200593.mini_retail_app.app.navigation.NavigationGraphs.G_ONBOARDING
+import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs
 
 
 fun NavGraphBuilder.onBoardingNavGraph(

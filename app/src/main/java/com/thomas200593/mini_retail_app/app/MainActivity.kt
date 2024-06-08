@@ -1,4 +1,4 @@
-package com.thomas200593.mini_retail_app.main_app
+package com.thomas200593.mini_retail_app.app
 
 import android.graphics.Color.TRANSPARENT
 import android.os.Bundle
@@ -26,10 +26,10 @@ import com.thomas200593.mini_retail_app.core.ui.common.Themes.calculateInitialFo
 import com.thomas200593.mini_retail_app.core.ui.common.Themes.shouldUseDarkTheme
 import com.thomas200593.mini_retail_app.core.ui.common.Themes.shouldUseDynamicColor
 import com.thomas200593.mini_retail_app.core.ui.component.Splashscreen.setupSplashscreen
-import com.thomas200593.mini_retail_app.main_app.MainActivityUiState.Loading
-import com.thomas200593.mini_retail_app.main_app.MainActivityUiState.Success
-import com.thomas200593.mini_retail_app.main_app.ui.AppScreen
-import com.thomas200593.mini_retail_app.main_app.ui.rememberAppState
+import com.thomas200593.mini_retail_app.app.MainActivityUiState.Loading
+import com.thomas200593.mini_retail_app.app.MainActivityUiState.Success
+import com.thomas200593.mini_retail_app.app.ui.AppScreen
+import com.thomas200593.mini_retail_app.app.ui.rememberAppState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach

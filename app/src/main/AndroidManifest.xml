@@ -9,7 +9,7 @@
         android:icon="@drawable/app_icon_48x48"
         android:label="@string/app_name"
         android:localeConfig="@xml/locales_config"
-        android:name=".main_app.App"
+        android:name=".app.App"
         android:roundIcon="@drawable/app_icon_48x48"
         android:supportsRtl="true"
         android:theme="@style/Theme.Mini_Retail_App"
@@ -21,7 +21,7 @@
         </service>
 
         <activity
-            android:name=".main_app.MainActivity"
+            android:name=".app.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.App.Starting">
             <intent-filter>
