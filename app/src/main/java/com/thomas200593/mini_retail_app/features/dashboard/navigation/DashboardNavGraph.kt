@@ -37,32 +37,6 @@ fun NavGraphBuilder.dashboardNavGraph(
         composable(
             route = ScreenGraphs.Dashboard.route
         ){
-            AppBar.ProvideTopAppBarTitle {
-                Text(text = stringResource(id = R.string.str_dashboard))
-            }
-            AppBar.ProvideTopAppBarNavigationIcon {
-                Icon(
-                    modifier = Modifier.size(ButtonDefaults.IconSize),
-                    imageVector = ImageVector.vectorResource(Icons.TopLevelDestinations.dashboard),
-                    contentDescription = null
-                )
-            }
-            AppBar.ProvideTopAppBarAction {
-                Icon(
-                    modifier = Modifier
-                        .size(30.dp)
-                        .clickable(onClick = { onNavigateToAppConfig() }),
-                    imageVector = ImageVector.vectorResource(id = Icons.Setting.settings),
-                    contentDescription = null
-                )
-                Icon(
-                    modifier = Modifier
-                        .size(30.dp)
-                        .clickable(onClick = { onSignOut() }),
-                    imageVector = androidx.compose.material.icons.Icons.AutoMirrored.Filled.ExitToApp,
-                    contentDescription = null
-                )
-            }
             DashboardScreen()
         }
 
