@@ -2,8 +2,8 @@ package com.thomas200593.mini_retail_app.features.initial.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.thomas200593.mini_retail_app.core.design_system.dispatchers.AppDispatchers
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatcher
+import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatchers
 import com.thomas200593.mini_retail_app.features.app_config.entity.Onboarding
 import com.thomas200593.mini_retail_app.features.app_config.repository.AppConfigRepository
 import com.thomas200593.mini_retail_app.features.auth.repository.AuthRepository
@@ -23,7 +23,7 @@ private  const val TAG = "InitialViewModel"
 class InitialViewModel @Inject constructor(
     authRepository: AuthRepository,
     appConfigRepository: AppConfigRepository,
-    @Dispatcher(AppDispatchers.IO) ioDispatchers: CoroutineDispatcher
+    @Dispatcher(Dispatchers.Dispatchers.IO) ioDispatchers: CoroutineDispatcher
 ): ViewModel(){
     val uiState = appConfigRepository.currentAppConfigData.flowOn(ioDispatchers)
         .combine(authRepository.authSessionToken){ currentConfig, authToken ->

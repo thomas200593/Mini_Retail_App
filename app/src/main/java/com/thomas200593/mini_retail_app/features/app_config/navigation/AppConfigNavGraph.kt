@@ -14,10 +14,10 @@ fun NavGraphBuilder.appConfigNavGraph(
 ){
     navigation(
         route = NavigationGraphs.G_APP_CONFIG,
-        startDestination = ScreenGraphs.AppConfig.route
+        startDestination = ScreenGraphs.Config.route
     ){
         composable(
-            route = ScreenGraphs.AppConfig.route
+            route = ScreenGraphs.Config.route
         ){
             AppConfigScreen(
                 //onNavKeyUp = { appState.onNavKeyUp() }

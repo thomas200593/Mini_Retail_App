@@ -26,8 +26,8 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.thomas200593.mini_retail_app.R
+import com.thomas200593.mini_retail_app.app.navigation.NavigationHost.NavigationHost
 import com.thomas200593.mini_retail_app.core.ui.component.BottomBar.BottomBar
-import com.thomas200593.mini_retail_app.app.navigation.NavigationHost
 import timber.log.Timber
 
 private const val TAG = "AppScreen"
@@ -69,11 +69,15 @@ internal fun AppScreen(
         containerColor = MaterialTheme.colorScheme.background,
         contentColor = MaterialTheme.colorScheme.onBackground,
         snackbarHost = { SnackbarHost(snackBarHostState) },
-        topBar = {},
+        topBar = {
+            if(appState.shouldShowTopBar){
+
+            }
+        },
         bottomBar = {
             if(appState.shouldShowBottomBar){
                 BottomBar(
-                    destinations = appState.topLevelDestination,
+                    destinations = appState.topLevelDestinations,
                     onNavigateToDestination = appState::navigateToTopLevelDestination,
                     currentDestination = appState.currentDestination,
                     modifier = modifier

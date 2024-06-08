@@ -62,8 +62,13 @@ class AppState(
         @Composable get() = navController
             .currentBackStackEntryAsState().value?.destination
 
+    val topLevelDestinations: List<TopLevelDestination> = TopLevelDestination.entries
+
     val shouldShowBottomBar: Boolean
-        @Composable get() = currentDestination?.route in topLevelDestination.map { it.route }
+        @Composable get() = currentDestination?.route in topLevelDestinations.map { it.route }
+
+    val shouldShowTopBar: Boolean
+        @Composable get() = false
 
     val currentTopLevelDestination: TopLevelDestination?
         @Composable get() = when(currentDestination?.route){
@@ -73,8 +78,6 @@ class AppState(
             ScreenGraphs.UserProfile.route -> TopLevelDestination.USER_PROFILE
             else -> null
         }
-
-    val topLevelDestination: List<TopLevelDestination> = TopLevelDestination.entries
 
     fun navigateToTopLevelDestination(topLevelDestination: TopLevelDestination){
         val topLevelDestinationNavOptions = navOptions {

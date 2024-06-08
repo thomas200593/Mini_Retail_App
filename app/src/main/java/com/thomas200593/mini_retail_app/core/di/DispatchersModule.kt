@@ -1,8 +1,8 @@
 package com.thomas200593.mini_retail_app.core.di
 
-import com.thomas200593.mini_retail_app.core.design_system.dispatchers.AppDispatchers.Default
-import com.thomas200593.mini_retail_app.core.design_system.dispatchers.AppDispatchers.IO
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatcher
+import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatchers.Dispatchers.Default
+import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatchers.Dispatchers.IO
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -12,7 +12,7 @@ import kotlinx.coroutines.Dispatchers
 
 @Module
 @InstallIn(SingletonComponent::class)
-object AppDispatchersModule {
+object DispatchersModule {
     @Provides
     @Dispatcher(IO)
     fun provideIODispatcher(): CoroutineDispatcher = Dispatchers.IO

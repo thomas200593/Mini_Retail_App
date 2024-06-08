@@ -8,8 +8,8 @@ import android.net.NetworkCapabilities
 import android.net.NetworkRequest.Builder
 import androidx.compose.ui.util.trace
 import androidx.core.content.getSystemService
-import com.thomas200593.mini_retail_app.core.design_system.dispatchers.AppDispatchers
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatcher
+import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatchers
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.channels.awaitClose
@@ -21,7 +21,7 @@ import javax.inject.Inject
 
 internal class NetworkMonitorImpl @Inject constructor(
     @ApplicationContext private val context: Context,
-    @Dispatcher(AppDispatchers.IO) private val ioDispatcher: CoroutineDispatcher
+    @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ) : NetworkMonitor{
     override val isNetworkOnline: Flow<Boolean> = callbackFlow {
         trace("NetworkMonitor.callbackFlow"){

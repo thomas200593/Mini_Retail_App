@@ -12,31 +12,33 @@ import com.thomas200593.mini_retail_app.app.navigation.NavigationGraphs.G_INITIA
 import com.thomas200593.mini_retail_app.app.navigation.NavigationGraphs.G_ROOT
 import com.thomas200593.mini_retail_app.app.ui.AppState
 
-@Composable
-fun NavigationHost(
-    appState: AppState,
-    onShowSnackBar: suspend (String, String, SnackbarDuration?) -> Boolean
-) {
-    val navController = appState.navController
-    NavHost(
-        navController = navController,
-        route = G_ROOT,
-        startDestination = G_INITIAL,
-    ){
-        initialNavGraph(
-            appState,
-            onNavigateToOnboarding = navController::navigateToOnboarding,
-            onNavigateToAuth = navController::navigateToAuth,
-            onNavigateToDashboard = {
-                navController
-                    .navigateToDashboard(
-                        navOptions = NavOptions.Builder()
-                            .setPopUpTo(route = G_INITIAL, inclusive = true, saveState = true)
-                            .setLaunchSingleTop(true)
-                            .setRestoreState(true)
-                            .build()
-                    )
-            }
-        )
+object NavigationHost{
+    @Composable
+    fun NavigationHost(
+        appState: AppState,
+        onShowSnackBar: suspend (String, String, SnackbarDuration?) -> Boolean
+    ) {
+        val navController = appState.navController
+        NavHost(
+            navController = navController,
+            route = G_ROOT,
+            startDestination = G_INITIAL,
+        ){
+            initialNavGraph(
+                appState,
+                onNavigateToOnboarding = navController::navigateToOnboarding,
+                onNavigateToAuth = navController::navigateToAuth,
+                onNavigateToDashboard = {
+                    navController
+                        .navigateToDashboard(
+                            navOptions = NavOptions.Builder()
+                                .setPopUpTo(route = G_INITIAL, inclusive = true, saveState = true)
+                                .setLaunchSingleTop(true)
+                                .setRestoreState(true)
+                                .build()
+                        )
+                }
+            )
+        }
     }
 }

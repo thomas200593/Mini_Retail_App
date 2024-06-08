@@ -3,15 +3,15 @@ package com.thomas200593.mini_retail_app.core.data.local.datastore
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
-import com.thomas200593.mini_retail_app.core.data.local.datastore.AppConfigDataStorePreferencesKeys.dsAppConfigDynamicColor
-import com.thomas200593.mini_retail_app.core.data.local.datastore.AppConfigDataStorePreferencesKeys.dsAppConfigFontSize
-import com.thomas200593.mini_retail_app.core.data.local.datastore.AppConfigDataStorePreferencesKeys.dsAppConfigLanguage
-import com.thomas200593.mini_retail_app.core.data.local.datastore.AppConfigDataStorePreferencesKeys.dsAppConfigTheme
-import com.thomas200593.mini_retail_app.core.data.local.datastore.AppConfigDataStorePreferencesKeys.dsAppShouldShowOnboardingPages
-import com.thomas200593.mini_retail_app.core.data.local.datastore.AuthDataStorePreferencesKeys.dsAuthProvider
-import com.thomas200593.mini_retail_app.core.data.local.datastore.AuthDataStorePreferencesKeys.dsAuthSessionToken
-import com.thomas200593.mini_retail_app.core.design_system.dispatchers.AppDispatchers.IO
+import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStorePreferencesKeys.AppConfigKeys.dsAppConfigDynamicColor
+import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStorePreferencesKeys.AppConfigKeys.dsAppConfigFontSize
+import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStorePreferencesKeys.AppConfigKeys.dsAppConfigLanguage
+import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStorePreferencesKeys.AppConfigKeys.dsAppConfigTheme
+import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStorePreferencesKeys.AppConfigKeys.dsAppShouldShowOnboardingPages
+import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStorePreferencesKeys.AuthKeys.dsAuthProvider
+import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStorePreferencesKeys.AuthKeys.dsAuthSessionToken
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatcher
+import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatchers
 import com.thomas200593.mini_retail_app.features.app_config.entity.CurrentAppConfig
 import com.thomas200593.mini_retail_app.features.app_config.entity.DynamicColor
 import com.thomas200593.mini_retail_app.features.app_config.entity.DynamicColor.DISABLED
@@ -32,9 +32,9 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class AppDataStorePreferences @Inject constructor(
+class DataStorePreferences @Inject constructor(
     private val datastore: DataStore<Preferences>,
-    @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
+    @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ){
     val currentAppConfigData = datastore.data
         .map { data ->

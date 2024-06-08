@@ -2,7 +2,6 @@ package com.thomas200593.mini_retail_app.app
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.thomas200593.mini_retail_app.features.app_config.entity.CurrentAppConfig
 import com.thomas200593.mini_retail_app.features.app_config.repository.AppConfigRepository
 import com.thomas200593.mini_retail_app.app.MainActivityUiState.*
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,9 +22,4 @@ class MainViewModel @Inject constructor(
         initialValue = Loading,
         started = SharingStarted.Eagerly
     )
-}
-
-sealed interface MainActivityUiState {
-    data object Loading: MainActivityUiState
-    data class Success(val currentAppConfig: CurrentAppConfig): MainActivityUiState
 }
