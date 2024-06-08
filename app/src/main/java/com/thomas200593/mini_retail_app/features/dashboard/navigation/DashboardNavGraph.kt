@@ -24,6 +24,7 @@ import com.thomas200593.mini_retail_app.core.ui.component.AppBar
 import com.thomas200593.mini_retail_app.features.business.navigation.businessNavGraph
 import com.thomas200593.mini_retail_app.features.dashboard.ui.DashboardScreen
 import com.thomas200593.mini_retail_app.features.report_analysis.navigation.reportAnalysisNavGraph
+import com.thomas200593.mini_retail_app.features.user_profile.navigation.userProfileNavGraph
 
 fun NavGraphBuilder.dashboardNavGraph(
     onSignOut: () -> Unit,
@@ -68,6 +69,7 @@ fun NavGraphBuilder.dashboardNavGraph(
         //children graph beyond dashboard
         businessNavGraph()
         reportAnalysisNavGraph()
+        userProfileNavGraph()
     }
 }
 
