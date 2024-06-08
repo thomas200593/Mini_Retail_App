@@ -68,6 +68,8 @@ internal fun AppScreen(
         containerColor = MaterialTheme.colorScheme.background,
         contentColor = MaterialTheme.colorScheme.onBackground,
         snackbarHost = { SnackbarHost(snackBarHostState) },
+        topBar = {},
+        bottomBar = {},
         content = { padding ->
             Surface(
                 modifier = Modifier
@@ -91,5 +93,3 @@ internal fun AppScreen(
         }
     )
 }
-
-

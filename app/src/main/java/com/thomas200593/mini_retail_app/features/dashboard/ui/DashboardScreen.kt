@@ -7,5 +7,5 @@ import androidx.compose.runtime.Composable
 fun DashboardScreen(
     
 ){
-
+    Text(text = "Dashboard Screen")
 }
