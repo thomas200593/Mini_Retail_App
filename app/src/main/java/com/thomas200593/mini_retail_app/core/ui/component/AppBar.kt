@@ -19,6 +19,7 @@ import androidx.navigation.FloatingWindow
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.compose.LocalOwnersProvider
+import com.thomas200593.mini_retail_app.core.ui.component.AppBar.AppBar
 import kotlinx.coroutines.flow.filterNot
 import timber.log.Timber
 
@@ -28,6 +29,11 @@ object AppBar {
         var navIconState by mutableStateOf(null as (@Composable () -> Unit)?, referentialEqualityPolicy() )
         var titleState by mutableStateOf(null as (@Composable () -> Unit)?, referentialEqualityPolicy())
         var actionState by mutableStateOf(null as (@Composable RowScope.() -> Unit)?, referentialEqualityPolicy())
+    }
+
+    @Composable
+    fun TopAppBar(navController: NavController){
+        AppBar(navController = navController)
     }
 
     @Composable
@@ -60,7 +66,7 @@ object AppBar {
     }
 
     @Composable
-    fun RowScope.TopAppBarAction(navBackStackEntry: NavBackStackEntry?){
+    private fun RowScope.TopAppBarAction(navBackStackEntry: NavBackStackEntry?){
         Timber.d("Called %s.TopAppBarAction()", TAG)
         val stateHolder = rememberSaveableStateHolder()
         navBackStackEntry?.LocalOwnersProvider(stateHolder) {
@@ -70,7 +76,7 @@ object AppBar {
     }
 
     @Composable
-    fun TopAppBarTitle(navBackStackEntry: NavBackStackEntry?) {
+    private fun TopAppBarTitle(navBackStackEntry: NavBackStackEntry?) {
         val stateHolder = rememberSaveableStateHolder()
         navBackStackEntry?.LocalOwnersProvider(stateHolder) {
             val actionViewModel = viewModel(initializer = { TopAppBarViewModel() })
@@ -79,7 +85,7 @@ object AppBar {
     }
 
     @Composable
-    fun TopAppBarNavIcon(navBackStackEntry: NavBackStackEntry?){
+    private fun TopAppBarNavIcon(navBackStackEntry: NavBackStackEntry?){
         val stateHolder = rememberSaveableStateHolder()
         navBackStackEntry?.LocalOwnersProvider(stateHolder){
             val actionViewModel = viewModel(initializer = { TopAppBarViewModel() })
@@ -89,7 +95,7 @@ object AppBar {
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    fun AppBar(
+    private fun AppBar(
         navController: NavController,
         modifier: Modifier = Modifier
     ){

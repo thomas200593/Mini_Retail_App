@@ -68,7 +68,13 @@ class AppState(
         @Composable get() = currentDestination?.route in topLevelDestinations.map { it.route }
 
     val shouldShowTopBar: Boolean
-        @Composable get() = false
+        @Composable get() = currentDestination?.route in setOf(
+            ScreenGraphs.AppConfig.route,
+            ScreenGraphs.Dashboard.route,
+            ScreenGraphs.Business.route,
+            ScreenGraphs.ReportAnalysis.route,
+            ScreenGraphs.UserProfile.route,
+        )
 
     val currentTopLevelDestination: TopLevelDestination?
         @Composable get() = when(currentDestination?.route){

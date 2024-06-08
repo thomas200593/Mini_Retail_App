@@ -11,7 +11,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 fun AppConfigScreen(
     viewModel: AppConfigViewModel = hiltViewModel()
 ) {
-    //TODO in the first Access, the App Config Setting Generally show General Settings
+    //TODO in the first Access, the App AppConfig Setting Generally show General Settings
     LaunchedEffect(Unit) {
         viewModel.onOpen()
     }

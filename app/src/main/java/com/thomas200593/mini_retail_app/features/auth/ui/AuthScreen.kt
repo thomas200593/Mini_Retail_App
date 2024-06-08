@@ -133,7 +133,7 @@ private fun ScreenContent(
             //Layout Central Partition
             val centralGuideline = createGuidelineFromTop(.4f)
 
-            //Config Button
+            //AppConfig Button
             Icon(
                 imageVector = ImageVector.vectorResource(settings),
                 contentDescription = null,
@@ -149,7 +149,7 @@ private fun ScreenContent(
                     ),
                 tint = MaterialTheme.colorScheme.onSurface
             )
-            //.Config Button
+            //.AppConfig Button
 
             //App Icon
             Box(

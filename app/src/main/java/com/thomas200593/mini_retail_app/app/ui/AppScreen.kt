@@ -27,6 +27,7 @@ import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.app.navigation.NavigationHost.NavigationHost
+import com.thomas200593.mini_retail_app.core.ui.component.AppBar.TopAppBar
 import com.thomas200593.mini_retail_app.core.ui.component.BottomBar.BottomBar
 import timber.log.Timber
 
@@ -71,7 +72,9 @@ internal fun AppScreen(
         snackbarHost = { SnackbarHost(snackBarHostState) },
         topBar = {
             if(appState.shouldShowTopBar){
-
+                TopAppBar(
+                    navController = appState.navController
+                )
             }
         },
         bottomBar = {

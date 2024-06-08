@@ -12,7 +12,7 @@ sealed class ScreenGraphs(
     data object Auth: ScreenGraphs(
         route = Routes.APP_ROUTE_AUTH
     )
-    data object Config: ScreenGraphs(
+    data object AppConfig: ScreenGraphs(
         route = Routes.APP_ROUTE_APP_CONFIG
     )
     data object Dashboard: ScreenGraphs(
