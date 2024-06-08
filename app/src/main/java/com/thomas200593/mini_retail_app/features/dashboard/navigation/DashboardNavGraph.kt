@@ -23,7 +23,10 @@ fun NavGraphBuilder.dashboardNavGraph(
         composable(
             route = ScreenGraphs.Dashboard.route
         ){
-            DashboardScreen()
+            DashboardScreen(
+                onSignOut = onSignOut,
+                onNavigateToAppConfig = onNavigateToAppConfig
+            )
         }
 
         //children graph beyond dashboard

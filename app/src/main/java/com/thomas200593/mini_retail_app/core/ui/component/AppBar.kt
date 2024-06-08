@@ -4,7 +4,7 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
@@ -40,8 +40,11 @@ object AppBar {
         Timber.d("Called %s.ProvideTopAppBarAction()", TAG)
         if(LocalViewModelStoreOwner.current == null || LocalViewModelStoreOwner.current !is NavBackStackEntry){ return }
         val actionViewModel = viewModel(initializer = {TopAppBarViewModel()})
-        SideEffect {
+        DisposableEffect(key1 = Unit) {
             actionViewModel.actionState = actions
+            onDispose {
+                actionViewModel.actionState = null
+            }
         }
     }
 
@@ -50,8 +53,11 @@ object AppBar {
         Timber.d("Called %s.ProvideTopAppBarTitle()", TAG)
         if (LocalViewModelStoreOwner.current == null || LocalViewModelStoreOwner.current !is NavBackStackEntry){ return }
         val actionViewModel = viewModel(initializer = { TopAppBarViewModel() })
-        SideEffect {
+        DisposableEffect(key1 = Unit) {
             actionViewModel.titleState = title
+            onDispose {
+                actionViewModel.titleState = null
+            }
         }
     }
 
@@ -59,8 +65,11 @@ object AppBar {
     fun ProvideTopAppBarNavigationIcon(navIcon: @Composable () -> Unit){
         Timber.d("Called %s.ProvideNavigationIcon()", TAG)
         val actionViewModel = viewModel(initializer = { TopAppBarViewModel() })
-        SideEffect {
+        DisposableEffect(key1 = Unit) {
             actionViewModel.navIconState = navIcon
+            onDispose {
+                actionViewModel.navIconState = null
+            }
         }
     }
 

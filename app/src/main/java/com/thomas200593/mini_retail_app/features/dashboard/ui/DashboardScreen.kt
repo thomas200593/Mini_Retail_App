@@ -21,14 +21,21 @@ import com.thomas200593.mini_retail_app.core.ui.component.AppBar
 
 @Composable
 fun DashboardScreen(
-    
+    onNavigateToAppConfig: () -> Unit,
+    onSignOut: () -> Unit
 ){
-    TopAppBar()
+    TopAppBar(
+        onNavigateToAppConfig = onNavigateToAppConfig,
+        onSignOut = onSignOut
+    )
     ScreenContent()
 }
 
 @Composable
-private fun TopAppBar() {
+private fun TopAppBar(
+    onNavigateToAppConfig: () -> Unit,
+    onSignOut: () -> Unit
+) {
     AppBar.ProvideTopAppBarTitle {
         Text(text = stringResource(id = R.string.str_dashboard))
     }
@@ -47,14 +54,14 @@ private fun TopAppBar() {
             Icon(
                 modifier = Modifier
                     .size(24.dp)
-                    .clickable(onClick = { }),
+                    .clickable(onClick = { onNavigateToAppConfig() }),
                 imageVector = ImageVector.vectorResource(id = Icons.Setting.settings),
                 contentDescription = null
             )
             Icon(
                 modifier = Modifier
                     .size(24.dp)
-                    .clickable(onClick = { }),
+                    .clickable(onClick = { onSignOut() }),
                 imageVector = androidx.compose.material.icons.Icons.AutoMirrored.Filled.ExitToApp,
                 contentDescription = null
             )
