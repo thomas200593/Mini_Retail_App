@@ -26,6 +26,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.thomas200593.mini_retail_app.R
+import com.thomas200593.mini_retail_app.core.ui.component.BottomBar.BottomBar
 import com.thomas200593.mini_retail_app.main_app.navigation.NavigationHost
 import timber.log.Timber
 
@@ -69,7 +70,16 @@ internal fun AppScreen(
         contentColor = MaterialTheme.colorScheme.onBackground,
         snackbarHost = { SnackbarHost(snackBarHostState) },
         topBar = {},
-        bottomBar = {},
+        bottomBar = {
+            if(appState.shouldShowBottomBar){
+                BottomBar(
+                    destinations = appState.topLevelDestination,
+                    onNavigateToDestination = appState::navigateToTopLevelDestination,
+                    currentDestination = appState.currentDestination,
+                    modifier = modifier
+                )
+            }
+        },
         content = { padding ->
             Surface(
                 modifier = Modifier

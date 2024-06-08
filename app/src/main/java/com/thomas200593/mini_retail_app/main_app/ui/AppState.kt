@@ -58,9 +58,12 @@ class AppState(
             started = SharingStarted.WhileSubscribed(1_000)
         )
 
-    private val currentDestination: NavDestination?
+    val currentDestination: NavDestination?
         @Composable get() = navController
             .currentBackStackEntryAsState().value?.destination
+
+    val shouldShowBottomBar: Boolean
+        @Composable get() = currentDestination?.route in topLevelDestination.map { it.route }
 
     val currentTopLevelDestination: TopLevelDestination?
         @Composable get() = when(currentDestination?.route){
@@ -96,9 +99,5 @@ class AppState(
                 navController.navigateToUserProfile(navOptions = topLevelDestinationNavOptions)
             }
         }
-    }
-
-    fun onNavKeyUp() {
-        navController.navigateUp()
     }
 }

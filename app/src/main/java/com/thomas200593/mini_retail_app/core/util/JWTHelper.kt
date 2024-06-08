@@ -40,35 +40,41 @@ object JWTHelper {
         suspend fun validateToken(
             authSessionToken: AuthSessionToken
         ) = withContext(Dispatchers.IO){
+            Timber.d("Captured Token Value : $authSessionToken", authSessionToken)
             try {
                 Timber.d("Called %s.%s.validateToken()", TAG, GOOGLE_OAUTH2_TAG)
-                if(authSessionToken.idToken?.isEmpty() == true || authSessionToken.idToken?.isBlank() == true ){
-                    Timber.d("Token is empty!")
-                    false
-                }else{
-                    Timber.d("Validating Token...")
-                    val jwt = JWT(authSessionToken.idToken.orEmpty())
-                    val hdrAlg = jwt.header["alg"]
-                    val hdrTyp = jwt.header["typ"]
-                    val authProvider = authSessionToken.authProvider
-                    val name = jwt.getClaim("name").asString()
-                    val email = jwt.getClaim("email").asString()
-                    val iss = jwt.getClaim("iss").asString()
-                    val exp = jwt.getClaim("exp").asLong()
-                    (hdrAlg!! in algList) &&
-                            (hdrTyp!! in typList) &&
-                            name!!.isNotEmpty() &&
-                            email!!.isNotEmpty() &&
-                            (iss!! in listOf("accounts.google.com", "https://accounts.google.com")) &&
-                            ((exp!! > 0) && ((Instant.now().toEpochMilli() / 1000) <= exp)) &&
-                            authProvider?.name == OAuthProvider.GOOGLE.name
+                if (authSessionToken.idToken.isNullOrBlank() || authSessionToken.authProvider?.name != OAuthProvider.GOOGLE.name) {
+                    Timber.d("Token is empty / malformed!")
+                    return@withContext false
+                }
+                Timber.d("Validating Token...")
+                val jwt = JWT(authSessionToken.idToken)
+                val hdrAlg = jwt.header["alg"]
+                val hdrTyp = jwt.header["typ"]
+                val name = jwt.getClaim("name").asString()
+                val email = jwt.getClaim("email").asString()
+                val iss = jwt.getClaim("iss").asString()
+                val exp = jwt.getClaim("exp").asLong()
+                val validationResult = (hdrAlg in algList) &&
+                        (hdrTyp in typList) &&
+                        !name.isNullOrEmpty() &&
+                        !email.isNullOrEmpty() &&
+                        (iss in listOf("accounts.google.com", "https://accounts.google.com")) &&
+                        (exp != null && (Instant.now().epochSecond <= exp)) &&
+                        (authSessionToken.authProvider.name == OAuthProvider.GOOGLE.name)
+                if (validationResult) {
+                    Timber.d("Token is Valid")
+                    return@withContext true
+                } else {
+                    Timber.d("Token is Invalid")
+                    return@withContext false
                 }
             } catch (e: DecodeException) {
                 Timber.e("DecodeException: %s", e)
-                false
+                return@withContext false
             } catch (e: Exception) {
                 Timber.e("Exception: %s", e)
-                false
+                return@withContext false
             }
         }
 

@@ -29,4 +29,9 @@
     <string name="str_onboarding_hide">Hide Onboarding Pages</string>
 <!-- Auth -->
     <string name="str_auth">Authentication</string>
+<!-- Dashboard -->
+    <string name="str_dashboard">Dashboard</string>
+    <string name="str_business">Business</string>
+    <string name="str_report_analysis">Report &amp; Analysis</string>
+    <string name="str_user_profile">User Profile</string>
 </resources>

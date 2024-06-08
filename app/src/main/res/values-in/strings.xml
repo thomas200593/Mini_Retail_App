@@ -21,4 +21,8 @@
     <string name="str_onboarding_show">Tampilkan Halaman Onboarding</string>
     <string name="str_onboarding_hide">Sembunyikan Halaman Onboarding</string>
     <string name="str_auth">Otentikasi</string>
+    <string name="str_dashboard">Dashbor</string>
+    <string name="str_business">Bisnis</string>
+    <string name="str_report_analysis">Laporan &amp; Analisis</string>
+    <string name="str_user_profile">Profil Pengguna</string>
 </resources>

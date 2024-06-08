@@ -5,6 +5,8 @@ import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.R.drawable.app_flag_gb_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_flag_id_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_48x48
+import com.thomas200593.mini_retail_app.R.drawable.app_icon_business_48px
+import com.thomas200593.mini_retail_app.R.drawable.app_icon_dashboard_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_dynamic_color_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_dynamic_color_disabled_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_dynamic_color_enabled_48px
@@ -12,6 +14,7 @@ import com.thomas200593.mini_retail_app.R.drawable.app_icon_language_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_onboarding_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_onboarding_hide_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_onboarding_show_48px
+import com.thomas200593.mini_retail_app.R.drawable.app_icon_report_analysis_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_settings_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_text_lg_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_text_md_48px
@@ -22,6 +25,7 @@ import com.thomas200593.mini_retail_app.R.drawable.app_icon_theme_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_theme_dark_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_theme_light_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_theme_system_48px
+import com.thomas200593.mini_retail_app.R.drawable.app_icon_user_profile_48px
 
 object Icons {
     object App{
@@ -60,5 +64,11 @@ object Icons {
         @DrawableRes val system = +app_icon_theme_system_48px
         @DrawableRes val light = +app_icon_theme_light_48px
         @DrawableRes val dark = +app_icon_theme_dark_48px
+    }
+    object TopLevelDestinations{
+        @DrawableRes val dashboard = +app_icon_dashboard_48px
+        @DrawableRes val business = +app_icon_business_48px
+        @DrawableRes val report_analysis = +app_icon_report_analysis_48px
+        @DrawableRes val user_profile = +app_icon_user_profile_48px
     }
 }
