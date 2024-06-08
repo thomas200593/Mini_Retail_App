@@ -1,17 +1,13 @@
 package com.thomas200593.mini_retail_app.features.app_config.navigation
 
-import androidx.compose.material3.Text
-import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.thomas200593.mini_retail_app.R
-import com.thomas200593.mini_retail_app.features.app_config.ui.AppConfigScreen
 import com.thomas200593.mini_retail_app.app.navigation.NavigationGraphs
 import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs
 import com.thomas200593.mini_retail_app.app.ui.AppState
-import com.thomas200593.mini_retail_app.core.ui.component.AppBar
+import com.thomas200593.mini_retail_app.features.app_config.ui.AppConfigScreen
 
 fun NavGraphBuilder.appConfigNavGraph(
     appState: AppState

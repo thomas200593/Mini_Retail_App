@@ -19,7 +19,6 @@ import androidx.navigation.FloatingWindow
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.compose.LocalOwnersProvider
-import com.thomas200593.mini_retail_app.core.ui.component.AppBar.AppBar
 import kotlinx.coroutines.flow.filterNot
 import timber.log.Timber
 

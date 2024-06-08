@@ -2,7 +2,6 @@ package com.thomas200593.mini_retail_app.features.dashboard.navigation
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -11,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
@@ -23,9 +23,11 @@ import com.thomas200593.mini_retail_app.core.ui.common.Icons
 import com.thomas200593.mini_retail_app.core.ui.component.AppBar
 import com.thomas200593.mini_retail_app.features.business.navigation.businessNavGraph
 import com.thomas200593.mini_retail_app.features.dashboard.ui.DashboardScreen
+import com.thomas200593.mini_retail_app.features.report_analysis.navigation.reportAnalysisNavGraph
 
 fun NavGraphBuilder.dashboardNavGraph(
-    onSignOut: () -> Unit
+    onSignOut: () -> Unit,
+    onNavigateToAppConfig: () -> Unit
 ){
     navigation(
         route = G_DASHBOARD,
@@ -46,7 +48,15 @@ fun NavGraphBuilder.dashboardNavGraph(
             }
             AppBar.ProvideTopAppBarAction {
                 Icon(
-                    modifier = Modifier.sizeIn(ButtonDefaults.IconSize)
+                    modifier = Modifier
+                        .size(30.dp)
+                        .clickable(onClick = { onNavigateToAppConfig() }),
+                    imageVector = ImageVector.vectorResource(id = Icons.Setting.settings),
+                    contentDescription = null
+                )
+                Icon(
+                    modifier = Modifier
+                        .size(30.dp)
                         .clickable(onClick = { onSignOut() }),
                     imageVector = androidx.compose.material.icons.Icons.AutoMirrored.Filled.ExitToApp,
                     contentDescription = null
@@ -57,6 +67,7 @@ fun NavGraphBuilder.dashboardNavGraph(
 
         //children graph beyond dashboard
         businessNavGraph()
+        reportAnalysisNavGraph()
     }
 }
 
