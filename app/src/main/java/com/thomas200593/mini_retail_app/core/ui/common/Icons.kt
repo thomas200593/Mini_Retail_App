@@ -14,7 +14,7 @@ import com.thomas200593.mini_retail_app.R.drawable.app_icon_language_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_onboarding_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_onboarding_hide_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_onboarding_show_48px
-import com.thomas200593.mini_retail_app.R.drawable.app_icon_report_analysis_48px
+import com.thomas200593.mini_retail_app.R.drawable.app_icon_reporting_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_settings_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_text_lg_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_text_md_48px
@@ -68,7 +68,7 @@ object Icons {
     object TopLevelDestinations{
         @DrawableRes val dashboard = +app_icon_dashboard_48px
         @DrawableRes val business = +app_icon_business_48px
-        @DrawableRes val reporting = +app_icon_report_analysis_48px
+        @DrawableRes val reporting = +app_icon_reporting_48px
         @DrawableRes val user_profile = +app_icon_user_profile_48px
     }
 }
