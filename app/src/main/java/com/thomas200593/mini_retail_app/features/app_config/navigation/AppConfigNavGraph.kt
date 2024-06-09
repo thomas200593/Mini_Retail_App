@@ -20,7 +20,7 @@ fun NavGraphBuilder.appConfigNavGraph(
             route = ScreenGraphs.AppConfig.route
         ){
             AppConfigScreen(
-                //onNavKeyUp = { appState.onNavKeyUp() }
+                onNavigateBack = { appState.onNavigateUp() }
             )
         }
     }

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="str_settings">Pengaturan</string>
     <string name="str_theme">Tema</string>
     <string name="str_theme_system">Tema Sistem</string>
     <string name="str_theme_light">Tema Terang</string>

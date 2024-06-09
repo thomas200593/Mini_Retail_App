@@ -94,4 +94,8 @@ class AppState(
             }
         }
     }
+
+    fun onNavigateUp() {
+        navController.navigateUp()
+    }
 }
