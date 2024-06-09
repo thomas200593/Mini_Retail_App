@@ -41,7 +41,6 @@ import com.thomas200593.mini_retail_app.core.ui.common.Icons
 import com.thomas200593.mini_retail_app.core.ui.common.Icons.Setting.settings
 import com.thomas200593.mini_retail_app.core.ui.component.Button
 import com.thomas200593.mini_retail_app.core.ui.component.Button.Google.SignInWithGoogle
-import com.thomas200593.mini_retail_app.features.auth.entity.AuthSessionToken
 import com.thomas200593.mini_retail_app.features.auth.entity.OAuth2UserMetadata
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -83,7 +82,6 @@ fun AuthScreen(
     }
 
     ScreenContent(
-        stateSIWGButton = stateSIWGButton,
         onNavigateToAppConfigScreen = onNavigateToAppConfig,
         onSignInWithGoogleButton = {
             coroutineScope.launch {
@@ -103,7 +101,7 @@ fun AuthScreen(
                 )
             }
         },
-        authSessionTokenState = authSessionTokenState
+        stateSIWGButton = stateSIWGButton
     )
 }
 
@@ -112,8 +110,7 @@ private fun ScreenContent(
     modifier: Modifier = Modifier,
     onNavigateToAppConfigScreen: () -> Unit,
     onSignInWithGoogleButton: () -> Unit,
-    stateSIWGButton: Boolean,
-    authSessionTokenState: RequestState<AuthSessionToken>
+    stateSIWGButton: Boolean
 ){
     Surface(
         modifier = modifier
@@ -251,7 +248,7 @@ private fun ScreenContent(
                     }
             ){
                 Text(
-                    text = authSessionTokenState.toString(),
+                    text = "Terms and Conditions",
                     modifier = Modifier.padding(12.dp),
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.onTertiaryContainer,
