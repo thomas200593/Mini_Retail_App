@@ -68,7 +68,6 @@ class AppState(
             ScreenGraphs.Dashboard.route,
             ScreenGraphs.Business.route,
             ScreenGraphs.Reporting.route,
-            ScreenGraphs.UserProfile.route,
         )
 
     fun navigateToTopLevelDestination(topLevelDestination: TopLevelDestination){
