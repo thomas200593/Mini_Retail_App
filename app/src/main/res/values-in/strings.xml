@@ -33,4 +33,5 @@
     <string name="str_theme_dark_desc">Tema dengan skema warna gelap</string>
     <string name="str_size_font_desc">Ubah ukuran font sesuai pilihan-mu</string>
     <string name="str_lang_desc">Ubah Bahasa sesuai pilihan-mu</string>
+    <string name="str_configuration_general">Pengaturan Umum</string>
 </resources>

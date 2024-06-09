@@ -10,6 +10,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
+import com.thomas200593.mini_retail_app.app.navigation.NavigationWithTopAppBar
+import com.thomas200593.mini_retail_app.app.navigation.NavigationWithTopAppBar.navigationWithTopAppBar
 import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs
 import com.thomas200593.mini_retail_app.app.navigation.TopLevelDestination
 import com.thomas200593.mini_retail_app.core.design_system.util.NetworkMonitor
@@ -42,7 +44,7 @@ fun rememberAppState(
 @Stable
 class AppState(
     networkMonitor: NetworkMonitor,
-    coroutineScope: CoroutineScope,
+    val coroutineScope: CoroutineScope,
     val navController: NavHostController,
 ) {
     val isNetworkOffline = networkMonitor.isNetworkOnline
@@ -63,12 +65,7 @@ class AppState(
         @Composable get() = currentDestination?.route in topLevelDestinations.map { it.route }
 
     val shouldShowTopBar: Boolean
-        @Composable get() = currentDestination?.route in setOf(
-            ScreenGraphs.AppConfig.route,
-            ScreenGraphs.Dashboard.route,
-            ScreenGraphs.Business.route,
-            ScreenGraphs.Reporting.route,
-        )
+        @Composable get() = currentDestination?.route in navigationWithTopAppBar()
 
     fun navigateToTopLevelDestination(topLevelDestination: TopLevelDestination){
         val topLevelDestinationNavOptions = navOptions {
