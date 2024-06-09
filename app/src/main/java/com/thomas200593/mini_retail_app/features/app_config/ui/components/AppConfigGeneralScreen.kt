@@ -101,7 +101,7 @@ private fun ScreenContent(
                 modifier = modifier
                     .fillMaxWidth()
                     .padding(4.dp),
-                verticalArrangement = Arrangement.Center,
+                verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.Start
             ) {
                 Text(text = "General Configuration")
@@ -128,8 +128,13 @@ private fun ScreenContent(
                                     contentDescription = null,
                                     tint = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
-                                Column(modifier = modifier.fillMaxWidth(0.8f)) {
-                                    Text(text = stringResource(id = generalConfigMenu.title), fontWeight = FontWeight.Light)
+                                Column(
+                                    modifier = modifier.fillMaxWidth(0.8f),
+                                    verticalArrangement = Arrangement.Center,
+                                    horizontalAlignment = Alignment.Start
+                                ) {
+                                    Text(text = stringResource(id = generalConfigMenu.title), fontWeight = FontWeight.Bold)
+                                    Text(text = stringResource(id = generalConfigMenu.description), fontWeight = FontWeight.Thin)
                                 }
                             }
                         }
