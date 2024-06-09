@@ -11,20 +11,24 @@ enum class Theme (
     val codeValue: String,
     @StringRes val nameValue: Int,
     @DrawableRes val iconValue: Int,
+    @StringRes val themeDescriptionValue: Int
 ){
     SYSTEM(
         codeValue = "theme_system",
         nameValue = R.string.str_theme_system,
-        iconValue = system
+        iconValue = system,
+        themeDescriptionValue = R.string.str_theme_system_desc
     ),
     LIGHT(
         codeValue = "theme_light",
         nameValue = R.string.str_theme_light,
-        iconValue = light
+        iconValue = light,
+        themeDescriptionValue = R.string.str_theme_light_desc
     ),
     DARK(
         codeValue = "theme_dark",
         nameValue = R.string.str_theme_dark,
-        iconValue = dark
+        iconValue = dark,
+        themeDescriptionValue = R.string.str_theme_dark_desc
     )
 }

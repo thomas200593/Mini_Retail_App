@@ -2,22 +2,29 @@
 <!-- App Identifier -->
     <string name="app_name" translatable="false">Mini Retail App</string>
 <!-- App Config -->
-    <string name="str_settings">Settings</string>
+    <string name="str_configuration">Configuration</string>
 <!-- Themes -->
     <string name="str_theme">Theme</string>
+    <string name="str_theme_desc">Change Your favorite theme preferences</string>
     <string name="str_theme_system">System Theme</string>
+    <string name="str_theme_system_desc">Your theme will following the System Configuration</string>
     <string name="str_theme_light">Light Theme</string>
+    <string name="str_theme_light_desc">Theme with light color scheme</string>
     <string name="str_theme_dark">Dark Theme</string>
+    <string name="str_theme_dark_desc">Theme with dark color scheme</string>
 <!-- Dynamic Colors -->
     <string name="str_dynamic_color">Dynamic Color</string>
+    <string name="str_dynamic_color_desc">Change your theme to use dynamic color</string>
     <string name="str_dynamic_color_enabled">Active</string>
     <string name="str_dynamic_color_disabled">Inactive</string>
 <!-- Languages -->
     <string name="str_lang">Language</string>
+    <string name="str_lang_desc">Change Your preferred language</string>
     <string name="str_lang_en">English Language</string>
     <string name="str_lang_in">Indonesian Language</string>
 <!-- Size -->
-    <string name="str_size">Size</string>
+    <string name="str_size_font">Font Size</string>
+    <string name="str_size_font_desc">Change Your preferred font size</string>
     <string name="str_size_small">Small</string>
     <string name="str_size_medium">Medium</string>
     <string name="str_size_large">Large</string>
@@ -36,4 +43,5 @@
     <string name="str_business">Business</string>
     <string name="str_reporting">Reports</string>
     <string name="str_user_profile">User Profile</string>
+
 </resources>

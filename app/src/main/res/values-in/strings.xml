@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="str_settings">Pengaturan</string>
+    <string name="str_configuration">Konfigurasi</string>
     <string name="str_theme">Tema</string>
+    <string name="str_theme_desc">Ubah tema favorit sesuai preferensi-mu</string>
     <string name="str_theme_system">Tema Sistem</string>
     <string name="str_theme_light">Tema Terang</string>
     <string name="str_theme_dark">Tema Gelap</string>
     <string name="str_dynamic_color">Warna Dinamis</string>
+    <string name="str_dynamic_color_desc">Ubah tema-mu menggunakan warna dinamis</string>
     <string name="str_dynamic_color_enabled">Aktif</string>
     <string name="str_dynamic_color_disabled">Non Aktif</string>
     <string name="str_lang">Bahasa</string>
     <string name="str_lang_en">Bahasa Inggris</string>
     <string name="str_lang_in">Bahasa Indonesia</string>
-    <string name="str_size">Ukuran</string>
+    <string name="str_size_font">Ukuran Font</string>
     <string name="str_size_small">Kecil</string>
     <string name="str_size_medium">Sedang</string>
     <string name="str_size_large">Besar</string>
@@ -26,4 +28,9 @@
     <string name="str_business">Bisnis</string>
     <string name="str_reporting">Laporan</string>
     <string name="str_user_profile">Profil Pengguna</string>
+    <string name="str_theme_system_desc">Tema-mu akan mengikuti Sistem saat ini</string>
+    <string name="str_theme_light_desc">Tema dengan skema warna cerah</string>
+    <string name="str_theme_dark_desc">Tema dengan skema warna gelap</string>
+    <string name="str_size_font_desc">Ubah ukuran font sesuai pilihan-mu</string>
+    <string name="str_lang_desc">Ubah Bahasa sesuai pilihan-mu</string>
 </resources>

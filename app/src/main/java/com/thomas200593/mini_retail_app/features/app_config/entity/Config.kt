@@ -6,7 +6,7 @@ import com.thomas200593.mini_retail_app.features.app_config.entity.Language.EN
 import com.thomas200593.mini_retail_app.features.app_config.entity.Onboarding.SHOW
 import com.thomas200593.mini_retail_app.features.app_config.entity.Theme.SYSTEM
 
-data class CurrentAppConfig(
+data class CurrentGeneralAppConfig(
     val showOnboardingPages: Onboarding = SHOW,
     val currentTheme: Theme = SYSTEM,
     val currentDynamicColor: DynamicColor = DISABLED,

@@ -12,7 +12,7 @@ import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStorePrefe
 import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStorePreferencesKeys.AuthKeys.dsAuthSessionToken
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatchers
-import com.thomas200593.mini_retail_app.features.app_config.entity.CurrentAppConfig
+import com.thomas200593.mini_retail_app.features.app_config.entity.CurrentGeneralAppConfig
 import com.thomas200593.mini_retail_app.features.app_config.entity.DynamicColor
 import com.thomas200593.mini_retail_app.features.app_config.entity.DynamicColor.DISABLED
 import com.thomas200593.mini_retail_app.features.app_config.entity.Font
@@ -36,9 +36,9 @@ class DataStorePreferences @Inject constructor(
     private val datastore: DataStore<Preferences>,
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ){
-    val currentAppConfigData = datastore.data
+    val currentGeneralAppConfigData = datastore.data
         .map { data ->
-            CurrentAppConfig(
+            CurrentGeneralAppConfig(
                 showOnboardingPages = data[dsAppShouldShowOnboardingPages] ?.let { showOnboardingPages ->
                     Onboarding.valueOf(showOnboardingPages)
                 } ?: SHOW,
