@@ -20,9 +20,11 @@ fun NavGraphBuilder.appConfigNavGraph(
             route = ScreenGraphs.AppConfig.route
         ){
             AppConfigScreen(
-                onNavigateBack = { appState.onNavigateUp() }
+                onNavigateBack = { appState.onNavigateUp() },
+                onNavigateToGeneralConfigMenu = { appState.navController.navigateToAppConfigGeneralMenu() }
             )
         }
+        appConfigGeneralNavGraph()
     }
 }
 

@@ -16,6 +16,9 @@ sealed class ScreenGraphs(
     data object AppConfig: ScreenGraphs(
         route = Routes.APP_ROUTE_APP_CONFIG
     )
+    data object AppConfigGeneral : ScreenGraphs(
+        route = Routes.APP_ROUTE_APP_CONFIG_GENERAL
+    )
     data object AppConfigGeneralLanguage : ScreenGraphs(
         route = Routes.APP_ROUTE_APP_CONFIG_GENERAL_LANGUAGE
     )

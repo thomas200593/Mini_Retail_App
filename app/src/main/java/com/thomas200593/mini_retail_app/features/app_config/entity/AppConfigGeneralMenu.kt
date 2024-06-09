@@ -8,47 +8,42 @@ import com.thomas200593.mini_retail_app.core.ui.common.Icons
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-data class GeneralAppConfigMenu(
+data class AppConfigGeneralMenu(
     val route: String,
     @DrawableRes val imageRes: Int,
     @StringRes val title: Int,
     @StringRes val description: Int,
-    val currentValue: String?
 )
 
-suspend fun getGeneralAppConfigMenu() = withContext(Dispatchers.IO){
+suspend fun getAppConfigGeneralMenu() = withContext(Dispatchers.IO){
     setOf(
         //Language
-        GeneralAppConfigMenu(
+        AppConfigGeneralMenu(
             route = ScreenGraphs.AppConfigGeneralLanguage.route,
             imageRes = Icons.Language.language,
             title = R.string.str_lang,
             description = R.string.str_lang_desc,
-            currentValue = null
         ),
         //Theme
-        GeneralAppConfigMenu(
+        AppConfigGeneralMenu(
             route = ScreenGraphs.AppConfigGeneralTheme.route,
             imageRes = Icons.Theme.theme,
             title = R.string.str_theme,
             description = R.string.str_theme_desc,
-            currentValue = null
         ),
         //Dynamic Color
-        GeneralAppConfigMenu(
+        AppConfigGeneralMenu(
             route = ScreenGraphs.AppConfigGeneralDynamicColor.route,
             imageRes = Icons.DynamicColor.dynamic_color,
             title = R.string.str_dynamic_color,
             description = R.string.str_dynamic_color_desc,
-            currentValue = null
         ),
         //Font size
-        GeneralAppConfigMenu(
+        AppConfigGeneralMenu(
             route = ScreenGraphs.AppConfigGeneralFontSize.route,
             imageRes = Icons.Font.font,
             title = R.string.str_size_font,
             description = R.string.str_size_font,
-            currentValue = null
         )
     )
 }

@@ -1,61 +1,48 @@
 package com.thomas200593.mini_retail_app.features.app_config.ui
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.thomas200593.mini_retail_app.R
-import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
 import com.thomas200593.mini_retail_app.core.ui.common.Icons.Setting.settings
 import com.thomas200593.mini_retail_app.core.ui.component.AppBar
-import com.thomas200593.mini_retail_app.features.app_config.entity.CurrentGeneralAppConfig
-import com.thomas200593.mini_retail_app.features.app_config.entity.GeneralAppConfigMenu
 
 @Composable
 fun AppConfigScreen(
     viewModel: AppConfigViewModel = hiltViewModel(),
-    onNavigateBack: () -> Unit
+    onNavigateBack: () -> Unit,
+    onNavigateToGeneralConfigMenu: () -> Unit
 ) {
     LaunchedEffect(Unit) {
         viewModel.onOpen()
     }
 
-    val currentGeneralConfigUiState by viewModel.currentGeneralConfigUiState
-    val generalConfigMenuUiState by viewModel.generalSettingMenuUiState
-
     TopAppBar(
         onNavigateBack = onNavigateBack
     )
     ScreenContent(
-        currentGeneralConfigUiState = currentGeneralConfigUiState,
-        generalConfigMenuUiState = generalConfigMenuUiState
+        onNavigateToGeneralConfigMenu = onNavigateToGeneralConfigMenu
     )
 }
 
@@ -92,8 +79,7 @@ private fun TopAppBar(
 @Composable
 private fun ScreenContent(
     modifier: Modifier = Modifier,
-    currentGeneralConfigUiState: RequestState<CurrentGeneralAppConfig>,
-    generalConfigMenuUiState: RequestState<Set<GeneralAppConfigMenu>>
+    onNavigateToGeneralConfigMenu: () -> Unit
 ) {
     Column(
         modifier = modifier
@@ -112,10 +98,13 @@ private fun ScreenContent(
          *      Font Size Selection
          *      Default Currencies Selection
          */
-        GeneralConfig(
-            generalConfigMenuUiState = generalConfigMenuUiState,
-            currentGeneralConfigUiState = currentGeneralConfigUiState
-        )
+//        GeneralConfig(
+//            generalConfigMenuUiState = generalConfigMenuUiState,
+//            onNavigateToGeneralConfigMenu = onNavigateToGeneralConfigMenu
+//        )
+        Button(onClick = { onNavigateToGeneralConfigMenu() }) {
+            Text(text = "General Configuration")
+        }
 
         /**
          * Data Setting
@@ -126,7 +115,7 @@ private fun ScreenContent(
          *      Master Data
          *          Import Master Data
          */
-        DataConfig()
+//        DataConfig()
 
         /**
          * About Application
@@ -137,19 +126,29 @@ private fun ScreenContent(
          *      Contact Developers
          *      Clear Cache
          */
-        AboutApplication()
+//        AboutApplication()
     }
 }
 
-@Composable
+/*@Composable
 private fun GeneralConfig(
     modifier: Modifier = Modifier,
-    currentGeneralConfigUiState: RequestState<CurrentGeneralAppConfig>,
-    generalConfigMenuUiState: RequestState<Set<GeneralAppConfigMenu>>
+    generalConfigMenuUiState: RequestState<Set<AppConfigGeneralMenu>>,
+    onNavigateToGeneralConfigMenu: (AppConfigGeneralMenu) -> Unit
 ) {
     when(generalConfigMenuUiState){
         RequestState.Idle -> Unit
-        RequestState.Loading -> Unit
+        RequestState.Loading -> {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Shapes.DotsLoadingAnimation()
+            }
+        }
         is RequestState.Error -> Unit
         is RequestState.Success -> {
             val generalConfigMenuData = generalConfigMenuUiState.data!!
@@ -161,10 +160,10 @@ private fun GeneralConfig(
                 horizontalAlignment = Alignment.Start
             ) {
                 Text(text = "General Configuration")
-                generalConfigMenuData.forEach { menu ->
+                generalConfigMenuData.forEach { generalConfigMenu ->
                     HorizontalDivider()
                     Surface(
-                        onClick = {},
+                        onClick = { onNavigateToGeneralConfigMenu(generalConfigMenu) },
                         shape = MaterialTheme.shapes.medium,
                         modifier = Modifier.padding(4.dp)
                     ) {
@@ -180,13 +179,12 @@ private fun GeneralConfig(
                                     modifier = modifier
                                         .fillMaxWidth(0.2f)
                                         .size(36.dp),
-                                    imageVector = ImageVector.vectorResource(id = menu.imageRes),
+                                    imageVector = ImageVector.vectorResource(id = generalConfigMenu.imageRes),
                                     contentDescription = null,
                                     tint = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                                 Column(modifier = modifier.fillMaxWidth(0.8f)) {
-                                    Text(text = stringResource(id = menu.title), fontWeight = FontWeight.Light)
-
+                                    Text(text = stringResource(id = generalConfigMenu.title), fontWeight = FontWeight.Light)
                                 }
                             }
                         }
@@ -196,14 +194,4 @@ private fun GeneralConfig(
             }
         }
     }
-}
-
-@Composable
-private fun DataConfig() {
-
-}
-
-@Composable
-private fun AboutApplication() {
-
-}
+}*/
