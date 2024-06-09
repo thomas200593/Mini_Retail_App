@@ -21,8 +21,8 @@ sealed class ScreenGraphs(
     data object Business: ScreenGraphs(
         route = Routes.APP_ROUTE_BUSINESS
     )
-    data object ReportAnalysis: ScreenGraphs(
-        route = Routes.APP_ROUTE_REPORT_ANALYSIS
+    data object Reporting: ScreenGraphs(
+        route = Routes.APP_ROUTE_REPORTING
     )
     data object UserProfile: ScreenGraphs(
         route = Routes.APP_ROUTE_USER_PROFILE

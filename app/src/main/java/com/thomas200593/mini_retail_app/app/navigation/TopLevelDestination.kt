@@ -23,11 +23,11 @@ enum class TopLevelDestination(
         unselectedIcon = Icons.TopLevelDestinations.business,
         iconTextId = R.string.str_business,
     ),
-    REPORT_ANALYSIS(
-        route = ScreenGraphs.ReportAnalysis.route,
-        selectedIcon = Icons.TopLevelDestinations.report_analysis,
-        unselectedIcon = Icons.TopLevelDestinations.report_analysis,
-        iconTextId = R.string.str_report_analysis,
+    REPORTING(
+        route = ScreenGraphs.Reporting.route,
+        selectedIcon = Icons.TopLevelDestinations.reporting,
+        unselectedIcon = Icons.TopLevelDestinations.reporting,
+        iconTextId = R.string.str_reporting,
     ),
     USER_PROFILE(
         route = ScreenGraphs.UserProfile.route,

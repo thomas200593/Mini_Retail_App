@@ -15,7 +15,7 @@ import com.thomas200593.mini_retail_app.app.navigation.TopLevelDestination
 import com.thomas200593.mini_retail_app.core.design_system.util.NetworkMonitor
 import com.thomas200593.mini_retail_app.features.business.navigation.navigateToBusiness
 import com.thomas200593.mini_retail_app.features.dashboard.navigation.navigateToDashboard
-import com.thomas200593.mini_retail_app.features.report_analysis.navigation.navigateToReportAnalysis
+import com.thomas200593.mini_retail_app.features.reporting.navigation.navigateToReporting
 import com.thomas200593.mini_retail_app.features.user_profile.navigation.navigateToUserProfile
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.SharingStarted
@@ -67,7 +67,7 @@ class AppState(
             ScreenGraphs.AppConfig.route,
             ScreenGraphs.Dashboard.route,
             ScreenGraphs.Business.route,
-            ScreenGraphs.ReportAnalysis.route,
+            ScreenGraphs.Reporting.route,
             ScreenGraphs.UserProfile.route,
         )
 
@@ -87,8 +87,8 @@ class AppState(
             TopLevelDestination.BUSINESS -> {
                 navController.navigateToBusiness(navOptions = topLevelDestinationNavOptions)
             }
-            TopLevelDestination.REPORT_ANALYSIS -> {
-                navController.navigateToReportAnalysis(navOptions = topLevelDestinationNavOptions)
+            TopLevelDestination.REPORTING -> {
+                navController.navigateToReporting(navOptions = topLevelDestinationNavOptions)
             }
             TopLevelDestination.USER_PROFILE -> {
                 navController.navigateToUserProfile(navOptions = topLevelDestinationNavOptions)

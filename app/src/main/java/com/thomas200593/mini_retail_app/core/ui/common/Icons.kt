@@ -68,7 +68,7 @@ object Icons {
     object TopLevelDestinations{
         @DrawableRes val dashboard = +app_icon_dashboard_48px
         @DrawableRes val business = +app_icon_business_48px
-        @DrawableRes val report_analysis = +app_icon_report_analysis_48px
+        @DrawableRes val reporting = +app_icon_report_analysis_48px
         @DrawableRes val user_profile = +app_icon_user_profile_48px
     }
 }
