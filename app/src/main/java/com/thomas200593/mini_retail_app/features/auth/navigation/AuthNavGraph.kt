@@ -30,10 +30,7 @@ fun NavGraphBuilder.authNavGraph(
             )
         }
         appConfigNavGraph(appState = appState)
-        dashboardNavGraph(
-            onSignOut = { appState.navController.navigateToAuth() },
-            onNavigateToAppConfig = { appState.navController.navigateToAppConfig() }
-        )
+        dashboardNavGraph()
     }
 }
 
