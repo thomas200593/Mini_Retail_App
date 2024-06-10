@@ -6,6 +6,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navOptions
 import androidx.navigation.navigation
 import com.thomas200593.mini_retail_app.app.navigation.NavigationGraphs
+import com.thomas200593.mini_retail_app.app.navigation.NavigationGraphs.G_APP_CONFIG_GENERAL
 import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs
 import com.thomas200593.mini_retail_app.features.app_config.ui.components.general_config.dynamic_color.AppConfigGeneralDynamicColorScreen
 import com.thomas200593.mini_retail_app.features.app_config.ui.components.general_config.font_size.AppConfigGeneralFontSizeScreen
@@ -62,24 +63,15 @@ fun NavGraphBuilder.appConfigGeneralNavGraph(onNavigateBack: () -> Unit, onNavig
     }
 }
 
-fun NavController.navigateToAppConfigGeneralMenu() {
-    this.navigate(
-        route = NavigationGraphs.G_APP_CONFIG_GENERAL
-    ){
-        launchSingleTop = true
-        restoreState = true
-    }
-}
-
-fun NavController.navigateToAppConfigGeneralMenuDestination(
-    configGeneralDestination: ConfigGeneralDestination
+fun NavController.navigateToAppConfigGeneral(
+    configGeneralDestination: ConfigGeneralDestination?
 ) {
     val navOptions = navOptions {
         launchSingleTop = true
         restoreState = true
     }
     this.navigate(
-        configGeneralDestination.route,
+        configGeneralDestination?.route?:G_APP_CONFIG_GENERAL,
         navOptions = navOptions
     )
 }
