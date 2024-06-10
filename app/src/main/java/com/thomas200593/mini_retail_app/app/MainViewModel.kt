@@ -15,7 +15,7 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     appConfigRepository: AppConfigRepository
 ) : ViewModel(){
-    val uiState: StateFlow<MainActivityUiState> = appConfigRepository.currentAppConfigGeneralData.map {
+    val uiState: StateFlow<MainActivityUiState> = appConfigRepository.configCurrentData.map {
         Success(it)
     }.stateIn(
         scope = viewModelScope,

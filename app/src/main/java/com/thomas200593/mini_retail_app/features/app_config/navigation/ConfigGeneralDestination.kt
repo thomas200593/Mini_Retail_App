@@ -1,4 +1,4 @@
-package com.thomas200593.mini_retail_app.features.app_config.entity
+package com.thomas200593.mini_retail_app.features.app_config.navigation
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
@@ -6,7 +6,7 @@ import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs
 import com.thomas200593.mini_retail_app.core.ui.common.Icons
 
-enum class AppConfigGeneralMenu(
+enum class ConfigGeneralDestination(
     val route: String,
     @DrawableRes val imageRes: Int,
     @StringRes val title: Int,

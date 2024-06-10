@@ -29,13 +29,13 @@ import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
 import com.thomas200593.mini_retail_app.core.ui.common.Shapes
 import com.thomas200593.mini_retail_app.core.ui.component.AppBar
-import com.thomas200593.mini_retail_app.features.app_config.entity.AppConfigGeneralMenu
+import com.thomas200593.mini_retail_app.features.app_config.navigation.ConfigGeneralDestination
 
 @Composable
 fun AppConfigGeneralScreen(
     viewModel: AppConfigGeneralViewModel = hiltViewModel(),
     onNavigateBack: () -> Unit,
-    onNavigateToMenu: (AppConfigGeneralMenu) -> Unit
+    onNavigateToMenu: (ConfigGeneralDestination) -> Unit
 ) {
     LaunchedEffect(Unit) {
         viewModel.onOpen()
@@ -47,7 +47,7 @@ fun AppConfigGeneralScreen(
         onNavigateBack = onNavigateBack
     )
     ScreenContent(
-        appConfigGeneralMenuUiState = appConfigGeneralMenuUiState,
+        configGeneralDestinationUiState = appConfigGeneralMenuUiState,
         onNavigateToMenu = onNavigateToMenu
     )
 }
@@ -78,10 +78,10 @@ private fun TopAppBar(
 @Composable
 private fun ScreenContent(
     modifier: Modifier = Modifier,
-    appConfigGeneralMenuUiState: RequestState<Set<AppConfigGeneralMenu>>,
-    onNavigateToMenu: (AppConfigGeneralMenu) -> Unit,
+    configGeneralDestinationUiState: RequestState<Set<ConfigGeneralDestination>>,
+    onNavigateToMenu: (ConfigGeneralDestination) -> Unit,
 ) {
-    when(appConfigGeneralMenuUiState){
+    when(configGeneralDestinationUiState){
         RequestState.Idle -> Unit
         RequestState.Loading -> {
             Column(
@@ -96,7 +96,7 @@ private fun ScreenContent(
         }
         is RequestState.Error -> Unit
         is RequestState.Success -> {
-            val generalConfigMenuData = appConfigGeneralMenuUiState.data
+            val generalConfigMenuData = configGeneralDestinationUiState.data
             Column(
                 modifier = modifier
                     .fillMaxWidth()

@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatchers
 import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
-import com.thomas200593.mini_retail_app.features.app_config.entity.AppConfigGeneralMenu
+import com.thomas200593.mini_retail_app.features.app_config.navigation.ConfigGeneralDestination
 import com.thomas200593.mini_retail_app.features.app_config.repository.AppConfigRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -19,16 +19,16 @@ class AppConfigGeneralViewModel @Inject constructor(
     private val appConfigRepository: AppConfigRepository,
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ): ViewModel() {
-    private val _appConfigGeneralMenuUiState: MutableState<RequestState<Set<AppConfigGeneralMenu>>> =
+    private val _ConfigGeneralDestinationUiState: MutableState<RequestState<Set<ConfigGeneralDestination>>> =
         mutableStateOf(RequestState.Idle)
-    val appConfigGeneralMenuUiState = _appConfigGeneralMenuUiState
+    val appConfigGeneralMenuUiState = _ConfigGeneralDestinationUiState
 
     fun onOpen() = viewModelScope.launch(ioDispatcher) {
         getAppConfigGeneralMenuData()
     }
 
     private suspend fun getAppConfigGeneralMenuData() {
-        _appConfigGeneralMenuUiState.value = RequestState
+        _ConfigGeneralDestinationUiState.value = RequestState
             .Success(appConfigRepository.getAppConfigGeneralMenuData())
     }
 }

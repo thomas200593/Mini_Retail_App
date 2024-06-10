@@ -133,8 +133,8 @@ private fun ScreenContent(
 /*@Composable
 private fun GeneralConfig(
     modifier: Modifier = Modifier,
-    generalConfigMenuUiState: RequestState<Set<AppConfigGeneralMenu>>,
-    onNavigateToGeneralConfigMenu: (AppConfigGeneralMenu) -> Unit
+    generalConfigMenuUiState: RequestState<Set<ConfigGeneralDestination>>,
+    onNavigateToGeneralConfigMenu: (ConfigGeneralDestination) -> Unit
 ) {
 
 }*/

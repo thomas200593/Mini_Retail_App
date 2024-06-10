@@ -34,7 +34,7 @@ object Themes{
     fun shouldUseDarkTheme(uiState: MainActivityUiState): Boolean =
         when(uiState){
             MainActivityUiState.Loading -> isSystemInDarkTheme()
-            is MainActivityUiState.Success -> when(uiState.currentAppConfigGeneral.currentTheme){
+            is MainActivityUiState.Success -> when(uiState.configCurrent.currentTheme){
                 Theme.SYSTEM -> isSystemInDarkTheme()
                 Theme.LIGHT -> false
                 Theme.DARK -> true
@@ -48,7 +48,7 @@ object Themes{
     fun shouldUseDynamicColor(uiState: MainActivityUiState): Boolean =
         when (uiState) {
             MainActivityUiState.Loading -> false
-            is MainActivityUiState.Success -> when(uiState.currentAppConfigGeneral.currentDynamicColor){
+            is MainActivityUiState.Success -> when(uiState.configCurrent.currentDynamicColor){
                 DynamicColor.ENABLED -> true
                 DynamicColor.DISABLED -> false
             }
@@ -58,7 +58,7 @@ object Themes{
     fun calculateInitialFontSize(uiState: MainActivityUiState): Font =
         when(uiState) {
             MainActivityUiState.Loading -> MEDIUM
-            is MainActivityUiState.Success -> when(uiState.currentAppConfigGeneral.currentFontSize){
+            is MainActivityUiState.Success -> when(uiState.configCurrent.currentFontSize){
                 MEDIUM -> MEDIUM
                 Font.SMALL -> Font.SMALL
                 Font.LARGE -> Font.LARGE

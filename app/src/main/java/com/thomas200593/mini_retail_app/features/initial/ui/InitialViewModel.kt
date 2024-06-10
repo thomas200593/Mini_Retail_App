@@ -25,7 +25,7 @@ class InitialViewModel @Inject constructor(
     appConfigRepository: AppConfigRepository,
     @Dispatcher(Dispatchers.Dispatchers.IO) ioDispatchers: CoroutineDispatcher
 ): ViewModel(){
-    val uiState = appConfigRepository.currentAppConfigGeneralData.flowOn(ioDispatchers)
+    val uiState = appConfigRepository.configCurrentData.flowOn(ioDispatchers)
         .combine(authRepository.authSessionToken){ currentConfig, authToken ->
             InitialUiState.Success(
                 shouldShowOnboarding = currentConfig.showOnboardingPages,

@@ -1,8 +1,8 @@
 package com.thomas200593.mini_retail_app.app
 
-import com.thomas200593.mini_retail_app.features.app_config.entity.CurrentAppConfigGeneral
+import com.thomas200593.mini_retail_app.features.app_config.entity.ConfigCurrent
 
 sealed interface MainActivityUiState {
     data object Loading: MainActivityUiState
-    data class Success(val currentAppConfigGeneral: CurrentAppConfigGeneral): MainActivityUiState
+    data class Success(val configCurrent: ConfigCurrent): MainActivityUiState
 }

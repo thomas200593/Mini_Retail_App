@@ -1,10 +1,10 @@
 package com.thomas200593.mini_retail_app.features.app_config.repository
 
-import com.thomas200593.mini_retail_app.features.app_config.entity.AppConfigGeneralMenu
-import com.thomas200593.mini_retail_app.features.app_config.entity.CurrentAppConfigGeneral
+import com.thomas200593.mini_retail_app.features.app_config.navigation.ConfigGeneralDestination
+import com.thomas200593.mini_retail_app.features.app_config.entity.ConfigCurrent
 import kotlinx.coroutines.flow.Flow
 
 interface AppConfigRepository {
-    val currentAppConfigGeneralData: Flow<CurrentAppConfigGeneral>
-    suspend fun getAppConfigGeneralMenuData(): Set<AppConfigGeneralMenu>
+    val configCurrentData: Flow<ConfigCurrent>
+    suspend fun getAppConfigGeneralMenuData(): Set<ConfigGeneralDestination>
 }
