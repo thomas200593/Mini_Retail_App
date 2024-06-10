@@ -15,9 +15,12 @@ import com.thomas200593.mini_retail_app.features.app_config.ui.components.genera
 import com.thomas200593.mini_retail_app.features.app_config.ui.components.general_config.theme.AppConfigGeneralThemeScreen
 
 
-fun NavGraphBuilder.appConfigGeneralNavGraph(onNavigateBack: () -> Unit, onNavigateToMenu:(ConfigGeneralDestination) -> Unit) {
+fun NavGraphBuilder.appConfigGeneralNavGraph(
+    onNavigateBack: () -> Unit,
+    onNavigateToMenu:(ConfigGeneralDestination) -> Unit
+) {
     navigation(
-        route = NavigationGraphs.G_APP_CONFIG_GENERAL,
+        route = G_APP_CONFIG_GENERAL,
         startDestination = ScreenGraphs.AppConfigGeneral.route
     ){
         composable(

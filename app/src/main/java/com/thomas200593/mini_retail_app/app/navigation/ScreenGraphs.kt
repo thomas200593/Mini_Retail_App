@@ -3,7 +3,6 @@ package com.thomas200593.mini_retail_app.app.navigation
 sealed class ScreenGraphs(
     val route: String
 ) {
-
     data object Initial: ScreenGraphs(
         route = Routes.APP_ROUTE_INITIAL
     )

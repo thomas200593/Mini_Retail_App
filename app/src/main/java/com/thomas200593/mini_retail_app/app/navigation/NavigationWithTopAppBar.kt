@@ -5,6 +5,8 @@ object NavigationWithTopAppBar{
         return setOf(
             ScreenGraphs.AppConfig.route,
             ScreenGraphs.AppConfigGeneral.route,
+            ScreenGraphs.AppConfigGeneralTheme.route,
+            ScreenGraphs.AppConfigGeneralDynamicColor.route,
             ScreenGraphs.Dashboard.route,
             ScreenGraphs.Business.route,
             ScreenGraphs.Reporting.route,

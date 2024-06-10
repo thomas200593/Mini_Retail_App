@@ -86,4 +86,16 @@ class DataStorePreferences @Inject constructor(
             it[dsAuthProvider] = authSessionToken.authProvider?.name!!
         }
     }
+
+    suspend fun setThemePreferences(theme: Theme) = withContext(ioDispatcher){
+        datastore.edit {
+            it[dsAppConfigTheme] = theme.name
+        }
+    }
+
+    suspend fun setDynamicColorPreferences(dynamicColor: DynamicColor) = withContext(ioDispatcher){
+        datastore.edit {
+            it[dsAppConfigDynamicColor] = dynamicColor.name
+        }
+    }
 }

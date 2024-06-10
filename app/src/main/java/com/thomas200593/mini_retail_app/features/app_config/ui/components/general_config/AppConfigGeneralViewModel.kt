@@ -19,16 +19,16 @@ class AppConfigGeneralViewModel @Inject constructor(
     private val appConfigRepository: AppConfigRepository,
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ): ViewModel() {
-    private val _ConfigGeneralDestinationUiState: MutableState<RequestState<Set<ConfigGeneralDestination>>> =
+    private val _configGeneralDestinationUiState: MutableState<RequestState<Set<ConfigGeneralDestination>>> =
         mutableStateOf(RequestState.Idle)
-    val appConfigGeneralMenuUiState = _ConfigGeneralDestinationUiState
+    val appConfigGeneralMenuUiState = _configGeneralDestinationUiState
 
     fun onOpen() = viewModelScope.launch(ioDispatcher) {
         getAppConfigGeneralMenuData()
     }
 
     private suspend fun getAppConfigGeneralMenuData() {
-        _ConfigGeneralDestinationUiState.value = RequestState
+        _configGeneralDestinationUiState.value = RequestState
             .Success(appConfigRepository.getAppConfigGeneralMenuData())
     }
 }

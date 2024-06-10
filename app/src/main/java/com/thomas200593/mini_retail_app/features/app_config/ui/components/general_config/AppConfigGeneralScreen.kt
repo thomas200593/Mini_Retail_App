@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -58,9 +57,7 @@ private fun TopAppBar(
 ){
     AppBar.ProvideTopAppBarNavigationIcon {
         Icon(
-            modifier = Modifier.clickable(
-                onClick = onNavigateBack
-            ),
+            modifier = Modifier.clickable(onClick = onNavigateBack),
             imageVector = Icons.AutoMirrored.Default.ArrowBack,
             contentDescription = null
         )
@@ -85,9 +82,7 @@ private fun ScreenContent(
         RequestState.Idle -> Unit
         RequestState.Loading -> {
             Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp),
+                modifier = Modifier.fillMaxWidth().padding(8.dp),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -98,35 +93,26 @@ private fun ScreenContent(
         is RequestState.Success -> {
             val generalConfigMenuData = configGeneralDestinationUiState.data
             Column(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(4.dp),
+                modifier = modifier.fillMaxWidth().padding(4.dp),
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.Start
             ) {
-                Text(text = "General Configuration")
                 generalConfigMenuData?.forEach { generalConfigMenu ->
-                    HorizontalDivider()
                     Surface(
                         onClick = { onNavigateToMenu(generalConfigMenu) },
                         shape = MaterialTheme.shapes.medium,
                         modifier = Modifier.padding(4.dp)
                     ) {
                         Column(
-                            modifier = modifier
-                                .fillMaxWidth()
-                                .padding(4.dp),
+                            modifier = modifier.fillMaxWidth().padding(4.dp),
                             verticalArrangement = Arrangement.spacedBy(4.dp),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Row(modifier = modifier.fillMaxWidth(1.0f)) {
                                 Icon(
-                                    modifier = modifier
-                                        .fillMaxWidth(0.2f)
-                                        .size(36.dp),
+                                    modifier = modifier.fillMaxWidth(0.2f).size(36.dp),
                                     imageVector = ImageVector.vectorResource(id = generalConfigMenu.imageRes),
                                     contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                                 Column(
                                     modifier = modifier.fillMaxWidth(0.8f),
@@ -134,13 +120,12 @@ private fun ScreenContent(
                                     horizontalAlignment = Alignment.Start
                                 ) {
                                     Text(text = stringResource(id = generalConfigMenu.title), fontWeight = FontWeight.Bold)
-                                    Text(text = stringResource(id = generalConfigMenu.description), fontWeight = FontWeight.Thin)
+                                    Text(text = stringResource(id = generalConfigMenu.description))
                                 }
                             }
                         }
                     }
                 }
-                HorizontalDivider()
             }
         }
     }

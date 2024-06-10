@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.rememberScrollState
@@ -14,6 +15,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -52,9 +54,7 @@ private fun TopAppBar(
 ) {
     AppBar.ProvideTopAppBarNavigationIcon {
         Icon(
-            modifier = Modifier.clickable(
-                onClick = onNavigateBack
-            ),
+            modifier = Modifier.clickable(onClick = onNavigateBack),
             imageVector = Icons.AutoMirrored.Default.ArrowBack,
             contentDescription = null
         )
@@ -98,13 +98,7 @@ private fun ScreenContent(
          *      Font Size Selection
          *      Default Currencies Selection
          */
-//        GeneralConfig(
-//            generalConfigMenuUiState = generalConfigMenuUiState,
-//            onNavigateToGeneralConfigMenu = onNavigateToGeneralConfigMenu
-//        )
-        Button(onClick = { onNavigateToGeneralConfigMenu() }) {
-            Text(text = "General Configuration")
-        }
+        GeneralConfig(onNavigateToGeneralConfigMenu = onNavigateToGeneralConfigMenu)
 
         /**
          * Data Setting
@@ -130,11 +124,11 @@ private fun ScreenContent(
     }
 }
 
-/*@Composable
-private fun GeneralConfig(
-    modifier: Modifier = Modifier,
-    generalConfigMenuUiState: RequestState<Set<ConfigGeneralDestination>>,
-    onNavigateToGeneralConfigMenu: (ConfigGeneralDestination) -> Unit
-) {
-
-}*/
+@Composable
+private fun GeneralConfig(onNavigateToGeneralConfigMenu:() -> Unit) {
+    Button(
+        modifier = Modifier.fillMaxWidth().padding(8.dp),
+        onClick = { onNavigateToGeneralConfigMenu() },
+        shape = MaterialTheme.shapes.medium
+    ) { Text(text = "General Configuration") }
+}

@@ -33,8 +33,8 @@ object Icons {
     }
     object DynamicColor {
         @DrawableRes val dynamic_color = +app_icon_dynamic_color_48px
-        @DrawableRes val disabled = +app_icon_dynamic_color_enabled_48px
-        @DrawableRes val enabled = +app_icon_dynamic_color_disabled_48px
+        @DrawableRes val disabled = +app_icon_dynamic_color_disabled_48px
+        @DrawableRes val enabled = +app_icon_dynamic_color_enabled_48px
     }
     object Google {
         @DrawableRes val google_logo = +R.drawable.app_icon_google_g_48px
