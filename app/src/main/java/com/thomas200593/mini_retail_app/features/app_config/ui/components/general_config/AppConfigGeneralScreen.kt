@@ -1,4 +1,4 @@
-package com.thomas200593.mini_retail_app.features.app_config.ui.components
+package com.thomas200593.mini_retail_app.features.app_config.ui.components.general_config
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -96,7 +96,7 @@ private fun ScreenContent(
         }
         is RequestState.Error -> Unit
         is RequestState.Success -> {
-            val generalConfigMenuData = appConfigGeneralMenuUiState.data!!
+            val generalConfigMenuData = appConfigGeneralMenuUiState.data
             Column(
                 modifier = modifier
                     .fillMaxWidth()
@@ -105,7 +105,7 @@ private fun ScreenContent(
                 horizontalAlignment = Alignment.Start
             ) {
                 Text(text = "General Configuration")
-                generalConfigMenuData.forEach { generalConfigMenu ->
+                generalConfigMenuData?.forEach { generalConfigMenu ->
                     HorizontalDivider()
                     Surface(
                         onClick = { onNavigateToMenu(generalConfigMenu) },

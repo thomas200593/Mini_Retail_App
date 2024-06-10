@@ -4,8 +4,7 @@ import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStorePrefe
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatchers.Dispatchers
 import com.thomas200593.mini_retail_app.features.app_config.entity.AppConfigGeneralMenu
-import com.thomas200593.mini_retail_app.features.app_config.entity.CurrentGeneralAppConfig
-import com.thomas200593.mini_retail_app.features.app_config.entity.getAppConfigGeneralMenu
+import com.thomas200593.mini_retail_app.features.app_config.entity.CurrentAppConfigGeneral
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
@@ -15,11 +14,11 @@ internal class AppConfigRepositoryImpl @Inject constructor(
     appDataStore: DataStorePreferences,
     @Dispatcher(Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ):AppConfigRepository {
-    override val currentGeneralAppConfigData: Flow<CurrentGeneralAppConfig> =
-        appDataStore.currentGeneralAppConfigData
+    override val currentAppConfigGeneralData: Flow<CurrentAppConfigGeneral> =
+        appDataStore.currentAppConfigGeneralData
 
     override suspend fun getAppConfigGeneralMenuData(): Set<AppConfigGeneralMenu> =
         withContext(ioDispatcher){
-            getAppConfigGeneralMenu()
+            AppConfigGeneralMenu.entries.toSet()
         }
 }

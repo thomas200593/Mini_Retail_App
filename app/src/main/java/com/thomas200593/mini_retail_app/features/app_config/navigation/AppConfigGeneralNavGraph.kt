@@ -8,11 +8,11 @@ import androidx.navigation.navigation
 import com.thomas200593.mini_retail_app.app.navigation.NavigationGraphs
 import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs
 import com.thomas200593.mini_retail_app.features.app_config.entity.AppConfigGeneralMenu
-import com.thomas200593.mini_retail_app.features.app_config.ui.components.AppConfigGeneralDynamicColorScreen
-import com.thomas200593.mini_retail_app.features.app_config.ui.components.AppConfigGeneralFontSizeScreen
-import com.thomas200593.mini_retail_app.features.app_config.ui.components.AppConfigGeneralLanguageScreen
-import com.thomas200593.mini_retail_app.features.app_config.ui.components.AppConfigGeneralScreen
-import com.thomas200593.mini_retail_app.features.app_config.ui.components.AppConfigGeneralThemeScreen
+import com.thomas200593.mini_retail_app.features.app_config.ui.components.general_config.dynamic_color.AppConfigGeneralDynamicColorScreen
+import com.thomas200593.mini_retail_app.features.app_config.ui.components.general_config.font_size.AppConfigGeneralFontSizeScreen
+import com.thomas200593.mini_retail_app.features.app_config.ui.components.general_config.language.AppConfigGeneralLanguageScreen
+import com.thomas200593.mini_retail_app.features.app_config.ui.components.general_config.AppConfigGeneralScreen
+import com.thomas200593.mini_retail_app.features.app_config.ui.components.general_config.theme.AppConfigGeneralThemeScreen
 
 
 fun NavGraphBuilder.appConfigGeneralNavGraph(onNavigateBack: () -> Unit, onNavigateToMenu:(AppConfigGeneralMenu) -> Unit) {
