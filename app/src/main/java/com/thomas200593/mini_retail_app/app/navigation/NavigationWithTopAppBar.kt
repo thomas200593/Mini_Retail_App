@@ -7,6 +7,7 @@ object NavigationWithTopAppBar{
             ScreenGraphs.AppConfigGeneral.route,
             ScreenGraphs.AppConfigGeneralTheme.route,
             ScreenGraphs.AppConfigGeneralDynamicColor.route,
+            ScreenGraphs.AppConfigGeneralLanguage.route,
             ScreenGraphs.Dashboard.route,
             ScreenGraphs.Business.route,
             ScreenGraphs.Reporting.route,

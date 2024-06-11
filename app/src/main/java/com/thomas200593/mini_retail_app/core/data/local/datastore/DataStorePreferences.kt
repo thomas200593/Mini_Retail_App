@@ -98,4 +98,10 @@ class DataStorePreferences @Inject constructor(
             it[dsAppConfigDynamicColor] = dynamicColor.name
         }
     }
+
+    suspend fun setLanguagePreferences(language: Language) = withContext(ioDispatcher){
+        datastore.edit {
+            it[dsAppConfigLanguage] = language.name
+        }
+    }
 }

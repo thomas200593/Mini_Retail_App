@@ -3,6 +3,7 @@ package com.thomas200593.mini_retail_app.features.app_config.repository
 import com.thomas200593.mini_retail_app.features.app_config.navigation.ConfigGeneralDestination
 import com.thomas200593.mini_retail_app.features.app_config.entity.ConfigCurrent
 import com.thomas200593.mini_retail_app.features.app_config.entity.DynamicColor
+import com.thomas200593.mini_retail_app.features.app_config.entity.Language
 import com.thomas200593.mini_retail_app.features.app_config.entity.Theme
 import kotlinx.coroutines.flow.Flow
 
@@ -13,4 +14,6 @@ interface AppConfigRepository {
     suspend fun setThemePreferences(theme: Theme)
     suspend fun getDynamicMenuPreferences(): Set<DynamicColor>
     suspend fun setDynamicColorPreferences(dynamicColor: DynamicColor)
+    suspend fun getLanguagePreferences(): Set<Language>
+    suspend fun setLanguagePreferences(language: Language)
 }

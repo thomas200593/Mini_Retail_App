@@ -6,6 +6,7 @@ import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatche
 import com.thomas200593.mini_retail_app.features.app_config.navigation.ConfigGeneralDestination
 import com.thomas200593.mini_retail_app.features.app_config.entity.ConfigCurrent
 import com.thomas200593.mini_retail_app.features.app_config.entity.DynamicColor
+import com.thomas200593.mini_retail_app.features.app_config.entity.Language
 import com.thomas200593.mini_retail_app.features.app_config.entity.Theme
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
@@ -37,5 +38,13 @@ internal class AppConfigRepositoryImpl @Inject constructor(
 
     override suspend fun setDynamicColorPreferences(dynamicColor: DynamicColor) {
         appDataStore.setDynamicColorPreferences(dynamicColor)
+    }
+
+    override suspend fun getLanguagePreferences(): Set<Language> = withContext(ioDispatcher){
+        Language.entries.toSet()
+    }
+
+    override suspend fun setLanguagePreferences(language: Language) {
+        appDataStore.setLanguagePreferences(language)
     }
 }
