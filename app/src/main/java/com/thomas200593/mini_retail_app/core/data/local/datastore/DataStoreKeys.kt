@@ -2,7 +2,7 @@ package com.thomas200593.mini_retail_app.core.data.local.datastore
 
 import androidx.datastore.preferences.core.stringPreferencesKey
 
-object DataStorePreferencesKeys {
+object DataStoreKeys {
     object AppConfigKeys {
         val dsAppShouldShowOnboardingPages = stringPreferencesKey(
             name = "DS_APP_CONFIG_SHOULD_SHOW_ONBOARDING_PAGES"

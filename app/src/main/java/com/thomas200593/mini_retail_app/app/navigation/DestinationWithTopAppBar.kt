@@ -1,7 +1,7 @@
 package com.thomas200593.mini_retail_app.app.navigation
 
-object NavigationWithTopAppBar{
-    fun navigationWithTopAppBar(): Set<String> {
+object DestinationWithTopAppBar{
+    fun destinationWithTopAppBar(): Set<String> {
         return setOf(
             /**
              * App Config

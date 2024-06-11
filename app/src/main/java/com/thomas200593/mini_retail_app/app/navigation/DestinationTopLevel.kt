@@ -5,7 +5,7 @@ import androidx.annotation.StringRes
 import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.core.ui.common.Icons
 
-enum class TopLevelDestination(
+enum class DestinationTopLevel(
     val route: String,
     @DrawableRes val selectedIcon: Int,
     @DrawableRes val unselectedIcon: Int,

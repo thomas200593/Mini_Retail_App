@@ -20,13 +20,13 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import com.thomas200593.mini_retail_app.core.ui.component.BottomBar.BottomNavigationBarDefaults.navigationContentColor
 import com.thomas200593.mini_retail_app.core.ui.component.BottomBar.BottomNavigationBarDefaults.navigationIndicatorColor
 import com.thomas200593.mini_retail_app.core.ui.component.BottomBar.BottomNavigationBarDefaults.navigationSelectedItemColor
-import com.thomas200593.mini_retail_app.app.navigation.TopLevelDestination
+import com.thomas200593.mini_retail_app.app.navigation.DestinationTopLevel
 
 object BottomBar {
     @Composable
     fun BottomBar(
-        destinations: List<TopLevelDestination>,
-        onNavigateToDestination: (TopLevelDestination) -> Unit,
+        destinations: List<DestinationTopLevel>,
+        onNavigateToDestination: (DestinationTopLevel) -> Unit,
         currentDestination: NavDestination?,
         modifier: Modifier = Modifier
     ) {
@@ -106,7 +106,7 @@ object BottomBar {
         fun navigationIndicatorColor() = MaterialTheme.colorScheme.primaryContainer
     }
 
-    private fun NavDestination?.isTopLevelDestinationInHierarchy(destination: TopLevelDestination) =
+    private fun NavDestination?.isTopLevelDestinationInHierarchy(destination: DestinationTopLevel) =
         this
             ?.hierarchy
             ?.any{

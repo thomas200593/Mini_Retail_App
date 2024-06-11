@@ -80,9 +80,9 @@ internal fun AppScreen(
         bottomBar = {
             if(appState.shouldShowBottomBar){
                 BottomBar(
-                    destinations = appState.topLevelDestinations,
-                    onNavigateToDestination = appState::navigateToTopLevelDestination,
-                    currentDestination = appState.currentDestination,
+                    destinations = appState.destinationTopLevels,
+                    onNavigateToDestination = appState::navigateToDestinationTopLevel,
+                    currentDestination = appState.destinationCurrent,
                     modifier = modifier
                 )
             }

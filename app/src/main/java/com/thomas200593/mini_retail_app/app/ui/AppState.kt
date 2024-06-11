@@ -10,8 +10,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
-import com.thomas200593.mini_retail_app.app.navigation.NavigationWithTopAppBar.navigationWithTopAppBar
-import com.thomas200593.mini_retail_app.app.navigation.TopLevelDestination
+import com.thomas200593.mini_retail_app.app.navigation.DestinationWithTopAppBar.destinationWithTopAppBar
+import com.thomas200593.mini_retail_app.app.navigation.DestinationTopLevel
 import com.thomas200593.mini_retail_app.core.design_system.util.NetworkMonitor
 import com.thomas200593.mini_retail_app.features.business.navigation.navigateToBusiness
 import com.thomas200593.mini_retail_app.features.dashboard.navigation.navigateToDashboard
@@ -27,11 +27,12 @@ fun rememberAppState(
     networkMonitor: NetworkMonitor,
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
     navController: NavHostController = rememberNavController()
-): AppState = remember(
+): AppState =
+    remember(
         networkMonitor,
         coroutineScope,
         navController
-    ){
+    ) {
         AppState(
             networkMonitor = networkMonitor,
             coroutineScope = coroutineScope,
@@ -53,20 +54,20 @@ class AppState(
             started = SharingStarted.WhileSubscribed(1_000)
         )
 
-    val currentDestination: NavDestination?
+    val destinationCurrent: NavDestination?
         @Composable get() = navController
             .currentBackStackEntryAsState().value?.destination
 
-    val topLevelDestinations: List<TopLevelDestination> = TopLevelDestination.entries
+    val destinationTopLevels: List<DestinationTopLevel> = DestinationTopLevel.entries
 
     val shouldShowBottomBar: Boolean
-        @Composable get() = currentDestination?.route in topLevelDestinations.map { it.route }
+        @Composable get() = destinationCurrent?.route in destinationTopLevels.map { it.route }
 
     val shouldShowTopBar: Boolean
-        @Composable get() = currentDestination?.route in navigationWithTopAppBar()
+        @Composable get() = destinationCurrent?.route in destinationWithTopAppBar()
 
-    fun navigateToTopLevelDestination(topLevelDestination: TopLevelDestination){
-        val topLevelDestinationNavOptions = navOptions {
+    fun navigateToDestinationTopLevel(destinationTopLevel: DestinationTopLevel){
+        val destinationTopLevelNavOptions = navOptions {
             popUpTo(navController.graph.findStartDestination().id){
                 saveState = true
             }
@@ -74,18 +75,18 @@ class AppState(
             restoreState = true
         }
 
-        when(topLevelDestination){
-            TopLevelDestination.DASHBOARD -> {
-                navController.navigateToDashboard(navOptions = topLevelDestinationNavOptions)
+        when(destinationTopLevel){
+            DestinationTopLevel.DASHBOARD -> {
+                navController.navigateToDashboard(navOptions = destinationTopLevelNavOptions)
             }
-            TopLevelDestination.BUSINESS -> {
-                navController.navigateToBusiness(navOptions = topLevelDestinationNavOptions)
+            DestinationTopLevel.BUSINESS -> {
+                navController.navigateToBusiness(navOptions = destinationTopLevelNavOptions)
             }
-            TopLevelDestination.REPORTING -> {
-                navController.navigateToReporting(navOptions = topLevelDestinationNavOptions)
+            DestinationTopLevel.REPORTING -> {
+                navController.navigateToReporting(navOptions = destinationTopLevelNavOptions)
             }
-            TopLevelDestination.USER_PROFILE -> {
-                navController.navigateToUserProfile(navOptions = topLevelDestinationNavOptions)
+            DestinationTopLevel.USER_PROFILE -> {
+                navController.navigateToUserProfile(navOptions = destinationTopLevelNavOptions)
             }
         }
     }

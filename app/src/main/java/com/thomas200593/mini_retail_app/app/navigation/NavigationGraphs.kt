@@ -1,7 +1,6 @@
 package com.thomas200593.mini_retail_app.app.navigation
 
 object NavigationGraphs {
-
     const val G_ROOT = "graph_root"
 
     const val G_INITIAL = "graph_initial"
