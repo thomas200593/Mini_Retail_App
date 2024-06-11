@@ -10,13 +10,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowRight
 import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -165,13 +163,13 @@ private fun ScreenContent(
                                 Surface(modifier = Modifier.weight(0.2f)) {
                                     Image(
                                         modifier = Modifier.height(20.dp),
-                                        imageVector = ImageVector.vectorResource(data.langIcon),
+                                        imageVector = ImageVector.vectorResource(data.iconRes),
                                         contentDescription = null
                                     )
                                 }
                                 Column(modifier = Modifier.weight(0.6f)) {
                                     Text(
-                                        text = stringResource(id = data.langName),
+                                        text = stringResource(id = data.title),
                                         modifier = Modifier.fillMaxWidth(),
                                         textAlign = TextAlign.Start,
                                         fontWeight = FontWeight.Bold

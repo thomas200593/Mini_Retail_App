@@ -111,7 +111,7 @@ private fun ScreenContent(
                             Row(modifier = modifier.fillMaxWidth(1.0f)) {
                                 Icon(
                                     modifier = modifier.fillMaxWidth(0.2f).size(36.dp),
-                                    imageVector = ImageVector.vectorResource(id = generalConfigMenu.imageRes),
+                                    imageVector = ImageVector.vectorResource(id = generalConfigMenu.iconRes),
                                     contentDescription = null,
                                 )
                                 Column(

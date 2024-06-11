@@ -62,7 +62,7 @@ class AppConfigGeneralLanguageViewModel @Inject constructor(
         appConfigRepository.setLanguagePreferences(language)
         AppCompatDelegate.setApplicationLocales(
             LocaleListCompat.create(
-                Locale(language.langCode)
+                Locale(language.code)
             )
         )
     }

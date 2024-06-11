@@ -153,19 +153,19 @@ private fun ScreenContent(
                             ) {
                                 Surface(modifier = Modifier.weight(0.2f)) {
                                     Icon(
-                                        imageVector = ImageVector.vectorResource(data.iconValue),
+                                        imageVector = ImageVector.vectorResource(data.iconRes),
                                         contentDescription = null
                                     )
                                 }
                                 Column(modifier = Modifier.weight(0.6f)) {
                                     Text(
-                                        text = stringResource(id = data.nameValue),
+                                        text = stringResource(id = data.title),
                                         modifier = Modifier.fillMaxWidth(),
                                         textAlign = TextAlign.Start,
                                         fontWeight = FontWeight.Bold
                                     )
                                     Text(
-                                        text = stringResource(id = data.themeDescriptionValue),
+                                        text = stringResource(id = data.description),
                                         modifier = Modifier.fillMaxWidth(),
                                         textAlign = TextAlign.Start
                                     )

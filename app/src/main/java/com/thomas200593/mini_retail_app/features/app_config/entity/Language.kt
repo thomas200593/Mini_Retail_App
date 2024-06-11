@@ -7,18 +7,18 @@ import com.thomas200593.mini_retail_app.core.ui.common.Icons.Language.en
 import com.thomas200593.mini_retail_app.core.ui.common.Icons.Language.id
 
 enum class Language(
-    val langCode: String,
-    @StringRes val langName: Int,
-    @DrawableRes val langIcon: Int,
+    val code: String,
+    @DrawableRes val iconRes: Int,
+    @StringRes val title: Int,
 ) {
     EN(
-        langCode = "en",
-        langName = R.string.str_lang_en,
-        langIcon = en
+        code = "en",
+        iconRes = en,
+        title = R.string.str_lang_en
     ),
     ID(
-        langCode = "in",
-        langName = R.string.str_lang_in,
-        langIcon = id
+        code = "in",
+        iconRes = id,
+        title = R.string.str_lang_in
     )
 }

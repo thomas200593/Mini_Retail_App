@@ -8,27 +8,27 @@ import com.thomas200593.mini_retail_app.core.ui.common.Icons.Theme.light
 import com.thomas200593.mini_retail_app.core.ui.common.Icons.Theme.system
 
 enum class Theme (
-    val codeValue: String,
-    @StringRes val nameValue: Int,
-    @DrawableRes val iconValue: Int,
-    @StringRes val themeDescriptionValue: Int
+    val code: String,
+    @StringRes val title: Int,
+    @DrawableRes val iconRes: Int,
+    @StringRes val description: Int
 ){
     SYSTEM(
-        codeValue = "theme_system",
-        nameValue = R.string.str_theme_system,
-        iconValue = system,
-        themeDescriptionValue = R.string.str_theme_system_desc
+        code = "theme_system",
+        title = R.string.str_theme_system,
+        iconRes = system,
+        description = R.string.str_theme_system_desc
     ),
     LIGHT(
-        codeValue = "theme_light",
-        nameValue = R.string.str_theme_light,
-        iconValue = light,
-        themeDescriptionValue = R.string.str_theme_light_desc
+        code = "theme_light",
+        title = R.string.str_theme_light,
+        iconRes = light,
+        description = R.string.str_theme_light_desc
     ),
     DARK(
-        codeValue = "theme_dark",
-        nameValue = R.string.str_theme_dark,
-        iconValue = dark,
-        themeDescriptionValue = R.string.str_theme_dark_desc
+        code = "theme_dark",
+        title = R.string.str_theme_dark,
+        iconRes = dark,
+        description = R.string.str_theme_dark_desc
     )
 }
