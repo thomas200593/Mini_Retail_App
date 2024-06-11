@@ -21,7 +21,8 @@ import javax.inject.Inject
 @HiltViewModel
 class AuthViewModel @Inject constructor(
     private val authRepository: AuthRepository,
-    @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
+    @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
+    @Dispatcher(Dispatchers.Dispatchers.Default) private val defaultDispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
     private val _authSessionTokenState: MutableState<RequestState<AuthSessionToken>> = mutableStateOf(Idle)
@@ -41,7 +42,7 @@ class AuthViewModel @Inject constructor(
 
             if(authRepository.validateAuthSessionToken(authSessionToken)){
                 authRepository.saveAuthSessionToken(authSessionToken)
-                withContext(kotlinx.coroutines.Dispatchers.Main) {
+                withContext(defaultDispatcher) {
                     _authSessionTokenState.value = RequestState.Success(authSessionToken)
                 }
             }else{
