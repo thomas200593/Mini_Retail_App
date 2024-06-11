@@ -35,21 +35,6 @@ class AuthViewModel @Inject constructor(
     }
 
     fun verifyAndSaveAuthSession(authSessionToken: AuthSessionToken){
-        //Previous Version
-        /*updateAuthSIWGButtonState(true)
-        viewModelScope.launch(ioDispatcher){
-            _authSessionTokenState.value = Loading
-            if(authRepository.validateAuthSessionToken(authSessionToken)){
-                viewModelScope.launch {
-                    authRepository.saveAuthSessionToken(authSessionToken)
-                    _authSessionTokenState.value = RequestState.Success(authSessionToken)
-                }
-            }else{
-                viewModelScope.launch {
-                    authRepository.clearAuthSessionToken()
-                }
-            }
-        }*/
         updateAuthSIWGButtonState(true)
         viewModelScope.launch(ioDispatcher) {
             _authSessionTokenState.value = Loading
