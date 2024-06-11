@@ -22,6 +22,9 @@ object DataStoreKeys {
         val dsAppConfigTimezone = stringPreferencesKey(
             name = "DS_APP_CONFIG_TIMEZONE"
         )
+        val dsAppConfigCurrency = stringPreferencesKey(
+            name = "DS_APP_CONFIG_CURRENCY"
+        )
     }
 
     object AuthKeys {

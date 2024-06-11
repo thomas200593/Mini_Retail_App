@@ -3,6 +3,7 @@ package com.thomas200593.mini_retail_app.core.data.local.datastore
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
+import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStoreKeys.AppConfigKeys.dsAppConfigCurrency
 import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStoreKeys.AppConfigKeys.dsAppConfigDynamicColor
 import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStoreKeys.AppConfigKeys.dsAppConfigFontSize
 import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStoreKeys.AppConfigKeys.dsAppConfigLanguage
@@ -13,8 +14,10 @@ import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStoreKeys.
 import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStoreKeys.AuthKeys.dsAuthSessionToken
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatchers
+import com.thomas200593.mini_retail_app.core.util.CurrencyHelper
 import com.thomas200593.mini_retail_app.core.util.TimezoneHelper
 import com.thomas200593.mini_retail_app.features.app_config.entity.ConfigCurrent
+import com.thomas200593.mini_retail_app.features.app_config.entity.Currency
 import com.thomas200593.mini_retail_app.features.app_config.entity.DynamicColor
 import com.thomas200593.mini_retail_app.features.app_config.entity.DynamicColor.DISABLED
 import com.thomas200593.mini_retail_app.features.app_config.entity.Font
@@ -59,7 +62,10 @@ class DataStorePreferences @Inject constructor(
                 } ?: EN,
                 currentTimezone = data[dsAppConfigTimezone] ?.let { timezoneOffset ->
                     Timezone(timezoneOffset)
-                } ?: TimezoneHelper.TIMEZONE_DEFAULT
+                } ?: TimezoneHelper.TIMEZONE_DEFAULT,
+                currentCurrency = data[dsAppConfigCurrency] ?.let { currencyCode ->
+                    Currency(currencyCode)
+                } ?: CurrencyHelper.CURRENCY_DEFAULT
             )
         }
 

@@ -14,6 +14,7 @@ object Routes {
     const val APP_ROUTE_APP_CONFIG_GENERAL_THEME: String = "r_app_config_general_theme"
     const val APP_ROUTE_APP_CONFIG_GENERAL_DYNAMIC_COLOR: String = "r_app_config_general_dynamic_color"
     const val APP_ROUTE_APP_CONFIG_GENERAL_FONT_SIZE: String = "r_app_config_general_font_size"
+    const val APP_ROUTE_APP_CONFIG_GENERAL_CURRENCY: String = "r_app_config_general_currency"
 
     const val APP_ROUTE_DASHBOARD: String = "r_dashboard"
 

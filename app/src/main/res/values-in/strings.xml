@@ -19,6 +19,8 @@
     <string name="str_size_medium">Sedang</string>
     <string name="str_size_large">Besar</string>
     <string name="str_size_extra_large">Ekstra Besar</string>
+    <string name="str_currency">Mata Uang</string>
+    <string name="str_currency_desc">Ubah preferensi mata uang untuk bertransaksi-mu</string>
     <string name="str_network">Jaringan</string>
     <string name="str_network_not_connected">Jaringan Tidak Terhubung</string>
     <string name="str_onboarding">Halaman Onboarding</string>

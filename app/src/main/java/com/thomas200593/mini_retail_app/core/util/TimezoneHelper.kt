@@ -31,8 +31,6 @@ object TimezoneHelper {
             }
             uniqueOffset.add(Timezone(formattedOffset))
         }
-        uniqueOffset.toList().sortedBy {
-            it.timezoneOffset
-        }
+        uniqueOffset.toList().sortedBy { it.timezoneOffset }
     }
 }

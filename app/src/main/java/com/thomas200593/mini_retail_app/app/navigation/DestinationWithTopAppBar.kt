@@ -12,6 +12,7 @@ object DestinationWithTopAppBar{
             ScreenGraphs.AppConfigGeneralDynamicColor.route,
             ScreenGraphs.AppConfigGeneralLanguage.route,
             ScreenGraphs.AppConfigGeneralTimezone.route,
+            ScreenGraphs.AppConfigGeneralCurrency.route,
             /**
              * Dashboard
              */

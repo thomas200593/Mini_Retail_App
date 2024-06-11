@@ -3,9 +3,11 @@ package com.thomas200593.mini_retail_app.features.app_config.repository
 import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStorePreferences
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatchers.Dispatchers
+import com.thomas200593.mini_retail_app.core.util.CurrencyHelper
 import com.thomas200593.mini_retail_app.core.util.TimezoneHelper
 import com.thomas200593.mini_retail_app.features.app_config.navigation.ConfigGeneralDestination
 import com.thomas200593.mini_retail_app.features.app_config.entity.ConfigCurrent
+import com.thomas200593.mini_retail_app.features.app_config.entity.Currency
 import com.thomas200593.mini_retail_app.features.app_config.entity.DynamicColor
 import com.thomas200593.mini_retail_app.features.app_config.entity.Language
 import com.thomas200593.mini_retail_app.features.app_config.entity.Theme
@@ -56,5 +58,9 @@ internal class AppConfigRepositoryImpl @Inject constructor(
 
     override suspend fun setTimezonePreferences(timezone: Timezone) {
         appDataStore.setTimezonePreferences(timezone)
+    }
+
+    override suspend fun getCurrencyPreferences(): List<Currency> = withContext(ioDispatcher){
+        CurrencyHelper.getCurrencies()
     }
 }

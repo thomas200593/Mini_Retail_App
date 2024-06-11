@@ -40,6 +40,12 @@ enum class ConfigGeneralDestination(
         route = ScreenGraphs.AppConfigGeneralFontSize.route,
         iconRes = Icons.Font.font,
         title = R.string.str_size_font,
-        description = R.string.str_size_font,
+        description = R.string.str_size_font_desc,
+    ),
+    CURRENCY(
+        route = ScreenGraphs.AppConfigGeneralCurrency.route,
+        iconRes = Icons.Currency.currency,
+        title = R.string.str_currency,
+        description = R.string.str_currency_desc
     )
 }

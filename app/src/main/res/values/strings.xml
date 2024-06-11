@@ -32,6 +32,9 @@
     <string name="str_size_medium">Medium</string>
     <string name="str_size_large">Large</string>
     <string name="str_size_extra_large">Extra Large</string>
+<!-- Currency -->
+    <string name="str_currency">Currency</string>
+    <string name="str_currency_desc">Change Your preferred currency for Your transaction</string>
 <!-- Network -->
     <string name="str_network">Network</string>
     <string name="str_network_not_connected">Network Not Connected</string>

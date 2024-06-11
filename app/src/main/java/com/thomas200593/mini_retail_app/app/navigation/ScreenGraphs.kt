@@ -3,6 +3,7 @@ package com.thomas200593.mini_retail_app.app.navigation
 sealed class ScreenGraphs(
     val route: String
 ) {
+
     data object Initial: ScreenGraphs(
         route = Routes.APP_ROUTE_INITIAL
     )
@@ -32,6 +33,9 @@ sealed class ScreenGraphs(
     )
     data object AppConfigGeneralDynamicColor: ScreenGraphs (
         route = Routes.APP_ROUTE_APP_CONFIG_GENERAL_DYNAMIC_COLOR
+    )
+    data object AppConfigGeneralCurrency: ScreenGraphs(
+        route = Routes.APP_ROUTE_APP_CONFIG_GENERAL_CURRENCY
     )
     data object Dashboard: ScreenGraphs(
         route = Routes.APP_ROUTE_DASHBOARD
