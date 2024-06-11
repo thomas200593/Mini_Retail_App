@@ -35,7 +35,8 @@ class AuthViewModel @Inject constructor(
     }
 
     fun verifyAndSaveAuthSession(authSessionToken: AuthSessionToken){
-        updateAuthSIWGButtonState(true)
+        //Previous Version
+        /*updateAuthSIWGButtonState(true)
         viewModelScope.launch(ioDispatcher){
             _authSessionTokenState.value = Loading
             if(authRepository.validateAuthSessionToken(authSessionToken)){
@@ -47,6 +48,19 @@ class AuthViewModel @Inject constructor(
                 viewModelScope.launch {
                     authRepository.clearAuthSessionToken()
                 }
+            }
+        }*/
+        updateAuthSIWGButtonState(true)
+        viewModelScope.launch(ioDispatcher) {
+            _authSessionTokenState.value = Loading
+
+            if(authRepository.validateAuthSessionToken(authSessionToken)){
+                authRepository.saveAuthSessionToken(authSessionToken)
+                withContext(kotlinx.coroutines.Dispatchers.Main) {
+                    _authSessionTokenState.value = RequestState.Success(authSessionToken)
+                }
+            }else{
+                authRepository.clearAuthSessionToken()
             }
         }
     }

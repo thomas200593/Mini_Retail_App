@@ -29,14 +29,13 @@ object NavigationHost{
                 onNavigateToOnboarding = navController::navigateToOnboarding,
                 onNavigateToAuth = navController::navigateToAuth,
                 onNavigateToDashboard = {
-                    navController
-                        .navigateToDashboard(
-                            navOptions = NavOptions.Builder()
-                                .setPopUpTo(route = G_INITIAL, inclusive = true, saveState = true)
-                                .setLaunchSingleTop(true)
-                                .setRestoreState(true)
-                                .build()
-                        )
+                    navController.navigateToDashboard(
+                        navOptions = NavOptions.Builder()
+                            .setPopUpTo(route = G_INITIAL, inclusive = true, saveState = true)
+                            .setLaunchSingleTop(true)
+                            .setRestoreState(true)
+                            .build()
+                    )
                 }
             )
         }

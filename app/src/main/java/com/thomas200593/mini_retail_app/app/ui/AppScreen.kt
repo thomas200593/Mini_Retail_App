@@ -89,11 +89,10 @@ internal fun AppScreen(
         },
         content = { padding ->
             Surface(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(padding)
-                    .consumeWindowInsets(padding)
-                    .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal)),
+                modifier = Modifier.fillMaxSize().padding(padding).consumeWindowInsets(padding)
+                    .windowInsetsPadding(
+                        WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal)
+                    ),
                 content = {
                     NavigationHost(
                         appState = appState,
