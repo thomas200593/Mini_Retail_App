@@ -24,6 +24,9 @@ sealed class ScreenGraphs(
     data object AppConfigGeneralTheme: ScreenGraphs (
         route = Routes.APP_ROUTE_APP_CONFIG_GENERAL_THEME
     )
+    data object AppConfigGeneralTimezone: ScreenGraphs(
+        route = Routes.APP_ROUTE_APP_CONFIG_GENERAL_TIMEZONE
+    )
     data object AppConfigGeneralFontSize: ScreenGraphs(
         route = Routes.APP_ROUTE_APP_CONFIG_GENERAL_FONT_SIZE
     )

@@ -5,6 +5,7 @@ import com.thomas200593.mini_retail_app.features.app_config.entity.ConfigCurrent
 import com.thomas200593.mini_retail_app.features.app_config.entity.DynamicColor
 import com.thomas200593.mini_retail_app.features.app_config.entity.Language
 import com.thomas200593.mini_retail_app.features.app_config.entity.Theme
+import com.thomas200593.mini_retail_app.features.app_config.entity.Timezone
 import kotlinx.coroutines.flow.Flow
 
 interface AppConfigRepository {
@@ -16,4 +17,6 @@ interface AppConfigRepository {
     suspend fun setDynamicColorPreferences(dynamicColor: DynamicColor)
     suspend fun getLanguagePreferences(): Set<Language>
     suspend fun setLanguagePreferences(language: Language)
+    suspend fun getTimezonePreferences(): List<Timezone>
+    suspend fun setTimezonePreferences(timezone: Timezone)
 }

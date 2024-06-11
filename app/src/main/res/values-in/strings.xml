@@ -6,6 +6,7 @@
     <string name="str_theme_system">Tema Sistem</string>
     <string name="str_theme_light">Tema Terang</string>
     <string name="str_theme_dark">Tema Gelap</string>
+    <string name="str_timezone">Zona waktu</string>
     <string name="str_dynamic_color">Warna Dinamis</string>
     <string name="str_dynamic_color_desc">Ubah tema-mu menggunakan warna dinamis</string>
     <string name="str_dynamic_color_enabled">Aktif</string>

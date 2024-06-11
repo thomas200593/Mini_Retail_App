@@ -11,6 +11,7 @@ object NavigationWithTopAppBar{
             ScreenGraphs.AppConfigGeneralTheme.route,
             ScreenGraphs.AppConfigGeneralDynamicColor.route,
             ScreenGraphs.AppConfigGeneralLanguage.route,
+            ScreenGraphs.AppConfigGeneralTimezone.route,
             /**
              * Dashboard
              */

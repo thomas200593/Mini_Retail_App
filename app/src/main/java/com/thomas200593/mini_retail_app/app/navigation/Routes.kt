@@ -10,6 +10,7 @@ object Routes {
     const val APP_ROUTE_APP_CONFIG: String = "r_app_config"
     const val APP_ROUTE_APP_CONFIG_GENERAL: String = "r_app_config_general"
     const val APP_ROUTE_APP_CONFIG_GENERAL_LANGUAGE: String = "r_app_config_general_language"
+    const val APP_ROUTE_APP_CONFIG_GENERAL_TIMEZONE: String = "r_app_config_general_timezone"
     const val APP_ROUTE_APP_CONFIG_GENERAL_THEME: String = "r_app_config_general_theme"
     const val APP_ROUTE_APP_CONFIG_GENERAL_DYNAMIC_COLOR: String = "r_app_config_general_dynamic_color"
     const val APP_ROUTE_APP_CONFIG_GENERAL_FONT_SIZE: String = "r_app_config_general_font_size"

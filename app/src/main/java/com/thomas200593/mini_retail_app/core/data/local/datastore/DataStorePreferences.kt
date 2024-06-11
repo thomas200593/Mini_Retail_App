@@ -7,11 +7,13 @@ import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStorePrefe
 import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStorePreferencesKeys.AppConfigKeys.dsAppConfigFontSize
 import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStorePreferencesKeys.AppConfigKeys.dsAppConfigLanguage
 import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStorePreferencesKeys.AppConfigKeys.dsAppConfigTheme
+import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStorePreferencesKeys.AppConfigKeys.dsAppConfigTimezone
 import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStorePreferencesKeys.AppConfigKeys.dsAppShouldShowOnboardingPages
 import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStorePreferencesKeys.AuthKeys.dsAuthProvider
 import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStorePreferencesKeys.AuthKeys.dsAuthSessionToken
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatchers
+import com.thomas200593.mini_retail_app.core.util.TimezoneHelper
 import com.thomas200593.mini_retail_app.features.app_config.entity.ConfigCurrent
 import com.thomas200593.mini_retail_app.features.app_config.entity.DynamicColor
 import com.thomas200593.mini_retail_app.features.app_config.entity.DynamicColor.DISABLED
@@ -24,6 +26,7 @@ import com.thomas200593.mini_retail_app.features.app_config.entity.Onboarding.HI
 import com.thomas200593.mini_retail_app.features.app_config.entity.Onboarding.SHOW
 import com.thomas200593.mini_retail_app.features.app_config.entity.Theme
 import com.thomas200593.mini_retail_app.features.app_config.entity.Theme.SYSTEM
+import com.thomas200593.mini_retail_app.features.app_config.entity.Timezone
 import com.thomas200593.mini_retail_app.features.auth.entity.AuthSessionToken
 import com.thomas200593.mini_retail_app.features.auth.entity.OAuthProvider
 import kotlinx.coroutines.CoroutineDispatcher
@@ -54,6 +57,9 @@ class DataStorePreferences @Inject constructor(
                 currentLanguage = data[dsAppConfigLanguage] ?.let { languageString ->
                     Language.valueOf(languageString)
                 } ?: EN,
+                currentTimezone = data[dsAppConfigTimezone] ?.let { timezoneOffset ->
+                    Timezone(timezoneOffset)
+                } ?: TimezoneHelper.TIMEZONE_DEFAULT
             )
         }
 
@@ -102,6 +108,12 @@ class DataStorePreferences @Inject constructor(
     suspend fun setLanguagePreferences(language: Language) = withContext(ioDispatcher){
         datastore.edit {
             it[dsAppConfigLanguage] = language.name
+        }
+    }
+
+    suspend fun setTimezonePreferences(timezone: Timezone) = withContext(ioDispatcher){
+        datastore.edit {
+            it[dsAppConfigTimezone] = timezone.timezoneOffset
         }
     }
 }

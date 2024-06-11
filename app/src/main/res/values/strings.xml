@@ -13,6 +13,8 @@
     <string name="str_theme_light_desc">Theme with light color scheme</string>
     <string name="str_theme_dark">Dark Theme</string>
     <string name="str_theme_dark_desc">Theme with dark color scheme</string>
+<!-- Timezone -->
+    <string name="str_timezone">Timezone</string>
 <!-- Dynamic Colors -->
     <string name="str_dynamic_color">Dynamic Color</string>
     <string name="str_dynamic_color_desc">Change your theme to use dynamic color</string>

@@ -18,6 +18,12 @@ enum class ConfigGeneralDestination(
         title = R.string.str_lang,
         description = R.string.str_lang_desc
     ),
+    TIMEZONE(
+        route = ScreenGraphs.AppConfigGeneralTimezone.route,
+        iconRes = Icons.Timezone.timezone,
+        title = R.string.str_timezone,
+        description = R.string.str_timezone
+    ),
     THEME(
         route = ScreenGraphs.AppConfigGeneralTheme.route,
         iconRes = Icons.Theme.theme,
