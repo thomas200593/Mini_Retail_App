@@ -91,12 +91,12 @@ private fun ScreenContent(
     ) {
         /**
          * General Config
-         *      Theme Selection
-         *      Dynamic Color Selection
-         *      Language Selection
-         *      Timezone Selection
+         *      Theme Selection V
+         *      Dynamic Color Selection V
+         *      Language Selection V
+         *      Timezone Selection V
+         *      Default Currencies Selection V
          *      Font Size Selection
-         *      Default Currencies Selection
          */
         GeneralConfig(onNavigateToGeneralConfigMenu = onNavigateToGeneralConfigMenu)
 

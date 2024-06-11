@@ -34,7 +34,7 @@ object BottomBar {
             modifier = modifier
         ){
             destinations.forEach { destination ->
-                val selected = currentDestination.isTopLevelDestinationInHierarchy(destination)
+                val selected = currentDestination.isDestinationTopLevelInHierarchy(destination)
                 BottomNavigationBarItems(
                     selected = selected,
                     onClick = { onNavigateToDestination(destination) },
@@ -106,7 +106,7 @@ object BottomBar {
         fun navigationIndicatorColor() = MaterialTheme.colorScheme.primaryContainer
     }
 
-    private fun NavDestination?.isTopLevelDestinationInHierarchy(destination: DestinationTopLevel) =
+    private fun NavDestination?.isDestinationTopLevelInHierarchy(destination: DestinationTopLevel) =
         this
             ?.hierarchy
             ?.any{
