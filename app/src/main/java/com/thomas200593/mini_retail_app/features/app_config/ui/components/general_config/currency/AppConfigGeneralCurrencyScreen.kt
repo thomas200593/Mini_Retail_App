@@ -31,9 +31,12 @@ fun AppConfigGeneralCurrencyScreen(
     ) {
         val curr = CurrencyUnit.registeredCurrencies()
         curr.forEach { it ->
-            Text(text = it.code)
-            Text(text = it.symbol)
-            Text(text = it.toCurrency().displayName)
+            Text(text = "Code : ${it.code}")
+            Text(text = "Symbol : ${it.symbol}")
+            Text(text = "Display Name: ${it.toCurrency().displayName}")
+            Text(text = "Numeric Code : ${it.toCurrency().numericCode}")
+            Text(text = "Fraction Digit : ${it.toCurrency().defaultFractionDigits}")
+            Text(text = "Decimal Places : [${it.decimalPlaces}]")
             HorizontalDivider(modifier = Modifier.padding(10.dp))
         }
     }
