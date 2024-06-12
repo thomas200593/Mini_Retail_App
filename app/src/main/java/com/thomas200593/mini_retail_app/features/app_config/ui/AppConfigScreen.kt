@@ -85,7 +85,7 @@ private fun ScreenContent(
         modifier = modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(4.dp),
+            .padding(8.dp),
         verticalArrangement = Arrangement.spacedBy(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -112,12 +112,20 @@ private fun ScreenContent(
 //        DataConfig()
 
         /**
+         * Security Related Settings (Need Log in)
+         *      Permissions
+         *      Connected Peripherals
+         *      Notifications
+         */
+//        SecurityConfig()
+
+        /**
          * About Application
          *      App Version
          *      Terms and Conditions
          *      Privacy Policy
          *      Open Source License
-         *      Contact Developers
+         *      Contact Developers [Google Form API]
          *      Clear Cache
          */
 //        AboutApplication()
