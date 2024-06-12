@@ -55,4 +55,8 @@ class AppConfigGeneralCurrencyViewModel @Inject constructor(
                 }
             }
     }
+
+    fun saveSelectedCurrency(currency: Currency) = viewModelScope.launch {
+        appConfigRepository.setCurrencyPreferences(currency)
+    }
 }

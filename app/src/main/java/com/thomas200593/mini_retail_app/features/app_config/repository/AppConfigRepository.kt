@@ -21,4 +21,5 @@ interface AppConfigRepository {
     suspend fun getTimezonePreferences(): List<Timezone>
     suspend fun setTimezonePreferences(timezone: Timezone)
     suspend fun getCurrencyPreferences(): List<Currency>
+    suspend fun setCurrencyPreferences(currency: Currency)
 }

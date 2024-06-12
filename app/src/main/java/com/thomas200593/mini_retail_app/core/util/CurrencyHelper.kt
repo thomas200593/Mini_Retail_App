@@ -8,17 +8,31 @@ import timber.log.Timber
 
 private const val TAG = "CurrencyHelper"
 object CurrencyHelper {
-    private const val USD = "USD"
-    val CURRENCY_DEFAULT = Currency(USD)
+    private val USD = CurrencyUnit.USD
+    val CURRENCY_DEFAULT = Currency(
+        code = USD.code,
+        displayName = USD.toCurrency().displayName,
+        symbol = USD.symbol,
+        defaultFractionDigits = USD.toCurrency().defaultFractionDigits,
+        decimalPlaces = USD.decimalPlaces
+    )
     suspend fun getCurrencies() = withContext(Dispatchers.IO){
         Timber.d("Called : %s.getCurrencies()", TAG)
         val currencies = CurrencyUnit.registeredCurrencies()
         val sets = HashSet<Currency>()
         for(currency in currencies){
             val code = currency.code
+            val displayName = currency.toCurrency().displayName
+            val symbol = currency.symbol
+            val defaultFractionDigits = currency.toCurrency().defaultFractionDigits
+            val decimalPlaces = currency.decimalPlaces
             sets.add(
                 Currency(
-                    code = code
+                    code = code,
+                    displayName = displayName,
+                    symbol = symbol,
+                    defaultFractionDigits = defaultFractionDigits,
+                    decimalPlaces = decimalPlaces
                 )
             )
         }

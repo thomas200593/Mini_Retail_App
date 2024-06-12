@@ -63,4 +63,8 @@ internal class AppConfigRepositoryImpl @Inject constructor(
     override suspend fun getCurrencyPreferences(): List<Currency> = withContext(ioDispatcher){
         CurrencyHelper.getCurrencies()
     }
+
+    override suspend fun setCurrencyPreferences(currency: Currency) {
+        appDataStore.setCurrencyPreferences(currency)
+    }
 }

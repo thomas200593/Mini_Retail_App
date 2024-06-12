@@ -36,6 +36,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
+import org.joda.money.CurrencyUnit
 import javax.inject.Inject
 
 class DataStorePreferences @Inject constructor(
@@ -64,7 +65,13 @@ class DataStorePreferences @Inject constructor(
                     Timezone(timezoneOffset)
                 } ?: TimezoneHelper.TIMEZONE_DEFAULT,
                 currentCurrency = data[dsAppConfigCurrency] ?.let { currencyCode ->
-                    Currency(currencyCode)
+                    Currency(
+                        code = currencyCode,
+                        displayName = CurrencyUnit.of(currencyCode).toCurrency().displayName,
+                        symbol = CurrencyUnit.of(currencyCode).symbol,
+                        defaultFractionDigits = CurrencyUnit.of(currencyCode).toCurrency().defaultFractionDigits,
+                        decimalPlaces = CurrencyUnit.of(currencyCode).decimalPlaces
+                    )
                 } ?: CurrencyHelper.CURRENCY_DEFAULT
             )
         }
@@ -120,6 +127,12 @@ class DataStorePreferences @Inject constructor(
     suspend fun setTimezonePreferences(timezone: Timezone) = withContext(ioDispatcher){
         datastore.edit {
             it[dsAppConfigTimezone] = timezone.timezoneOffset
+        }
+    }
+
+    suspend fun setCurrencyPreferences(currency: Currency) = withContext(ioDispatcher){
+        datastore.edit {
+            it[dsAppConfigCurrency] = currency.code
         }
     }
 }
