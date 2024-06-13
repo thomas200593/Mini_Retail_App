@@ -94,6 +94,7 @@ fun AuthScreen(
                     },
                     onError = {
                         viewModel.clearAuthSessionToken()
+                        Toast.makeText(activityContext, "Error: $it", Toast.LENGTH_LONG).show()
                     },
                     onDialogDismissed = {
                         viewModel.clearAuthSessionToken()
