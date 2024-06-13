@@ -27,10 +27,12 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
 import com.thomas200593.mini_retail_app.features.onboarding.entity.Onboarding
 import com.thomas200593.mini_retail_app.features.onboarding.entity.Onboarding.Tags.TAG_ONBOARD_SCREEN_IMAGE_VIEW
@@ -113,6 +115,8 @@ private fun ScreenContent(
                     onFinishedOnboarding = onFinishedOnboarding
                 )
                 TabSelector(
+                    modifier = Modifier
+                        .padding(top = 16.dp),
                     onboardingPagesData = onboardingPagesData,
                     currentPage = currentPage,
                     onTabSelected = onTabSelected
@@ -189,20 +193,35 @@ fun OnboardNavButton(
 ) {
     Button(
         modifier = modifier.testTag(TAG_ONBOARD_SCREEN_NAV_BUTTON),
-        onClick = { if (currentPage < onboardingPagesSize - 1) onNextClicked() else onFinishedOnboarding() },
-        content = { Text(text = if (currentPage < onboardingPagesSize - 1) "Next" else "Get Started") }
+        onClick = {
+            if (currentPage < onboardingPagesSize - 1) {
+                onNextClicked()
+            } else {
+                onFinishedOnboarding()
+            }
+        },
+        content = {
+            Text(
+                text = if (currentPage < onboardingPagesSize - 1) {
+                    stringResource(id = R.string.str_onboarding_next)
+                } else {
+                    stringResource(id = R.string.str_onboarding_get_started)
+                }
+            )
+        }
     )
 }
 
 @Composable
 fun TabSelector(
+    modifier: Modifier,
     onboardingPagesData: List<Onboarding.OnboardingPage>,
     currentPage: Int,
     onTabSelected: (Int) -> Unit
 ) {
     TabRow(
         selectedTabIndex = currentPage,
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.primary)
             .testTag(TAG_ONBOARD_TAG_ROW)

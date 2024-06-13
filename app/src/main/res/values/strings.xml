@@ -42,6 +42,8 @@
     <string name="str_onboarding">Onboarding Pages</string>
     <string name="str_onboarding_show">Show Onboarding Pages</string>
     <string name="str_onboarding_hide">Hide Onboarding Pages</string>
+    <string name="str_onboarding_next">Next</string>
+    <string name="str_onboarding_get_started">Get Started</string>
 <!-- Auth -->
     <string name="str_auth">Authentication</string>
 <!-- Dashboard -->

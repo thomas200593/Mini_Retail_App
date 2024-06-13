@@ -26,6 +26,8 @@
     <string name="str_onboarding">Halaman Onboarding</string>
     <string name="str_onboarding_show">Tampilkan Halaman Onboarding</string>
     <string name="str_onboarding_hide">Sembunyikan Halaman Onboarding</string>
+    <string name="str_onboarding_next">Lanjut</string>
+    <string name="str_onboarding_get_started">Mulai</string>
     <string name="str_auth">Otentikasi</string>
     <string name="str_dashboard">Dashbor</string>
     <string name="str_business">Bisnis</string>
