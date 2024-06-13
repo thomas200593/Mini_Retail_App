@@ -57,22 +57,6 @@ fun AppConfigGeneralCurrencyScreen(
         configCurrent = configCurrent,
         onSaveSelectedCurrency = viewModel::saveSelectedCurrency
     )
-    /*Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-    ) {
-        val curr = CurrencyUnit.registeredCurrencies()
-        curr.forEach { it ->
-            Text(text = "Code : ${it.code}")
-            Text(text = "Symbol : ${it.symbol}")
-            Text(text = "Display Name: ${it.toCurrency().displayName}")
-            Text(text = "Numeric Code : ${it.toCurrency().numericCode}")
-            Text(text = "Fraction Digit : ${it.toCurrency().defaultFractionDigits}")
-            Text(text = "Decimal Places : [${it.decimalPlaces}]")
-            HorizontalDivider(modifier = Modifier.padding(10.dp))
-        }
-    }*/
 }
 
 @Composable
