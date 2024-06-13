@@ -13,7 +13,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.thomas200593.mini_retail_app.core.ui.common.Shapes.DotsLoadingAnimation
-import com.thomas200593.mini_retail_app.features.app_config.entity.Onboarding
+import com.thomas200593.mini_retail_app.features.app_config.entity.OnboardingStatus
 import com.thomas200593.mini_retail_app.features.initial.ui.InitialUiState.Success
 
 @Composable
@@ -29,24 +29,24 @@ fun InitialScreen(
         InitialUiState.Loading -> { ScreenContent() }
         is Success -> {
             val isSessionValid = (uiState as Success).isSessionValid
-            val shouldShowOnboarding = (uiState as Success).shouldShowOnboarding
+            val shouldShowOnboarding = (uiState as Success).onboardingPagesStatus
             when(isSessionValid){
                 true -> {
                     when(shouldShowOnboarding){
-                        Onboarding.SHOW -> {
+                        OnboardingStatus.SHOW -> {
                             LaunchedEffect(key1 = uiState) { onNavigateToOnboarding() }
                         }
-                        Onboarding.HIDE -> {
+                        OnboardingStatus.HIDE -> {
                             LaunchedEffect(key1 = uiState) { onNavigateToDashboard() }
                         }
                     }
                 }
                 false -> {
                     when(shouldShowOnboarding){
-                        Onboarding.SHOW -> {
+                        OnboardingStatus.SHOW -> {
                             LaunchedEffect(key1 = uiState) { onNavigateToOnboarding() }
                         }
-                        Onboarding.HIDE -> {
+                        OnboardingStatus.HIDE -> {
                             LaunchedEffect(key1 = uiState) { onNavigateToAuthScreen() }
                         }
                     }

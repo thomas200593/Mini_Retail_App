@@ -9,7 +9,7 @@ import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStoreKeys.
 import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStoreKeys.AppConfigKeys.dsAppConfigLanguage
 import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStoreKeys.AppConfigKeys.dsAppConfigTheme
 import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStoreKeys.AppConfigKeys.dsAppConfigTimezone
-import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStoreKeys.AppConfigKeys.dsAppShouldShowOnboardingPages
+import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStoreKeys.AppConfigKeys.dsAppConfigOnboardingPagesStatus
 import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStoreKeys.AuthKeys.dsAuthProvider
 import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStoreKeys.AuthKeys.dsAuthSessionToken
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatcher
@@ -24,9 +24,9 @@ import com.thomas200593.mini_retail_app.features.app_config.entity.Font
 import com.thomas200593.mini_retail_app.features.app_config.entity.Font.MEDIUM
 import com.thomas200593.mini_retail_app.features.app_config.entity.Language
 import com.thomas200593.mini_retail_app.features.app_config.entity.Language.EN
-import com.thomas200593.mini_retail_app.features.app_config.entity.Onboarding
-import com.thomas200593.mini_retail_app.features.app_config.entity.Onboarding.HIDE
-import com.thomas200593.mini_retail_app.features.app_config.entity.Onboarding.SHOW
+import com.thomas200593.mini_retail_app.features.app_config.entity.OnboardingStatus
+import com.thomas200593.mini_retail_app.features.app_config.entity.OnboardingStatus.HIDE
+import com.thomas200593.mini_retail_app.features.app_config.entity.OnboardingStatus.SHOW
 import com.thomas200593.mini_retail_app.features.app_config.entity.Theme
 import com.thomas200593.mini_retail_app.features.app_config.entity.Theme.SYSTEM
 import com.thomas200593.mini_retail_app.features.app_config.entity.Timezone
@@ -46,8 +46,8 @@ class DataStorePreferences @Inject constructor(
     val configCurrentData = datastore.data
         .map { data ->
             ConfigCurrent(
-                showOnboardingPages = data[dsAppShouldShowOnboardingPages] ?.let { showOnboardingPages ->
-                    Onboarding.valueOf(showOnboardingPages)
+                onboardingPagesStatus = data[dsAppConfigOnboardingPagesStatus] ?.let { onboardingPagesStatus ->
+                    OnboardingStatus.valueOf(onboardingPagesStatus)
                 } ?: SHOW,
                 currentTheme = data[dsAppConfigTheme] ?.let { themeString ->
                     Theme.valueOf(themeString)
@@ -78,7 +78,7 @@ class DataStorePreferences @Inject constructor(
 
     suspend fun hideOnboarding() = withContext(ioDispatcher){
         datastore.edit {
-            it[dsAppShouldShowOnboardingPages] = HIDE.name
+            it[dsAppConfigOnboardingPagesStatus] = HIDE.name
         }
     }
 

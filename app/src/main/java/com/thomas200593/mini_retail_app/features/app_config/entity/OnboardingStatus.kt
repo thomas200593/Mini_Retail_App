@@ -6,18 +6,18 @@ import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.core.ui.common.Icons.Onboarding.hide
 import com.thomas200593.mini_retail_app.core.ui.common.Icons.Onboarding.show
 
-enum class Onboarding(
+enum class OnboardingStatus(
     val code: String,
     @StringRes val title: Int,
     @DrawableRes val iconRes: Int,
 ) {
     SHOW(
-        code = "onboarding_pages_show",
+        code = "onboarding_pages_status_show",
         title = R.string.str_onboarding_show,
         iconRes = show
     ),
     HIDE(
-        code = "onboarding_pages_hide",
+        code = "onboarding_pages_status_hide",
         title = R.string.str_onboarding_hide,
         iconRes = hide
     )

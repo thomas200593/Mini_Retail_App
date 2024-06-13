@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatchers
-import com.thomas200593.mini_retail_app.features.app_config.entity.Onboarding
+import com.thomas200593.mini_retail_app.features.app_config.entity.OnboardingStatus
 import com.thomas200593.mini_retail_app.features.app_config.repository.AppConfigRepository
 import com.thomas200593.mini_retail_app.features.auth.repository.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -28,7 +28,7 @@ class InitialViewModel @Inject constructor(
     val uiState = appConfigRepository.configCurrentData.flowOn(ioDispatchers)
         .combine(authRepository.authSessionToken){ currentConfig, authToken ->
             InitialUiState.Success(
-                shouldShowOnboarding = currentConfig.showOnboardingPages,
+                onboardingPagesStatus = currentConfig.onboardingPagesStatus,
                 isSessionValid = authRepository.validateAuthSessionToken(authToken)
             )
         }
@@ -46,6 +46,6 @@ sealed interface InitialUiState{
     data object Loading: InitialUiState
     data class Success(
         val isSessionValid: Boolean,
-        val shouldShowOnboarding: Onboarding
+        val onboardingPagesStatus: OnboardingStatus
     ): InitialUiState
 }

@@ -4,8 +4,8 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 
 object DataStoreKeys {
     object AppConfigKeys {
-        val dsAppShouldShowOnboardingPages = stringPreferencesKey(
-            name = "DS_APP_CONFIG_SHOULD_SHOW_ONBOARDING_PAGES"
+        val dsAppConfigOnboardingPagesStatus = stringPreferencesKey(
+            name = "DS_APP_CONFIG_ONBOARDING_PAGES_STATUS"
         )
         val dsAppConfigTheme = stringPreferencesKey(
             name = "DS_APP_CONFIG_THEME"

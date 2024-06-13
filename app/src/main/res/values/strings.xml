@@ -38,7 +38,7 @@
 <!-- Network -->
     <string name="str_network">Network</string>
     <string name="str_network_not_connected">Network Not Connected</string>
-<!-- Onboarding -->
+<!-- OnboardingStatus -->
     <string name="str_onboarding">Onboarding Pages</string>
     <string name="str_onboarding_show">Show Onboarding Pages</string>
     <string name="str_onboarding_hide">Hide Onboarding Pages</string>
