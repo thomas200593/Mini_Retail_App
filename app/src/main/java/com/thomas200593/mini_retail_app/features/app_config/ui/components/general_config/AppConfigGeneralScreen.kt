@@ -1,12 +1,16 @@
 package com.thomas200593.mini_retail_app.features.app_config.ui.components.general_config
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Icon
@@ -18,10 +22,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.thomas200593.mini_retail_app.R
@@ -40,13 +46,13 @@ fun AppConfigGeneralScreen(
         viewModel.onOpen()
     }
 
-    val appConfigGeneralMenuUiState by viewModel.appConfigGeneralMenuUiState
+    val generalMenuPreferences by viewModel.generalMenuPreferences
 
     TopAppBar(
         onNavigateBack = onNavigateBack
     )
     ScreenContent(
-        configGeneralDestinationUiState = appConfigGeneralMenuUiState,
+        generalMenuPreferences = generalMenuPreferences,
         onNavigateToMenu = onNavigateToMenu
     )
 }
@@ -74,54 +80,82 @@ private fun TopAppBar(
 
 @Composable
 private fun ScreenContent(
-    modifier: Modifier = Modifier,
-    configGeneralDestinationUiState: RequestState<Set<ConfigGeneralDestination>>,
-    onNavigateToMenu: (ConfigGeneralDestination) -> Unit,
+    generalMenuPreferences: RequestState<Set<ConfigGeneralDestination>>,
+    onNavigateToMenu: (ConfigGeneralDestination) -> Unit
 ) {
-    when(configGeneralDestinationUiState){
+    when(generalMenuPreferences){
         RequestState.Idle -> Unit
         RequestState.Loading -> {
             Column(
-                modifier = Modifier.fillMaxWidth().padding(8.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Shapes.DotsLoadingAnimation()
+                Text(text = "Loading your preferences data...")
             }
         }
-        is RequestState.Error -> Unit
-        is RequestState.Success -> {
-            val generalConfigMenuData = configGeneralDestinationUiState.data
+        is RequestState.Error -> {
             Column(
-                modifier = modifier.fillMaxWidth().padding(4.dp),
-                verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.Start
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                generalConfigMenuData?.forEach { generalConfigMenu ->
+                Text(text = "Error getting your preferences data...")
+            }
+        }
+        is RequestState.Success -> {
+            val appConfigGeneralMenuPreferences = generalMenuPreferences.data ?: emptySet()
+
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(8.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                items(count = appConfigGeneralMenuPreferences.count()){ index ->
+                    val menu = appConfigGeneralMenuPreferences.elementAt(index)
                     Surface(
-                        onClick = { onNavigateToMenu(generalConfigMenu) },
+                        modifier = Modifier
+                            .fillMaxWidth(1.0f),
                         shape = MaterialTheme.shapes.medium,
-                        modifier = Modifier.padding(4.dp)
+                        border = BorderStroke(width = 1.dp, color = Color(0xFF747775)),
+                        onClick = { onNavigateToMenu(menu) }
                     ) {
-                        Column(
-                            modifier = modifier.fillMaxWidth().padding(4.dp),
-                            verticalArrangement = Arrangement.spacedBy(4.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth(1.0f)
+                                .padding(8.dp)
+                                .height(intrinsicSize = IntrinsicSize.Max),
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Row(modifier = modifier.fillMaxWidth(1.0f)) {
+                            Surface(modifier = Modifier.weight(0.2f)) {
                                 Icon(
-                                    modifier = modifier.fillMaxWidth(0.2f).size(36.dp),
-                                    imageVector = ImageVector.vectorResource(id = generalConfigMenu.iconRes),
-                                    contentDescription = null,
+                                    imageVector = ImageVector.vectorResource(menu.iconRes),
+                                    contentDescription = null
                                 )
-                                Column(
-                                    modifier = modifier.fillMaxWidth(0.8f),
-                                    verticalArrangement = Arrangement.Center,
-                                    horizontalAlignment = Alignment.Start
-                                ) {
-                                    Text(text = stringResource(id = generalConfigMenu.title), fontWeight = FontWeight.Bold)
-                                    Text(text = stringResource(id = generalConfigMenu.description))
-                                }
+                            }
+                            Column(
+                                modifier = Modifier.weight(0.8f),
+                                verticalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                Text(
+                                    text = stringResource(id = menu.title),
+                                    modifier = Modifier.fillMaxWidth(),
+                                    textAlign = TextAlign.Start,
+                                    fontWeight = FontWeight.Bold
+                                )
+                                Text(
+                                    text = stringResource(id = menu.description),
+                                    modifier = Modifier.fillMaxWidth(),
+                                    textAlign = TextAlign.Start
+                                )
                             }
                         }
                     }

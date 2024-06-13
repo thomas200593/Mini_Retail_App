@@ -83,7 +83,7 @@ fun TopAppBar(
 }
 
 @Composable
-fun ScreenContent(
+private fun ScreenContent(
     currencyPreferences: RequestState<List<Currency>>,
     configCurrent: RequestState<ConfigCurrent>,
     onSaveSelectedCurrency: (Currency) -> Unit
