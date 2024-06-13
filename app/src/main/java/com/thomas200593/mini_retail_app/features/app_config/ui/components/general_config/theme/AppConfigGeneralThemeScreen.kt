@@ -1,5 +1,6 @@
 package com.thomas200593.mini_retail_app.features.app_config.ui.components.general_config.theme
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -24,6 +25,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -154,39 +156,52 @@ private fun ScreenContent(
                     ) {
                         items(count = appThemePreferences.count()){index ->
                             val data = appThemePreferences.elementAt(index)
-                            Row(
-                                modifier = Modifier.fillMaxWidth(1.0f).padding(4.dp).height(intrinsicSize = IntrinsicSize.Max),
-                                horizontalArrangement = Arrangement.Center,
-                                verticalAlignment = Alignment.CenterVertically
+                            Surface(
+                                modifier = Modifier
+                                    .fillMaxWidth(1.0f),
+                                shape = MaterialTheme.shapes.medium,
+                                border = BorderStroke(width = 1.dp, color = Color(0xFF747775))
                             ) {
-                                Surface(modifier = Modifier.weight(0.2f)) {
-                                    Icon(
-                                        imageVector = ImageVector.vectorResource(data.iconRes),
-                                        contentDescription = null
-                                    )
-                                }
-                                Column(modifier = Modifier.weight(0.6f)) {
-                                    Text(
-                                        text = stringResource(id = data.title),
-                                        modifier = Modifier.fillMaxWidth(),
-                                        textAlign = TextAlign.Start,
-                                        fontWeight = FontWeight.Bold
-                                    )
-                                    Text(
-                                        text = stringResource(id = data.description),
-                                        modifier = Modifier.fillMaxWidth(),
-                                        textAlign = TextAlign.Start
-                                    )
-                                }
-                                Surface(
-                                    modifier = Modifier.weight(0.2f),
-                                    onClick = { onSaveSelectedTheme(data) }
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth(1.0f)
+                                        .padding(8.dp)
+                                        .height(intrinsicSize = IntrinsicSize.Max),
+                                    horizontalArrangement = Arrangement.Center,
+                                    verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    Icon(
-                                        imageVector = if (data == currentTheme) Icons.Default.CheckCircle else Icons.AutoMirrored.Outlined.KeyboardArrowRight,
-                                        contentDescription = null,
-                                        tint = if (data == currentTheme) Color.Green else MaterialTheme.colorScheme.onTertiaryContainer
-                                    )
+                                    Surface(modifier = Modifier.weight(0.2f)) {
+                                        Icon(
+                                            imageVector = ImageVector.vectorResource(data.iconRes),
+                                            contentDescription = null
+                                        )
+                                    }
+                                    Column(
+                                        modifier = Modifier.weight(0.6f),
+                                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                                    ) {
+                                        Text(
+                                            text = stringResource(id = data.title),
+                                            modifier = Modifier.fillMaxWidth(),
+                                            textAlign = TextAlign.Start,
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                        Text(
+                                            text = stringResource(id = data.description),
+                                            modifier = Modifier.fillMaxWidth(),
+                                            textAlign = TextAlign.Start
+                                        )
+                                    }
+                                    Surface(
+                                        modifier = Modifier.weight(0.2f),
+                                        onClick = { onSaveSelectedTheme(data) }
+                                    ) {
+                                        Icon(
+                                            imageVector = if (data == currentTheme) Icons.Default.CheckCircle else Icons.AutoMirrored.Outlined.KeyboardArrowRight,
+                                            contentDescription = null,
+                                            tint = if (data == currentTheme) Color.Green else MaterialTheme.colorScheme.onTertiaryContainer
+                                        )
+                                    }
                                 }
                             }
                         }
