@@ -106,7 +106,9 @@ private fun ScreenContent(
         }
         is RequestState.Error -> {
             Column(
-                modifier = Modifier.fillMaxWidth().padding(8.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -118,7 +120,9 @@ private fun ScreenContent(
                 RequestState.Idle -> Unit
                 RequestState.Loading -> {
                     Column(
-                        modifier = Modifier.fillMaxWidth().padding(8.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp),
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
@@ -128,7 +132,9 @@ private fun ScreenContent(
                 }
                 is RequestState.Error -> {
                     Column(
-                        modifier = Modifier.fillMaxWidth().padding(8.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp),
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
@@ -140,7 +146,9 @@ private fun ScreenContent(
                     val appThemePreferences = themePreferences.data ?: emptySet()
 
                     LazyColumn(
-                        modifier = Modifier.fillMaxSize().padding(8.dp),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(8.dp),
                         verticalArrangement = Arrangement.spacedBy(10.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
