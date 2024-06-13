@@ -19,9 +19,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -34,111 +31,107 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
 import com.thomas200593.mini_retail_app.features.onboarding.entity.Onboarding
 import com.thomas200593.mini_retail_app.features.onboarding.entity.Onboarding.Tags.TAG_ONBOARD_SCREEN_IMAGE_VIEW
 import com.thomas200593.mini_retail_app.features.onboarding.entity.Onboarding.Tags.TAG_ONBOARD_SCREEN_NAV_BUTTON
 import com.thomas200593.mini_retail_app.features.onboarding.entity.Onboarding.Tags.TAG_ONBOARD_TAG_ROW
-import kotlinx.coroutines.launch
 
 @Composable
 fun OnboardingScreen(
     viewModel: OnboardingViewModel = hiltViewModel(),
     onOnboardingFinished: () -> Unit = {}
 ){
-    val scope = rememberCoroutineScope()
-    val onboardPages = Onboarding.pageList
-    val currentPage = remember { mutableIntStateOf(0) }
+    LaunchedEffect(Unit) {
+        viewModel.onOpen()
+    }
+
+    val onboardingPages by viewModel.onboardingPages
+    val currentPage by viewModel.currentPage.collectAsStateWithLifecycle()
     val isOnboardingFinished by viewModel.isOnboardingFinished.collectAsStateWithLifecycle()
 
     LaunchedEffect(isOnboardingFinished) {
-        if(isOnboardingFinished) {
+        if(isOnboardingFinished){
             onOnboardingFinished()
         }
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .testTag(Onboarding.Tags.TAG_ONBOARD_SCREEN)
-    ) {
-        OnboardingImageView(
-            modifier = Modifier
-                .weight(1.0f)
-                .fillMaxWidth(),
-            currentPage = onboardPages[currentPage.intValue]
-        )
-
-        OnboardingDetails(
-            modifier = Modifier
-                .weight(1.0f)
-                .padding(16.dp),
-            currentPage = onboardPages[currentPage.intValue]
-        )
-
-        OnBoardNavButton(
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(top = 16.dp),
-            currentPage = currentPage.intValue,
-            noOfPages = onboardPages.size,
-            onNextClicked = { currentPage.intValue++ },
-            onFinishedOnboarding = { scope.launch { viewModel.hideOnboarding() } }
-        )
-
-        TabSelector(
-            onboardPages = onboardPages,
-            currentPage = currentPage.intValue,
-            onTabSelected = { index -> currentPage.intValue = index }
-        )
-    }
-}
-
-@Composable
-fun OnboardingDetails(
-    modifier: Modifier = Modifier,
-    currentPage: Onboarding.OnboardingPage
-) {
-    Column(
-        modifier = modifier
-    ) {
-        Text(
-            text = currentPage.title,
-            style = MaterialTheme.typography.displaySmall,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(
-            text = currentPage.description,
-            style = MaterialTheme.typography.bodyMedium,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth()
-        )
-    }
-}
-
-@Composable
-fun OnBoardNavButton(
-    modifier: Modifier = Modifier,
-    currentPage: Int,
-    noOfPages: Int,
-    onNextClicked: () -> Unit,
-    onFinishedOnboarding: () -> Unit
-) {
-    Button(
-        modifier = modifier.testTag(TAG_ONBOARD_SCREEN_NAV_BUTTON),
-        onClick = { if (currentPage < noOfPages - 1) onNextClicked() else onFinishedOnboarding() },
-        content = { Text(text = if (currentPage < noOfPages - 1) "Next" else "Get Started") }
+    ScreenContent(
+        onboardingPages = onboardingPages,
+        currentPage = currentPage,
+        onTabSelected = { index ->
+            viewModel.onSelectedPage(index)
+        },
+        onNextClicked = {
+            viewModel.onNextButtonClicked()
+        },
+        onFinishedOnboarding = {
+            viewModel.hideOnboarding()
+        }
     )
 }
 
+@Composable
+private fun ScreenContent(
+    onboardingPages: RequestState<List<Onboarding.OnboardingPage>>,
+    currentPage: Int,
+    onTabSelected: (Int) -> Unit,
+    onNextClicked: () -> Unit,
+    onFinishedOnboarding: () -> Unit,
+) {
+    when(onboardingPages){
+        RequestState.Idle -> Unit
+        RequestState.Loading -> {}
+        is RequestState.Error -> {}
+        is RequestState.Success -> {
+            val onboardingPagesData = onboardingPages.data?: emptyList()
+
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .testTag(Onboarding.Tags.TAG_ONBOARD_SCREEN)
+            ) {
+                OnboardingImageView(
+                    modifier = Modifier
+                        .weight(1.0f)
+                        .fillMaxWidth(),
+                    currentPage = onboardingPagesData[currentPage]
+                )
+                OnboardingDetails(
+                    modifier = Modifier
+                        .weight(1.0f)
+                        .padding(16.dp),
+                    currentPage = onboardingPagesData[currentPage]
+                )
+                OnboardNavButton(
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .padding(top = 16.dp),
+                    currentPage = currentPage,
+                    onboardingPagesSize = onboardingPagesData.size,
+                    onNextClicked = onNextClicked,
+                    onFinishedOnboarding = onFinishedOnboarding
+                )
+                TabSelector(
+                    onboardingPagesData = onboardingPagesData,
+                    currentPage = currentPage,
+                    onTabSelected = onTabSelected
+                )
+            }
+        }
+    }
+}
+
 
 @Composable
-fun OnboardingImageView(modifier: Modifier = Modifier, currentPage: Onboarding.OnboardingPage) {
+fun OnboardingImageView(
+    modifier: Modifier,
+    currentPage: Onboarding.OnboardingPage
+) {
     val imageRes = currentPage.imageRes
     Box(
         modifier = modifier.testTag(TAG_ONBOARD_SCREEN_IMAGE_VIEW + currentPage.title)
-    ) {
+    ){
         Image(
             painter = painterResource(id = imageRes),
             contentDescription = null,
@@ -163,19 +156,65 @@ fun OnboardingImageView(modifier: Modifier = Modifier, currentPage: Onboarding.O
 }
 
 @Composable
-fun TabSelector(onboardPages: List<Onboarding.OnboardingPage>, currentPage: Int, onTabSelected: (Int) -> Unit) {
+fun OnboardingDetails(
+    modifier: Modifier,
+    currentPage: Onboarding.OnboardingPage
+) {
+    Column(
+        modifier = modifier
+    ) {
+        Text(
+            text = currentPage.title,
+            style = MaterialTheme.typography.displaySmall,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth()
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            text = currentPage.description,
+            style = MaterialTheme.typography.bodyMedium,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth()
+        )
+    }
+}
+
+@Composable
+fun OnboardNavButton(
+    modifier: Modifier,
+    currentPage: Int,
+    onboardingPagesSize: Int,
+    onNextClicked: () -> Unit,
+    onFinishedOnboarding: () -> Unit
+) {
+    Button(
+        modifier = modifier.testTag(TAG_ONBOARD_SCREEN_NAV_BUTTON),
+        onClick = { if (currentPage < onboardingPagesSize - 1) onNextClicked() else onFinishedOnboarding() },
+        content = { Text(text = if (currentPage < onboardingPagesSize - 1) "Next" else "Get Started") }
+    )
+}
+
+@Composable
+fun TabSelector(
+    onboardingPagesData: List<Onboarding.OnboardingPage>,
+    currentPage: Int,
+    onTabSelected: (Int) -> Unit
+) {
     TabRow(
         selectedTabIndex = currentPage,
         modifier = Modifier
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.primary)
             .testTag(TAG_ONBOARD_TAG_ROW)
-
     ) {
-        onboardPages.forEachIndexed { index, _ ->
-            Tab(selected = index == currentPage, onClick = {
-                onTabSelected(index)
-            }, modifier = Modifier.padding(16.dp), content = {
+        onboardingPagesData.forEachIndexed { index, _ ->
+            Tab(
+                modifier = Modifier.padding(16.dp),
+                selected = index == currentPage,
+                onClick = {
+                    onTabSelected(index)
+                }
+            ) {
                 Box(
                     modifier = Modifier
                         .testTag("$TAG_ONBOARD_TAG_ROW$index")
@@ -185,7 +224,7 @@ fun TabSelector(onboardPages: List<Onboarding.OnboardingPage>, currentPage: Int,
                             else Color.LightGray, shape = RoundedCornerShape(4.dp)
                         )
                 )
-            })
+            }
         }
     }
 }
