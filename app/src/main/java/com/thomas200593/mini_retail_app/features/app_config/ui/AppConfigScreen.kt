@@ -1,6 +1,5 @@
 package com.thomas200593.mini_retail_app.features.app_config.ui
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,11 +10,13 @@ import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -53,25 +54,44 @@ private fun TopAppBar(
     onNavigateBack: () -> Unit
 ) {
     AppBar.ProvideTopAppBarNavigationIcon {
-        Icon(
-            modifier = Modifier.clickable(onClick = onNavigateBack),
-            imageVector = Icons.AutoMirrored.Default.ArrowBack,
-            contentDescription = null
-        )
+        Surface(
+            onClick = onNavigateBack,
+            modifier = Modifier
+        ) {
+            Icon(
+                modifier = Modifier,
+                imageVector = Icons.AutoMirrored.Default.KeyboardArrowLeft,
+                contentDescription = null
+            )
+        }
     }
     AppBar.ProvideTopAppBarTitle {
         Row(
-            modifier = Modifier.padding(start = 4.dp),
-            verticalAlignment = Alignment.CenterVertically
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ){
             Icon(
                 modifier = Modifier
-                    .sizeIn(maxHeight = ButtonDefaults.IconSize)
-                    .padding(end = 4.dp),
+                    .sizeIn(maxHeight = ButtonDefaults.IconSize),
                 imageVector = ImageVector.vectorResource(id = settings),
                 contentDescription = null
             )
             Text(text = stringResource(id = R.string.str_configuration))
+        }
+    }
+    AppBar.ProvideTopAppBarAction {
+        Row(
+            modifier = Modifier.padding(end = 20.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ){
+            Icon(
+                modifier = Modifier
+                    .sizeIn(maxHeight = ButtonDefaults.IconSize),
+                imageVector = Icons.Default.Info,
+                contentDescription = null
+            )
         }
     }
 }
@@ -135,7 +155,9 @@ private fun ScreenContent(
 @Composable
 private fun GeneralConfig(onNavigateToGeneralConfigMenu:() -> Unit) {
     Button(
-        modifier = Modifier.fillMaxWidth().padding(8.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp),
         onClick = { onNavigateToGeneralConfigMenu() },
         shape = MaterialTheme.shapes.medium
     ) { Text(text = "General Configuration") }
