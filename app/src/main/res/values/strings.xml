@@ -51,5 +51,7 @@
     <string name="str_business">Business</string>
     <string name="str_reporting">Reports</string>
     <string name="str_user_profile">User Profile</string>
+    <string name="str_loading">Loading</string>
+    <string name="str_error">Error</string>
 
 </resources>

@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.thomas200593.mini_retail_app.R
@@ -77,7 +78,11 @@ private fun TopAppBar(
                 imageVector = ImageVector.vectorResource(id = settings),
                 contentDescription = null
             )
-            Text(text = stringResource(id = R.string.str_configuration))
+            Text(
+                text = stringResource(id = R.string.str_configuration),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
         }
     }
     AppBar.ProvideTopAppBarAction {
@@ -116,7 +121,7 @@ private fun ScreenContent(
          *      Language Selection V
          *      Timezone Selection V
          *      Default Currencies Selection V
-         *      Font Size Selection
+         *      Font Size Selection V
          */
         GeneralConfig(onNavigateToGeneralConfigMenu = onNavigateToGeneralConfigMenu)
 
@@ -160,5 +165,11 @@ private fun GeneralConfig(onNavigateToGeneralConfigMenu:() -> Unit) {
             .padding(8.dp),
         onClick = { onNavigateToGeneralConfigMenu() },
         shape = MaterialTheme.shapes.medium
-    ) { Text(text = "General Configuration") }
+    ) { 
+        Text(
+            text = stringResource(id = R.string.str_configuration_general),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        ) 
+    }
 }

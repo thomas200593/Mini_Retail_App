@@ -30,6 +30,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.thomas200593.mini_retail_app.R
@@ -88,7 +89,11 @@ private fun TopAppBar(
                 imageVector = ImageVector.vectorResource(id = settings_general),
                 contentDescription = null
             )
-            Text(text = stringResource(id = R.string.str_configuration_general))
+            Text(
+                text = stringResource(id = R.string.str_configuration_general),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
         }
     }
     AppBar.ProvideTopAppBarAction {
@@ -123,7 +128,11 @@ private fun ScreenContent(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Shapes.DotsLoadingAnimation()
-                Text(text = "Loading your preferences data...")
+                Text(
+                    text = stringResource(id = R.string.str_loading),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
             }
         }
         is RequestState.Error -> {
@@ -134,7 +143,11 @@ private fun ScreenContent(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(text = "Error getting your preferences data...")
+                Text(
+                    text = stringResource(id = R.string.str_error),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
             }
         }
         is RequestState.Success -> {
@@ -178,12 +191,16 @@ private fun ScreenContent(
                                     text = stringResource(id = menu.title),
                                     modifier = Modifier.fillMaxWidth(),
                                     textAlign = TextAlign.Start,
-                                    fontWeight = FontWeight.Bold
+                                    fontWeight = FontWeight.Bold,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
                                 )
                                 Text(
                                     text = stringResource(id = menu.description),
                                     modifier = Modifier.fillMaxWidth(),
-                                    textAlign = TextAlign.Start
+                                    textAlign = TextAlign.Start,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
                                 )
                             }
                         }

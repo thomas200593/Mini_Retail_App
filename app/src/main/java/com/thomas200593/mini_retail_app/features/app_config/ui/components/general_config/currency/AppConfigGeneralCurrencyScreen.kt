@@ -32,6 +32,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -93,7 +94,11 @@ private fun TopAppBar(
                 imageVector = ImageVector.vectorResource(id = currency),
                 contentDescription = null
             )
-            Text(text = stringResource(id = R.string.str_currency))
+            Text(
+                text = stringResource(id = R.string.str_currency),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
         }
     }
     AppBar.ProvideTopAppBarAction {
@@ -129,7 +134,11 @@ private fun ScreenContent(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Shapes.DotsLoadingAnimation()
-                Text(text = "Loading your preferences data...")
+                Text(
+                    text = stringResource(id = R.string.str_loading),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
             }
         }
         is RequestState.Error -> {
@@ -140,7 +149,11 @@ private fun ScreenContent(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(text = "Error getting your preferences data...")
+                Text(
+                    text = stringResource(id = R.string.str_error),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
             }
         }
         is RequestState.Success -> {
@@ -155,7 +168,11 @@ private fun ScreenContent(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Shapes.DotsLoadingAnimation()
-                        Text(text = "Loading Currency Preferences...")
+                        Text(
+                            text = stringResource(id = R.string.str_loading),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
                     }
                 }
                 is RequestState.Error -> {
@@ -166,7 +183,11 @@ private fun ScreenContent(
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text(text = "Error getting preferences data...")
+                        Text(
+                            text = stringResource(id = R.string.str_error),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
                     }
                 }
                 is RequestState.Success -> {
@@ -205,7 +226,9 @@ private fun ScreenContent(
                                             text = data.code,
                                             modifier = Modifier.fillMaxWidth(),
                                             textAlign = TextAlign.Center,
-                                            fontWeight = FontWeight.Bold
+                                            fontWeight = FontWeight.Bold,
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis
                                         )
                                     }
                                     Column(modifier = Modifier.weight(0.6f)) {
@@ -213,13 +236,17 @@ private fun ScreenContent(
                                             text = data.displayName,
                                             modifier = Modifier.fillMaxWidth(),
                                             textAlign = TextAlign.Start,
-                                            fontWeight = FontWeight.Bold
+                                            fontWeight = FontWeight.Bold,
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis
                                         )
                                         Text(
                                             text = data.symbol,
                                             modifier = Modifier.fillMaxWidth(),
                                             textAlign = TextAlign.Start,
-                                            fontWeight = FontWeight.Bold
+                                            fontWeight = FontWeight.Bold,
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis
                                         )
                                     }
                                     Surface(

@@ -39,4 +39,6 @@
     <string name="str_size_font_desc">Ubah ukuran fontSize sesuai pilihan-mu</string>
     <string name="str_lang_desc">Ubah Bahasa sesuai pilihan-mu</string>
     <string name="str_configuration_general">Pengaturan Umum</string>
+    <string name="str_loading">Memuat</string>
+    <string name="str_error">Galat</string>
 </resources>

@@ -32,6 +32,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -93,7 +94,11 @@ private fun TopAppBar(
                 imageVector = ImageVector.vectorResource(id = dynamic_color),
                 contentDescription = null
             )
-            Text(text = stringResource(id = R.string.str_dynamic_color))
+            Text(
+                text = stringResource(id = R.string.str_dynamic_color),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
         }
     }
     AppBar.ProvideTopAppBarAction {
@@ -129,7 +134,11 @@ private fun ScreenContent(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Shapes.DotsLoadingAnimation()
-                Text(text = "Loading your preferences data...")
+                Text(
+                    text = stringResource(id = R.string.str_loading),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
             }
         }
         is RequestState.Error -> {
@@ -140,7 +149,11 @@ private fun ScreenContent(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(text = "Error getting your preferences data...")
+                Text(
+                    text = stringResource(id = R.string.str_error),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
             }
         }
         is RequestState.Success -> {
@@ -155,7 +168,11 @@ private fun ScreenContent(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Shapes.DotsLoadingAnimation()
-                        Text(text = "Loading Dynamic Color Preferences...")
+                        Text(
+                            text = stringResource(id = R.string.str_loading),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
                     }
                 }
                 is RequestState.Error -> {
@@ -166,7 +183,11 @@ private fun ScreenContent(
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text(text = "Error getting preferences data...")
+                        Text(
+                            text = stringResource(id = R.string.str_error),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
                     }
                 }
                 is RequestState.Success -> {
@@ -207,7 +228,9 @@ private fun ScreenContent(
                                             text = stringResource(id = data.title),
                                             modifier = Modifier.fillMaxWidth(),
                                             textAlign = TextAlign.Start,
-                                            fontWeight = FontWeight.Bold
+                                            fontWeight = FontWeight.Bold,
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis
                                         )
                                     }
                                     Surface(

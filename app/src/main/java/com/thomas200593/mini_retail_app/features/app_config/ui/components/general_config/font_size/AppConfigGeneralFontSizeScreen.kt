@@ -94,7 +94,11 @@ private fun TopAppBar(
                 imageVector = ImageVector.vectorResource(id = font),
                 contentDescription = null
             )
-            Text(text = stringResource(id = R.string.str_size_font))
+            Text(
+                text = stringResource(id = R.string.str_size_font),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
         }
     }
     AppBar.ProvideTopAppBarAction {
@@ -130,7 +134,11 @@ fun ScreenContent(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Shapes.DotsLoadingAnimation()
-                Text(text = "Loading your preferences data...")
+                Text(
+                    text = stringResource(id = R.string.str_loading),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
             }
         }
         is RequestState.Error -> {
@@ -141,7 +149,11 @@ fun ScreenContent(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(text = "Error getting your preferences data...")
+                Text(
+                    text = stringResource(id = R.string.str_error),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
             }
         }
         is RequestState.Success -> {
@@ -156,7 +168,11 @@ fun ScreenContent(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Shapes.DotsLoadingAnimation()
-                        Text(text = "Loading Theme Preferences...")
+                        Text(
+                            text = stringResource(id = R.string.str_loading),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
                     }
                 }
                 is RequestState.Error -> {
@@ -167,7 +183,11 @@ fun ScreenContent(
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text(text = "Error getting preferences data...")
+                        Text(
+                            text = stringResource(id = R.string.str_error),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
                     }
                 }
                 is RequestState.Success -> {
@@ -192,6 +212,7 @@ fun ScreenContent(
                                 text = "Text FontSize Size - ${stringResource(id = currentFontSize.title)}",
                                 modifier = Modifier,
                                 fontWeight = FontWeight.Bold,
+                                maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,
                                 textAlign = TextAlign.Center,
                             )
@@ -240,7 +261,9 @@ fun ScreenContent(
                                                     text = stringResource(id = data.title),
                                                     modifier = Modifier.fillMaxWidth(),
                                                     textAlign = TextAlign.Start,
-                                                    fontWeight = FontWeight.Bold
+                                                    fontWeight = FontWeight.Bold,
+                                                    maxLines = 1,
+                                                    overflow = TextOverflow.Ellipsis
                                                 )
                                             }
                                             Surface(
