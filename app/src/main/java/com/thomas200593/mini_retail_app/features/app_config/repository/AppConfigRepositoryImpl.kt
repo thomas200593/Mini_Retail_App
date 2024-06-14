@@ -9,6 +9,7 @@ import com.thomas200593.mini_retail_app.features.app_config.navigation.ConfigGen
 import com.thomas200593.mini_retail_app.features.app_config.entity.ConfigCurrent
 import com.thomas200593.mini_retail_app.features.app_config.entity.Currency
 import com.thomas200593.mini_retail_app.features.app_config.entity.DynamicColor
+import com.thomas200593.mini_retail_app.features.app_config.entity.FontSize
 import com.thomas200593.mini_retail_app.features.app_config.entity.Language
 import com.thomas200593.mini_retail_app.features.app_config.entity.Theme
 import com.thomas200593.mini_retail_app.features.app_config.entity.Timezone
@@ -66,5 +67,13 @@ internal class AppConfigRepositoryImpl @Inject constructor(
 
     override suspend fun setCurrencyPreferences(currency: Currency) {
         appDataStore.setCurrencyPreferences(currency)
+    }
+
+    override suspend fun getFontSizePreferences(): Set<FontSize> = withContext(ioDispatcher){
+        FontSize.entries.toSet()
+    }
+
+    override suspend fun setFontSizePreferences(fontSize: FontSize) {
+        appDataStore.setFontSizePreferences(fontSize)
     }
 }

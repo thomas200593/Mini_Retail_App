@@ -7,13 +7,13 @@ import androidx.compose.ui.text.font.FontWeight.Companion.Medium
 import androidx.compose.ui.text.font.FontWeight.Companion.Normal
 import androidx.compose.ui.text.font.FontWeight.Companion.SemiBold
 import androidx.compose.ui.unit.sp
-import com.thomas200593.mini_retail_app.features.app_config.entity.Font
+import com.thomas200593.mini_retail_app.features.app_config.entity.FontSize
 
 object Types{
 
     private const val LINE_HEIGHT_MULTIPLIER = 1.15
 
-    fun personalizedTypography(fontSize: Font): Typography =
+    fun personalizedTypography(fontSize: FontSize): Typography =
         Typography(
             bodyLarge = TextStyle(
                 fontFamily = Default,

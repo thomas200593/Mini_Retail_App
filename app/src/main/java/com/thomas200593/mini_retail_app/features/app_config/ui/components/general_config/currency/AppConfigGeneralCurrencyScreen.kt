@@ -61,7 +61,7 @@ fun AppConfigGeneralCurrencyScreen(
 }
 
 @Composable
-fun TopAppBar(
+private fun TopAppBar(
     onNavigateBack: () -> Unit
 ) {
     AppBar.ProvideTopAppBarNavigationIcon {

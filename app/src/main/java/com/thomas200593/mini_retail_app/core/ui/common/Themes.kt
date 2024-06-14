@@ -16,8 +16,8 @@ import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat.getInsetsController
 import com.thomas200593.mini_retail_app.core.ui.common.Types.personalizedTypography
 import com.thomas200593.mini_retail_app.features.app_config.entity.DynamicColor
-import com.thomas200593.mini_retail_app.features.app_config.entity.Font
-import com.thomas200593.mini_retail_app.features.app_config.entity.Font.MEDIUM
+import com.thomas200593.mini_retail_app.features.app_config.entity.FontSize
+import com.thomas200593.mini_retail_app.features.app_config.entity.FontSize.MEDIUM
 import com.thomas200593.mini_retail_app.features.app_config.entity.Theme
 import com.thomas200593.mini_retail_app.app.MainActivityUiState
 
@@ -55,14 +55,14 @@ object Themes{
         }
 
     @Composable
-    fun calculateInitialFontSize(uiState: MainActivityUiState): Font =
+    fun calculateInitialFontSize(uiState: MainActivityUiState): FontSize =
         when(uiState) {
             MainActivityUiState.Loading -> MEDIUM
-            is MainActivityUiState.Success -> when(uiState.configCurrent.currentFontSize){
+            is MainActivityUiState.Success -> when(uiState.configCurrent.currentFontSizeSize){
                 MEDIUM -> MEDIUM
-                Font.SMALL -> Font.SMALL
-                Font.LARGE -> Font.LARGE
-                Font.EXTRA_LARGE -> Font.EXTRA_LARGE
+                FontSize.SMALL -> FontSize.SMALL
+                FontSize.LARGE -> FontSize.LARGE
+                FontSize.EXTRA_LARGE -> FontSize.EXTRA_LARGE
             }
         }
 
@@ -71,7 +71,7 @@ object Themes{
         darkTheme: Boolean = isSystemInDarkTheme(),
         // Dynamic color is available on Android 12+
         dynamicColor: Boolean = false,
-        font: Font = MEDIUM,
+        fontSize: FontSize = MEDIUM,
         content: @Composable () -> Unit
     ) {
         val colorScheme = when {
@@ -93,7 +93,7 @@ object Themes{
 
         MaterialTheme(
             colorScheme = colorScheme,
-            typography = personalizedTypography(font),
+            typography = personalizedTypography(fontSize),
             shapes = shapes,
             content = content
         )

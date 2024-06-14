@@ -20,8 +20,8 @@ import com.thomas200593.mini_retail_app.features.app_config.entity.ConfigCurrent
 import com.thomas200593.mini_retail_app.features.app_config.entity.Currency
 import com.thomas200593.mini_retail_app.features.app_config.entity.DynamicColor
 import com.thomas200593.mini_retail_app.features.app_config.entity.DynamicColor.DISABLED
-import com.thomas200593.mini_retail_app.features.app_config.entity.Font
-import com.thomas200593.mini_retail_app.features.app_config.entity.Font.MEDIUM
+import com.thomas200593.mini_retail_app.features.app_config.entity.FontSize
+import com.thomas200593.mini_retail_app.features.app_config.entity.FontSize.MEDIUM
 import com.thomas200593.mini_retail_app.features.app_config.entity.Language
 import com.thomas200593.mini_retail_app.features.app_config.entity.Language.EN
 import com.thomas200593.mini_retail_app.features.app_config.entity.OnboardingStatus
@@ -55,8 +55,8 @@ class DataStorePreferences @Inject constructor(
                 currentDynamicColor = data[dsAppConfigDynamicColor] ?.let { dynamicColor ->
                     DynamicColor.valueOf(dynamicColor)
                 } ?: DISABLED,
-                currentFontSize = data[dsAppConfigFontSize] ?.let { fontSize ->
-                    Font.valueOf(fontSize)
+                currentFontSizeSize = data[dsAppConfigFontSize] ?.let { fontSize ->
+                    FontSize.valueOf(fontSize)
                 } ?: MEDIUM,
                 currentLanguage = data[dsAppConfigLanguage] ?.let { languageString ->
                     Language.valueOf(languageString)
@@ -133,6 +133,12 @@ class DataStorePreferences @Inject constructor(
     suspend fun setCurrencyPreferences(currency: Currency) = withContext(ioDispatcher){
         datastore.edit {
             it[dsAppConfigCurrency] = currency.code
+        }
+    }
+
+    suspend fun setFontSizePreferences(fontSize: FontSize) = withContext(ioDispatcher){
+        datastore.edit {
+            it[dsAppConfigFontSize] = fontSize.name
         }
     }
 }

@@ -93,7 +93,7 @@ class MainActivity: AppCompatActivity() {
                 ApplicationTheme(
                     darkTheme = darkTheme,
                     dynamicColor = dynamicColor,
-                    font = font,
+                    fontSize = font,
                     content = {
                         AppScreen(appState = appState)
                     }
