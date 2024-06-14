@@ -118,7 +118,7 @@ private fun TopAppBar(
 }
 
 @Composable
-fun ScreenContent(
+private fun ScreenContent(
     fontSizeSizePreferences: RequestState<Set<FontSize>>,
     configCurrent: RequestState<ConfigCurrent>,
     onSaveSelectedFontSize: (FontSize) -> Unit
