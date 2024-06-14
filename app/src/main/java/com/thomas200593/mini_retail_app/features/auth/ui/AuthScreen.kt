@@ -3,8 +3,9 @@ package com.thomas200593.mini_retail_app.features.auth.ui
 import android.app.Activity
 import android.widget.Toast
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.shapes
@@ -132,21 +134,32 @@ private fun ScreenContent(
             val centralGuideline = createGuidelineFromTop(.4f)
 
             //AppConfig Button
-            Icon(
-                imageVector = ImageVector.vectorResource(settings),
-                contentDescription = null,
+            Surface(
+                onClick = { onNavigateToAppConfigScreen() },
                 modifier = Modifier
-                    .size(48.dp)
-                    .padding(8.dp)
                     .constrainAs(btnConf) {
                         start.linkTo(startGuideline)
                         top.linkTo(topGuideline)
                     }
-                    .clickable(
-                        onClick = { onNavigateToAppConfigScreen() },
-                    ),
-                tint = MaterialTheme.colorScheme.onSurface
-            )
+            ){
+                Row(
+                    modifier = Modifier,
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ){
+                    Icon(
+                        modifier = Modifier
+                            .size(ButtonDefaults.IconSize),
+                        imageVector = ImageVector.vectorResource(settings),
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSurface
+                    )
+                    Text(
+                        text = stringResource(id = R.string.str_configuration),
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
             //.AppConfig Button
 
             //App Icon
