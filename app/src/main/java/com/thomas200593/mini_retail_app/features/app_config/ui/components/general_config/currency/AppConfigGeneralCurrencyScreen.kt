@@ -1,5 +1,6 @@
 package com.thomas200593.mini_retail_app.features.app_config.ui.components.general_config.currency
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -152,49 +153,56 @@ private fun ScreenContent(
                     ) {
                         items(count = appCurrencyPreferences.count()){ index ->
                             val data = appCurrencyPreferences[index]
-                            Row(
+                            Surface(
                                 modifier = Modifier
-                                    .fillMaxWidth(1.0f)
-                                    .padding(4.dp)
-                                    .height(intrinsicSize = IntrinsicSize.Max),
-                                horizontalArrangement = Arrangement.Center,
-                                verticalAlignment = Alignment.CenterVertically
+                                    .fillMaxWidth(1.0f),
+                                shape = MaterialTheme.shapes.medium,
+                                border = BorderStroke(width = 1.dp, color = Color(0xFF747775))
                             ){
-                                Column(
-                                    modifier = Modifier.weight(0.2f),
-                                    verticalArrangement = Arrangement.Center,
-                                    horizontalAlignment = Alignment.CenterHorizontally
-                                ) {
-                                    Text(
-                                        text = data.code,
-                                        modifier = Modifier.fillMaxWidth(),
-                                        textAlign = TextAlign.Center,
-                                        fontWeight = FontWeight.Bold
-                                    )
-                                }
-                                Column(modifier = Modifier.weight(0.6f)) {
-                                    Text(
-                                        text = data.displayName,
-                                        modifier = Modifier.fillMaxWidth(),
-                                        textAlign = TextAlign.Start,
-                                        fontWeight = FontWeight.Bold
-                                    )
-                                    Text(
-                                        text = data.symbol,
-                                        modifier = Modifier.fillMaxWidth(),
-                                        textAlign = TextAlign.Start,
-                                        fontWeight = FontWeight.Bold
-                                    )
-                                }
-                                Surface(
-                                    modifier = Modifier.weight(0.2f),
-                                    onClick = { onSaveSelectedCurrency(data) }
-                                ) {
-                                    Icon(
-                                        imageVector = if (data == currentCurrency) Icons.Default.CheckCircle else Icons.AutoMirrored.Outlined.KeyboardArrowRight,
-                                        contentDescription = null,
-                                        tint = if (data == currentCurrency) Color.Green else MaterialTheme.colorScheme.onTertiaryContainer
-                                    )
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth(1.0f)
+                                        .padding(8.dp)
+                                        .height(intrinsicSize = IntrinsicSize.Max),
+                                    horizontalArrangement = Arrangement.Center,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ){
+                                    Column(
+                                        modifier = Modifier.weight(0.2f),
+                                        verticalArrangement = Arrangement.Center,
+                                        horizontalAlignment = Alignment.CenterHorizontally
+                                    ) {
+                                        Text(
+                                            text = data.code,
+                                            modifier = Modifier.fillMaxWidth(),
+                                            textAlign = TextAlign.Center,
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                    }
+                                    Column(modifier = Modifier.weight(0.6f)) {
+                                        Text(
+                                            text = data.displayName,
+                                            modifier = Modifier.fillMaxWidth(),
+                                            textAlign = TextAlign.Start,
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                        Text(
+                                            text = data.symbol,
+                                            modifier = Modifier.fillMaxWidth(),
+                                            textAlign = TextAlign.Start,
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                    }
+                                    Surface(
+                                        modifier = Modifier.weight(0.2f),
+                                        onClick = { onSaveSelectedCurrency(data) }
+                                    ) {
+                                        Icon(
+                                            imageVector = if (data == currentCurrency) Icons.Default.CheckCircle else Icons.AutoMirrored.Outlined.KeyboardArrowRight,
+                                            contentDescription = null,
+                                            tint = if (data == currentCurrency) Color.Green else MaterialTheme.colorScheme.onTertiaryContainer
+                                        )
+                                    }
                                 }
                             }
                         }

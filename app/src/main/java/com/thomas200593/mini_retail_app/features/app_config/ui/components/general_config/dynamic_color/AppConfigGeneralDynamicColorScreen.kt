@@ -1,5 +1,6 @@
 package com.thomas200593.mini_retail_app.features.app_config.ui.components.general_config.dynamic_color
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -146,40 +147,52 @@ private fun ScreenContent(
                     val appDynamicColorPreferences = dynamicColorPreferences.data ?: emptySet()
 
                     LazyColumn(
-                        modifier = Modifier.fillMaxSize().padding(8.dp),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(8.dp),
                         verticalArrangement = Arrangement.spacedBy(10.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         items(count = appDynamicColorPreferences.count()){ index ->
                             val data = appDynamicColorPreferences.elementAt(index)
-                            Row(
-                                modifier = Modifier.fillMaxWidth(1.0f).padding(4.dp).height(intrinsicSize = IntrinsicSize.Max),
-                                horizontalArrangement = Arrangement.Center,
-                                verticalAlignment = Alignment.CenterVertically
-                            ){
-                                Surface(modifier = Modifier.weight(0.2f)) {
-                                    Icon(
-                                        imageVector = ImageVector.vectorResource(data.iconRes),
-                                        contentDescription = null
-                                    )
-                                }
-                                Column(modifier = Modifier.weight(0.6f)) {
-                                    Text(
-                                        text = stringResource(id = data.title),
-                                        modifier = Modifier.fillMaxWidth(),
-                                        textAlign = TextAlign.Start,
-                                        fontWeight = FontWeight.Bold
-                                    )
-                                }
-                                Surface(
-                                    modifier = Modifier.weight(0.2f),
-                                    onClick = { onSaveSelectedDynamicColor(data) }
-                                ) {
-                                    Icon(
-                                        imageVector = if (data == currentDynamicColor) Icons.Default.CheckCircle else Icons.AutoMirrored.Outlined.KeyboardArrowRight,
-                                        contentDescription = null,
-                                        tint = if (data == currentDynamicColor) Color.Green else MaterialTheme.colorScheme.onTertiaryContainer
-                                    )
+                            Surface(
+                                modifier = Modifier
+                                    .fillMaxWidth(1.0f),
+                                shape = MaterialTheme.shapes.medium,
+                                border = BorderStroke(width = 1.dp, color = Color(0xFF747775))
+                            ) {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth(1.0f)
+                                        .padding(8.dp)
+                                        .height(intrinsicSize = IntrinsicSize.Max),
+                                    horizontalArrangement = Arrangement.Center,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ){
+                                    Surface(modifier = Modifier.weight(0.2f)) {
+                                        Icon(
+                                            imageVector = ImageVector.vectorResource(data.iconRes),
+                                            contentDescription = null
+                                        )
+                                    }
+                                    Column(modifier = Modifier.weight(0.6f)) {
+                                        Text(
+                                            text = stringResource(id = data.title),
+                                            modifier = Modifier.fillMaxWidth(),
+                                            textAlign = TextAlign.Start,
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                    }
+                                    Surface(
+                                        modifier = Modifier.weight(0.2f),
+                                        onClick = { onSaveSelectedDynamicColor(data) }
+                                    ) {
+                                        Icon(
+                                            imageVector = if (data == currentDynamicColor) Icons.Default.CheckCircle else Icons.AutoMirrored.Outlined.KeyboardArrowRight,
+                                            contentDescription = null,
+                                            tint = if (data == currentDynamicColor) Color.Green else MaterialTheme.colorScheme.onTertiaryContainer
+                                        )
+                                    }
                                 }
                             }
                         }
