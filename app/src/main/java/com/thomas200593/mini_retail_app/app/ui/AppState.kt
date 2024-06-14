@@ -74,7 +74,6 @@ class AppState(
             launchSingleTop = true
             restoreState = true
         }
-
         when(destinationTopLevel){
             DestinationTopLevel.DASHBOARD -> {
                 navController.navigateToDashboard(navOptions = destinationTopLevelNavOptions)

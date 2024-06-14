@@ -17,6 +17,7 @@ import com.thomas200593.mini_retail_app.R.drawable.app_icon_onboarding_hide_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_onboarding_show_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_reporting_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_settings_48px
+import com.thomas200593.mini_retail_app.R.drawable.app_icon_settings_general_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_text_lg_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_text_md_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_text_size_48px
@@ -63,6 +64,7 @@ object Icons {
     }
     object Setting{
         @DrawableRes val settings = +app_icon_settings_48px
+        @DrawableRes val settings_general = +app_icon_settings_general_48px
     }
     object Theme{
         @DrawableRes val theme = +app_icon_theme_48px

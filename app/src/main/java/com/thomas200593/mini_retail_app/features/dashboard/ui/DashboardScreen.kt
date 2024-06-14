@@ -3,6 +3,7 @@ package com.thomas200593.mini_retail_app.features.dashboard.ui
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons.Default
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -11,14 +12,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.core.ui.common.Icons
 import com.thomas200593.mini_retail_app.core.ui.component.AppBar
 
 @Composable
-fun DashboardScreen() {
+fun DashboardScreen(
+    viewModel: DashboardViewModel = hiltViewModel()
+) {
     TopAppBar()
-    ScreenContent()
+    ScreenContent(
+        onSignOut = viewModel::handleSignOut
+    )
 }
 
 @Composable
@@ -43,6 +49,15 @@ private fun TopAppBar() {
 }
 
 @Composable
-private fun ScreenContent() {
+private fun ScreenContent(
+    onSignOut: () -> Unit
+) {
     Text(text = "Dashboard Screen")
+    Button(
+        onClick = {
+            onSignOut()
+        }
+    ) {
+        Text(text = "Test Logout")
+    }
 }

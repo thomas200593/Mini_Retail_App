@@ -1,7 +1,6 @@
 package com.thomas200593.mini_retail_app.features.app_config.ui.components.general_config
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -10,9 +9,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -32,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
+import com.thomas200593.mini_retail_app.core.ui.common.Icons.Setting.settings_general
 import com.thomas200593.mini_retail_app.core.ui.common.Shapes
 import com.thomas200593.mini_retail_app.core.ui.component.AppBar
 import com.thomas200593.mini_retail_app.features.app_config.navigation.ConfigGeneralDestination
@@ -62,18 +65,44 @@ private fun TopAppBar(
     onNavigateBack: () -> Unit
 ){
     AppBar.ProvideTopAppBarNavigationIcon {
-        Icon(
-            modifier = Modifier.clickable(onClick = onNavigateBack),
-            imageVector = Icons.AutoMirrored.Default.ArrowBack,
-            contentDescription = null
-        )
+        Surface(
+            onClick =  onNavigateBack,
+            modifier = Modifier
+        ) {
+            Icon(
+                modifier = Modifier,
+                imageVector = Icons.AutoMirrored.Default.KeyboardArrowLeft,
+                contentDescription = null
+            )
+        }
     }
     AppBar.ProvideTopAppBarTitle {
         Row(
-            modifier = Modifier.padding(start = 4.dp),
-            verticalAlignment = Alignment.CenterVertically
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ){
+            Icon(
+                modifier = Modifier
+                    .sizeIn(maxHeight = ButtonDefaults.IconSize),
+                imageVector = ImageVector.vectorResource(id = settings_general),
+                contentDescription = null
+            )
             Text(text = stringResource(id = R.string.str_configuration_general))
+        }
+    }
+    AppBar.ProvideTopAppBarAction {
+        Row(
+            modifier = Modifier.padding(end = 20.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ){
+            Icon(
+                modifier = Modifier
+                    .sizeIn(maxHeight = ButtonDefaults.IconSize),
+                imageVector = Icons.Default.Info,
+                contentDescription = null
+            )
         }
     }
 }
