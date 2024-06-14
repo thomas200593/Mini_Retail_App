@@ -1,5 +1,6 @@
 package com.thomas200593.mini_retail_app.features.app_config.ui.components.general_config.language
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -149,41 +150,53 @@ private fun ScreenContent(
                     val appLanguagePreferences = languagePreferences.data ?: emptySet()
 
                     LazyColumn(
-                        modifier = Modifier.fillMaxSize().padding(8.dp),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(8.dp),
                         verticalArrangement = Arrangement.spacedBy(10.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         items(count = appLanguagePreferences.count()){ index ->
                             val data = appLanguagePreferences.elementAt(index)
-                            Row(
-                                modifier = Modifier.fillMaxWidth(1.0f).padding(4.dp).height(intrinsicSize = IntrinsicSize.Max),
-                                horizontalArrangement = Arrangement.Center,
-                                verticalAlignment = Alignment.CenterVertically
-                            ){
-                                Surface(modifier = Modifier.weight(0.2f)) {
-                                    Image(
-                                        modifier = Modifier.height(20.dp),
-                                        imageVector = ImageVector.vectorResource(data.iconRes),
-                                        contentDescription = null
-                                    )
-                                }
-                                Column(modifier = Modifier.weight(0.6f)) {
-                                    Text(
-                                        text = stringResource(id = data.title),
-                                        modifier = Modifier.fillMaxWidth(),
-                                        textAlign = TextAlign.Start,
-                                        fontWeight = FontWeight.Bold
-                                    )
-                                }
-                                Surface(
-                                    modifier = Modifier.weight(0.2f),
-                                    onClick = { onSaveSelectedLanguage(data) }
-                                ) {
-                                    Icon(
-                                        imageVector = if (data == currentLanguage) Icons.Default.CheckCircle else Icons.AutoMirrored.Outlined.KeyboardArrowRight,
-                                        contentDescription = null,
-                                        tint = if (data == currentLanguage) Color.Green else MaterialTheme.colorScheme.onTertiaryContainer
-                                    )
+                            Surface(
+                                modifier = Modifier
+                                    .fillMaxWidth(1.0f),
+                                shape = MaterialTheme.shapes.medium,
+                                border = BorderStroke(width = 1.dp, color = Color(0xFF747775))
+                            ) {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth(1.0f)
+                                        .padding(8.dp)
+                                        .height(intrinsicSize = IntrinsicSize.Max),
+                                    horizontalArrangement = Arrangement.Center,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ){
+                                    Surface(modifier = Modifier.weight(0.2f)) {
+                                        Image(
+                                            modifier = Modifier.height(20.dp),
+                                            imageVector = ImageVector.vectorResource(data.iconRes),
+                                            contentDescription = null
+                                        )
+                                    }
+                                    Column(modifier = Modifier.weight(0.6f)) {
+                                        Text(
+                                            text = stringResource(id = data.title),
+                                            modifier = Modifier.fillMaxWidth(),
+                                            textAlign = TextAlign.Start,
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                    }
+                                    Surface(
+                                        modifier = Modifier.weight(0.2f),
+                                        onClick = { onSaveSelectedLanguage(data) }
+                                    ) {
+                                        Icon(
+                                            imageVector = if (data == currentLanguage) Icons.Default.CheckCircle else Icons.AutoMirrored.Outlined.KeyboardArrowRight,
+                                            contentDescription = null,
+                                            tint = if (data == currentLanguage) Color.Green else MaterialTheme.colorScheme.onTertiaryContainer
+                                        )
+                                    }
                                 }
                             }
                         }

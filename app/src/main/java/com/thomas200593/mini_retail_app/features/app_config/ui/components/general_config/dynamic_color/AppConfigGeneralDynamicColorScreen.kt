@@ -79,7 +79,7 @@ private fun TopAppBar(
             modifier = Modifier.padding(start = 4.dp),
             verticalAlignment = Alignment.CenterVertically
         ){
-            Text(text = stringResource(id = R.string.str_theme))
+            Text(text = stringResource(id = R.string.str_dynamic_color))
         }
     }
 }
