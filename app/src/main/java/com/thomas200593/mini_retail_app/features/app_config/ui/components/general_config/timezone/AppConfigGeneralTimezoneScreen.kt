@@ -1,5 +1,6 @@
 package com.thomas200593.mini_retail_app.features.app_config.ui.components.general_config.timezone
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -144,34 +145,46 @@ private fun ScreenContent(
                     val appTimezonePreferences = timezonePreferences.data ?: emptyList()
 
                     LazyColumn(
-                        modifier = Modifier.fillMaxSize().padding(8.dp),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(8.dp),
                         verticalArrangement = Arrangement.spacedBy(10.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         items(count = appTimezonePreferences.count()){ index ->
                             val data = appTimezonePreferences[index]
-                            Row(
-                                modifier = Modifier.fillMaxWidth(1.0f).padding(4.dp).height(intrinsicSize = IntrinsicSize.Max),
-                                horizontalArrangement = Arrangement.Center,
-                                verticalAlignment = Alignment.CenterVertically
-                            ){
-                                Column(modifier = Modifier.weight(0.8f)) {
-                                    Text(
-                                        text = data.timezoneOffset,
-                                        modifier = Modifier.fillMaxWidth(),
-                                        textAlign = TextAlign.Start,
-                                        fontWeight = FontWeight.Bold
-                                    )
-                                }
-                                Surface(
-                                    modifier = Modifier.weight(0.2f),
-                                    onClick = { onSaveSelectedTimezone(data) }
-                                ) {
-                                    Icon(
-                                        imageVector = if (data == currentTimezone) Icons.Default.CheckCircle else Icons.AutoMirrored.Outlined.KeyboardArrowRight,
-                                        contentDescription = null,
-                                        tint = if (data == currentTimezone) Color.Green else MaterialTheme.colorScheme.onTertiaryContainer
-                                    )
+                            Surface(
+                                modifier = Modifier
+                                    .fillMaxWidth(1.0f),
+                                shape = MaterialTheme.shapes.medium,
+                                border = BorderStroke(width = 1.dp, color = Color(0xFF747775))
+                            ) {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth(1.0f)
+                                        .padding(8.dp)
+                                        .height(intrinsicSize = IntrinsicSize.Max),
+                                    horizontalArrangement = Arrangement.Center,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ){
+                                    Column(modifier = Modifier.weight(0.8f)) {
+                                        Text(
+                                            text = data.timezoneOffset,
+                                            modifier = Modifier.fillMaxWidth(),
+                                            textAlign = TextAlign.Start,
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                    }
+                                    Surface(
+                                        modifier = Modifier.weight(0.2f),
+                                        onClick = { onSaveSelectedTimezone(data) }
+                                    ) {
+                                        Icon(
+                                            imageVector = if (data == currentTimezone) Icons.Default.CheckCircle else Icons.AutoMirrored.Outlined.KeyboardArrowRight,
+                                            contentDescription = null,
+                                            tint = if (data == currentTimezone) Color.Green else MaterialTheme.colorScheme.onTertiaryContainer
+                                        )
+                                    }
                                 }
                             }
                         }
