@@ -44,7 +44,7 @@ import com.thomas200593.mini_retail_app.core.ui.common.Icons
 import com.thomas200593.mini_retail_app.core.ui.common.Icons.Setting.settings
 import com.thomas200593.mini_retail_app.core.ui.component.Button
 import com.thomas200593.mini_retail_app.core.ui.component.Button.Google.SignInWithGoogle
-import com.thomas200593.mini_retail_app.core.ui.component.Screen
+import com.thomas200593.mini_retail_app.core.ui.component.ScreenUtil
 import com.thomas200593.mini_retail_app.features.auth.entity.OAuth2UserMetadata
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -58,7 +58,7 @@ fun AuthScreen(
     onNavigateToAppConfig: () -> Unit,
 ){
     Timber.d("Called : %s", TAG)
-    Screen.LockScreenOrientation(orientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
+    ScreenUtil.LockScreenOrientation(orientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
     val activityContext = (LocalContext.current as Activity)
     val coroutineScope = rememberCoroutineScope()
     val stateSIWGButton by viewModel.stateSIWGButton.collectAsStateWithLifecycle()
