@@ -30,7 +30,7 @@ fun NavGraphBuilder.authNavGraph(
             )
         }
         appConfigNavGraph(appState = appState)
-        dashboardNavGraph()
+        dashboardNavGraph(onSignedOut = onNavigateToInitial)
     }
 }
 
