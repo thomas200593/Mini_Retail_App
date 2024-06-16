@@ -38,22 +38,17 @@ class AppConfigGeneralCurrencyViewModel @Inject constructor(
             initialValue = RequestState.Loading
         )
 
-    fun onOpen() {
-        viewModelScope.launch(ioDispatcher) {
-            getCurrencyPreferences()
-        }
+    fun onOpen() = viewModelScope.launch(ioDispatcher) {
+        getCurrencyPreferences()
     }
 
-    private suspend fun getCurrencyPreferences() {
+    private fun getCurrencyPreferences() = viewModelScope.launch(ioDispatcher) {
         _currencyPreferences.value = RequestState.Loading
-        viewModelScope
-            .launch(ioDispatcher) {
-                _currencyPreferences.value = try{
-                    RequestState.Success(appConfigRepository.getCurrencyPreferences())
-                }catch (e: Throwable){
-                    RequestState.Error(e)
-                }
-            }
+        _currencyPreferences.value = try{
+            RequestState.Success(appConfigRepository.getCurrencyPreferences())
+        }catch (e: Throwable){
+            RequestState.Error(e)
+        }
     }
 
     fun saveSelectedCurrency(currency: Currency) = viewModelScope.launch {

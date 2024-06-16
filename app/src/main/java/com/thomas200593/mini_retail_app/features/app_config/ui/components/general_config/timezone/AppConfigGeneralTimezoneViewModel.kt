@@ -38,22 +38,17 @@ class AppConfigGeneralTimezoneViewModel @Inject constructor(
             initialValue = RequestState.Loading
         )
 
-    fun onOpen() {
-        viewModelScope.launch(ioDispatcher) {
-            getTimezonePreferences()
-        }
+    fun onOpen() = viewModelScope.launch(ioDispatcher) {
+        getTimezonePreferences()
     }
 
-    private suspend fun getTimezonePreferences() {
+    private fun getTimezonePreferences() = viewModelScope.launch(ioDispatcher) {
         _timezonePreferences.value = RequestState.Loading
-        viewModelScope
-            .launch(ioDispatcher) {
-                _timezonePreferences.value = try{
-                    RequestState.Success(appConfigRepository.getTimezonePreferences())
-                }catch (e: Throwable){
-                    RequestState.Error(e)
-                }
-            }
+        _timezonePreferences.value = try{
+            RequestState.Success(appConfigRepository.getTimezonePreferences())
+        }catch (e: Throwable){
+            RequestState.Error(e)
+        }
     }
 
     fun saveSelectedTimezone(timezone: Timezone) = viewModelScope.launch {

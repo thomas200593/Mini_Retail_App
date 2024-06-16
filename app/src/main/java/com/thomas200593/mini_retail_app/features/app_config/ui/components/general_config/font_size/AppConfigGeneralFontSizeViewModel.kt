@@ -38,22 +38,18 @@ class AppConfigGeneralFontSizeViewModel @Inject constructor(
             initialValue = RequestState.Loading
         )
 
-    fun onOpen() {
-        viewModelScope.launch(ioDispatcher) {
-            getFontSizePreferences()
-        }
+    fun onOpen() = viewModelScope.launch(ioDispatcher) {
+        getFontSizePreferences()
     }
 
-    private suspend fun getFontSizePreferences() {
+
+    private fun getFontSizePreferences() = viewModelScope.launch(ioDispatcher) {
         _fontSizeSizePreferences.value = RequestState.Loading
-        viewModelScope
-            .launch(ioDispatcher) {
-                _fontSizeSizePreferences.value = try {
-                    RequestState.Success(appConfigRepository.getFontSizePreferences())
-                }catch (e: Throwable){
-                    RequestState.Error(e)
-                }
-            }
+        _fontSizeSizePreferences.value = try {
+            RequestState.Success(appConfigRepository.getFontSizePreferences())
+        }catch (e: Throwable){
+            RequestState.Error(e)
+        }
     }
 
     fun saveSelectedFontSize(fontSize: FontSize) = viewModelScope.launch{

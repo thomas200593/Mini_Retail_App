@@ -41,20 +41,16 @@ class AppConfigGeneralLanguageViewModel @Inject constructor(
             initialValue = RequestState.Loading
         )
 
-    fun onOpen(){
-        viewModelScope.launch(ioDispatcher) {
-            getLanguagePreferences()
-        }
+    fun onOpen() = viewModelScope.launch(ioDispatcher) {
+        getLanguagePreferences()
     }
 
-    private suspend fun getLanguagePreferences() {
+    private fun getLanguagePreferences() = viewModelScope.launch(ioDispatcher) {
         _languagePreferences.value = RequestState.Loading
-        viewModelScope.launch(ioDispatcher) {
-            _languagePreferences.value = try {
-                RequestState.Success(appConfigRepository.getLanguagePreferences())
-            }catch (e: Throwable){
-                RequestState.Error(e)
-            }
+        _languagePreferences.value = try {
+            RequestState.Success(appConfigRepository.getLanguagePreferences())
+        }catch (e: Throwable){
+            RequestState.Error(e)
         }
     }
 

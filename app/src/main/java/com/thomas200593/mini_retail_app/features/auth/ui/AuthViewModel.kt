@@ -35,23 +35,20 @@ class AuthViewModel @Inject constructor(
         clearAuthSessionToken()
     }
 
-    fun verifyAndSaveAuthSession(authSessionToken: AuthSessionToken){
+    fun verifyAndSaveAuthSession(authSessionToken: AuthSessionToken) = viewModelScope.launch(ioDispatcher) {
         updateAuthSIWGButtonState(true)
-        viewModelScope.launch(ioDispatcher) {
-            _authSessionTokenState.value = Loading
-
-            if(authRepository.validateAuthSessionToken(authSessionToken)){
-                authRepository.saveAuthSessionToken(authSessionToken)
-                withContext(defaultDispatcher) {
-                    _authSessionTokenState.value = RequestState.Success(authSessionToken)
-                }
-            }else{
-                authRepository.clearAuthSessionToken()
+        _authSessionTokenState.value = Loading
+        if(authRepository.validateAuthSessionToken(authSessionToken)){
+            authRepository.saveAuthSessionToken(authSessionToken)
+            withContext(defaultDispatcher) {
+                _authSessionTokenState.value = RequestState.Success(authSessionToken)
             }
+        }else{
+            authRepository.clearAuthSessionToken()
         }
     }
 
-    fun updateAuthSIWGButtonState(authState: Boolean) {
+    fun updateAuthSIWGButtonState(authState: Boolean) = viewModelScope.launch(ioDispatcher) {
         _stateSIWGButton.value = authState
     }
 
@@ -60,8 +57,7 @@ class AuthViewModel @Inject constructor(
         authRepository.clearAuthSessionToken()
     }
 
-    suspend fun mapAuthSessionTokenToUserData(authSessionToken: AuthSessionToken) =
-        withContext(ioDispatcher){
-            authRepository.mapAuthSessionTokenToUserData(authSessionToken)
-        }
+    suspend fun mapAuthSessionTokenToUserData(authSessionToken: AuthSessionToken) = withContext(ioDispatcher){
+        authRepository.mapAuthSessionTokenToUserData(authSessionToken)
+    }
 }

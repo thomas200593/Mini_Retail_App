@@ -31,20 +31,16 @@ class OnboardingViewModel @Inject constructor(
     private val _isOnboardingFinished: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val isOnboardingFinished: StateFlow<Boolean> = _isOnboardingFinished
 
-    fun onOpen() {
-        viewModelScope.launch(ioDispatcher) {
-            getOnboardingPages()
-        }
+    fun onOpen() = viewModelScope.launch(ioDispatcher) {
+        getOnboardingPages()
     }
 
-    private suspend fun getOnboardingPages() {
+    private fun getOnboardingPages() = viewModelScope.launch(ioDispatcher) {
         _onboardingPages.value = RequestState.Loading
-        viewModelScope.launch(ioDispatcher) {
-            _onboardingPages.value = try{
-                RequestState.Success(onboardingRepository.getOnboardingPages())
-            }catch (e: Throwable){
-                RequestState.Error(e)
-            }
+        _onboardingPages.value = try{
+            RequestState.Success(onboardingRepository.getOnboardingPages())
+        }catch (e: Throwable){
+            RequestState.Error(e)
         }
     }
 
@@ -54,11 +50,11 @@ class OnboardingViewModel @Inject constructor(
         }
     }
 
-    fun onNextButtonClicked() {
+    fun onNextButtonClicked() = viewModelScope.launch(ioDispatcher){
         _currentPage.value += 1
     }
 
-    fun onSelectedPage(index: Int) {
+    fun onSelectedPage(index: Int) = viewModelScope.launch(ioDispatcher){
         _currentPage.value = index
     }
 }

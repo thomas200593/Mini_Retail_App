@@ -38,22 +38,17 @@ class AppConfigGeneralThemeViewModel @Inject constructor(
             initialValue = RequestState.Loading
         )
 
-    fun onOpen() {
-        viewModelScope.launch(ioDispatcher) {
-            getThemePreferences()
-        }
+    fun onOpen() = viewModelScope.launch(ioDispatcher) {
+        getThemePreferences()
     }
 
-    private suspend fun getThemePreferences(){
+    private fun getThemePreferences() = viewModelScope.launch(ioDispatcher) {
         _themePreferences.value = RequestState.Loading
-        viewModelScope
-            .launch(ioDispatcher) {
-                _themePreferences.value = try{
-                    RequestState.Success(appConfigRepository.getThemePreferences())
-                }catch (e: Throwable){
-                    RequestState.Error(e)
-                }
-            }
+        _themePreferences.value = try{
+            RequestState.Success(appConfigRepository.getThemePreferences())
+        }catch (e: Throwable){
+            RequestState.Error(e)
+        }
     }
 
     fun saveSelectedTheme(theme: Theme) = viewModelScope.launch {

@@ -41,22 +41,17 @@ class AppConfigGeneralDynamicColorViewModel @Inject constructor(
             initialValue = RequestState.Loading
         )
 
-    fun onOpen() {
-        viewModelScope.launch(ioDispatcher) {
-            getDynamicColorPreferences()
-        }
+    fun onOpen() = viewModelScope.launch(ioDispatcher) {
+        getDynamicColorPreferences()
     }
 
-    private fun getDynamicColorPreferences() {
+    private fun getDynamicColorPreferences() = viewModelScope.launch(ioDispatcher){
         _dynamicColorPreferences.value = RequestState.Loading
-        viewModelScope
-            .launch(ioDispatcher){
-                _dynamicColorPreferences.value = try {
-                    RequestState.Success(appConfigRepository.getDynamicMenuPreferences())
-                }catch (e: Throwable){
-                    RequestState.Error(e)
-                }
-            }
+        _dynamicColorPreferences.value = try {
+            RequestState.Success(appConfigRepository.getDynamicMenuPreferences())
+        }catch (e: Throwable){
+            RequestState.Error(e)
+        }
     }
 
     fun saveSelectedDynamicColor(dynamicColor: DynamicColor) = viewModelScope.launch {
