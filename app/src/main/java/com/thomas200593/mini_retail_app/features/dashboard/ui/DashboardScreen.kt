@@ -46,7 +46,8 @@ fun DashboardScreen(
     )
     TopAppBar()
     ScreenContent(
-        onSignOut = viewModel::handleSignOut
+//        onSignOut = viewModel::handleSignOut,
+        onSignOut = {}
     )
 }
 

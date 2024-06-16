@@ -26,10 +26,6 @@ object DestinationWithTopAppBar{
              * Reporting
              */
             ScreenGraphs.Reporting.route,
-            /**
-             * User Profile
-             */
-            ScreenGraphs.UserProfile.route,
         )
     }
 }
