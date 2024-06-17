@@ -17,9 +17,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -46,28 +43,27 @@ fun DashboardScreen(
 ) {
     Timber.d("Called: %s", TAG)
 
-    var sessionAppState: SessionState by remember {
-        mutableStateOf(SessionState.Loading)
-    }
+    val sessionState by viewModel.sessionState
 
     SessionHandler(
         sessionState = appState.isCurrentSessionValid,
         onLoading = {
-            sessionAppState = SessionState.Loading
+            viewModel.updateSessionState(SessionState.Loading)
         },
         onInvalid = { throwable, reason ->
-            sessionAppState = SessionState.Invalid(throwable, reason)
+            viewModel.updateSessionState(SessionState.Invalid(throwable, reason))
         },
         onValid = { userData ->
-            sessionAppState = userData?.let { SessionState.Valid(it) }!!
+            viewModel.updateSessionState(SessionState.Valid(userData!!))
         }
     )
+
     TopAppBar()
     ScreenContent(
         onSignOut = {
             viewModel.handleSignOut()
         },
-        sessionAppState = sessionAppState
+        sessionState = sessionState
     )
 }
 
@@ -111,7 +107,7 @@ private fun TopAppBar() {
 @Composable
 private fun ScreenContent(
     onSignOut: () -> Unit,
-    sessionAppState: SessionState,
+    sessionState: SessionState,
 ) {
     Column(
         modifier = Modifier
@@ -126,6 +122,6 @@ private fun ScreenContent(
         }) {
             Text(text = "Logout")
         }
-        Text(text = "Session App State: $sessionAppState")
+        Text(text = "Session App State: $sessionState")
     }
 }
