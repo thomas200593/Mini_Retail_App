@@ -28,9 +28,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.app.ui.LocalAppState
+import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
 import com.thomas200593.mini_retail_app.core.ui.common.Icons
 import com.thomas200593.mini_retail_app.core.ui.component.AppBar
 import com.thomas200593.mini_retail_app.core.ui.component.SessionUiHandler.MonitorSession
+import com.thomas200593.mini_retail_app.features.auth.entity.UserData
 import com.thomas200593.mini_retail_app.features.initial.navigation.navigateToInitial
 import timber.log.Timber
 
@@ -56,6 +58,7 @@ fun DashboardScreen(
     )
     TopAppBar()
     ScreenContent(
+        sessionState = sessionState,
         onSignOut = viewModel::handleSignOut
     )
 }
@@ -99,7 +102,8 @@ private fun TopAppBar() {
 
 @Composable
 private fun ScreenContent(
-    onSignOut: () -> Unit
+    onSignOut: () -> Unit,
+    sessionState: RequestState<UserData?>
 ) {
     Column(
         modifier = Modifier
@@ -114,5 +118,6 @@ private fun ScreenContent(
         }) {
             Text(text = "Logout")
         }
+        Text(text = "Session State : $sessionState")
     }
 }
