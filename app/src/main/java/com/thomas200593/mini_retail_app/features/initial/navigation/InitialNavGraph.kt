@@ -9,7 +9,6 @@ import com.thomas200593.mini_retail_app.features.initial.ui.InitialScreen
 import com.thomas200593.mini_retail_app.features.onboarding.navigation.onBoardingNavGraph
 import com.thomas200593.mini_retail_app.app.navigation.NavigationGraphs.G_INITIAL
 import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs
-import com.thomas200593.mini_retail_app.app.ui.AppState
 
 fun NavGraphBuilder.initialNavGraph() {
     navigation(

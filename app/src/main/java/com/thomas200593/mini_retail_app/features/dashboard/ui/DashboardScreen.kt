@@ -17,6 +17,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -25,41 +28,46 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.thomas200593.mini_retail_app.R
+import com.thomas200593.mini_retail_app.app.ui.AppState
 import com.thomas200593.mini_retail_app.app.ui.LocalAppState
-import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
+import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
 import com.thomas200593.mini_retail_app.core.ui.common.Icons
 import com.thomas200593.mini_retail_app.core.ui.component.AppBar
-import com.thomas200593.mini_retail_app.core.ui.component.SessionUiHandler.MonitorSession
-import com.thomas200593.mini_retail_app.features.auth.entity.UserData
-import com.thomas200593.mini_retail_app.features.initial.navigation.navigateToInitial
+import com.thomas200593.mini_retail_app.core.ui.component.SessionHandler.SessionHandler
 import timber.log.Timber
 
 private const val TAG = "DashboardScreen"
 
 @Composable
 fun DashboardScreen(
-    viewModel: DashboardViewModel = hiltViewModel()
+    viewModel: DashboardViewModel = hiltViewModel(),
+    appState: AppState = LocalAppState.current
 ) {
     Timber.d("Called: %s", TAG)
 
-    val sessionState by viewModel.sessionState.collectAsStateWithLifecycle()
-    val appState = LocalAppState.current
+    var sessionAppState: SessionState by remember {
+        mutableStateOf(SessionState.Loading)
+    }
 
-    MonitorSession(
-        sessionState = sessionState,
-        onError = {},
-        onLoading = {},
-        onSessionInvalid = {
-            appState.navController.navigateToInitial()
+    SessionHandler(
+        sessionState = appState.isCurrentSessionValid,
+        onLoading = {
+            sessionAppState = SessionState.Loading
         },
-        onSessionValid = {}
+        onInvalid = { throwable, reason ->
+            sessionAppState = SessionState.Invalid(throwable, reason)
+        },
+        onValid = { userData ->
+            sessionAppState = userData?.let { SessionState.Valid(it) }!!
+        }
     )
     TopAppBar()
     ScreenContent(
-        sessionState = sessionState,
-        onSignOut = viewModel::handleSignOut
+        onSignOut = {
+            viewModel.handleSignOut()
+        },
+        sessionAppState = sessionAppState
     )
 }
 
@@ -103,7 +111,7 @@ private fun TopAppBar() {
 @Composable
 private fun ScreenContent(
     onSignOut: () -> Unit,
-    sessionState: RequestState<UserData?>
+    sessionAppState: SessionState,
 ) {
     Column(
         modifier = Modifier
@@ -118,6 +126,6 @@ private fun ScreenContent(
         }) {
             Text(text = "Logout")
         }
-        Text(text = "Session State : $sessionState")
+        Text(text = "Session App State: $sessionAppState")
     }
 }

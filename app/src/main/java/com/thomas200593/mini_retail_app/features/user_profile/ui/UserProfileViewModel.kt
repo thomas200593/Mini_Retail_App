@@ -11,11 +11,5 @@ import javax.inject.Inject
 
 @HiltViewModel
 class UserProfileViewModel @Inject constructor(
-    session: Session
 ): ViewModel(){
-    val sessionState = session.userSession.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.Eagerly,
-        initialValue = RequestState.Idle
-    )
 }
