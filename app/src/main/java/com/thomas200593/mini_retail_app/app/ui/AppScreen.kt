@@ -35,7 +35,7 @@ private const val TAG = "AppScreen"
 
 @Composable
 fun AppScreen(
-    appState: AppState
+    appState: AppState = LocalAppState.current
 ){
     Timber.d("Called %s", TAG)
     val snackBarHostState = remember { SnackbarHostState() }
@@ -52,7 +52,6 @@ fun AppScreen(
     }
 
     AppScreen(
-        appState = appState,
         snackBarHostState = snackBarHostState
     )
 }
@@ -60,9 +59,9 @@ fun AppScreen(
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 internal fun AppScreen(
-    appState: AppState,
     modifier: Modifier = Modifier,
-    snackBarHostState: SnackbarHostState
+    snackBarHostState: SnackbarHostState,
+    appState: AppState = LocalAppState.current
 ){
     Timber.d("Called internal.%s", TAG)
     Scaffold(
@@ -89,13 +88,15 @@ internal fun AppScreen(
         },
         content = { padding ->
             Surface(
-                modifier = Modifier.fillMaxSize().padding(padding).consumeWindowInsets(padding)
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding)
+                    .consumeWindowInsets(padding)
                     .windowInsetsPadding(
                         WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal)
                     ),
                 content = {
                     NavigationHost(
-                        appState = appState,
                         onShowSnackBar = { message, action, duration ->
                             snackBarHostState.showSnackbar(
                                 message = message,

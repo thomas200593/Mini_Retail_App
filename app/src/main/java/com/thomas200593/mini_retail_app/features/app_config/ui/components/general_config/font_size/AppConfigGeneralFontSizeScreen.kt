@@ -37,27 +37,33 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.thomas200593.mini_retail_app.R
+import com.thomas200593.mini_retail_app.app.ui.AppState
+import com.thomas200593.mini_retail_app.app.ui.LocalAppState
 import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
 import com.thomas200593.mini_retail_app.core.ui.common.Icons.Font.font
 import com.thomas200593.mini_retail_app.core.ui.common.Shapes
 import com.thomas200593.mini_retail_app.core.ui.component.AppBar
 import com.thomas200593.mini_retail_app.features.app_config.entity.ConfigCurrent
 import com.thomas200593.mini_retail_app.features.app_config.entity.FontSize
+import timber.log.Timber
+
+private const val TAG = "AppConfigGeneralFontSizeScreen"
 
 @Composable
 fun AppConfigGeneralFontSizeScreen(
     viewModel: AppConfigGeneralFontSizeViewModel = hiltViewModel(),
-    onNavigateBack: () -> Unit
+    appState: AppState = LocalAppState.current
 ) {
+    Timber.d("Called: %s", TAG)
+    val configCurrent by viewModel.configCurrentUiState.collectAsStateWithLifecycle()
+    val fontSizePreferences by viewModel.fontSizePreferences
+
     LaunchedEffect(Unit) {
         viewModel.onOpen()
     }
 
-    val configCurrent by viewModel.configCurrentUiState.collectAsStateWithLifecycle()
-    val fontSizePreferences by viewModel.fontSizePreferences
-
     TopAppBar(
-        onNavigateBack = onNavigateBack
+        onNavigateBack = appState::onNavigateUp
     )
     ScreenContent(
         fontSizeSizePreferences = fontSizePreferences,

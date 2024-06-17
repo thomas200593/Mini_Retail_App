@@ -39,13 +39,16 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.thomas200593.mini_retail_app.BuildConfig
 import com.thomas200593.mini_retail_app.R
+import com.thomas200593.mini_retail_app.app.ui.LocalAppState
 import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
 import com.thomas200593.mini_retail_app.core.ui.common.Icons
 import com.thomas200593.mini_retail_app.core.ui.common.Icons.Setting.settings
 import com.thomas200593.mini_retail_app.core.ui.component.Button
 import com.thomas200593.mini_retail_app.core.ui.component.Button.Google.SignInWithGoogle
 import com.thomas200593.mini_retail_app.core.ui.component.ScreenUtil
+import com.thomas200593.mini_retail_app.features.app_config.navigation.navigateToAppConfig
 import com.thomas200593.mini_retail_app.features.auth.entity.OAuth2UserMetadata
+import com.thomas200593.mini_retail_app.features.initial.navigation.navigateToInitial
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -53,13 +56,12 @@ private const val TAG = "AuthScreen"
 
 @Composable
 fun AuthScreen(
-    viewModel: AuthViewModel = hiltViewModel(),
-    onNavigateToInitial: () -> Unit,
-    onNavigateToAppConfig: () -> Unit,
+    viewModel: AuthViewModel = hiltViewModel()
 ){
     Timber.d("Called : %s", TAG)
     ScreenUtil.LockScreenOrientation(orientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
     val activityContext = (LocalContext.current as Activity)
+    val appState = LocalAppState.current
     val coroutineScope = rememberCoroutineScope()
     val stateSIWGButton by viewModel.stateSIWGButton.collectAsStateWithLifecycle()
     val authSessionTokenState by viewModel.authSessionTokenState
@@ -77,7 +79,7 @@ fun AuthScreen(
                     val googleUserData = userData?.oAuth2UserMetadata as OAuth2UserMetadata.Google
                     val email = googleUserData.email
                     Toast.makeText(activityContext, "Welcome $email", Toast.LENGTH_LONG).show()
-                    onNavigateToInitial()
+                    appState.navController.navigateToInitial()
                 }else{
                     viewModel.clearAuthSessionToken()
                 }
@@ -87,7 +89,9 @@ fun AuthScreen(
     }
 
     ScreenContent(
-        onNavigateToAppConfigScreen = onNavigateToAppConfig,
+        onNavigateToAppConfigScreen = {
+            appState.navController.navigateToAppConfig()
+        },
         onSignInWithGoogleButton = {
             coroutineScope.launch {
                 viewModel.updateAuthSIWGButtonState(true)
@@ -99,7 +103,6 @@ fun AuthScreen(
                     },
                     onError = {
                         viewModel.clearAuthSessionToken()
-                        Toast.makeText(activityContext, "Error: $it", Toast.LENGTH_LONG).show()
                     },
                     onDialogDismissed = {
                         viewModel.clearAuthSessionToken()
@@ -126,9 +129,11 @@ private fun ScreenContent(
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
         ) {
+            //Constraints References
             val (btnConf, iconApp, txtAppTitle, txtAppVersion, txtAppWelcomeMessage, btnAuth,
                 txtTermsAndConditions) = createRefs()
 
+            //Guidelines
             val startGuideline = createGuidelineFromStart(16.dp)
             val endGuideline = createGuidelineFromEnd(16.dp)
             val topGuideline = createGuidelineFromTop(16.dp)

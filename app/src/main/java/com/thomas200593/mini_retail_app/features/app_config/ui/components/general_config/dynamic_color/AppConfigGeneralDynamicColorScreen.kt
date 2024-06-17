@@ -37,27 +37,33 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.thomas200593.mini_retail_app.R
+import com.thomas200593.mini_retail_app.app.ui.AppState
+import com.thomas200593.mini_retail_app.app.ui.LocalAppState
 import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
 import com.thomas200593.mini_retail_app.core.ui.common.Icons.DynamicColor.dynamic_color
 import com.thomas200593.mini_retail_app.core.ui.common.Shapes
 import com.thomas200593.mini_retail_app.core.ui.component.AppBar
 import com.thomas200593.mini_retail_app.features.app_config.entity.ConfigCurrent
 import com.thomas200593.mini_retail_app.features.app_config.entity.DynamicColor
+import timber.log.Timber
+
+private const val TAG = "AppConfigGeneralDynamicColorScreen"
 
 @Composable
 fun AppConfigGeneralDynamicColorScreen(
     viewModel: AppConfigGeneralDynamicColorViewModel = hiltViewModel(),
-    onNavigateBack: () -> Unit
+    appState: AppState = LocalAppState.current
 ) {
+    Timber.d("Called: %s", TAG)
+    val configCurrent by viewModel.configCurrentUiState.collectAsStateWithLifecycle()
+    val dynamicColorPreferences by viewModel.dynamicColorPreferences
+
     LaunchedEffect(Unit) {
         viewModel.onOpen()
     }
 
-    val configCurrent by viewModel.configCurrentUiState.collectAsStateWithLifecycle()
-    val dynamicColorPreferences by viewModel.dynamicColorPreferences
-
     TopAppBar(
-        onNavigateBack = onNavigateBack
+        onNavigateBack = appState::onNavigateUp
     )
     ScreenContent(
         dynamicColorPreferences = dynamicColorPreferences,

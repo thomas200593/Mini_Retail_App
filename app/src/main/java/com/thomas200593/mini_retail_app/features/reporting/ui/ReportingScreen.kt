@@ -20,9 +20,14 @@ import androidx.compose.ui.unit.dp
 import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.core.ui.common.Icons
 import com.thomas200593.mini_retail_app.core.ui.component.AppBar
+import timber.log.Timber
+
+private const val TAG = "ReportingScreen"
 
 @Composable
 fun ReportingScreen(){
+    Timber.d("Called: %s", TAG)
+
     TopAppBar()
     ScreenContent()
 }

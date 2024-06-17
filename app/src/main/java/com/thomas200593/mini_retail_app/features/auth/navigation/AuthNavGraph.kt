@@ -13,10 +13,7 @@ import com.thomas200593.mini_retail_app.app.navigation.NavigationGraphs.G_INITIA
 import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs
 import com.thomas200593.mini_retail_app.app.ui.AppState
 
-fun NavGraphBuilder.authNavGraph(
-    onNavigateToInitial: () -> Unit,
-    appState: AppState
-){
+fun NavGraphBuilder.authNavGraph(){
     navigation(
         route = G_AUTH,
         startDestination = ScreenGraphs.Auth.route
@@ -24,13 +21,10 @@ fun NavGraphBuilder.authNavGraph(
         composable(
             route = ScreenGraphs.Auth.route
         ){
-            AuthScreen(
-                onNavigateToInitial = onNavigateToInitial,
-                onNavigateToAppConfig = { appState.navController.navigateToAppConfig() }
-            )
+            AuthScreen()
         }
-        appConfigNavGraph(appState = appState)
-        dashboardNavGraph(onSignedOut = onNavigateToInitial)
+        appConfigNavGraph()
+        dashboardNavGraph()
     }
 }
 

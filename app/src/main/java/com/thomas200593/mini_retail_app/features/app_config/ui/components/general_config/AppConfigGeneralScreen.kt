@@ -34,30 +34,38 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.thomas200593.mini_retail_app.R
+import com.thomas200593.mini_retail_app.app.ui.AppState
+import com.thomas200593.mini_retail_app.app.ui.LocalAppState
 import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
 import com.thomas200593.mini_retail_app.core.ui.common.Icons.Setting.settings_general
 import com.thomas200593.mini_retail_app.core.ui.common.Shapes
 import com.thomas200593.mini_retail_app.core.ui.component.AppBar
 import com.thomas200593.mini_retail_app.features.app_config.navigation.ConfigGeneralDestination
+import com.thomas200593.mini_retail_app.features.app_config.navigation.navigateToAppConfigGeneral
+import timber.log.Timber
+
+private const val TAG = "AppConfigGeneralScreen"
 
 @Composable
 fun AppConfigGeneralScreen(
     viewModel: AppConfigGeneralViewModel = hiltViewModel(),
-    onNavigateBack: () -> Unit,
-    onNavigateToMenu: (ConfigGeneralDestination) -> Unit
+    appState: AppState = LocalAppState.current
 ) {
+    Timber.d("Called: %s", TAG)
+    val generalMenuPreferences by viewModel.generalMenuPreferences
+
     LaunchedEffect(Unit) {
         viewModel.onOpen()
     }
 
-    val generalMenuPreferences by viewModel.generalMenuPreferences
-
     TopAppBar(
-        onNavigateBack = onNavigateBack
+        onNavigateBack = appState::onNavigateUp
     )
     ScreenContent(
         generalMenuPreferences = generalMenuPreferences,
-        onNavigateToMenu = onNavigateToMenu
+        onNavigateToMenu = { menu ->
+            appState.navController.navigateToAppConfigGeneral(menu)
+        }
     )
 }
 

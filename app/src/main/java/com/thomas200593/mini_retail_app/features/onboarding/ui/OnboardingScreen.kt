@@ -34,30 +34,36 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.thomas200593.mini_retail_app.R
+import com.thomas200593.mini_retail_app.app.ui.AppState
+import com.thomas200593.mini_retail_app.app.ui.LocalAppState
 import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
 import com.thomas200593.mini_retail_app.core.ui.component.ScreenUtil
+import com.thomas200593.mini_retail_app.features.initial.navigation.navigateToInitial
 import com.thomas200593.mini_retail_app.features.onboarding.entity.Onboarding
 import com.thomas200593.mini_retail_app.features.onboarding.entity.Onboarding.Tags.TAG_ONBOARD_SCREEN_IMAGE_VIEW
 import com.thomas200593.mini_retail_app.features.onboarding.entity.Onboarding.Tags.TAG_ONBOARD_SCREEN_NAV_BUTTON
 import com.thomas200593.mini_retail_app.features.onboarding.entity.Onboarding.Tags.TAG_ONBOARD_TAG_ROW
+import timber.log.Timber
+
+private const val TAG = "OnboardingScreen"
 
 @Composable
 fun OnboardingScreen(
     viewModel: OnboardingViewModel = hiltViewModel(),
-    onOnboardingFinished: () -> Unit = {}
+    appState: AppState = LocalAppState.current
 ){
+    Timber.d("Called: %s", TAG)
     ScreenUtil.LockScreenOrientation(orientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
-    LaunchedEffect(Unit) {
-        viewModel.onOpen()
-    }
-
     val onboardingPages by viewModel.onboardingPages
     val currentPage by viewModel.currentPage.collectAsStateWithLifecycle()
     val isOnboardingFinished by viewModel.isOnboardingFinished.collectAsStateWithLifecycle()
 
+    LaunchedEffect(Unit) {
+        viewModel.onOpen()
+    }
     LaunchedEffect(isOnboardingFinished) {
         if(isOnboardingFinished){
-            onOnboardingFinished()
+            appState.navController.navigateToInitial()
         }
     }
 

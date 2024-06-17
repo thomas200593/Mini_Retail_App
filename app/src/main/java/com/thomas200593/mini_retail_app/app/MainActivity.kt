@@ -19,6 +19,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.thomas200593.mini_retail_app.app.MainActivityUiState.Loading
 import com.thomas200593.mini_retail_app.app.MainActivityUiState.Success
 import com.thomas200593.mini_retail_app.app.ui.AppScreen
+import com.thomas200593.mini_retail_app.app.ui.LocalAppState
 import com.thomas200593.mini_retail_app.app.ui.rememberAppState
 import com.thomas200593.mini_retail_app.core.design_system.util.NetworkMonitor
 import com.thomas200593.mini_retail_app.core.ui.common.Colors.darkScrim
@@ -89,13 +90,13 @@ class MainActivity: AppCompatActivity() {
                 networkMonitor = networkMonitor,
             )
 
-            CompositionLocalProvider {
+            CompositionLocalProvider(LocalAppState provides appState) {
                 ApplicationTheme(
                     darkTheme = darkTheme,
                     dynamicColor = dynamicColor,
                     fontSize = font,
                     content = {
-                        AppScreen(appState = appState)
+                        AppScreen()
                     }
                 )
             }

@@ -12,17 +12,26 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavOptions
+import com.thomas200593.mini_retail_app.app.navigation.NavigationGraphs.G_INITIAL
+import com.thomas200593.mini_retail_app.app.ui.LocalAppState
 import com.thomas200593.mini_retail_app.core.ui.common.Shapes.DotsLoadingAnimation
 import com.thomas200593.mini_retail_app.features.app_config.entity.OnboardingStatus
+import com.thomas200593.mini_retail_app.features.auth.navigation.navigateToAuth
+import com.thomas200593.mini_retail_app.features.dashboard.navigation.navigateToDashboard
 import com.thomas200593.mini_retail_app.features.initial.ui.InitialUiState.Success
+import com.thomas200593.mini_retail_app.features.onboarding.navigation.navigateToOnboarding
+import timber.log.Timber
+
+private const val TAG = "InitialScreen"
 
 @Composable
 fun InitialScreen(
-    viewModel: InitialViewModel = hiltViewModel(),
-    onNavigateToOnboarding: () -> Unit,
-    onNavigateToAuthScreen: () -> Unit,
-    onNavigateToDashboard: () -> Unit,
+    viewModel: InitialViewModel = hiltViewModel()
 ) {
+    Timber.d("Called: %s", TAG)
+
+    val appState = LocalAppState.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     when(uiState){
@@ -34,20 +43,34 @@ fun InitialScreen(
                 true -> {
                     when(shouldShowOnboarding){
                         OnboardingStatus.SHOW -> {
-                            LaunchedEffect(key1 = uiState) { onNavigateToOnboarding() }
+                            LaunchedEffect(key1 = uiState) {
+                                appState.navController.navigateToOnboarding()
+                            }
                         }
                         OnboardingStatus.HIDE -> {
-                            LaunchedEffect(key1 = uiState) { onNavigateToDashboard() }
+                            LaunchedEffect(key1 = uiState) {
+                                appState.navController.navigateToDashboard(
+                                    navOptions = NavOptions.Builder()
+                                        .setPopUpTo(route = G_INITIAL, inclusive = true, saveState = true)
+                                        .setLaunchSingleTop(true)
+                                        .setRestoreState(true)
+                                        .build()
+                                )
+                            }
                         }
                     }
                 }
                 false -> {
                     when(shouldShowOnboarding){
                         OnboardingStatus.SHOW -> {
-                            LaunchedEffect(key1 = uiState) { onNavigateToOnboarding() }
+                            LaunchedEffect(key1 = uiState) {
+                                appState.navController.navigateToOnboarding()
+                            }
                         }
                         OnboardingStatus.HIDE -> {
-                            LaunchedEffect(key1 = uiState) { onNavigateToAuthScreen() }
+                            LaunchedEffect(key1 = uiState) {
+                                appState.navController.navigateToAuth()
+                            }
                         }
                     }
                 }

@@ -16,10 +16,7 @@ import com.thomas200593.mini_retail_app.features.app_config.ui.components.genera
 import com.thomas200593.mini_retail_app.features.app_config.ui.components.general_config.timezone.AppConfigGeneralTimezoneScreen
 
 
-fun NavGraphBuilder.appConfigGeneralNavGraph(
-    onNavigateBack: () -> Unit,
-    onNavigateToMenu:(ConfigGeneralDestination) -> Unit
-) {
+fun NavGraphBuilder.appConfigGeneralNavGraph() {
     navigation(
         route = G_APP_CONFIG_GENERAL,
         startDestination = ScreenGraphs.AppConfigGeneral.route
@@ -27,58 +24,43 @@ fun NavGraphBuilder.appConfigGeneralNavGraph(
         composable(
             route = ScreenGraphs.AppConfigGeneral.route
         ){
-            AppConfigGeneralScreen(
-                onNavigateBack = onNavigateBack,
-                onNavigateToMenu = onNavigateToMenu
-            )
+            AppConfigGeneralScreen()
         }
 
         composable(
             route = ScreenGraphs.AppConfigGeneralLanguage.route
         ){
-            AppConfigGeneralLanguageScreen(
-                onNavigateBack = onNavigateBack,
-            )
+            AppConfigGeneralLanguageScreen()
         }
 
         composable(
             route = ScreenGraphs.AppConfigGeneralTimezone.route
         ){
-            AppConfigGeneralTimezoneScreen(
-                onNavigateBack = onNavigateBack
-            )
+            AppConfigGeneralTimezoneScreen()
         }
 
         composable(
             route = ScreenGraphs.AppConfigGeneralTheme.route
         ){
-            AppConfigGeneralThemeScreen(
-                onNavigateBack = onNavigateBack,
-            )
+            AppConfigGeneralThemeScreen()
         }
 
         composable(
             route = ScreenGraphs.AppConfigGeneralDynamicColor.route
         ){
-            AppConfigGeneralDynamicColorScreen(
-                onNavigateBack = onNavigateBack,
-            )
+            AppConfigGeneralDynamicColorScreen()
         }
 
         composable(
             route = ScreenGraphs.AppConfigGeneralFontSize.route
         ){
-            AppConfigGeneralFontSizeScreen(
-                onNavigateBack = onNavigateBack,
-            )
+            AppConfigGeneralFontSizeScreen()
         }
 
         composable(
             route = ScreenGraphs.AppConfigGeneralCurrency.route
         ){
-            AppConfigGeneralCurrencyScreen(
-                onNavigateBack = onNavigateBack
-            )
+            AppConfigGeneralCurrencyScreen()
         }
     }
 }

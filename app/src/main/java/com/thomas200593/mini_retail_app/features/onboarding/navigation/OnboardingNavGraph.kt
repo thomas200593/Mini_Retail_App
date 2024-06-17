@@ -10,9 +10,7 @@ import com.thomas200593.mini_retail_app.app.navigation.NavigationGraphs.G_ONBOAR
 import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs
 
 
-fun NavGraphBuilder.onBoardingNavGraph(
-    onOnboardingFinished: () -> Unit = {}
-){
+fun NavGraphBuilder.onBoardingNavGraph(){
     navigation(
         route = G_ONBOARDING,
         startDestination = ScreenGraphs.Onboarding.route
@@ -20,9 +18,7 @@ fun NavGraphBuilder.onBoardingNavGraph(
         composable(
             route = ScreenGraphs.Onboarding.route
         ){
-            OnboardingScreen(
-                onOnboardingFinished = onOnboardingFinished
-            )
+            OnboardingScreen()
         }
     }
 }

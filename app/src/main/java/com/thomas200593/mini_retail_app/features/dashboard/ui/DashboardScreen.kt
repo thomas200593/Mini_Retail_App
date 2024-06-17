@@ -27,27 +27,36 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.thomas200593.mini_retail_app.R
+import com.thomas200593.mini_retail_app.app.ui.LocalAppState
 import com.thomas200593.mini_retail_app.core.ui.common.Icons
 import com.thomas200593.mini_retail_app.core.ui.component.AppBar
 import com.thomas200593.mini_retail_app.core.ui.component.SessionUiHandler.MonitorSession
+import com.thomas200593.mini_retail_app.features.initial.navigation.navigateToInitial
+import timber.log.Timber
+
+private const val TAG = "DashboardScreen"
 
 @Composable
 fun DashboardScreen(
-    viewModel: DashboardViewModel = hiltViewModel(),
-    onSignedOut: () -> Unit
+    viewModel: DashboardViewModel = hiltViewModel()
 ) {
+    Timber.d("Called: %s", TAG)
+
     val sessionState by viewModel.sessionState.collectAsStateWithLifecycle()
+    val appState = LocalAppState.current
+
     MonitorSession(
         sessionState = sessionState,
         onError = {},
         onLoading = {},
-        onSessionInvalid = onSignedOut,
+        onSessionInvalid = {
+            appState.navController.navigateToInitial()
+        },
         onSessionValid = {}
     )
     TopAppBar()
     ScreenContent(
-//        onSignOut = viewModel::handleSignOut,
-        onSignOut = {}
+        onSignOut = viewModel::handleSignOut
     )
 }
 

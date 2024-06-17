@@ -1,31 +1,17 @@
 package com.thomas200593.mini_retail_app.features.user_profile.ui
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.thomas200593.mini_retail_app.R
-import com.thomas200593.mini_retail_app.core.ui.common.Icons
-import com.thomas200593.mini_retail_app.core.ui.component.AppBar
+import timber.log.Timber
+
+private const val TAG = "UserProfileScreen"
 
 @Composable
 fun UserProfileScreen(
@@ -38,6 +24,8 @@ fun UserProfileScreen(
 private fun ScreenContent(
     modifier: Modifier = Modifier
 ) {
+    Timber.d("Called: %s", TAG)
+
     Surface(
         modifier = modifier
     ) {
@@ -54,7 +42,6 @@ private fun ScreenContent(
             val (
                 surfaceShape
             ) = createRefs()
-
 
         }
     }

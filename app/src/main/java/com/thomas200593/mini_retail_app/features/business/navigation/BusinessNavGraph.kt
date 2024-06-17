@@ -21,9 +21,6 @@ fun NavGraphBuilder.businessNavGraph(){
         composable(
             route = ScreenGraphs.Business.route
         ){
-            AppBar.ProvideTopAppBarTitle {
-                Text(text = stringResource(id = R.string.str_business))
-            }
             BusinessScreen()
         }
     }

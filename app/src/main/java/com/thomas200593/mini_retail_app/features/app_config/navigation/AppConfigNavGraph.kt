@@ -6,12 +6,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.thomas200593.mini_retail_app.app.navigation.NavigationGraphs
 import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs
-import com.thomas200593.mini_retail_app.app.ui.AppState
 import com.thomas200593.mini_retail_app.features.app_config.ui.AppConfigScreen
 
-fun NavGraphBuilder.appConfigNavGraph(
-    appState: AppState
-){
+fun NavGraphBuilder.appConfigNavGraph(){
     navigation(
         route = NavigationGraphs.G_APP_CONFIG,
         startDestination = ScreenGraphs.AppConfig.route
@@ -19,23 +16,9 @@ fun NavGraphBuilder.appConfigNavGraph(
         composable(
             route = ScreenGraphs.AppConfig.route
         ){
-            AppConfigScreen(
-                onNavigateBack = { appState.onNavigateUp() },
-                onNavigateToGeneralConfigMenu = {
-                    appState
-                        .navController
-                        .navigateToAppConfigGeneral(null)
-                }
-            )
+            AppConfigScreen()
         }
-        appConfigGeneralNavGraph(
-            onNavigateBack = { appState.onNavigateUp() },
-            onNavigateToMenu = {
-                appState
-                    .navController
-                    .navigateToAppConfigGeneral(it)
-            }
-        )
+        appConfigGeneralNavGraph()
     }
 }
 

@@ -29,24 +29,33 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.thomas200593.mini_retail_app.R
+import com.thomas200593.mini_retail_app.app.ui.AppState
+import com.thomas200593.mini_retail_app.app.ui.LocalAppState
 import com.thomas200593.mini_retail_app.core.ui.common.Icons.Setting.settings
 import com.thomas200593.mini_retail_app.core.ui.component.AppBar
+import com.thomas200593.mini_retail_app.features.app_config.navigation.navigateToAppConfigGeneral
+import timber.log.Timber
+
+private const val TAG = "AppConfigScreen"
 
 @Composable
 fun AppConfigScreen(
     viewModel: AppConfigViewModel = hiltViewModel(),
-    onNavigateBack: () -> Unit,
-    onNavigateToGeneralConfigMenu: () -> Unit
+    appState: AppState = LocalAppState.current
 ) {
+    Timber.d("Called: %s", TAG)
+
     LaunchedEffect(Unit) {
         viewModel.onOpen()
     }
 
     TopAppBar(
-        onNavigateBack = onNavigateBack
+        onNavigateBack = appState::onNavigateUp
     )
     ScreenContent(
-        onNavigateToGeneralConfigMenu = onNavigateToGeneralConfigMenu
+        onNavigateToGeneralConfigMenu = {
+            appState.navController.navigateToAppConfigGeneral(null)
+        }
     )
 }
 

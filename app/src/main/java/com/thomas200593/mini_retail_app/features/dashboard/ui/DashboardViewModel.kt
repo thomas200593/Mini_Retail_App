@@ -22,8 +22,8 @@ class DashboardViewModel @Inject constructor(
         initialValue = RequestState.Idle
     )
 
-//    fun handleSignOut() = viewModelScope
-//        .launch {
-//            authRepository.clearAuthSessionToken()
-//        }
+    fun handleSignOut() = viewModelScope
+        .launch {
+            authRepository.clearAuthSessionToken()
+        }
 }

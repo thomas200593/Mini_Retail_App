@@ -10,8 +10,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
-import com.thomas200593.mini_retail_app.app.navigation.DestinationWithTopAppBar.destinationWithTopAppBar
 import com.thomas200593.mini_retail_app.app.navigation.DestinationTopLevel
+import com.thomas200593.mini_retail_app.app.navigation.DestinationWithTopAppBar.destinationWithTopAppBar
 import com.thomas200593.mini_retail_app.core.design_system.util.NetworkMonitor
 import com.thomas200593.mini_retail_app.features.business.navigation.navigateToBusiness
 import com.thomas200593.mini_retail_app.features.dashboard.navigation.navigateToDashboard

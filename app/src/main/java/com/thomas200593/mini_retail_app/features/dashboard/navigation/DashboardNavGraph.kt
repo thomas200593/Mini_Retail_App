@@ -12,9 +12,7 @@ import com.thomas200593.mini_retail_app.features.dashboard.ui.DashboardScreen
 import com.thomas200593.mini_retail_app.features.reporting.navigation.reportingNavGraph
 import com.thomas200593.mini_retail_app.features.user_profile.navigation.userProfileNavGraph
 
-fun NavGraphBuilder.dashboardNavGraph(
-    onSignedOut: () -> Unit
-) {
+fun NavGraphBuilder.dashboardNavGraph() {
     navigation(
         route = G_DASHBOARD,
         startDestination = ScreenGraphs.Dashboard.route
@@ -22,9 +20,7 @@ fun NavGraphBuilder.dashboardNavGraph(
         composable(
             route = ScreenGraphs.Dashboard.route
         ){
-            DashboardScreen(
-                onSignedOut = onSignedOut
-            )
+            DashboardScreen()
         }
 
         //children graph beyond dashboard
