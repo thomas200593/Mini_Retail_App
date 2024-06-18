@@ -2,6 +2,7 @@ package com.thomas200593.mini_retail_app.core.util
 
 import com.auth0.android.jwt.DecodeException
 import com.auth0.android.jwt.JWT
+import com.thomas200593.mini_retail_app.BuildConfig
 import com.thomas200593.mini_retail_app.features.auth.entity.AuthSessionToken
 import com.thomas200593.mini_retail_app.features.auth.entity.OAuth2UserMetadata
 import com.thomas200593.mini_retail_app.features.auth.entity.OAuthProvider
@@ -54,11 +55,14 @@ object JWTHelper {
                 val name = jwt.getClaim("name").asString()
                 val email = jwt.getClaim("email").asString()
                 val iss = jwt.getClaim("iss").asString()
+                val aud = jwt.getClaim("aud").asString()
                 val exp = jwt.getClaim("exp").asLong()
-                val validationResult = (hdrAlg in algList) &&
+                val validationResult =
+                        (hdrAlg in algList) &&
                         (hdrTyp in typList) &&
                         !name.isNullOrEmpty() &&
                         !email.isNullOrEmpty() &&
+                        (aud in listOf(BuildConfig.GOOGLE_AUTH_WEB_ID))&&
                         (iss in listOf("accounts.google.com", "https://accounts.google.com")) &&
                         (exp != null && (Instant.now().epochSecond <= exp)) &&
                         (authSessionToken.authProvider.name == OAuthProvider.GOOGLE.name)
@@ -92,11 +96,17 @@ object JWTHelper {
                 val jwt = JWT(authSessionToken.idToken.orEmpty())
                 val email = jwt.getClaim("email").asString()
                 val name = jwt.getClaim("name").asString()
+                val emailVerified = jwt.getClaim("email_verified").asString()
+                val picture = jwt.getClaim("picture").asString()
+                val exp = jwt.getClaim("exp").asString()
                 UserData(
                     authSessionToken = authSessionToken,
                     oAuth2UserMetadata = OAuth2UserMetadata.Google(
                         email = email.orEmpty(),
-                        name = name.orEmpty()
+                        name = name.orEmpty(),
+                        emailVerified = emailVerified.orEmpty(),
+                        pictureUri = picture.orEmpty(),
+                        expiredAt = exp.orEmpty()
                     )
                 )
             }else{
