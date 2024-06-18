@@ -38,8 +38,8 @@ import com.thomas200593.mini_retail_app.app.ui.AppState
 import com.thomas200593.mini_retail_app.app.ui.LocalAppState
 import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
 import com.thomas200593.mini_retail_app.core.ui.common.Icons.Setting.settings_general
-import com.thomas200593.mini_retail_app.core.ui.common.Shapes
 import com.thomas200593.mini_retail_app.core.ui.component.AppBar
+import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.LoadingScreen
 import com.thomas200593.mini_retail_app.features.app_config.navigation.ConfigGeneralDestination
 import com.thomas200593.mini_retail_app.features.app_config.navigation.navigateToAppConfigGeneral
 import timber.log.Timber
@@ -128,20 +128,7 @@ private fun ScreenContent(
     when(generalMenuPreferences){
         RequestState.Idle -> Unit
         RequestState.Loading -> {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Shapes.DotsLoadingAnimation()
-                Text(
-                    text = stringResource(id = R.string.str_loading),
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-            }
+            LoadingScreen()
         }
         is RequestState.Error -> {
             Column(

@@ -9,7 +9,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavOptions
 import com.thomas200593.mini_retail_app.app.navigation.NavigationGraphs.G_INITIAL
 import com.thomas200593.mini_retail_app.app.ui.LocalAppState
-import com.thomas200593.mini_retail_app.core.ui.component.LoadingScreen
+import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.LoadingScreen
 import com.thomas200593.mini_retail_app.features.app_config.entity.OnboardingStatus
 import com.thomas200593.mini_retail_app.features.auth.navigation.navigateToAuth
 import com.thomas200593.mini_retail_app.features.dashboard.navigation.navigateToDashboard
