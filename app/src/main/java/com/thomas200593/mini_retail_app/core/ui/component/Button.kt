@@ -32,6 +32,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.credentials.CredentialManager
+import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
 import androidx.credentials.exceptions.GetCredentialCancellationException
 import androidx.credentials.exceptions.GetCredentialException
@@ -134,15 +135,25 @@ object Button {
                 try{
                     val result = credentialManager
                         .getCredential(context = activityContext, request = credentialRequest)
-                    val credential = result.credential
-                    val googleIdCredential = GoogleIdTokenCredential.createFrom(credential.data)
-                    val authProvider = OAuthProvider.GOOGLE
-                    val idToken = googleIdCredential.idToken
-                    val authSessionToken = AuthSessionToken(authProvider, idToken)
-                    if(validateToken(authSessionToken)){
-                        onResultReceived(authSessionToken)
-                    }else{
-                        onError(Throwable("Token Validation Failed."))
+                    when(val credential = result.credential){
+                        is CustomCredential -> {
+                            if(credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL){
+                                val googleIdCredential = GoogleIdTokenCredential.createFrom(credential.data)
+                                val authProvider = OAuthProvider.GOOGLE
+                                val idToken = googleIdCredential.idToken
+                                val authSessionToken = AuthSessionToken(authProvider, idToken)
+                                if(validateToken(authSessionToken)){
+                                    onResultReceived(authSessionToken)
+                                }else{
+                                    onError(Throwable("Token Validation Failed."))
+                                }
+                            }else{
+                                onError(Throwable("Unexpected type of Credential"))
+                            }
+                        }
+                        else -> {
+                            onError(Throwable("Unexpected type of Credential"))
+                        }
                     }
                 }
                 catch (e: GetCredentialException){ onError(e) }

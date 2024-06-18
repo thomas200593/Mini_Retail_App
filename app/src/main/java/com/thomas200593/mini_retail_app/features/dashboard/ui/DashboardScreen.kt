@@ -11,12 +11,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons.Default
 import androidx.compose.material.icons.filled.Info
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -26,45 +24,20 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.thomas200593.mini_retail_app.R
-import com.thomas200593.mini_retail_app.app.ui.AppState
-import com.thomas200593.mini_retail_app.app.ui.LocalAppState
-import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
 import com.thomas200593.mini_retail_app.core.ui.common.Icons
 import com.thomas200593.mini_retail_app.core.ui.component.AppBar
-import com.thomas200593.mini_retail_app.core.ui.component.SessionHandler.SessionHandler
 import timber.log.Timber
 
 private const val TAG = "DashboardScreen"
 
 @Composable
 fun DashboardScreen(
-    viewModel: DashboardViewModel = hiltViewModel(),
-    appState: AppState = LocalAppState.current
+    viewModel: DashboardViewModel = hiltViewModel()
 ) {
     Timber.d("Called: %s", TAG)
 
-    val sessionState by viewModel.sessionState
-
-    SessionHandler(
-        sessionState = appState.isCurrentSessionValid,
-        onLoading = {
-            viewModel.updateSessionState(SessionState.Loading)
-        },
-        onInvalid = { throwable, reason ->
-            viewModel.updateSessionState(SessionState.Invalid(throwable, reason))
-        },
-        onValid = { userData ->
-            viewModel.updateSessionState(SessionState.Valid(userData!!))
-        }
-    )
-
     TopAppBar()
-    ScreenContent(
-        onSignOut = {
-            viewModel.handleSignOut()
-        },
-        sessionState = sessionState
-    )
+    ScreenContent()
 }
 
 @Composable
@@ -105,10 +78,7 @@ private fun TopAppBar() {
 }
 
 @Composable
-private fun ScreenContent(
-    onSignOut: () -> Unit,
-    sessionState: SessionState,
-) {
+private fun ScreenContent() {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -116,12 +86,6 @@ private fun ScreenContent(
         verticalArrangement = Arrangement.spacedBy(20.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = "Dashboard Screen")
-        Button(onClick = {
-            onSignOut.invoke()
-        }) {
-            Text(text = "Logout")
-        }
-        Text(text = "Session App State: $sessionState")
+
     }
 }
