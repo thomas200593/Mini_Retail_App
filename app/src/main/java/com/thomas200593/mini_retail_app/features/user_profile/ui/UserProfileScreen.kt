@@ -6,7 +6,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import timber.log.Timber
@@ -17,6 +16,7 @@ private const val TAG = "UserProfileScreen"
 fun UserProfileScreen(
     viewModel: UserProfileViewModel = hiltViewModel()
 ){
+    Timber.d("Called: %s", TAG)
     ScreenContent()
 }
 
@@ -24,8 +24,6 @@ fun UserProfileScreen(
 private fun ScreenContent(
     modifier: Modifier = Modifier
 ) {
-    Timber.d("Called: %s", TAG)
-
     Surface(
         modifier = modifier
     ) {
@@ -34,14 +32,6 @@ private fun ScreenContent(
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
         ) {
-            val startGuideline = createGuidelineFromStart(16.dp)
-            val endGuideline = createGuidelineFromEnd(16.dp)
-            val topGuideline = createGuidelineFromTop(16.dp)
-            val bottomGuideline = createGuidelineFromBottom(16.dp)
-
-            val (
-                surfaceShape
-            ) = createRefs()
 
         }
     }
