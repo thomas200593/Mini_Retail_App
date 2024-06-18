@@ -40,8 +40,8 @@ import com.thomas200593.mini_retail_app.app.ui.AppState
 import com.thomas200593.mini_retail_app.app.ui.LocalAppState
 import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
 import com.thomas200593.mini_retail_app.core.ui.common.Icons.Timezone.timezone
-import com.thomas200593.mini_retail_app.core.ui.common.Shapes
 import com.thomas200593.mini_retail_app.core.ui.component.AppBar
+import com.thomas200593.mini_retail_app.core.ui.component.LoadingScreen
 import com.thomas200593.mini_retail_app.features.app_config.entity.ConfigCurrent
 import com.thomas200593.mini_retail_app.features.app_config.entity.Timezone
 import timber.log.Timber
@@ -127,16 +127,7 @@ private fun ScreenContent(
     when(configCurrent){
         RequestState.Idle -> Unit
         RequestState.Loading -> {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Shapes.DotsLoadingAnimation()
-                Text(text = "Loading your preferences data...")
-            }
+            LoadingScreen()
         }
         is RequestState.Error -> {
             Column(
@@ -153,16 +144,7 @@ private fun ScreenContent(
             when(timezonePreferences){
                 RequestState.Idle -> Unit
                 RequestState.Loading -> {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(8.dp),
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Shapes.DotsLoadingAnimation()
-                        Text(text = "Loading Timezone Preferences...")
-                    }
+                    LoadingScreen()
                 }
                 is RequestState.Error -> {
                     Column(

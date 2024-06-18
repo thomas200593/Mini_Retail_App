@@ -1,21 +1,15 @@
 package com.thomas200593.mini_retail_app.features.initial.ui
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavOptions
 import com.thomas200593.mini_retail_app.app.navigation.NavigationGraphs.G_INITIAL
 import com.thomas200593.mini_retail_app.app.ui.LocalAppState
-import com.thomas200593.mini_retail_app.core.ui.common.Shapes.DotsLoadingAnimation
+import com.thomas200593.mini_retail_app.core.ui.component.LoadingScreen
 import com.thomas200593.mini_retail_app.features.app_config.entity.OnboardingStatus
 import com.thomas200593.mini_retail_app.features.auth.navigation.navigateToAuth
 import com.thomas200593.mini_retail_app.features.dashboard.navigation.navigateToDashboard
@@ -83,14 +77,5 @@ fun InitialScreen(
 private fun ScreenContent(
     modifier: Modifier = Modifier
 ) {
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        content = {
-            DotsLoadingAnimation()
-        }
-    )
+    LoadingScreen(modifier = modifier)
 }
