@@ -8,6 +8,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavOptions
 import com.thomas200593.mini_retail_app.app.navigation.NavigationGraphs.G_INITIAL
+import com.thomas200593.mini_retail_app.app.ui.AppState
 import com.thomas200593.mini_retail_app.app.ui.LocalAppState
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.LoadingScreen
 import com.thomas200593.mini_retail_app.features.app_config.entity.OnboardingStatus
@@ -28,11 +29,22 @@ fun InitialScreen(
     val appState = LocalAppState.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    ScreenContent(appState = appState, uiState = uiState)
+}
+
+@Composable
+private fun ScreenContent(
+    modifier: Modifier = Modifier,
+    appState: AppState,
+    uiState: InitialUiState
+) {
     when(uiState){
-        InitialUiState.Loading -> { ScreenContent() }
+        InitialUiState.Loading -> {
+            LoadingScreen(modifier = modifier)
+        }
         is Success -> {
-            val isSessionValid = (uiState as Success).isSessionValid
-            val shouldShowOnboarding = (uiState as Success).onboardingPagesStatus
+            val isSessionValid = uiState.isSessionValid
+            val shouldShowOnboarding = uiState.onboardingPagesStatus
             when(isSessionValid){
                 true -> {
                     when(shouldShowOnboarding){
@@ -71,11 +83,4 @@ fun InitialScreen(
             }
         }
     }
-}
-
-@Composable
-private fun ScreenContent(
-    modifier: Modifier = Modifier
-) {
-    LoadingScreen(modifier = modifier)
 }
