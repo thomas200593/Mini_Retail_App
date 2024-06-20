@@ -10,13 +10,17 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import timber.log.Timber
 import javax.inject.Inject
+
+private val TAG = MainViewModel::class.simpleName
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
     appConfigRepository: AppConfigRepository
 ) : ViewModel(){
     val uiState: StateFlow<MainActivityUiState> = appConfigRepository.configCurrentData.map {
+        Timber.d("Called : $TAG.uiState")
         Success(it)
     }.stateIn(
         scope = viewModelScope,

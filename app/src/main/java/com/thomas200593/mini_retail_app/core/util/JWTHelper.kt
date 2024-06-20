@@ -14,7 +14,7 @@ import java.security.MessageDigest
 import java.time.Instant
 import java.util.UUID
 
-private const val TAG = "JWTHelper"
+private val TAG = JWTHelper::class.simpleName
 object JWTHelper {
 
     private val algList = listOf(
@@ -41,7 +41,7 @@ object JWTHelper {
         suspend fun validateToken(
             authSessionToken: AuthSessionToken
         ) = withContext(Dispatchers.IO){
-            Timber.d("Captured Token Value : $authSessionToken", authSessionToken)
+            Timber.d("Captured Token Value : $authSessionToken")
             try {
                 Timber.d("Called %s.%s.validateToken()", TAG, GOOGLE_OAUTH2_TAG)
                 if (authSessionToken.idToken.isNullOrBlank() || authSessionToken.authProvider?.name != OAuthProvider.GOOGLE.name) {

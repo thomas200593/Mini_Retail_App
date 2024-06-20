@@ -37,7 +37,7 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
-private const val TAG = "MainActivity"
+private val TAG = MainActivity::class.simpleName
 
 @AndroidEntryPoint
 class MainActivity: AppCompatActivity() {

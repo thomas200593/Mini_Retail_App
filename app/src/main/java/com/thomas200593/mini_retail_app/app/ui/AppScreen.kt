@@ -37,7 +37,7 @@ private const val TAG = "AppScreen"
 fun AppScreen(
     appState: AppState = LocalAppState.current
 ){
-    Timber.d("Called %s", TAG)
+    Timber.d("Called : $TAG()")
     val snackBarHostState = remember { SnackbarHostState() }
     val isNetworkOffline by appState.isNetworkOffline.collectAsStateWithLifecycle()
     val networkNotConnectedMessage = stringResource(id = R.string.str_network_not_connected)
@@ -63,7 +63,7 @@ internal fun AppScreen(
     snackBarHostState: SnackbarHostState,
     appState: AppState = LocalAppState.current
 ){
-    Timber.d("Called internal.%s", TAG)
+    Timber.d("Called : internal $TAG()")
     Scaffold(
         modifier = modifier.semantics { testTagsAsResourceId = true },
         containerColor = MaterialTheme.colorScheme.background,

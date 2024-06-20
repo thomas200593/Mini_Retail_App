@@ -25,7 +25,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import timber.log.Timber
 
-private const val TAG = "AppState"
+private val TAG = AppState::class.simpleName
 
 @Composable
 fun rememberAppState(
@@ -40,7 +40,7 @@ fun rememberAppState(
         coroutineScope,
         navController
     ) {
-        Timber.d("Called %s.rememberAppState()", TAG)
+        Timber.d("Called $TAG.rememberAppState()")
         AppState(
             networkMonitor = networkMonitor,
             session = session,

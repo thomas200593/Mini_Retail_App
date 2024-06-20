@@ -9,14 +9,14 @@ import com.thomas200593.mini_retail_app.app.navigation.NavigationGraphs.G_ROOT
 import com.thomas200593.mini_retail_app.app.ui.LocalAppState
 import timber.log.Timber
 
-private const val TAG = "NavigationHost"
+private val TAG = NavigationHost::class.simpleName
 
 object NavigationHost{
     @Composable
     fun NavigationHost(
         onShowSnackBar: suspend (String, String, SnackbarDuration?) -> Boolean
     ) {
-        Timber.d("Called %s.NavigationHost()", TAG)
+        Timber.d("Called : $TAG.NavigationHost()")
         val appState = LocalAppState.current
         val navController = appState.navController
         NavHost(
@@ -24,6 +24,7 @@ object NavigationHost{
             route = G_ROOT,
             startDestination = G_INITIAL,
         ){
+            Timber.d("Called : $TAG.NavHost()")
             initialNavGraph()
         }
     }

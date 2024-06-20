@@ -8,7 +8,7 @@ import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
 import javax.inject.Inject
 
-private const val TAG = "App"
+private val TAG = App::class.simpleName
 @HiltAndroidApp
 class App: MultiDexApplication(), Configuration.Provider {
 
@@ -17,7 +17,7 @@ class App: MultiDexApplication(), Configuration.Provider {
     override fun onCreate() {
         super.onCreate()
         TimberHelper.initializeDebugTree()
-        Timber.d("Called : %s.onCreate()", TAG)
+        Timber.d("Called : $TAG.onCreate()")
     }
 
     override val workManagerConfiguration: Configuration
