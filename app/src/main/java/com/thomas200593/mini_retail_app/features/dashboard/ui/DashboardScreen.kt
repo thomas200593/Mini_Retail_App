@@ -15,6 +15,8 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -23,18 +25,39 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.thomas200593.mini_retail_app.R
+import com.thomas200593.mini_retail_app.app.ui.AppState
+import com.thomas200593.mini_retail_app.app.ui.LocalAppState
+import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
 import com.thomas200593.mini_retail_app.core.ui.common.Icons
 import com.thomas200593.mini_retail_app.core.ui.component.AppBar
+import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.LoadingScreen
+import com.thomas200593.mini_retail_app.features.initial.navigation.navigateToInitial
 import timber.log.Timber
 
 private const val TAG = "DashboardScreen"
 
 @Composable
 fun DashboardScreen(
-    viewModel: DashboardViewModel = hiltViewModel()
+    viewModel: DashboardViewModel = hiltViewModel(),
+    appState: AppState = LocalAppState.current
 ) {
     Timber.d("Called: %s", TAG)
+
+    val sessionState by appState.isSessionValid.collectAsStateWithLifecycle()
+
+    when(sessionState){
+        is SessionState.Invalid -> {
+            LaunchedEffect(key1 = Unit) {
+                appState.navController.navigateToInitial()
+            }
+        }
+        SessionState.Loading -> {
+            LoadingScreen()
+        }
+        is SessionState.Valid -> Unit
+    }
 
     TopAppBar()
     ScreenContent()

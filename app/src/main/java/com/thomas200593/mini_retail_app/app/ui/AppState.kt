@@ -12,6 +12,8 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
 import com.thomas200593.mini_retail_app.app.navigation.DestinationTopLevel
 import com.thomas200593.mini_retail_app.app.navigation.DestinationWithTopAppBar.destinationWithTopAppBar
+import com.thomas200593.mini_retail_app.core.data.local.session.Session
+import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
 import com.thomas200593.mini_retail_app.core.design_system.util.NetworkMonitor
 import com.thomas200593.mini_retail_app.features.business.navigation.navigateToBusiness
 import com.thomas200593.mini_retail_app.features.dashboard.navigation.navigateToDashboard
@@ -28,17 +30,20 @@ private const val TAG = "AppState"
 @Composable
 fun rememberAppState(
     networkMonitor: NetworkMonitor,
+    session: Session,
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
     navController: NavHostController = rememberNavController()
 ): AppState =
     remember(
         networkMonitor,
+        session,
         coroutineScope,
         navController
     ) {
         Timber.d("Called %s.rememberAppState()", TAG)
         AppState(
             networkMonitor = networkMonitor,
+            session = session,
             coroutineScope = coroutineScope,
             navController = navController
         )
@@ -47,6 +52,7 @@ fun rememberAppState(
 @Stable
 class AppState(
     networkMonitor: NetworkMonitor,
+    session: Session,
     val coroutineScope: CoroutineScope,
     val navController: NavHostController,
 ) {
@@ -56,6 +62,13 @@ class AppState(
             scope = coroutineScope,
             initialValue = false,
             started = SharingStarted.WhileSubscribed(1_000)
+        )
+
+    val isSessionValid = session.currentUserSession
+        .stateIn(
+            scope = coroutineScope,
+            initialValue = SessionState.Loading,
+            started = SharingStarted.Eagerly
         )
 
     val destinationCurrent: NavDestination?

@@ -61,7 +61,7 @@ fun UserProfileScreen(
     Timber.d("Called: %s", TAG)
 
     val applicationContext = LocalContext.current.applicationContext
-    val sessionState by viewModel.sessionState.collectAsStateWithLifecycle()
+    val sessionState by appState.isSessionValid.collectAsStateWithLifecycle()
 
     when(sessionState){
         is SessionState.Invalid -> {
