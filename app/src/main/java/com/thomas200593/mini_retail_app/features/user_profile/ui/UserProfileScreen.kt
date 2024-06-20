@@ -31,6 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -46,6 +47,7 @@ import com.thomas200593.mini_retail_app.core.ui.common.Themes
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.LoadingScreen
 import com.thomas200593.mini_retail_app.features.auth.entity.OAuthProvider
 import com.thomas200593.mini_retail_app.features.initial.navigation.navigateToInitial
+import com.thomas200593.mini_retail_app.work.workers.session_monitor.manager.SessionMonitorWorkManager
 import timber.log.Timber
 
 private const val TAG = "UserProfileScreen"
@@ -57,6 +59,7 @@ fun UserProfileScreen(
 ){
     Timber.d("Called: %s", TAG)
 
+    val applicationContext = LocalContext.current.applicationContext
     val sessionState by viewModel.sessionState.collectAsStateWithLifecycle()
 
     when(sessionState){
@@ -72,7 +75,10 @@ fun UserProfileScreen(
     }
 
     ScreenContent(
-        onSignedOut = { viewModel.handleSignOut() }
+        onSignedOut = {
+            viewModel.handleSignOut()
+            SessionMonitorWorkManager.terminate(applicationContext)
+        }
     )
 }
 
