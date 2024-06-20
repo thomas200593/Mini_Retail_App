@@ -16,6 +16,7 @@ import com.thomas200593.mini_retail_app.R.drawable.app_icon_onboarding_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_onboarding_hide_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_onboarding_show_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_reporting_48px
+import com.thomas200593.mini_retail_app.R.drawable.app_icon_session_expired_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_settings_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_settings_general_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_text_lg_48px
@@ -33,6 +34,9 @@ import com.thomas200593.mini_retail_app.R.drawable.app_icon_user_profile_48px
 object Icons {
     object App{
         @DrawableRes val app = +app_icon_48x48
+    }
+    object Auth{
+        @DrawableRes val session_expire = +app_icon_session_expired_48px
     }
     object Currency {
         @DrawableRes val currency = +app_icon_currency_48px

@@ -1,7 +1,12 @@
 package com.thomas200593.mini_retail_app.app.navigation
 
+import timber.log.Timber
+
+private const val TAG = "DestinationWithTopAppBar"
+
 object DestinationWithTopAppBar{
     fun destinationWithTopAppBar(): Set<String> {
+        Timber.d("Called %s.destinationWithTopAppBar()", TAG)
         return setOf(
             /**
              * App Config

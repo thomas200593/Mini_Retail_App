@@ -7,12 +7,16 @@ import com.thomas200593.mini_retail_app.features.initial.navigation.initialNavGr
 import com.thomas200593.mini_retail_app.app.navigation.NavigationGraphs.G_INITIAL
 import com.thomas200593.mini_retail_app.app.navigation.NavigationGraphs.G_ROOT
 import com.thomas200593.mini_retail_app.app.ui.LocalAppState
+import timber.log.Timber
+
+private const val TAG = "NavigationHost"
 
 object NavigationHost{
     @Composable
     fun NavigationHost(
         onShowSnackBar: suspend (String, String, SnackbarDuration?) -> Boolean
     ) {
+        Timber.d("Called %s.NavigationHost()", TAG)
         val appState = LocalAppState.current
         val navController = appState.navController
         NavHost(

@@ -21,7 +21,6 @@ import com.thomas200593.mini_retail_app.app.MainActivityUiState.Success
 import com.thomas200593.mini_retail_app.app.ui.AppScreen
 import com.thomas200593.mini_retail_app.app.ui.LocalAppState
 import com.thomas200593.mini_retail_app.app.ui.rememberAppState
-import com.thomas200593.mini_retail_app.core.data.local.session.Session
 import com.thomas200593.mini_retail_app.core.design_system.util.NetworkMonitor
 import com.thomas200593.mini_retail_app.core.ui.common.Colors.darkScrim
 import com.thomas200593.mini_retail_app.core.ui.common.Colors.lightScrim
@@ -43,7 +42,6 @@ private const val TAG = "MainActivity"
 class MainActivity: AppCompatActivity() {
 
     @Inject lateinit var networkMonitor: NetworkMonitor
-    @Inject lateinit var session: Session
     private val viewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -89,8 +87,7 @@ class MainActivity: AppCompatActivity() {
             }
 
             val appState = rememberAppState(
-                networkMonitor = networkMonitor,
-                session = session
+                networkMonitor = networkMonitor
             )
 
             CompositionLocalProvider(LocalAppState provides appState) {
