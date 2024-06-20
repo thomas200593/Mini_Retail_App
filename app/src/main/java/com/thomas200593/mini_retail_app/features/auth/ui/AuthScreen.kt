@@ -49,6 +49,7 @@ import com.thomas200593.mini_retail_app.core.ui.component.ScreenUtil
 import com.thomas200593.mini_retail_app.features.app_config.navigation.navigateToAppConfig
 import com.thomas200593.mini_retail_app.features.auth.entity.OAuth2UserMetadata
 import com.thomas200593.mini_retail_app.features.initial.navigation.navigateToInitial
+import com.thomas200593.mini_retail_app.work.workers.session_monitor.manager.SessionMonitorWorkManager
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -61,6 +62,7 @@ fun AuthScreen(
     Timber.d("Called : %s", TAG)
     ScreenUtil.LockScreenOrientation(orientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
     val activityContext = (LocalContext.current as Activity)
+    val applicationContext = LocalContext.current.applicationContext
     val appState = LocalAppState.current
     val coroutineScope = rememberCoroutineScope()
     val stateSIWGButton by viewModel.stateSIWGButton.collectAsStateWithLifecycle()
@@ -79,6 +81,7 @@ fun AuthScreen(
                     val googleUserData = userData?.oAuth2UserMetadata as OAuth2UserMetadata.Google
                     val email = googleUserData.email
                     Toast.makeText(activityContext, "Welcome $email", Toast.LENGTH_LONG).show()
+                    SessionMonitorWorkManager.initialize(applicationContext)
                     appState.navController.navigateToInitial()
                 }else{
                     viewModel.clearAuthSessionToken()
