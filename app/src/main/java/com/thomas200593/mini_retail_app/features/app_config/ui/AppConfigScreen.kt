@@ -45,6 +45,7 @@ fun AppConfigScreen(
 ) {
     Timber.d("Called: %s", TAG)
 
+
     LaunchedEffect(Unit) {
         viewModel.onOpen()
     }

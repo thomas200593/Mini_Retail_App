@@ -52,7 +52,7 @@ fun AppConfigGeneralScreen(
     appState: AppState = LocalAppState.current
 ) {
     Timber.d("Called: %s", TAG)
-    val generalMenuPreferences by viewModel.generalMenuPreferences
+    val generalMenuPreferences by viewModel.appConfigGeneralMenuPreferences
 
     LaunchedEffect(Unit) {
         viewModel.onOpen()

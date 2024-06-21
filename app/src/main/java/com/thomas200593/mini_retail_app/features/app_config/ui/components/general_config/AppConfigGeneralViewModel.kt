@@ -19,16 +19,16 @@ class AppConfigGeneralViewModel @Inject constructor(
     private val appConfigRepository: AppConfigRepository,
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ): ViewModel() {
-    private val _generalMenuPreferences: MutableState<RequestState<Set<AppConfigGeneralDestination>>> = mutableStateOf(RequestState.Idle)
-    val generalMenuPreferences = _generalMenuPreferences
+    private val _appConfigGeneralMenuPreferences: MutableState<RequestState<Set<AppConfigGeneralDestination>>> = mutableStateOf(RequestState.Idle)
+    val appConfigGeneralMenuPreferences = _appConfigGeneralMenuPreferences
 
     fun onOpen() = viewModelScope.launch(ioDispatcher) {
-        getGeneralMenuPreferences()
+        getAppConfigGeneralMenuPreferences()
     }
 
-    private suspend fun getGeneralMenuPreferences() = viewModelScope.launch(ioDispatcher) {
-        _generalMenuPreferences.value = RequestState.Loading
-        _generalMenuPreferences.value = try{
+    private suspend fun getAppConfigGeneralMenuPreferences() = viewModelScope.launch(ioDispatcher) {
+        _appConfigGeneralMenuPreferences.value = RequestState.Loading
+        _appConfigGeneralMenuPreferences.value = try{
             RequestState.Success(appConfigRepository.getAppConfigGeneralMenuData(usesAuth = null))
         }catch (e: Throwable){
             RequestState.Error(e)
