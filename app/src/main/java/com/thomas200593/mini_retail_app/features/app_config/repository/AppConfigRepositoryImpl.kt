@@ -29,7 +29,9 @@ internal class AppConfigRepositoryImpl @Inject constructor(
     override val configCurrentData: Flow<ConfigCurrent> =
         appDataStore.configCurrentData
 
-    override suspend fun getAppConfigMenuData(sessionState: SessionState): Set<AppConfigDestination> = withContext(ioDispatcher){
+    override suspend fun getAppConfigMenuData(
+        sessionState: SessionState
+    ): Set<AppConfigDestination> = withContext(ioDispatcher){
         when(sessionState){
             SessionState.Loading -> {
                 emptySet()
@@ -44,9 +46,20 @@ internal class AppConfigRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getAppConfigGeneralMenuData(
-        usesAuth: Boolean?
+        sessionState: SessionState
     ): Set<AppConfigGeneralDestination> = withContext(ioDispatcher){
         AppConfigGeneralDestination.entries.toSet()
+        when(sessionState){
+            SessionState.Loading -> {
+                emptySet()
+            }
+            is SessionState.Invalid -> {
+                AppConfigGeneralDestination.entries.filter { !it.usesAuth }.toSet()
+            }
+            is SessionState.Valid -> {
+                AppConfigGeneralDestination.entries.toSet()
+            }
+        }
     }
 
     override suspend fun getThemePreferences(): Set<Theme> = withContext(ioDispatcher){

@@ -33,6 +33,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.app.ui.AppState
 import com.thomas200593.mini_retail_app.app.ui.LocalAppState
@@ -52,10 +53,11 @@ fun AppConfigGeneralScreen(
     appState: AppState = LocalAppState.current
 ) {
     Timber.d("Called: %s", TAG)
+    val sessionState by appState.isSessionValid.collectAsStateWithLifecycle()
     val appConfigGeneralMenuPreferences by viewModel.appConfigGeneralMenuPreferences
 
     LaunchedEffect(Unit) {
-        viewModel.onOpen()
+        viewModel.onOpen(sessionState)
     }
 
     TopAppBar(

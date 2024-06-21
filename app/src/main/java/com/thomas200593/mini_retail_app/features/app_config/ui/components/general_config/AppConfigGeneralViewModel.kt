@@ -4,6 +4,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatchers
 import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
@@ -22,14 +23,14 @@ class AppConfigGeneralViewModel @Inject constructor(
     private val _appConfigGeneralMenuPreferences: MutableState<RequestState<Set<AppConfigGeneralDestination>>> = mutableStateOf(RequestState.Idle)
     val appConfigGeneralMenuPreferences = _appConfigGeneralMenuPreferences
 
-    fun onOpen() = viewModelScope.launch(ioDispatcher) {
-        getAppConfigGeneralMenuPreferences()
+    fun onOpen(sessionState: SessionState) = viewModelScope.launch(ioDispatcher) {
+        getAppConfigGeneralMenuPreferences(sessionState)
     }
 
-    private suspend fun getAppConfigGeneralMenuPreferences() = viewModelScope.launch(ioDispatcher) {
+    private suspend fun getAppConfigGeneralMenuPreferences(sessionState: SessionState) = viewModelScope.launch(ioDispatcher) {
         _appConfigGeneralMenuPreferences.value = RequestState.Loading
         _appConfigGeneralMenuPreferences.value = try{
-            RequestState.Success(appConfigRepository.getAppConfigGeneralMenuData(usesAuth = null))
+            RequestState.Success(appConfigRepository.getAppConfigGeneralMenuData(sessionState))
         }catch (e: Throwable){
             RequestState.Error(e)
         }

@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.Flow
 interface AppConfigRepository {
     val configCurrentData: Flow<ConfigCurrent>
     suspend fun getAppConfigMenuData(sessionState: SessionState): Set<AppConfigDestination>
-    suspend fun getAppConfigGeneralMenuData(usesAuth: Boolean?): Set<AppConfigGeneralDestination>
+    suspend fun getAppConfigGeneralMenuData(sessionState: SessionState): Set<AppConfigGeneralDestination>
     suspend fun getThemePreferences(): Set<Theme>
     suspend fun setThemePreferences(theme: Theme)
     suspend fun getDynamicMenuPreferences(): Set<DynamicColor>

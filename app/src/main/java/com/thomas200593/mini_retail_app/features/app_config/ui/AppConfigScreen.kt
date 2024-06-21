@@ -14,7 +14,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.Info
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -41,7 +40,6 @@ import com.thomas200593.mini_retail_app.app.ui.LocalAppState
 import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
 import com.thomas200593.mini_retail_app.core.ui.common.Icons.Setting.settings
 import com.thomas200593.mini_retail_app.core.ui.component.AppBar
-import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.LoadingScreen
 import com.thomas200593.mini_retail_app.features.app_config.navigation.AppConfigDestination
 import com.thomas200593.mini_retail_app.features.app_config.navigation.navigateToAppConfig
@@ -65,12 +63,7 @@ fun AppConfigScreen(
     TopAppBar(
         onNavigateBack = appState::onNavigateUp
     )
-//    ScreenContent(
-//        onNavigateToGeneralConfigMenu = {
-//            appState.navController.navigateToAppConfigGeneral(null)
-//        }
-//    )
-    ScreenContentExperimental(
+    ScreenContent(
         appConfigMenuPreferences = appConfigMenuPreferences,
         onNavigateToMenu = { menu ->
             appState.navController.navigateToAppConfig(menu)
@@ -129,8 +122,35 @@ private fun TopAppBar(
     }
 }
 
+/**
+ * General Config
+ *      Theme Selection V
+ *      Dynamic Color Selection V
+ *      Language Selection V
+ *      Timezone Selection V
+ *      Default Currencies Selection V
+ *      Font Size Selection V
+ *      Country
+ */
+
+/**
+ * Data Setting
+ *      Daily Backup
+ *          Turn on / off, at what time?
+ *          Default Path
+ *          What to Backup
+ *      Master Data
+ *          Import Master Data
+ */
+
+/**
+ * Security Related Settings (Need Log in)
+ *      Permissions
+ *      Connected Peripherals
+ *      Notifications
+ */
 @Composable
-private fun ScreenContentExperimental(
+private fun ScreenContent(
     appConfigMenuPreferences: RequestState<Set<AppConfigDestination>>,
     onNavigateToMenu: (AppConfigDestination) -> Unit
 ) {
@@ -212,79 +232,5 @@ private fun ScreenContentExperimental(
                 }
             }
         }
-    }
-}
-
-/*@Composable
-private fun ScreenContent(
-    modifier: Modifier = Modifier,
-    onNavigateToGeneralConfigMenu: () -> Unit
-) {
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(8.dp),
-        verticalArrangement = Arrangement.spacedBy(24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        *//**
-         * General Config
-         *      Theme Selection V
-         *      Dynamic Color Selection V
-         *      Language Selection V
-         *      Timezone Selection V
-         *      Default Currencies Selection V
-         *      Font Size Selection V
-         *      Country
-         *//*
-        GeneralConfig(onNavigateToGeneralConfigMenu = onNavigateToGeneralConfigMenu)
-
-        *//**
-         * Data Setting
-         *      Daily Backup
-         *          Turn on / off, at what time?
-         *          Default Path
-         *          What to Backup
-         *      Master Data
-         *          Import Master Data
-         *//*
-//        DataConfig()
-
-        *//**
-         * Security Related Settings (Need Log in)
-         *      Permissions
-         *      Connected Peripherals
-         *      Notifications
-         *//*
-//        SecurityConfig()
-
-        *//**
-         * About Application
-         *      App Version
-         *      Terms and Conditions
-         *      Privacy Policy
-         *      Open Source License
-         *      Contact Developers [Google Form API]
-         *      Clear Cache
-         *//*
-//        AboutApplication()
-    }
-}*/
-
-@Composable
-private fun GeneralConfig(onNavigateToGeneralConfigMenu:() -> Unit) {
-    Button(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp),
-        onClick = { onNavigateToGeneralConfigMenu() },
-        shape = MaterialTheme.shapes.medium
-    ) { 
-        Text(
-            text = stringResource(id = R.string.str_configuration_general),
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
-        ) 
     }
 }
