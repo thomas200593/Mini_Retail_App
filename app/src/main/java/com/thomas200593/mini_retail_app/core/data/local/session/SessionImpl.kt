@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import timber.log.Timber
 import javax.inject.Inject
 
 class SessionImpl @Inject constructor(
@@ -18,6 +19,7 @@ class SessionImpl @Inject constructor(
     override val currentUserSession: Flow<SessionState> = authRepository
         .authSessionToken.flowOn(ioDispatcher)
         .catch {
+            Timber.d("currentUserSession Catch : $it")
             SessionState.Invalid(
                 throwable = it,
                 reason = R.string.str_session_error
@@ -27,14 +29,17 @@ class SessionImpl @Inject constructor(
             if(authRepository.validateAuthSessionToken(authToken)){
                 val userData = authRepository.mapAuthSessionTokenToUserData(authToken)
                 if(userData != null){
+                    Timber.d("currentUserSession = SessionState.Valid")
                     SessionState.Valid(userData)
                 }else{
+                    Timber.d("currentUserSession = SessionState.Invalid")
                     SessionState.Invalid(
                         throwable = null,
                         reason = R.string.str_session_expired
                     )
                 }
             }else{
+                Timber.d("currentUserSession = SessionState.Invalid")
                 SessionState.Invalid(
                     throwable = null,
                     reason = R.string.str_session_expired

@@ -7,9 +7,9 @@ import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStoreKeys.
 import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStoreKeys.AppConfigKeys.dsAppConfigDynamicColor
 import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStoreKeys.AppConfigKeys.dsAppConfigFontSize
 import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStoreKeys.AppConfigKeys.dsAppConfigLanguage
+import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStoreKeys.AppConfigKeys.dsAppConfigOnboardingPagesStatus
 import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStoreKeys.AppConfigKeys.dsAppConfigTheme
 import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStoreKeys.AppConfigKeys.dsAppConfigTimezone
-import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStoreKeys.AppConfigKeys.dsAppConfigOnboardingPagesStatus
 import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStoreKeys.AuthKeys.dsAuthProvider
 import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStoreKeys.AuthKeys.dsAuthSessionToken
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatcher
@@ -80,7 +80,7 @@ class DataStorePreferences @Inject constructor(
         }
 
     suspend fun hideOnboarding() = withContext(ioDispatcher){
-        Timber.d("Called $TAG.hideOnboarding()")
+        Timber.d("Called : $TAG.hideOnboarding()")
         datastore.edit {
             it[dsAppConfigOnboardingPagesStatus] = HIDE.name
         }
@@ -89,7 +89,7 @@ class DataStorePreferences @Inject constructor(
     val authSessionToken = datastore.data
         .flowOn(ioDispatcher)
         .map { data ->
-            Timber.d("Called $TAG.authSessionToken.map{}")
+            Timber.d("Called : $TAG.authSessionToken.map{}")
             AuthSessionToken(
                 authProvider = data[dsAuthProvider] ?.let { oAuthProvider ->
                     OAuthProvider.valueOf(oAuthProvider)
@@ -99,14 +99,14 @@ class DataStorePreferences @Inject constructor(
         }
 
     suspend fun clearAuthSessionToken() = withContext((ioDispatcher)){
-        Timber.d("Called $TAG.clearAuthSessionToken()")
+        Timber.d("Called : $TAG.clearAuthSessionToken()")
         datastore.edit {
             it.remove(dsAuthSessionToken)
         }
     }
 
     suspend fun saveAuthSessionToken(authSessionToken: AuthSessionToken) = withContext(ioDispatcher){
-        Timber.d("Called $TAG.saveAuthSessionToken()")
+        Timber.d("Called : $TAG.saveAuthSessionToken()")
         datastore.edit {
             it[dsAuthSessionToken] = authSessionToken.idToken!!
             it[dsAuthProvider] = authSessionToken.authProvider?.name!!
@@ -114,42 +114,42 @@ class DataStorePreferences @Inject constructor(
     }
 
     suspend fun setThemePreferences(theme: Theme) = withContext(ioDispatcher){
-        Timber.d("Called $TAG.setThemePreferences()")
+        Timber.d("Called : $TAG.setThemePreferences()")
         datastore.edit {
             it[dsAppConfigTheme] = theme.name
         }
     }
 
     suspend fun setDynamicColorPreferences(dynamicColor: DynamicColor) = withContext(ioDispatcher){
-        Timber.d("Called $TAG.setDynamicColorPreferences()")
+        Timber.d("Called : $TAG.setDynamicColorPreferences()")
         datastore.edit {
             it[dsAppConfigDynamicColor] = dynamicColor.name
         }
     }
 
     suspend fun setLanguagePreferences(language: Language) = withContext(ioDispatcher){
-        Timber.d("Called $TAG.setLanguagePreferences()")
+        Timber.d("Called : $TAG.setLanguagePreferences()")
         datastore.edit {
             it[dsAppConfigLanguage] = language.name
         }
     }
 
     suspend fun setTimezonePreferences(timezone: Timezone) = withContext(ioDispatcher){
-        Timber.d("Called $TAG.setTimezonePreferences()")
+        Timber.d("Called : $TAG.setTimezonePreferences()")
         datastore.edit {
             it[dsAppConfigTimezone] = timezone.timezoneOffset
         }
     }
 
     suspend fun setCurrencyPreferences(currency: Currency) = withContext(ioDispatcher){
-        Timber.d("Called $TAG.setCurrencyPreferences()")
+        Timber.d("Called : $TAG.setCurrencyPreferences()")
         datastore.edit {
             it[dsAppConfigCurrency] = currency.code
         }
     }
 
     suspend fun setFontSizePreferences(fontSize: FontSize) = withContext(ioDispatcher){
-        Timber.d("Called $TAG.setFontSizePreferences()")
+        Timber.d("Called : $TAG.setFontSizePreferences()")
         datastore.edit {
             it[dsAppConfigFontSize] = fontSize.name
         }

@@ -47,7 +47,7 @@ class MainActivity: AppCompatActivity() {
     private val viewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        Timber.d("Called : %s.onCreate()", TAG)
+        Timber.d("Called : $TAG.onCreate()")
         val splashscreen = installSplashScreen()
         super.onCreate(savedInstanceState)
         var uiState: MainActivityUiState by mutableStateOf(Loading)

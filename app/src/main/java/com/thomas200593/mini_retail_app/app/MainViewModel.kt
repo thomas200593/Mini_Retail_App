@@ -9,6 +9,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import timber.log.Timber
 import javax.inject.Inject
@@ -19,8 +20,9 @@ private val TAG = MainViewModel::class.simpleName
 class MainViewModel @Inject constructor(
     appConfigRepository: AppConfigRepository
 ) : ViewModel(){
-    val uiState: StateFlow<MainActivityUiState> = appConfigRepository.configCurrentData.map {
-        Timber.d("Called : $TAG.uiState")
+    val uiState: StateFlow<MainActivityUiState> = appConfigRepository.configCurrentData.onEach {
+        Timber.d("uiState : $it")
+    }.map {
         Success(it)
     }.stateIn(
         scope = viewModelScope,
