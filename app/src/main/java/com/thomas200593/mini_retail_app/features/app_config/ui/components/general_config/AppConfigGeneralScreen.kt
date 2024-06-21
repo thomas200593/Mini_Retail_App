@@ -52,7 +52,7 @@ fun AppConfigGeneralScreen(
     appState: AppState = LocalAppState.current
 ) {
     Timber.d("Called: %s", TAG)
-    val generalMenuPreferences by viewModel.appConfigGeneralMenuPreferences
+    val appConfigGeneralMenuPreferences by viewModel.appConfigGeneralMenuPreferences
 
     LaunchedEffect(Unit) {
         viewModel.onOpen()
@@ -62,7 +62,7 @@ fun AppConfigGeneralScreen(
         onNavigateBack = appState::onNavigateUp
     )
     ScreenContent(
-        generalMenuPreferences = generalMenuPreferences,
+        appConfigGeneralMenuPreferences = appConfigGeneralMenuPreferences,
         onNavigateToMenu = { menu ->
             appState.navController.navigateToAppConfigGeneral(menu)
         }
@@ -122,10 +122,10 @@ private fun TopAppBar(
 
 @Composable
 private fun ScreenContent(
-    generalMenuPreferences: RequestState<Set<AppConfigGeneralDestination>>,
+    appConfigGeneralMenuPreferences: RequestState<Set<AppConfigGeneralDestination>>,
     onNavigateToMenu: (AppConfigGeneralDestination) -> Unit
 ) {
-    when(generalMenuPreferences){
+    when(appConfigGeneralMenuPreferences){
         RequestState.Idle -> Unit
         RequestState.Loading -> {
             LoadingScreen()
@@ -146,7 +146,7 @@ private fun ScreenContent(
             }
         }
         is RequestState.Success -> {
-            val appConfigGeneralMenuPreferences = generalMenuPreferences.data ?: emptySet()
+            val menuPreferences = appConfigGeneralMenuPreferences.data ?: emptySet()
 
             LazyColumn(
                 modifier = Modifier
@@ -155,8 +155,8 @@ private fun ScreenContent(
                 verticalArrangement = Arrangement.spacedBy(10.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                items(count = appConfigGeneralMenuPreferences.count()){ index ->
-                    val menu = appConfigGeneralMenuPreferences.elementAt(index)
+                items(count = menuPreferences.count()){ index ->
+                    val menu = menuPreferences.elementAt(index)
                     Surface(
                         modifier = Modifier
                             .fillMaxWidth(1.0f),
