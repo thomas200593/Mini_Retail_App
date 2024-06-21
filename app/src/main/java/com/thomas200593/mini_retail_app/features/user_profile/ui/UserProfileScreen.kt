@@ -13,8 +13,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
-import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
@@ -28,6 +29,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -36,16 +40,18 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
+import coil.request.ImageRequest
+import coil.transform.CircleCropTransformation
 import com.thomas200593.mini_retail_app.app.ui.AppState
 import com.thomas200593.mini_retail_app.app.ui.LocalAppState
 import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
-import com.thomas200593.mini_retail_app.core.ui.common.Themes
+import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.LoadingPanelCircularIndicator
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.LoadingScreen
+import com.thomas200593.mini_retail_app.features.auth.entity.OAuth2UserMetadata
 import com.thomas200593.mini_retail_app.features.auth.entity.OAuthProvider
 import com.thomas200593.mini_retail_app.features.initial.navigation.navigateToInitial
 import com.thomas200593.mini_retail_app.work.workers.session_monitor.manager.SessionMonitorWorkManager
@@ -76,6 +82,7 @@ fun UserProfileScreen(
     }
 
     ScreenContent(
+        sessionState = sessionState,
         onSignedOut = {
             viewModel.handleSignOut()
             SessionMonitorWorkManager.terminate(applicationContext)
@@ -86,6 +93,7 @@ fun UserProfileScreen(
 @Composable
 private fun ScreenContent(
     modifier: Modifier = Modifier,
+    sessionState: SessionState,
     onSignedOut: () -> Unit
 ) {
     Column(
@@ -96,7 +104,9 @@ private fun ScreenContent(
         verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.Top),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        ProfileSection()
+        ProfileSection(
+            sessionState = sessionState
+        )
         MenuSection()
         ExitSection(
             onSignedOut = onSignedOut
@@ -105,116 +115,150 @@ private fun ScreenContent(
 }
 
 @Composable
-private fun ProfileSection() {
+private fun ProfileSection(
+    modifier: Modifier = Modifier,
+    sessionState: SessionState
+) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(8.dp),
         verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterVertically),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        AsyncImage(
-            model = null,
-            contentDescription = null,
-            modifier = Modifier
-                .size(100.dp)
-                .border(2.dp, Color.Gray, CircleShape),
-            contentScale = ContentScale.Crop
-        )
-        Row(
-            modifier = Modifier.fillMaxWidth(1.0f),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        ){
-            Text(
-                modifier = Modifier.weight(0.9f),
-                text = "Thomas Richard S.W.",
-                color = MaterialTheme.colorScheme.onSurface,
-                fontSize = MaterialTheme.typography.titleLarge.fontSize,
-                fontWeight = FontWeight.Bold,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                textAlign = TextAlign.Center
-            )
-            Surface(
-                modifier = Modifier.weight(0.1f),
-                color = MaterialTheme.colorScheme.tertiaryContainer,
-                shape = MaterialTheme.shapes.extraSmall,
-            ) {
-                Icon(
-                    imageVector = Icons.Default.ArrowDropDown,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onTertiaryContainer
-                )
+        when(sessionState){
+            SessionState.Loading -> {
+                LoadingPanelCircularIndicator()
+            }
+            is SessionState.Invalid -> {
+                LoadingPanelCircularIndicator()
+            }
+            is SessionState.Valid -> {
+                when(val provider = sessionState.userData.authSessionToken?.authProvider){
+                    OAuthProvider.GOOGLE -> {
+                        val data = (sessionState.userData.oAuth2UserMetadata as OAuth2UserMetadata.Google)
+                        var infoExpanded by remember { mutableStateOf(false) }
+
+                        AsyncImage(
+                            model = ImageRequest
+                                .Builder(LocalContext.current)
+                                .crossfade(1000)
+                                .data(data = data.pictureUri)
+                                .transformations(CircleCropTransformation()).build(),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(100.dp)
+                                .border(2.dp, Color.Gray, CircleShape),
+                            contentScale = ContentScale.Crop
+                        )
+                        Row(
+                            modifier = Modifier.fillMaxWidth(1.0f),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
+                        ){
+                            Text(
+                                modifier = Modifier.weight(0.9f),
+                                text = data.name,
+                                color = MaterialTheme.colorScheme.onSurface,
+                                fontSize = MaterialTheme.typography.titleLarge.fontSize,
+                                fontWeight = FontWeight.Bold,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                textAlign = TextAlign.Center
+                            )
+                            Surface(
+                                modifier = Modifier.weight(0.1f),
+                                color = MaterialTheme.colorScheme.tertiaryContainer,
+                                shape = MaterialTheme.shapes.extraSmall,
+                                onClick = { infoExpanded = !infoExpanded }
+                            ) {
+                                Icon(
+                                    imageVector = if(!infoExpanded) Icons.Default.KeyboardArrowDown else Icons.Default.KeyboardArrowUp,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.onTertiaryContainer
+                                )
+                            }
+                        }
+                        if(infoExpanded){
+                            Row(
+                                modifier = Modifier.fillMaxWidth(1.0f),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                Surface(
+                                    modifier = Modifier.weight(0.1f),
+                                    shape = MaterialTheme.shapes.extraSmall,
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Email,
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.onPrimaryContainer
+                                    )
+                                }
+                                Text(
+                                    modifier = Modifier.weight(0.9f),
+                                    text = data.email,
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                    textAlign = TextAlign.Start
+                                )
+                            }
+                            Row(
+                                modifier = Modifier.fillMaxWidth(1.0f),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                Surface(
+                                    modifier = Modifier.weight(0.1f),
+                                    shape = MaterialTheme.shapes.extraSmall,
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Lock,
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.onPrimaryContainer
+                                    )
+                                }
+                                Text(
+                                    modifier = Modifier.weight(0.9f),
+                                    text = provider.title,
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                    textAlign = TextAlign.Start
+                                )
+                            }
+                            Row(
+                                modifier = Modifier.fillMaxWidth(1.0f),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                Surface(
+                                    modifier = Modifier.weight(0.1f),
+                                    shape = MaterialTheme.shapes.extraSmall,
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Warning,
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.onPrimaryContainer
+                                    )
+                                }
+                                Text(
+                                    modifier = Modifier.weight(0.9f),
+                                    text = OAuthProvider.GOOGLE.name,
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                    textAlign = TextAlign.Start
+                                )
+                            }
+                        }
+                        HorizontalDivider(thickness = 2.dp)
+                    }
+                    null -> Unit
+                }
             }
         }
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        ) {
-            Surface(
-                shape = MaterialTheme.shapes.extraSmall,
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Email,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onPrimaryContainer
-                )
-            }
-            Text(
-                text = "thomas200593@gmail.com",
-                color = MaterialTheme.colorScheme.onSurface,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                textAlign = TextAlign.Start
-            )
-        }
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        ) {
-            Surface(
-                shape = MaterialTheme.shapes.extraSmall,
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Lock,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onPrimaryContainer
-                )
-            }
-            Text(
-                text = OAuthProvider.GOOGLE.name,
-                color = MaterialTheme.colorScheme.onSurface,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                textAlign = TextAlign.Start
-            )
-        }
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        ) {
-            Surface(
-                shape = MaterialTheme.shapes.extraSmall,
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Warning,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onPrimaryContainer
-                )
-            }
-            Text(
-                text = OAuthProvider.GOOGLE.name,
-                color = MaterialTheme.colorScheme.onSurface,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                textAlign = TextAlign.Start
-            )
-        }
-        HorizontalDivider(thickness = 2.dp)
     }
 }
 
@@ -259,18 +303,5 @@ fun ExitSection(
                 overflow = TextOverflow.Ellipsis
             )
         }
-    }
-}
-
-@Preview(
-    showSystemUi = true,
-    showBackground = true
-)
-@Composable
-fun PreviewProfileScreen(){
-    Themes.ApplicationTheme {
-        ScreenContent(
-            onSignedOut = {}
-        )
     }
 }

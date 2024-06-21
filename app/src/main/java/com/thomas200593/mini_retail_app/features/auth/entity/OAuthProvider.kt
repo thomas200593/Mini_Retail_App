@@ -1,11 +1,11 @@
 package com.thomas200593.mini_retail_app.features.auth.entity
 
 enum class OAuthProvider(
-    name: String,
-    label: String
+    val code: String,
+    val title: String
 ) {
     GOOGLE(
-        name = "GOOGLE_OAUTH2",
-        label = "Social (Google)"
+        code = "GOOGLE_OAUTH2",
+        title = "Social (Google)"
     )
 }
