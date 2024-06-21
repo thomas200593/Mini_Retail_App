@@ -25,6 +25,9 @@ object DataStoreKeys {
         val dsAppConfigCurrency = stringPreferencesKey(
             name = "DS_APP_CONFIG_CURRENCY"
         )
+        val dsAppConfigCountry = stringPreferencesKey(
+            name = "DS_APP_CONFIG_COUNTRY"
+        )
     }
 
     object AuthKeys {

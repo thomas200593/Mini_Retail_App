@@ -9,6 +9,7 @@ object Routes {
 
     const val APP_ROUTE_APP_CONFIG: String = "r_app_config"
     const val APP_ROUTE_APP_CONFIG_GENERAL: String = "r_app_config_general"
+    const val APP_ROUTE_APP_CONFIG_GENERAL_COUNTRY: String = "r_app_config_general_country"
     const val APP_ROUTE_APP_CONFIG_GENERAL_LANGUAGE: String = "r_app_config_general_language"
     const val APP_ROUTE_APP_CONFIG_GENERAL_TIMEZONE: String = "r_app_config_general_timezone"
     const val APP_ROUTE_APP_CONFIG_GENERAL_THEME: String = "r_app_config_general_theme"

@@ -29,7 +29,7 @@ class AppConfigGeneralViewModel @Inject constructor(
     private suspend fun getGeneralMenuPreferences() = viewModelScope.launch(ioDispatcher) {
         _generalMenuPreferences.value = RequestState.Loading
         _generalMenuPreferences.value = try{
-            RequestState.Success(appConfigRepository.getAppConfigGeneralMenuData())
+            RequestState.Success(appConfigRepository.getAppConfigGeneralMenuData(usesAuth = null))
         }catch (e: Throwable){
             RequestState.Error(e)
         }

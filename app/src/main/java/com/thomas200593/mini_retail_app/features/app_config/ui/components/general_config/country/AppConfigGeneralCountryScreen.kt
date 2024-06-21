@@ -1,4 +1,4 @@
-package com.thomas200593.mini_retail_app.features.app_config.ui.components.general_config.currency
+package com.thomas200593.mini_retail_app.features.app_config.ui.components.general_config.country
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
@@ -17,6 +17,7 @@ import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowRight
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -44,19 +45,19 @@ import com.thomas200593.mini_retail_app.core.ui.common.Icons.Currency.currency
 import com.thomas200593.mini_retail_app.core.ui.component.AppBar
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.LoadingScreen
 import com.thomas200593.mini_retail_app.features.app_config.entity.ConfigCurrent
-import com.thomas200593.mini_retail_app.features.app_config.entity.Currency
+import com.thomas200593.mini_retail_app.features.app_config.entity.Country
 import timber.log.Timber
 
-private const val TAG = "AppConfigGeneralCurrencyScreen"
+private const val TAG = "AppConfigGeneralCountryScreen"
 
 @Composable
-fun AppConfigGeneralCurrencyScreen(
-    viewModel: AppConfigGeneralCurrencyViewModel = hiltViewModel(),
+fun AppConfigGeneralCountryScreen(
+    viewModel: AppConfigGeneralCountryViewModel = hiltViewModel(),
     appState: AppState = LocalAppState.current
-) {
+){
     Timber.d("Called : $TAG()")
     val configCurrent by viewModel.configCurrentUiState.collectAsStateWithLifecycle()
-    val currencyPreferences by viewModel.currencyPreferences
+    val countryPreferences by viewModel.countryPreferences
 
     LaunchedEffect(Unit) {
         viewModel.onOpen()
@@ -66,16 +67,14 @@ fun AppConfigGeneralCurrencyScreen(
         onNavigateBack = appState::onNavigateUp
     )
     ScreenContent(
-        currencyPreferences = currencyPreferences,
+        countryPreferences = countryPreferences,
         configCurrent = configCurrent,
-        onSaveSelectedCurrency = viewModel::saveSelectedCurrency
+        onSaveSelectedCountry = viewModel::saveSelectedCountry
     )
 }
 
 @Composable
-private fun TopAppBar(
-    onNavigateBack: () -> Unit
-) {
+fun TopAppBar(onNavigateBack: () -> Unit) {
     AppBar.ProvideTopAppBarNavigationIcon {
         Surface(
             onClick =  onNavigateBack,
@@ -101,7 +100,7 @@ private fun TopAppBar(
                 contentDescription = null
             )
             Text(
-                text = stringResource(id = R.string.str_currency),
+                text = stringResource(id = R.string.str_country),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
@@ -124,16 +123,14 @@ private fun TopAppBar(
 }
 
 @Composable
-private fun ScreenContent(
-    currencyPreferences: RequestState<List<Currency>>,
+fun ScreenContent(
+    countryPreferences: RequestState<List<Country>>,
     configCurrent: RequestState<ConfigCurrent>,
-    onSaveSelectedCurrency: (Currency) -> Unit
+    onSaveSelectedCountry: (Country) -> Unit
 ) {
     when(configCurrent){
         RequestState.Idle -> Unit
-        RequestState.Loading -> {
-            LoadingScreen()
-        }
+        RequestState.Loading -> LoadingScreen()
         is RequestState.Error -> {
             Column(
                 modifier = Modifier
@@ -150,7 +147,7 @@ private fun ScreenContent(
             }
         }
         is RequestState.Success -> {
-            when(currencyPreferences){
+            when(countryPreferences){
                 RequestState.Idle -> Unit
                 RequestState.Loading -> {
                     LoadingScreen()
@@ -171,8 +168,8 @@ private fun ScreenContent(
                     }
                 }
                 is RequestState.Success -> {
-                    val currentCurrency = configCurrent.data?.currentCurrency ?: ConfigCurrent().currentCurrency
-                    val appCurrencyPreferences = currencyPreferences.data ?: emptyList()
+                    val currentCountry = configCurrent.data?.currentCountry ?: ConfigCurrent().currentCountry
+                    val appCountryPreferences = countryPreferences.data ?: emptyList()
 
                     LazyColumn(
                         modifier = Modifier
@@ -181,8 +178,8 @@ private fun ScreenContent(
                         verticalArrangement = Arrangement.spacedBy(10.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        items(count = appCurrencyPreferences.count()){ index ->
-                            val data = appCurrencyPreferences[index]
+                        items(count = appCountryPreferences.count()){ index ->
+                            val data = appCountryPreferences[index]
                             Surface(
                                 modifier = Modifier
                                     .fillMaxWidth(1.0f),
@@ -203,7 +200,16 @@ private fun ScreenContent(
                                         horizontalAlignment = Alignment.CenterHorizontally
                                     ) {
                                         Text(
-                                            text = data.code,
+                                            text = data.isoCode,
+                                            modifier = Modifier.fillMaxWidth(),
+                                            textAlign = TextAlign.Center,
+                                            fontWeight = FontWeight.Bold,
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis
+                                        )
+                                        HorizontalDivider()
+                                        Text(
+                                            text = data.iso03Country,
                                             modifier = Modifier.fillMaxWidth(),
                                             textAlign = TextAlign.Center,
                                             fontWeight = FontWeight.Bold,
@@ -220,23 +226,15 @@ private fun ScreenContent(
                                             maxLines = 1,
                                             overflow = TextOverflow.Ellipsis
                                         )
-                                        Text(
-                                            text = data.symbol,
-                                            modifier = Modifier.fillMaxWidth(),
-                                            textAlign = TextAlign.Start,
-                                            fontWeight = FontWeight.Bold,
-                                            maxLines = 1,
-                                            overflow = TextOverflow.Ellipsis
-                                        )
                                     }
                                     Surface(
                                         modifier = Modifier.weight(0.2f),
-                                        onClick = { onSaveSelectedCurrency(data) }
+                                        onClick = { onSaveSelectedCountry(data) }
                                     ) {
                                         Icon(
-                                            imageVector = if (data == currentCurrency) Icons.Default.CheckCircle else Icons.AutoMirrored.Outlined.KeyboardArrowRight,
+                                            imageVector = if (data == currentCountry) Icons.Default.CheckCircle else Icons.AutoMirrored.Outlined.KeyboardArrowRight,
                                             contentDescription = null,
-                                            tint = if (data == currentCurrency) Color.Green else MaterialTheme.colorScheme.onTertiaryContainer
+                                            tint = if (data == currentCountry) Color.Green else MaterialTheme.colorScheme.onTertiaryContainer
                                         )
                                     }
                                 }

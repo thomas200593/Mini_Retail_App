@@ -55,5 +55,8 @@
     <string name="str_error">Error</string>
     <string name="str_session_expired">Your session is expired</string>
     <string name="str_session_error">Something was wrong</string>
+<!-- Country -->
+    <string name="str_country">Country</string>
+    <string name="str_country_desc">Change Your preferred country</string>
 
 </resources>

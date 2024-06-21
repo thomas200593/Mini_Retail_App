@@ -3,6 +3,7 @@ package com.thomas200593.mini_retail_app.core.data.local.datastore
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
+import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStoreKeys.AppConfigKeys.dsAppConfigCountry
 import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStoreKeys.AppConfigKeys.dsAppConfigCurrency
 import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStoreKeys.AppConfigKeys.dsAppConfigDynamicColor
 import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStoreKeys.AppConfigKeys.dsAppConfigFontSize
@@ -14,9 +15,11 @@ import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStoreKeys.
 import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStoreKeys.AuthKeys.dsAuthSessionToken
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatchers
+import com.thomas200593.mini_retail_app.core.util.CountryHelper
 import com.thomas200593.mini_retail_app.core.util.CurrencyHelper
 import com.thomas200593.mini_retail_app.core.util.TimezoneHelper
 import com.thomas200593.mini_retail_app.features.app_config.entity.ConfigCurrent
+import com.thomas200593.mini_retail_app.features.app_config.entity.Country
 import com.thomas200593.mini_retail_app.features.app_config.entity.Currency
 import com.thomas200593.mini_retail_app.features.app_config.entity.DynamicColor
 import com.thomas200593.mini_retail_app.features.app_config.entity.DynamicColor.DISABLED
@@ -38,6 +41,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import org.joda.money.CurrencyUnit
 import timber.log.Timber
+import java.util.Locale
 import javax.inject.Inject
 
 private val TAG = DataStorePreferences::class.simpleName
@@ -75,7 +79,14 @@ class DataStorePreferences @Inject constructor(
                         defaultFractionDigits = CurrencyUnit.of(currencyCode).toCurrency().defaultFractionDigits,
                         decimalPlaces = CurrencyUnit.of(currencyCode).decimalPlaces
                     )
-                } ?: CurrencyHelper.CURRENCY_DEFAULT
+                } ?: CurrencyHelper.CURRENCY_DEFAULT,
+                currentCountry = data[dsAppConfigCountry] ?.let{ countryIsoCode ->
+                    Country(
+                        isoCode = countryIsoCode,
+                        iso03Country = Locale("", countryIsoCode).isO3Country,
+                        displayName = Locale("", countryIsoCode).displayName
+                    )
+                } ?: CountryHelper.COUNTRY_DEFAULT
             )
         }
 
@@ -152,6 +163,13 @@ class DataStorePreferences @Inject constructor(
         Timber.d("Called : $TAG.setFontSizePreferences()")
         datastore.edit {
             it[dsAppConfigFontSize] = fontSize.name
+        }
+    }
+
+    suspend fun setCountryPreferences(country: Country) = withContext(ioDispatcher){
+        Timber.d("Called : $TAG.setCountryPreferences()")
+        datastore.edit {
+            it[dsAppConfigCountry] = country.isoCode
         }
     }
 }

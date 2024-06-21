@@ -43,4 +43,6 @@
     <string name="str_error">Galat</string>
     <string name="str_session_expired">Sesi-mu telah berakhir</string>
     <string name="str_session_error">Telah terjadi error</string>
+    <string name="str_country">Negara</string>
+    <string name="str_country_desc">Ubah preferensi negara-mu</string>
 </resources>

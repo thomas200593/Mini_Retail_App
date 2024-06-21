@@ -1,5 +1,6 @@
 package com.thomas200593.mini_retail_app.features.app_config.entity
 
+import com.thomas200593.mini_retail_app.core.util.CountryHelper.COUNTRY_DEFAULT
 import com.thomas200593.mini_retail_app.core.util.CurrencyHelper.CURRENCY_DEFAULT
 import com.thomas200593.mini_retail_app.core.util.TimezoneHelper.TIMEZONE_DEFAULT
 import com.thomas200593.mini_retail_app.features.app_config.entity.DynamicColor.DISABLED
@@ -13,6 +14,7 @@ data class ConfigCurrent(
     val currentTheme: Theme = SYSTEM,
     val currentDynamicColor: DynamicColor = DISABLED,
     val currentFontSizeSize: FontSize = MEDIUM,
+    val currentCountry: Country = COUNTRY_DEFAULT,
     val currentLanguage: Language = EN,
     val currentTimezone: Timezone = TIMEZONE_DEFAULT,
     val currentCurrency: Currency = CURRENCY_DEFAULT

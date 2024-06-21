@@ -14,6 +14,7 @@ object DestinationWithTopAppBar{
             ScreenGraphs.AppConfig.route,
             ScreenGraphs.AppConfigGeneral.route,
             ScreenGraphs.AppConfigGeneralTheme.route,
+            ScreenGraphs.AppConfigGeneralCountry.route,
             ScreenGraphs.AppConfigGeneralDynamicColor.route,
             ScreenGraphs.AppConfigGeneralLanguage.route,
             ScreenGraphs.AppConfigGeneralTimezone.route,

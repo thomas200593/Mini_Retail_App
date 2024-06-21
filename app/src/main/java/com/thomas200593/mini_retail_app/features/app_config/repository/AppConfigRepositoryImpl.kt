@@ -3,10 +3,12 @@ package com.thomas200593.mini_retail_app.features.app_config.repository
 import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStorePreferences
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatchers.Dispatchers
+import com.thomas200593.mini_retail_app.core.util.CountryHelper
 import com.thomas200593.mini_retail_app.core.util.CurrencyHelper
 import com.thomas200593.mini_retail_app.core.util.TimezoneHelper
 import com.thomas200593.mini_retail_app.features.app_config.navigation.ConfigGeneralDestination
 import com.thomas200593.mini_retail_app.features.app_config.entity.ConfigCurrent
+import com.thomas200593.mini_retail_app.features.app_config.entity.Country
 import com.thomas200593.mini_retail_app.features.app_config.entity.Currency
 import com.thomas200593.mini_retail_app.features.app_config.entity.DynamicColor
 import com.thomas200593.mini_retail_app.features.app_config.entity.FontSize
@@ -25,7 +27,9 @@ internal class AppConfigRepositoryImpl @Inject constructor(
     override val configCurrentData: Flow<ConfigCurrent> =
         appDataStore.configCurrentData
 
-    override suspend fun getAppConfigGeneralMenuData(): Set<ConfigGeneralDestination> = withContext(ioDispatcher){
+    override suspend fun getAppConfigGeneralMenuData(
+        usesAuth: Boolean?
+    ): Set<ConfigGeneralDestination> = withContext(ioDispatcher){
         ConfigGeneralDestination.entries.toSet()
     }
 
@@ -75,5 +79,13 @@ internal class AppConfigRepositoryImpl @Inject constructor(
 
     override suspend fun setFontSizePreferences(fontSize: FontSize) {
         appDataStore.setFontSizePreferences(fontSize)
+    }
+
+    override suspend fun getCountryPreferences(): List<Country> = withContext(ioDispatcher){
+        CountryHelper.getCountryList()
+    }
+
+    override suspend fun setCountryPreferences(country: Country) {
+        appDataStore.setCountryPreferences(country)
     }
 }
