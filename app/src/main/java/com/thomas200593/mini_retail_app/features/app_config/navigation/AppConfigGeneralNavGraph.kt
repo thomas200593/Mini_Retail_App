@@ -73,14 +73,14 @@ fun NavGraphBuilder.appConfigGeneralNavGraph() {
 }
 
 fun NavController.navigateToAppConfigGeneral(
-    configGeneralDestination: ConfigGeneralDestination?
+    appConfigGeneralDestination: AppConfigGeneralDestination?
 ) {
     val navOptions = navOptions {
         launchSingleTop = true
         restoreState = true
     }
     this.navigate(
-        configGeneralDestination?.route?:G_APP_CONFIG_GENERAL,
+        appConfigGeneralDestination?.route?:G_APP_CONFIG_GENERAL,
         navOptions = navOptions
     )
 }

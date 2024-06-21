@@ -6,7 +6,7 @@ import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatche
 import com.thomas200593.mini_retail_app.core.util.CountryHelper
 import com.thomas200593.mini_retail_app.core.util.CurrencyHelper
 import com.thomas200593.mini_retail_app.core.util.TimezoneHelper
-import com.thomas200593.mini_retail_app.features.app_config.navigation.ConfigGeneralDestination
+import com.thomas200593.mini_retail_app.features.app_config.navigation.AppConfigGeneralDestination
 import com.thomas200593.mini_retail_app.features.app_config.entity.ConfigCurrent
 import com.thomas200593.mini_retail_app.features.app_config.entity.Country
 import com.thomas200593.mini_retail_app.features.app_config.entity.Currency
@@ -29,8 +29,8 @@ internal class AppConfigRepositoryImpl @Inject constructor(
 
     override suspend fun getAppConfigGeneralMenuData(
         usesAuth: Boolean?
-    ): Set<ConfigGeneralDestination> = withContext(ioDispatcher){
-        ConfigGeneralDestination.entries.toSet()
+    ): Set<AppConfigGeneralDestination> = withContext(ioDispatcher){
+        AppConfigGeneralDestination.entries.toSet()
     }
 
     override suspend fun getThemePreferences(): Set<Theme> = withContext(ioDispatcher){
