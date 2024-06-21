@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.first
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
-private const val TAG = "SessionMonitorWorker"
+private val TAG = SessionMonitorWorker::class.simpleName
 @HiltWorker
 class SessionMonitorWorker @AssistedInject constructor(
     @Assisted context: Context,
@@ -22,20 +22,22 @@ class SessionMonitorWorker @AssistedInject constructor(
 ): CoroutineWorker(context, workerParameters) {
 
     override suspend fun doWork(): Result {
-        Timber.d("Called %s.doWork", TAG)
+        Timber.d("Called : $TAG.doWork()")
         if(! authRepository.validateAuthSessionToken(authRepository.authSessionToken.first())){
-            Timber.d("%s.doWork Result : SessionInvalid, clear residue")
+            Timber.d("$TAG.doWork() Result : SessionInvalid, Invalidate Session")
             authRepository.clearAuthSessionToken()
             return Result.success()
         }else{
-            Timber.d("%s.doWork Result : SessionValid, do nothing")
+            Timber.d("$TAG.doWork() Result : SessionValid")
             return Result.success()
         }
     }
 
     companion object {
         private val WorkerConstraint
-            get() = Constraints.Builder().build()
+            get() = Constraints.Builder().build().also {
+                Timber.d("Getting $TAG Work Constraints : $it")
+            }
 
         fun startUpWork() = PeriodicWorkRequestBuilder<SessionMonitorWorker>(
             repeatInterval = 15,
