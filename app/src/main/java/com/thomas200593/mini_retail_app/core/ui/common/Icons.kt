@@ -9,6 +9,7 @@ import com.thomas200593.mini_retail_app.R.drawable.app_icon_business_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_country_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_currency_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_dashboard_48px
+import com.thomas200593.mini_retail_app.R.drawable.app_icon_data_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_dynamic_color_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_dynamic_color_disabled_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_dynamic_color_enabled_48px
@@ -73,6 +74,7 @@ object Icons {
     object Setting{
         @DrawableRes val settings = +app_icon_settings_48px
         @DrawableRes val settings_general = +app_icon_settings_general_48px
+        @DrawableRes val settings_data = +app_icon_data_48px
     }
     object Theme{
         @DrawableRes val theme = +app_icon_theme_48px
