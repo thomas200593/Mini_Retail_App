@@ -54,6 +54,7 @@ import com.thomas200593.mini_retail_app.core.ui.common.Icons.Auth.session_expire
 import com.thomas200593.mini_retail_app.core.ui.common.Icons.Setting.settings
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.LoadingPanelCircularIndicator
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.LoadingScreen
+import com.thomas200593.mini_retail_app.features.app_config.navigation.navigateToAppConfig
 import com.thomas200593.mini_retail_app.features.auth.entity.OAuth2UserMetadata
 import com.thomas200593.mini_retail_app.features.auth.entity.OAuthProvider
 import com.thomas200593.mini_retail_app.features.initial.navigation.navigateToInitial
@@ -87,6 +88,9 @@ fun UserProfileScreen(
 
     ScreenContent(
         sessionState = sessionState,
+        onNavigateToConfig = {
+            appState.navController.navigateToAppConfig()
+        },
         onSignedOut = {
             viewModel.handleSignOut()
             SessionMonitorWorkManager.terminate(applicationContext)
@@ -98,6 +102,7 @@ fun UserProfileScreen(
 private fun ScreenContent(
     modifier: Modifier = Modifier,
     sessionState: SessionState,
+    onNavigateToConfig: () -> Unit,
     onSignedOut: () -> Unit
 ) {
     Column(
@@ -109,7 +114,8 @@ private fun ScreenContent(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         ProfileSection(
-            sessionState = sessionState
+            sessionState = sessionState,
+            onNavigateToConfig = onNavigateToConfig
         )
         MenuSection()
         ExitSection(
@@ -121,7 +127,8 @@ private fun ScreenContent(
 @Composable
 private fun ProfileSection(
     modifier: Modifier = Modifier,
-    sessionState: SessionState
+    sessionState: SessionState,
+    onNavigateToConfig: () -> Unit
 ) {
     Column(
         modifier = modifier
@@ -149,7 +156,10 @@ private fun ProfileSection(
                             horizontalArrangement = Arrangement.End
                         ) {
                             Surface(
-                                modifier = Modifier.size(ButtonDefaults.IconSize)
+                                modifier = Modifier.size(ButtonDefaults.IconSize),
+                                onClick = {
+                                    onNavigateToConfig()
+                                }
                             ) {
                                 Icon(
                                     imageVector = ImageVector.vectorResource(id = settings),
