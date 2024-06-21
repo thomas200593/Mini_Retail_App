@@ -1,14 +1,16 @@
 package com.thomas200593.mini_retail_app.features.app_config.ui
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.Info
@@ -20,20 +22,29 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.app.ui.AppState
 import com.thomas200593.mini_retail_app.app.ui.LocalAppState
+import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
 import com.thomas200593.mini_retail_app.core.ui.common.Icons.Setting.settings
 import com.thomas200593.mini_retail_app.core.ui.component.AppBar
-import com.thomas200593.mini_retail_app.features.app_config.navigation.navigateToAppConfigGeneral
+import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel
+import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.LoadingScreen
+import com.thomas200593.mini_retail_app.features.app_config.navigation.AppConfigDestination
+import com.thomas200593.mini_retail_app.features.app_config.navigation.navigateToAppConfig
 import timber.log.Timber
 
 private const val TAG = "AppConfigScreen"
@@ -44,17 +55,25 @@ fun AppConfigScreen(
     appState: AppState = LocalAppState.current
 ) {
     Timber.d("Called: %s", TAG)
+    val sessionState by appState.isSessionValid.collectAsStateWithLifecycle()
+    val appConfigMenuPreferences by viewModel.appConfigMenuPreferences
 
     LaunchedEffect(Unit) {
-        viewModel.onOpen()
+        viewModel.onOpen(sessionState)
     }
 
     TopAppBar(
         onNavigateBack = appState::onNavigateUp
     )
-    ScreenContent(
-        onNavigateToGeneralConfigMenu = {
-            appState.navController.navigateToAppConfigGeneral(null)
+//    ScreenContent(
+//        onNavigateToGeneralConfigMenu = {
+//            appState.navController.navigateToAppConfigGeneral(null)
+//        }
+//    )
+    ScreenContentExperimental(
+        appConfigMenuPreferences = appConfigMenuPreferences,
+        onNavigateToMenu = { menu ->
+            appState.navController.navigateToAppConfig(menu)
         }
     )
 }
@@ -111,6 +130,92 @@ private fun TopAppBar(
 }
 
 @Composable
+private fun ScreenContentExperimental(
+    appConfigMenuPreferences: RequestState<Set<AppConfigDestination>>,
+    onNavigateToMenu: (AppConfigDestination) -> Unit
+) {
+    when(appConfigMenuPreferences){
+        RequestState.Idle -> Unit
+        RequestState.Loading -> {
+            LoadingScreen()
+        }
+        is RequestState.Error -> {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = stringResource(id = R.string.str_error),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+        }
+        is RequestState.Success -> {
+            val menuPreferences = appConfigMenuPreferences.data ?: emptySet()
+
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(8.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                items(count = menuPreferences.count()){ index ->
+                    val menu = menuPreferences.elementAt(index)
+                    Surface(
+                        modifier = Modifier
+                            .fillMaxWidth(1.0f),
+                        shape = MaterialTheme.shapes.medium,
+                        border = BorderStroke(width = 1.dp, color = Color(0xFF747775)),
+                        onClick = { onNavigateToMenu(menu) }
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth(1.0f)
+                                .padding(8.dp)
+                                .height(intrinsicSize = IntrinsicSize.Max),
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Surface(modifier = Modifier.weight(0.2f)) {
+                                Icon(
+                                    imageVector = ImageVector.vectorResource(menu.iconRes),
+                                    contentDescription = null
+                                )
+                            }
+                            Column(
+                                modifier = Modifier.weight(0.8f),
+                                verticalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                Text(
+                                    text = stringResource(id = menu.title),
+                                    modifier = Modifier.fillMaxWidth(),
+                                    textAlign = TextAlign.Start,
+                                    fontWeight = FontWeight.Bold,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                                Text(
+                                    text = stringResource(id = menu.description),
+                                    modifier = Modifier.fillMaxWidth(),
+                                    textAlign = TextAlign.Start,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+/*@Composable
 private fun ScreenContent(
     modifier: Modifier = Modifier,
     onNavigateToGeneralConfigMenu: () -> Unit
@@ -123,7 +228,7 @@ private fun ScreenContent(
         verticalArrangement = Arrangement.spacedBy(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        /**
+        *//**
          * General Config
          *      Theme Selection V
          *      Dynamic Color Selection V
@@ -132,10 +237,10 @@ private fun ScreenContent(
          *      Default Currencies Selection V
          *      Font Size Selection V
          *      Country
-         */
+         *//*
         GeneralConfig(onNavigateToGeneralConfigMenu = onNavigateToGeneralConfigMenu)
 
-        /**
+        *//**
          * Data Setting
          *      Daily Backup
          *          Turn on / off, at what time?
@@ -143,18 +248,18 @@ private fun ScreenContent(
          *          What to Backup
          *      Master Data
          *          Import Master Data
-         */
+         *//*
 //        DataConfig()
 
-        /**
+        *//**
          * Security Related Settings (Need Log in)
          *      Permissions
          *      Connected Peripherals
          *      Notifications
-         */
+         *//*
 //        SecurityConfig()
 
-        /**
+        *//**
          * About Application
          *      App Version
          *      Terms and Conditions
@@ -162,10 +267,10 @@ private fun ScreenContent(
          *      Open Source License
          *      Contact Developers [Google Form API]
          *      Clear Cache
-         */
+         *//*
 //        AboutApplication()
     }
-}
+}*/
 
 @Composable
 private fun GeneralConfig(onNavigateToGeneralConfigMenu:() -> Unit) {

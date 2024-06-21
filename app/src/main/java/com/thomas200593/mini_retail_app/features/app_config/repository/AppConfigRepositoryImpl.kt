@@ -1,6 +1,7 @@
 package com.thomas200593.mini_retail_app.features.app_config.repository
 
 import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStorePreferences
+import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatchers.Dispatchers
 import com.thomas200593.mini_retail_app.core.util.CountryHelper
@@ -15,6 +16,7 @@ import com.thomas200593.mini_retail_app.features.app_config.entity.FontSize
 import com.thomas200593.mini_retail_app.features.app_config.entity.Language
 import com.thomas200593.mini_retail_app.features.app_config.entity.Theme
 import com.thomas200593.mini_retail_app.features.app_config.entity.Timezone
+import com.thomas200593.mini_retail_app.features.app_config.navigation.AppConfigDestination
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
@@ -26,6 +28,20 @@ internal class AppConfigRepositoryImpl @Inject constructor(
 ):AppConfigRepository {
     override val configCurrentData: Flow<ConfigCurrent> =
         appDataStore.configCurrentData
+
+    override suspend fun getAppConfigMenuData(sessionState: SessionState): Set<AppConfigDestination> = withContext(ioDispatcher){
+        when(sessionState){
+            SessionState.Loading -> {
+                emptySet()
+            }
+            is SessionState.Invalid -> {
+                AppConfigDestination.entries.filter { !it.usesAuth }.toSet()
+            }
+            is SessionState.Valid -> {
+                AppConfigDestination.entries.toSet()
+            }
+        }
+    }
 
     override suspend fun getAppConfigGeneralMenuData(
         usesAuth: Boolean?

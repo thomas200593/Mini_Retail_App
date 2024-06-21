@@ -93,7 +93,7 @@ fun AuthScreen(
 
     ScreenContent(
         onNavigateToAppConfigScreen = {
-            appState.navController.navigateToAppConfig()
+            appState.navController.navigateToAppConfig(null)
         },
         onSignInWithGoogleButton = {
             coroutineScope.launch {

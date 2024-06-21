@@ -46,6 +46,9 @@ sealed class ScreenGraphs(
     data object AppConfigData: ScreenGraphs(
         route = Routes.APP_ROUTE_APP_CONFIG_DATA
     )
+    data object AppConfigDataBackup: ScreenGraphs(
+        route = Routes.APP_ROUTE_APP_CONFIG_DATA_BACKUP
+    )
 //    Dashboard
     data object Dashboard: ScreenGraphs(
         route = Routes.APP_ROUTE_DASHBOARD

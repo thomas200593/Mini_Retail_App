@@ -89,7 +89,7 @@ fun UserProfileScreen(
     ScreenContent(
         sessionState = sessionState,
         onNavigateToConfig = {
-            appState.navController.navigateToAppConfig()
+            appState.navController.navigateToAppConfig(null)
         },
         onSignedOut = {
             viewModel.handleSignOut()

@@ -59,5 +59,7 @@
 <!-- Country -->
     <string name="str_country">Country</string>
     <string name="str_country_desc">Change Your preferred country</string>
+    <string name="str_backup">Backup</string>
+    <string name="str_backup_desc">Backup Configuration</string>
 
 </resources>

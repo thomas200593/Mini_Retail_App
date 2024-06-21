@@ -1,6 +1,8 @@
 package com.thomas200593.mini_retail_app.app.navigation
 
 object Routes {
+
+
 //    Initial
     const val APP_ROUTE_INITIAL: String = "r_initial"
 //    Onboarding
@@ -18,6 +20,7 @@ object Routes {
     const val APP_ROUTE_APP_CONFIG_GENERAL_FONT_SIZE: String = "r_app_config_general_font_size"
     const val APP_ROUTE_APP_CONFIG_GENERAL_CURRENCY: String = "r_app_config_general_currency"
     const val APP_ROUTE_APP_CONFIG_DATA: String = "r_app_config_data"
+    const val APP_ROUTE_APP_CONFIG_DATA_BACKUP: String = "r_app_config_data_backup"
 //    Dashboard
     const val APP_ROUTE_DASHBOARD: String = "r_dashboard"
 //    Business

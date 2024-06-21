@@ -11,6 +11,7 @@ object NavigationGraphs {
 
     const val G_APP_CONFIG = "graph_app_config"
     const val G_APP_CONFIG_GENERAL = "graph_app_config_general"
+    const val G_APP_CONFIG_DATA = "graph_app_config_data"
 
     const val G_DASHBOARD = "graph_dashboard"
 

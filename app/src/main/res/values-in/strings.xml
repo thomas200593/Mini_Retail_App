@@ -46,4 +46,6 @@
     <string name="str_country">Negara</string>
     <string name="str_country_desc">Ubah preferensi negara-mu</string>
     <string name="str_configuration_data">Pengaturan Data</string>
+    <string name="str_backup">Pencadangan</string>
+    <string name="str_backup_desc">Konfigurasi Pencadangan</string>
 </resources>

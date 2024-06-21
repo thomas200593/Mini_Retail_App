@@ -80,7 +80,7 @@ fun NavController.navigateToAppConfigGeneral(
         restoreState = true
     }
     this.navigate(
-        appConfigGeneralDestination?.route?:G_APP_CONFIG_GENERAL,
+        route = appConfigGeneralDestination?.route?:G_APP_CONFIG_GENERAL,
         navOptions = navOptions
     )
 }

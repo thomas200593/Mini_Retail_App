@@ -74,7 +74,7 @@ fun AppConfigGeneralCountryScreen(
 }
 
 @Composable
-fun TopAppBar(onNavigateBack: () -> Unit) {
+private fun TopAppBar(onNavigateBack: () -> Unit) {
     AppBar.ProvideTopAppBarNavigationIcon {
         Surface(
             onClick =  onNavigateBack,
@@ -123,7 +123,7 @@ fun TopAppBar(onNavigateBack: () -> Unit) {
 }
 
 @Composable
-fun ScreenContent(
+private fun ScreenContent(
     countryPreferences: RequestState<List<Country>>,
     configCurrent: RequestState<ConfigCurrent>,
     onSaveSelectedCountry: (Country) -> Unit

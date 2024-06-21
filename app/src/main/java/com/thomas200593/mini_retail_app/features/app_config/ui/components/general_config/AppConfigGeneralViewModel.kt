@@ -34,5 +34,4 @@ class AppConfigGeneralViewModel @Inject constructor(
             RequestState.Error(e)
         }
     }
-
 }

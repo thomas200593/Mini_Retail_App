@@ -13,6 +13,8 @@ import com.thomas200593.mini_retail_app.R.drawable.app_icon_data_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_dynamic_color_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_dynamic_color_disabled_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_dynamic_color_enabled_48px
+import com.thomas200593.mini_retail_app.R.drawable.app_icon_export_48px
+import com.thomas200593.mini_retail_app.R.drawable.app_icon_import_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_language_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_onboarding_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_onboarding_hide_48px
@@ -45,6 +47,10 @@ object Icons {
     }
     object Currency {
         @DrawableRes val currency = +app_icon_currency_48px
+    }
+    object Data {
+        @DrawableRes val backup = +app_icon_export_48px
+        @DrawableRes val restore = +app_icon_import_48px
     }
     object DynamicColor {
         @DrawableRes val dynamic_color = +app_icon_dynamic_color_48px
