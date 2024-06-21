@@ -50,7 +50,7 @@
     <string name="str_dashboard">Dashboard</string>
     <string name="str_business">Business</string>
     <string name="str_reporting">Reports</string>
-    <string name="str_user_profile">User Profile</string>
+    <string name="str_user_profile">Profile</string>
     <string name="str_loading">Loading</string>
     <string name="str_error">Error</string>
     <string name="str_session_expired">Your session is expired</string>

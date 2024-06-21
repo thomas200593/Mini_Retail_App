@@ -17,7 +17,6 @@ import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
@@ -52,6 +51,7 @@ import com.thomas200593.mini_retail_app.app.ui.AppState
 import com.thomas200593.mini_retail_app.app.ui.LocalAppState
 import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
 import com.thomas200593.mini_retail_app.core.ui.common.Icons.Auth.session_expire
+import com.thomas200593.mini_retail_app.core.ui.common.Icons.Setting.settings
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.LoadingPanelCircularIndicator
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.LoadingScreen
 import com.thomas200593.mini_retail_app.features.auth.entity.OAuth2UserMetadata
@@ -59,6 +59,7 @@ import com.thomas200593.mini_retail_app.features.auth.entity.OAuthProvider
 import com.thomas200593.mini_retail_app.features.initial.navigation.navigateToInitial
 import com.thomas200593.mini_retail_app.work.workers.session_monitor.manager.SessionMonitorWorkManager
 import timber.log.Timber
+import java.time.Instant
 
 private const val TAG = "UserProfileScreen"
 
@@ -142,6 +143,21 @@ private fun ProfileSection(
                         val data = (sessionState.userData.oAuth2UserMetadata as OAuth2UserMetadata.Google)
                         var infoExpanded by remember { mutableStateOf(false) }
 
+                        Row(
+                            modifier = Modifier.fillMaxWidth(1.0f),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.End
+                        ) {
+                            Surface(
+                                modifier = Modifier.size(ButtonDefaults.IconSize)
+                            ) {
+                                Icon(
+                                    imageVector = ImageVector.vectorResource(id = settings),
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.onSurface
+                                )
+                            }
+                        }
                         AsyncImage(
                             model = ImageRequest
                                 .Builder(LocalContext.current)
@@ -189,7 +205,7 @@ private fun ProfileSection(
                                 horizontalArrangement = Arrangement.Center
                             ) {
                                 Surface(
-                                    modifier = Modifier.weight(0.1f),
+                                    modifier = Modifier.weight(0.1f).size(ButtonDefaults.IconSize),
                                     shape = MaterialTheme.shapes.extraSmall,
                                 ) {
                                     Icon(
@@ -213,7 +229,7 @@ private fun ProfileSection(
                                 horizontalArrangement = Arrangement.Center
                             ) {
                                 Surface(
-                                    modifier = Modifier.weight(0.1f),
+                                    modifier = Modifier.weight(0.1f).size(ButtonDefaults.IconSize),
                                     shape = MaterialTheme.shapes.extraSmall,
                                 ) {
                                     Icon(
@@ -237,7 +253,7 @@ private fun ProfileSection(
                                 horizontalArrangement = Arrangement.Center
                             ) {
                                 Surface(
-                                    modifier = Modifier.weight(0.1f),
+                                    modifier = Modifier.weight(0.1f).size(ButtonDefaults.IconSize),
                                     shape = MaterialTheme.shapes.extraSmall,
                                 ) {
                                     Icon(
@@ -248,7 +264,7 @@ private fun ProfileSection(
                                 }
                                 Text(
                                     modifier = Modifier.weight(0.9f),
-                                    text = OAuthProvider.GOOGLE.name,
+                                    text = Instant.ofEpochSecond(data.expiredAt.toLong()).toString(),
                                     color = MaterialTheme.colorScheme.onSurface,
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis,

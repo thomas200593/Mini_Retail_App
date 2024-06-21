@@ -32,7 +32,7 @@
     <string name="str_dashboard">Dashbor</string>
     <string name="str_business">Bisnis</string>
     <string name="str_reporting">Laporan</string>
-    <string name="str_user_profile">Profil Pengguna</string>
+    <string name="str_user_profile">Profil</string>
     <string name="str_theme_system_desc">Tema-mu akan mengikuti Sistem saat ini</string>
     <string name="str_theme_light_desc">Tema dengan skema warna cerah</string>
     <string name="str_theme_dark_desc">Tema dengan skema warna gelap</string>
