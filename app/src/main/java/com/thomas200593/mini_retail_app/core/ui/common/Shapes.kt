@@ -22,6 +22,9 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
+import timber.log.Timber
+
+private val TAG = Shapes::class.simpleName
 
 object Shapes {
     @Composable
@@ -32,6 +35,7 @@ object Shapes {
         spaceBetween: Dp = 10.dp,
         travelDistance: Dp = 20.dp
     ) {
+        Timber.d("Called : fun $TAG.DotsLoadingAnimation()")
         val circles = listOf(
             remember { Animatable(initialValue = 0f) },
             remember { Animatable(initialValue = 0f) },

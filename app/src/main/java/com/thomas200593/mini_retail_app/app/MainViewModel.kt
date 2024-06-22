@@ -21,7 +21,7 @@ class MainViewModel @Inject constructor(
     appConfigRepository: AppConfigRepository
 ) : ViewModel(){
     val uiState: StateFlow<MainActivityUiState> = appConfigRepository.configCurrentData.onEach {
-        Timber.d("uiState : $it")
+        Timber.d("$TAG.uiState : $it")
     }.map {
         Success(it)
     }.stateIn(

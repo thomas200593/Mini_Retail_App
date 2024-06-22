@@ -16,7 +16,7 @@ object NavigationHost{
     fun NavigationHost(
         onShowSnackBar: suspend (String, String, SnackbarDuration?) -> Boolean
     ) {
-        Timber.d("Called : $TAG.NavigationHost()")
+        Timber.d("Called : fun $TAG.NavigationHost()")
         val appState = LocalAppState.current
         val navController = appState.navController
         NavHost(
@@ -24,7 +24,7 @@ object NavigationHost{
             route = G_ROOT,
             startDestination = G_INITIAL,
         ){
-            Timber.d("Called : $TAG.NavHost()")
+            Timber.d("Called : fun $TAG.NavHost()")
             initialNavGraph()
         }
     }

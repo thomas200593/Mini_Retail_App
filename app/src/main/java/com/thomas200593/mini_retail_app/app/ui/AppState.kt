@@ -40,7 +40,7 @@ fun rememberAppState(
         coroutineScope,
         navController
     ) {
-        Timber.d("Called $TAG.rememberAppState()")
+        Timber.d("Called : fun $TAG.rememberAppState()")
         AppState(
             networkMonitor = networkMonitor,
             session = session,
@@ -84,7 +84,7 @@ class AppState(
         @Composable get() = destinationCurrent?.route in destinationWithTopAppBar()
 
     fun navigateToDestinationTopLevel(destinationTopLevel: DestinationTopLevel){
-        Timber.d("Called %s.navigateToDestinationTopLevel()", TAG)
+        Timber.d("Called : fun $TAG.navigateToDestinationTopLevel()")
         val destinationTopLevelNavOptions = navOptions {
             popUpTo(navController.graph.findStartDestination().id){
                 saveState = true
@@ -109,7 +109,7 @@ class AppState(
     }
 
     fun onNavigateUp() {
-        Timber.d("Called : %s.onNavigateUp()", TAG)
+        Timber.d("Called : fun $TAG.onNavigateUp()")
         navController.navigateUp()
     }
 }

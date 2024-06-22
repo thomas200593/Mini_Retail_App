@@ -8,13 +8,17 @@ import androidx.compose.ui.text.font.FontWeight.Companion.Normal
 import androidx.compose.ui.text.font.FontWeight.Companion.SemiBold
 import androidx.compose.ui.unit.sp
 import com.thomas200593.mini_retail_app.features.app_config.entity.FontSize
+import timber.log.Timber
+
+private val TAG = Types::class.simpleName
 
 object Types{
 
     private const val LINE_HEIGHT_MULTIPLIER = 1.15
 
-    fun personalizedTypography(fontSize: FontSize): Typography =
-        Typography(
+    fun personalizedTypography(fontSize: FontSize): Typography {
+        Timber.d("Called : fun $TAG.personalizedTypography()")
+        return Typography(
             bodyLarge = TextStyle(
                 fontFamily = Default,
                 fontWeight = Normal,
@@ -44,4 +48,5 @@ object Types{
                 letterSpacing = 0.5.sp
             ),
         )
+    }
 }

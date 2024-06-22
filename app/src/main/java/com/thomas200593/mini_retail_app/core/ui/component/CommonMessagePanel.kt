@@ -35,6 +35,9 @@ import com.thomas200593.mini_retail_app.BuildConfig
 import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.core.ui.common.Icons
 import com.thomas200593.mini_retail_app.core.ui.common.Shapes
+import timber.log.Timber
+
+private val TAG = CommonMessagePanel::class.simpleName
 
 object CommonMessagePanel{
 
@@ -42,6 +45,7 @@ object CommonMessagePanel{
     fun LoadingPanelCircularIndicator(
         modifier: Modifier = Modifier
     ){
+        Timber.d("Called : fun $TAG.LoadingPanelCircularIndicator()")
         Surface(
             modifier = modifier.fillMaxWidth(),
             shape = MaterialTheme.shapes.medium,
@@ -67,6 +71,7 @@ object CommonMessagePanel{
     fun LoadingScreen(
         modifier: Modifier = Modifier
     ){
+        Timber.d("Called : fun $TAG.LoadingScreen()")
         Surface(
             modifier = modifier
                 .fillMaxSize()
@@ -156,6 +161,7 @@ object CommonMessagePanel{
         title: String? = null,
         errorMessage: String? = null
     ){
+        Timber.d("Called : fun $TAG.ErrorScreen()")
         Surface(
             modifier = modifier
                 .fillMaxSize()

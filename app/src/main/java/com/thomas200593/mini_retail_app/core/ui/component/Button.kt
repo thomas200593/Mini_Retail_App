@@ -47,8 +47,12 @@ import com.thomas200593.mini_retail_app.features.auth.entity.AuthSessionToken
 import com.thomas200593.mini_retail_app.features.auth.entity.OAuthProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import timber.log.Timber
+
+private val TAG = Button::class.simpleName
 
 object Button {
+    private val TAG_GOOGLE = Google::class.simpleName
     object Google{
         @Composable
         fun SignInWithGoogle(
@@ -65,6 +69,7 @@ object Button {
             progressIndicatorColor: Color = MaterialTheme.colorScheme.primary,
             onClick: () -> Unit
         ){
+            Timber.d("Called : fun $TAG.$TAG_GOOGLE.SignInWithGoogle()")
             var btnText by remember { mutableStateOf(primaryText) }
             LaunchedEffect(btnLoadingState) { btnText = if(btnLoadingState) secondaryText else primaryText }
             Surface(
@@ -121,6 +126,7 @@ object Button {
             onError: (Throwable) -> Unit,
             onDialogDismissed: (Throwable) -> Unit
         ){
+            Timber.d("Called : fun $TAG.$TAG_GOOGLE.handleSignIn()")
             coroutineScope.launch {
                 val credentialManager = CredentialManager.create(activityContext)
                 val googleIdOptions = GetGoogleIdOption.Builder()

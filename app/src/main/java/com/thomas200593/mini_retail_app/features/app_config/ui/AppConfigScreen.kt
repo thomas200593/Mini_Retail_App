@@ -122,18 +122,6 @@ private fun TopAppBar(
         }
     }
 }
-
-/**
- * General Config
- *      Theme Selection V
- *      Dynamic Color Selection V
- *      Language Selection V
- *      Timezone Selection V
- *      Default Currencies Selection V
- *      Font Size Selection V
- *      Country
- */
-
 /**
  * Data Setting
  *      Daily Backup
@@ -143,7 +131,6 @@ private fun TopAppBar(
  *      Master Data
  *          Import Master Data
  */
-
 /**
  * Security Related Settings (Need Log in)
  *      Permissions
@@ -161,10 +148,9 @@ private fun ScreenContent(
             LoadingScreen()
         }
         is RequestState.Error -> {
-            val error = appConfigMenuPreferences.t
             ErrorScreen(
-                title = error.message,
-                errorMessage = error.cause?.stackTraceToString(),
+                title = stringResource(id = R.string.str_error),
+                errorMessage = "Failed to get Preferences data.",
                 showIcon = true
             )
         }

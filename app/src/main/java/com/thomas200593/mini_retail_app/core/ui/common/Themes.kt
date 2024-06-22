@@ -20,6 +20,9 @@ import com.thomas200593.mini_retail_app.features.app_config.entity.FontSize
 import com.thomas200593.mini_retail_app.features.app_config.entity.FontSize.MEDIUM
 import com.thomas200593.mini_retail_app.features.app_config.entity.Theme
 import com.thomas200593.mini_retail_app.app.MainActivityUiState
+import timber.log.Timber
+
+private val TAG = Themes::class.simpleName
 
 object Themes{
     private val lightScheme = Colors.lightScheme
@@ -31,8 +34,9 @@ object Themes{
      * current system context.
      */
     @Composable
-    fun shouldUseDarkTheme(uiState: MainActivityUiState): Boolean =
-        when(uiState){
+    fun shouldUseDarkTheme(uiState: MainActivityUiState): Boolean {
+        Timber.d("Called : fun $TAG.shouldUseDarkTheme()")
+        return when(uiState){
             MainActivityUiState.Loading -> isSystemInDarkTheme()
             is MainActivityUiState.Success -> when(uiState.configCurrent.currentTheme){
                 Theme.SYSTEM -> isSystemInDarkTheme()
@@ -40,23 +44,27 @@ object Themes{
                 Theme.DARK -> true
             }
         }
+    }
 
     /**
      * Returns `true` if the dynamic color is enabled, as a function of the [uiState].
      */
     @Composable
-    fun shouldUseDynamicColor(uiState: MainActivityUiState): Boolean =
-        when (uiState) {
+    fun shouldUseDynamicColor(uiState: MainActivityUiState): Boolean {
+        Timber.d("Called : fun $TAG.shouldUseDynamicColor()")
+        return when (uiState) {
             MainActivityUiState.Loading -> false
             is MainActivityUiState.Success -> when(uiState.configCurrent.currentDynamicColor){
                 DynamicColor.ENABLED -> true
                 DynamicColor.DISABLED -> false
             }
         }
+    }
 
     @Composable
-    fun calculateInitialFontSize(uiState: MainActivityUiState): FontSize =
-        when(uiState) {
+    fun calculateInitialFontSize(uiState: MainActivityUiState): FontSize {
+        Timber.d("Called : fun $TAG.calculateInitialFontSize()")
+        return when(uiState) {
             MainActivityUiState.Loading -> MEDIUM
             is MainActivityUiState.Success -> when(uiState.configCurrent.currentFontSizeSize){
                 MEDIUM -> MEDIUM
@@ -65,6 +73,7 @@ object Themes{
                 FontSize.EXTRA_LARGE -> FontSize.EXTRA_LARGE
             }
         }
+    }
 
     @Composable
     fun ApplicationTheme(
@@ -74,6 +83,7 @@ object Themes{
         fontSize: FontSize = MEDIUM,
         content: @Composable () -> Unit
     ) {
+        Timber.d("Called : fun $TAG.ApplicationTheme()")
         val colorScheme = when {
             dynamicColor && SDK_INT >= S -> {
                 val context = LocalContext.current

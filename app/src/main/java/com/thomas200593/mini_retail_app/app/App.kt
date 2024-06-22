@@ -22,6 +22,6 @@ class App: MultiDexApplication(), Configuration.Provider {
 
     override val workManagerConfiguration: Configuration
         get() = Configuration.Builder().setWorkerFactory(workWrapperFactory).build().also {
-            Timber.d("Getting workManagerConfiguration : $it")
+            Timber.d("Called : fun getter() workManagerConfiguration")
         }
 }

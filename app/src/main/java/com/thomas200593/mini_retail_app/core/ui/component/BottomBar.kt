@@ -21,6 +21,9 @@ import com.thomas200593.mini_retail_app.core.ui.component.BottomBar.BottomNaviga
 import com.thomas200593.mini_retail_app.core.ui.component.BottomBar.BottomNavigationBarDefaults.navigationIndicatorColor
 import com.thomas200593.mini_retail_app.core.ui.component.BottomBar.BottomNavigationBarDefaults.navigationSelectedItemColor
 import com.thomas200593.mini_retail_app.app.navigation.DestinationTopLevel
+import timber.log.Timber
+
+private val TAG = BottomBar::class.simpleName
 
 object BottomBar {
     @Composable
@@ -30,6 +33,7 @@ object BottomBar {
         currentDestination: NavDestination?,
         modifier: Modifier = Modifier
     ) {
+        Timber.d("Called : fun $TAG.BottomBar()")
         BottomNavBar(
             modifier = modifier
         ){
@@ -58,6 +62,7 @@ object BottomBar {
         modifier: Modifier = Modifier,
         content: @Composable RowScope.() -> Unit
     ) {
+        Timber.d("Called : fun $TAG.BottomNavBar()")
         NavigationBar(
             modifier = modifier,
             contentColor = navigationContentColor(),
@@ -77,6 +82,7 @@ object BottomBar {
         label: @Composable (() -> Unit)? = null,
         alwaysShowLabel: Boolean = true
     ) {
+        Timber.d("Called : fun $TAG.RowScope.BottomNavigationBarItems()")
         NavigationBarItem(
             modifier = modifier,
             selected = selected,

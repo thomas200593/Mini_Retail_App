@@ -19,7 +19,7 @@ class SessionImpl @Inject constructor(
     override val currentUserSession: Flow<SessionState> = authRepository
         .authSessionToken.flowOn(ioDispatcher)
         .catch {
-            Timber.d("currentUserSession Catch : $it")
+            Timber.d("currentUserSession : Throwable = $it")
             SessionState.Invalid(
                 throwable = it,
                 reason = R.string.str_session_error
@@ -29,17 +29,17 @@ class SessionImpl @Inject constructor(
             if(authRepository.validateAuthSessionToken(authToken)){
                 val userData = authRepository.mapAuthSessionTokenToUserData(authToken)
                 if(userData != null){
-                    Timber.d("currentUserSession = SessionState.Valid")
+                    Timber.d("currentUserSession : SessionState.Valid")
                     SessionState.Valid(userData)
                 }else{
-                    Timber.d("currentUserSession = SessionState.Invalid")
+                    Timber.d("currentUserSession : SessionState.Invalid")
                     SessionState.Invalid(
                         throwable = null,
                         reason = R.string.str_session_expired
                     )
                 }
             }else{
-                Timber.d("currentUserSession = SessionState.Invalid")
+                Timber.d("currentUserSession : SessionState.Invalid")
                 SessionState.Invalid(
                     throwable = null,
                     reason = R.string.str_session_expired

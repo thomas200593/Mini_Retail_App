@@ -27,7 +27,7 @@ internal class NetworkMonitorImpl @Inject constructor(
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ) : NetworkMonitor{
     override val isNetworkOnline: Flow<Boolean> = callbackFlow {
-        Timber.d("Called : $TAG.isNetworkOnline")
+        Timber.d("Called : callbackFlow $TAG.isNetworkOnline")
         trace("NetworkMonitor.callbackFlow"){
             val connectivityManager = context.getSystemService<ConnectivityManager>()
             if(connectivityManager == null){

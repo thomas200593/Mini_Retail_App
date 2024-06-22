@@ -6,12 +6,13 @@ private val TAG = DestinationWithTopAppBar::class.simpleName
 
 object DestinationWithTopAppBar{
     fun destinationWithTopAppBar(): Set<String> {
-        Timber.d("Called : $TAG.destinationWithTopAppBar()")
+        Timber.d("Called : fun $TAG.destinationWithTopAppBar()")
         return setOf(
             /**
              * App Config
              */
             ScreenGraphs.AppConfig.route,
+            //Config General
             ScreenGraphs.AppConfigGeneral.route,
             ScreenGraphs.AppConfigGeneralTheme.route,
             ScreenGraphs.AppConfigGeneralCountry.route,
@@ -20,14 +21,19 @@ object DestinationWithTopAppBar{
             ScreenGraphs.AppConfigGeneralTimezone.route,
             ScreenGraphs.AppConfigGeneralCurrency.route,
             ScreenGraphs.AppConfigGeneralFontSize.route,
+            //Config Data
+            ScreenGraphs.AppConfigData.route,
+
             /**
              * Dashboard
              */
             ScreenGraphs.Dashboard.route,
+
             /**
              * Business
              */
             ScreenGraphs.Business.route,
+
             /**
              * Reporting
              */
