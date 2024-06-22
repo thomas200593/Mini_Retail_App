@@ -77,13 +77,13 @@ fun UserProfileScreen(
     val sessionState by appState.isSessionValid.collectAsStateWithLifecycle()
 
     when(sessionState){
+        SessionState.Loading -> {
+            LoadingScreen()
+        }
         is SessionState.Invalid -> {
             LaunchedEffect(Unit) {
                 appState.navController.navigateToInitial()
             }
-        }
-        SessionState.Loading -> {
-            LoadingScreen()
         }
         is SessionState.Valid -> {
             LaunchedEffect(Unit) {
