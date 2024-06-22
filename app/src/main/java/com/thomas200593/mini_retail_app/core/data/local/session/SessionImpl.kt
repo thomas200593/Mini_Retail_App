@@ -12,6 +12,8 @@ import kotlinx.coroutines.flow.map
 import timber.log.Timber
 import javax.inject.Inject
 
+private val TAG = SessionImpl::class.simpleName
+
 class SessionImpl @Inject constructor(
     authRepository: AuthRepository,
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
@@ -19,7 +21,7 @@ class SessionImpl @Inject constructor(
     override val currentUserSession: Flow<SessionState> = authRepository
         .authSessionToken.flowOn(ioDispatcher)
         .catch {
-            Timber.d("currentUserSession : Throwable = $it")
+            Timber.d("val $TAG.currentUserSession returned : Throwable -> $it")
             SessionState.Invalid(
                 throwable = it,
                 reason = R.string.str_session_error
@@ -29,17 +31,21 @@ class SessionImpl @Inject constructor(
             if(authRepository.validateAuthSessionToken(authToken)){
                 val userData = authRepository.mapAuthSessionTokenToUserData(authToken)
                 if(userData != null){
-                    Timber.d("currentUserSession : SessionState.Valid")
+                    Timber.d("val $TAG.currentUserSession returned : SessionState.Valid($userData)")
                     SessionState.Valid(userData)
                 }else{
-                    Timber.d("currentUserSession : SessionState.Invalid")
+                    val throwable = null
+                    val reason = R.string.str_session_expired
+                    Timber.d("val $TAG.currentUserSession returned : SessionState.Invalid(throwable=$throwable, reasonId=$reason)")
                     SessionState.Invalid(
-                        throwable = null,
-                        reason = R.string.str_session_expired
+                        throwable = throwable,
+                        reason = reason
                     )
                 }
             }else{
-                Timber.d("currentUserSession : SessionState.Invalid")
+                val throwable = null
+                val reason = R.string.str_session_expired
+                Timber.d("val $TAG.currentUserSession returned : SessionState.Invalid(throwable=$throwable, reasonId=$reason)")
                 SessionState.Invalid(
                     throwable = null,
                     reason = R.string.str_session_expired
