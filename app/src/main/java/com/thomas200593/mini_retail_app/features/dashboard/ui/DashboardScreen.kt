@@ -47,10 +47,6 @@ fun DashboardScreen(
 
     val sessionState by appState.isSessionValid.collectAsStateWithLifecycle()
 
-    LaunchedEffect(Unit) {
-        viewModel.onOpen()
-    }
-
     when(sessionState){
         is SessionState.Invalid -> {
             LaunchedEffect(key1 = Unit) {
@@ -60,7 +56,11 @@ fun DashboardScreen(
         SessionState.Loading -> {
             LoadingScreen()
         }
-        is SessionState.Valid -> Unit
+        is SessionState.Valid -> {
+            LaunchedEffect(Unit) {
+                viewModel.onOpen()
+            }
+        }
     }
 
     TopAppBar()

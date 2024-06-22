@@ -84,7 +84,7 @@ class AppState(
         @Composable get() = destinationCurrent?.route in destinationWithTopAppBar()
 
     fun navigateToDestinationTopLevel(destinationTopLevel: DestinationTopLevel){
-        Timber.d("Called : fun $TAG.navigateToDestinationTopLevel()")
+        Timber.d("Called : fun $TAG.navigateToDestinationTopLevel(destinationTopLevel=$destinationTopLevel)")
         val destinationTopLevelNavOptions = navOptions {
             popUpTo(navController.graph.findStartDestination().id){
                 saveState = true
