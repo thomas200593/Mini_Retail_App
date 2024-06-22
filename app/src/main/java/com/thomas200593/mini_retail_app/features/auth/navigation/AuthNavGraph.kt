@@ -10,12 +10,17 @@ import com.thomas200593.mini_retail_app.features.dashboard.navigation.dashboardN
 import com.thomas200593.mini_retail_app.app.navigation.NavigationGraphs.G_AUTH
 import com.thomas200593.mini_retail_app.app.navigation.NavigationGraphs.G_INITIAL
 import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs
+import timber.log.Timber
+
+private val TAG_NAV_GRAPH_BUILDER = NavGraphBuilder::class.simpleName
+private val TAG_NAV_CONTROLLER = NavController::class.simpleName
 
 fun NavGraphBuilder.authNavGraph() {
     navigation(
         route = G_AUTH,
         startDestination = ScreenGraphs.Auth.route
     ){
+        Timber.d("Called : fun $TAG_NAV_GRAPH_BUILDER.authNavGraph()")
         composable(
             route = ScreenGraphs.Auth.route
         ){
@@ -27,6 +32,7 @@ fun NavGraphBuilder.authNavGraph() {
 }
 
 fun NavController.navigateToAuth(){
+    Timber.d("Called : fun $TAG_NAV_CONTROLLER.navigateToAuth()")
     this.navigate(
         route = G_AUTH
     ){

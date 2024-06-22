@@ -59,7 +59,7 @@ private const val TAG = "AuthScreen"
 fun AuthScreen(
     viewModel: AuthViewModel = hiltViewModel()
 ){
-    Timber.d("Called : %s", TAG)
+    Timber.d("Called : fun $TAG()")
     ScreenUtil.LockScreenOrientation(orientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
     val activityContext = (LocalContext.current as Activity)
     val applicationContext = LocalContext.current.applicationContext
