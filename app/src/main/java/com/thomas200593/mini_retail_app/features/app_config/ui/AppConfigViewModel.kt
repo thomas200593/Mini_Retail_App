@@ -13,7 +13,10 @@ import com.thomas200593.mini_retail_app.features.app_config.repository.AppConfig
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
+
+private val TAG = AppConfigViewModel::class.simpleName
 
 @HiltViewModel
 class AppConfigViewModel @Inject constructor(
@@ -24,10 +27,12 @@ class AppConfigViewModel @Inject constructor(
     val appConfigMenuPreferences = _appConfigMenuPreferences
 
     fun onOpen(sessionState: SessionState) = viewModelScope.launch(ioDispatcher) {
+        Timber.d("Called : fun $TAG.onOpen()")
         getAppConfigMenuPreferences(sessionState)
     }
 
     private suspend fun getAppConfigMenuPreferences(sessionState: SessionState) = viewModelScope.launch(ioDispatcher){
+        Timber.d("Called : fun $TAG.getAppConfigMenuPreferences()")
         _appConfigMenuPreferences.value = RequestState.Loading
         _appConfigMenuPreferences.value = try {
             RequestState.Success(appConfigRepository.getAppConfigMenuData(sessionState))
