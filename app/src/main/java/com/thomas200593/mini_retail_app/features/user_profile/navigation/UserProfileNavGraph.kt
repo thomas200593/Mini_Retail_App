@@ -8,8 +8,13 @@ import androidx.navigation.navigation
 import com.thomas200593.mini_retail_app.app.navigation.NavigationGraphs.G_USER_PROFILE
 import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs
 import com.thomas200593.mini_retail_app.features.user_profile.ui.UserProfileScreen
+import timber.log.Timber
+
+private val TAG_NAV_GRAPH_BUILDER = NavGraphBuilder::class.simpleName
+private val TAG_NAV_CONTROLLER = NavController::class.simpleName
 
 fun NavGraphBuilder.userProfileNavGraph(){
+    Timber.d("Called : fun $TAG_NAV_GRAPH_BUILDER.userProfileNavGraph()")
     navigation(
         route = G_USER_PROFILE,
         startDestination = ScreenGraphs.UserProfile.route
@@ -23,6 +28,7 @@ fun NavGraphBuilder.userProfileNavGraph(){
 }
 
 fun NavController.navigateToUserProfile(navOptions: NavOptions?) {
+    Timber.d("Called : fun $TAG_NAV_CONTROLLER.navigateToUserProfile()")
     this.navigate(
         route = G_USER_PROFILE,
         navOptions

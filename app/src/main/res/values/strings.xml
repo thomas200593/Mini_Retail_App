@@ -47,6 +47,7 @@
     <string name="str_onboarding_get_started">Get Started</string>
 <!-- Auth -->
     <string name="str_auth">Authentication</string>
+    <string name="str_auth_sign_out">Sign out</string>
 <!-- Dashboard -->
     <string name="str_dashboard">Dashboard</string>
     <string name="str_business">Business</string>

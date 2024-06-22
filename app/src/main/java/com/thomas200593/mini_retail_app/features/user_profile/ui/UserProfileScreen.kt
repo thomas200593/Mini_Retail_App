@@ -37,6 +37,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -47,6 +48,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import coil.transform.CircleCropTransformation
+import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.app.ui.AppState
 import com.thomas200593.mini_retail_app.app.ui.LocalAppState
 import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
@@ -69,21 +71,25 @@ fun UserProfileScreen(
     viewModel: UserProfileViewModel = hiltViewModel(),
     appState: AppState = LocalAppState.current
 ){
-    Timber.d("Called: %s", TAG)
+    Timber.d("Called : fun $TAG()")
 
     val applicationContext = LocalContext.current.applicationContext
     val sessionState by appState.isSessionValid.collectAsStateWithLifecycle()
 
     when(sessionState){
         is SessionState.Invalid -> {
-            LaunchedEffect(key1 = Unit) {
+            LaunchedEffect(Unit) {
                 appState.navController.navigateToInitial()
             }
         }
         SessionState.Loading -> {
             LoadingScreen()
         }
-        is SessionState.Valid -> Unit
+        is SessionState.Valid -> {
+            LaunchedEffect(Unit) {
+                viewModel.onOpen()
+            }
+        }
     }
 
     ScreenContent(
@@ -118,7 +124,7 @@ private fun ScreenContent(
             onNavigateToConfig = onNavigateToConfig
         )
         MenuSection()
-        ExitSection(
+        SignOutSection(
             onSignedOut = onSignedOut
         )
     }
@@ -215,7 +221,9 @@ private fun ProfileSection(
                                 horizontalArrangement = Arrangement.Center
                             ) {
                                 Surface(
-                                    modifier = Modifier.weight(0.1f).size(ButtonDefaults.IconSize),
+                                    modifier = Modifier
+                                        .weight(0.1f)
+                                        .size(ButtonDefaults.IconSize),
                                     shape = MaterialTheme.shapes.extraSmall,
                                 ) {
                                     Icon(
@@ -239,7 +247,9 @@ private fun ProfileSection(
                                 horizontalArrangement = Arrangement.Center
                             ) {
                                 Surface(
-                                    modifier = Modifier.weight(0.1f).size(ButtonDefaults.IconSize),
+                                    modifier = Modifier
+                                        .weight(0.1f)
+                                        .size(ButtonDefaults.IconSize),
                                     shape = MaterialTheme.shapes.extraSmall,
                                 ) {
                                     Icon(
@@ -263,7 +273,9 @@ private fun ProfileSection(
                                 horizontalArrangement = Arrangement.Center
                             ) {
                                 Surface(
-                                    modifier = Modifier.weight(0.1f).size(ButtonDefaults.IconSize),
+                                    modifier = Modifier
+                                        .weight(0.1f)
+                                        .size(ButtonDefaults.IconSize),
                                     shape = MaterialTheme.shapes.extraSmall,
                                 ) {
                                     Icon(
@@ -297,7 +309,7 @@ private fun MenuSection() {
 }
 
 @Composable
-fun ExitSection(
+private fun SignOutSection(
     onSignedOut: () -> Unit
 ) {
     Button(
@@ -325,7 +337,7 @@ fun ExitSection(
             )
             Text(
                 modifier = Modifier.weight(0.9f),
-                text = "Exit",
+                text = stringResource(id = R.string.str_auth_sign_out),
                 textAlign = TextAlign.Center,
                 fontWeight = FontWeight.Bold,
                 maxLines = 1,
