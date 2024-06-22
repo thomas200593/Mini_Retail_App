@@ -40,6 +40,7 @@ import com.thomas200593.mini_retail_app.app.ui.LocalAppState
 import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
 import com.thomas200593.mini_retail_app.core.ui.common.Icons.Setting.settings
 import com.thomas200593.mini_retail_app.core.ui.component.AppBar
+import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.ErrorScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.LoadingScreen
 import com.thomas200593.mini_retail_app.features.app_config.navigation.AppConfigDestination
 import com.thomas200593.mini_retail_app.features.app_config.navigation.navigateToAppConfig
@@ -160,19 +161,12 @@ private fun ScreenContent(
             LoadingScreen()
         }
         is RequestState.Error -> {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = stringResource(id = R.string.str_error),
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-            }
+            val error = appConfigMenuPreferences.t
+            ErrorScreen(
+                title = error.message,
+                errorMessage = error.cause?.stackTraceToString(),
+                showIcon = true
+            )
         }
         is RequestState.Success -> {
             val menuPreferences = appConfigMenuPreferences.data ?: emptySet()
