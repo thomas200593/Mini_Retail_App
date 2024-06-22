@@ -37,6 +37,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.app.ui.AppState
 import com.thomas200593.mini_retail_app.app.ui.LocalAppState
+import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
 import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
 import com.thomas200593.mini_retail_app.core.ui.common.Icons.Setting.settings
 import com.thomas200593.mini_retail_app.core.ui.component.AppBar
@@ -57,8 +58,20 @@ fun AppConfigScreen(
     val sessionState by appState.isSessionValid.collectAsStateWithLifecycle()
     val appConfigMenuPreferences by viewModel.appConfigMenuPreferences
 
-    LaunchedEffect(Unit) {
-        viewModel.onOpen(sessionState)
+    when(sessionState){
+        SessionState.Loading -> {
+            LoadingScreen()
+        }
+        is SessionState.Invalid -> {
+            LaunchedEffect(Unit) {
+                viewModel.onOpen(sessionState)
+            }
+        }
+        is SessionState.Valid -> {
+            LaunchedEffect(Unit) {
+                viewModel.onOpen(sessionState)
+            }
+        }
     }
 
     TopAppBar(
