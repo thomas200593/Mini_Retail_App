@@ -22,13 +22,13 @@ class SessionMonitorWorker @AssistedInject constructor(
 ): CoroutineWorker(context, workerParameters) {
 
     override suspend fun doWork(): Result {
-        Timber.d("Called : $TAG.doWork()")
+        Timber.d("Called : fun $TAG.doWork()")
         if(! authRepository.validateAuthSessionToken(authRepository.authSessionToken.first())){
-            Timber.d("$TAG.doWork() Result : SessionInvalid, Invalidate Session")
+            Timber.d("fun $TAG.doWork() returned : SessionInvalid -> Clear Auth Session Token")
             authRepository.clearAuthSessionToken()
             return Result.success()
         }else{
-            Timber.d("$TAG.doWork() Result : SessionValid")
+            Timber.d("fun $TAG.doWork() returned : SessionValid")
             return Result.success()
         }
     }
@@ -36,12 +36,15 @@ class SessionMonitorWorker @AssistedInject constructor(
     companion object {
         private val WorkerConstraint
             get() = Constraints.Builder().build().also {
-                Timber.d("Getting $TAG Work Constraints : $it")
+                Timber.d("Called : fun getter() WorkerConstraint -> $it")
             }
 
         fun startUpWork() = PeriodicWorkRequestBuilder<SessionMonitorWorker>(
             repeatInterval = 15,
             repeatIntervalTimeUnit = TimeUnit.MINUTES
         ).setConstraints(WorkerConstraint).build()
+            .also {
+                Timber.d("Called : fun $TAG.startUpWork()")
+            }
     }
 }

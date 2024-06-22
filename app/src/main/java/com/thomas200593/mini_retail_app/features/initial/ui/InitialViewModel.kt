@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.stateIn
 import timber.log.Timber
 import javax.inject.Inject
 
-private  const val TAG = "InitialViewModel"
+private val TAG = InitialViewModel::class.simpleName
 
 @HiltViewModel
 class InitialViewModel @Inject constructor(
@@ -33,7 +33,7 @@ class InitialViewModel @Inject constructor(
             )
         }
         .onEach {
-            Timber.d("Called : %s.uiState: %s", TAG, it)
+            Timber.d("Called : $TAG.uiState -> $it")
         }
         .stateIn(
             scope = viewModelScope,

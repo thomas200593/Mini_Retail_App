@@ -9,8 +9,13 @@ import com.thomas200593.mini_retail_app.features.initial.ui.InitialScreen
 import com.thomas200593.mini_retail_app.features.onboarding.navigation.onBoardingNavGraph
 import com.thomas200593.mini_retail_app.app.navigation.NavigationGraphs.G_INITIAL
 import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs
+import timber.log.Timber
+
+private val TAG_NAV_GRAPH_BUILDER = NavGraphBuilder::class.simpleName
+private val TAG_NAV_CONTROLLER = NavController::class.simpleName
 
 fun NavGraphBuilder.initialNavGraph() {
+    Timber.d("Called : fun $TAG_NAV_GRAPH_BUILDER.initialNavGraph()")
     navigation(
         route = G_INITIAL,
         startDestination = ScreenGraphs.Initial.route
@@ -26,6 +31,7 @@ fun NavGraphBuilder.initialNavGraph() {
 }
 
 fun NavController.navigateToInitial(){
+    Timber.d("Called : fun $TAG_NAV_CONTROLLER.navigateToInitial()")
     this.navigate(
         route = G_INITIAL
     ){

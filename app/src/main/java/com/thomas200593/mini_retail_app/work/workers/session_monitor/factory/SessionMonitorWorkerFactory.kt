@@ -9,13 +9,13 @@ import com.thomas200593.mini_retail_app.work.workers.session_monitor.worker.Sess
 import timber.log.Timber
 import javax.inject.Inject
 
-private const val TAG = "SessionMonitorWorkerFactory"
+private val TAG = SessionMonitorWorkerFactory::class.simpleName
 
 class SessionMonitorWorkerFactory @Inject constructor(
     private val authRepository: AuthRepository
 ): CustomWorkerFactory{
     override fun create(appContext: Context, params: WorkerParameters): ListenableWorker {
-        Timber.d("Called %s.create()", TAG)
+        Timber.d("Called : fun $TAG.create()")
         return SessionMonitorWorker(
             appContext,
             params,

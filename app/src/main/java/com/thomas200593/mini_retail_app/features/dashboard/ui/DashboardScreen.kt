@@ -43,9 +43,13 @@ fun DashboardScreen(
     viewModel: DashboardViewModel = hiltViewModel(),
     appState: AppState = LocalAppState.current
 ) {
-    Timber.d("Called: %s", TAG)
+    Timber.d("Called : fun $TAG()")
 
     val sessionState by appState.isSessionValid.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        viewModel.onOpen()
+    }
 
     when(sessionState){
         is SessionState.Invalid -> {

@@ -26,7 +26,7 @@ private const val TAG = "BusinessScreen"
 
 @Composable
 fun BusinessScreen(){
-    Timber.d("Called: %s", TAG)
+    Timber.d("Called : fun $TAG()")
 
     TopAppBar()
     ScreenContent()

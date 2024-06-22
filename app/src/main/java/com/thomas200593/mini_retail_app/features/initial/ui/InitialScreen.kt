@@ -24,7 +24,11 @@ private const val TAG = "InitialScreen"
 fun InitialScreen(
     viewModel: InitialViewModel = hiltViewModel()
 ) {
-    Timber.d("Called: %s", TAG)
+    Timber.d("Called : fun $TAG()")
+
+    /**
+     * TODO: REFINE & EXPERIMENTAL THIS TO OBSERVE SESSION IN APP STATE INSTEAD OF VIA VIEWMODEL MANUALLY
+     */
 
     val appState = LocalAppState.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
