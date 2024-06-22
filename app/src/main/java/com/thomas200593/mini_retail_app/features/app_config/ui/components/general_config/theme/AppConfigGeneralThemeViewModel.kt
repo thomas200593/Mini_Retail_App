@@ -15,11 +15,12 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
+
+private val TAG = AppConfigGeneralThemeViewModel::class.simpleName
 
 @HiltViewModel
 class AppConfigGeneralThemeViewModel @Inject constructor(
@@ -29,7 +30,6 @@ class AppConfigGeneralThemeViewModel @Inject constructor(
     private val _themePreferences: MutableState<RequestState<Set<Theme>>> = mutableStateOf(RequestState.Idle)
     val themePreferences = _themePreferences
     val configCurrentUiState = appConfigRepository.configCurrentData.flowOn(ioDispatcher)
-        .onEach { Timber.d("Config Current State: $it") }
         .catch { RequestState.Error(it) }
         .map { RequestState.Success(it) }
         .stateIn(
@@ -39,10 +39,12 @@ class AppConfigGeneralThemeViewModel @Inject constructor(
         )
 
     fun onOpen() = viewModelScope.launch(ioDispatcher) {
+        Timber.d("Called : fun $TAG.onOpen()")
         getThemePreferences()
     }
 
     private fun getThemePreferences() = viewModelScope.launch(ioDispatcher) {
+        Timber.d("Called : fun $TAG.getThemePreferences()")
         _themePreferences.value = RequestState.Loading
         _themePreferences.value = try{
             RequestState.Success(appConfigRepository.getThemePreferences())
@@ -52,6 +54,7 @@ class AppConfigGeneralThemeViewModel @Inject constructor(
     }
 
     fun saveSelectedTheme(theme: Theme) = viewModelScope.launch {
+        Timber.d("Called : fun $TAG.saveSelectedTheme()")
         appConfigRepository.setThemePreferences(theme)
     }
 }

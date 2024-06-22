@@ -15,11 +15,12 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
+
+private val TAG = AppConfigGeneralTimezoneViewModel::class.simpleName
 
 @HiltViewModel
 class AppConfigGeneralTimezoneViewModel @Inject constructor(
@@ -29,7 +30,6 @@ class AppConfigGeneralTimezoneViewModel @Inject constructor(
     private val _timezonePreferences: MutableState<RequestState<List<Timezone>>> = mutableStateOf(RequestState.Idle)
     val timezonePreferences = _timezonePreferences
     val configCurrentUiState = appConfigRepository.configCurrentData.flowOn(ioDispatcher)
-        .onEach { Timber.d("Config Current State: $it") }
         .catch { RequestState.Error(it) }
         .map { RequestState.Success(it) }
         .stateIn(
@@ -39,10 +39,12 @@ class AppConfigGeneralTimezoneViewModel @Inject constructor(
         )
 
     fun onOpen() = viewModelScope.launch(ioDispatcher) {
+        Timber.d("Called : fun $TAG.onOpen()")
         getTimezonePreferences()
     }
 
     private fun getTimezonePreferences() = viewModelScope.launch(ioDispatcher) {
+        Timber.d("Called : fun $TAG.getTimezonePreferences()")
         _timezonePreferences.value = RequestState.Loading
         _timezonePreferences.value = try{
             RequestState.Success(appConfigRepository.getTimezonePreferences())
@@ -52,6 +54,7 @@ class AppConfigGeneralTimezoneViewModel @Inject constructor(
     }
 
     fun saveSelectedTimezone(timezone: Timezone) = viewModelScope.launch {
+        Timber.d("Called : fun $TAG.saveSelectedTimezone()")
         appConfigRepository.setTimezonePreferences(timezone)
     }
 }

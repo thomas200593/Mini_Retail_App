@@ -17,12 +17,13 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.Locale
 import javax.inject.Inject
+
+private val TAG = AppConfigGeneralLanguageViewModel::class.simpleName
 
 @HiltViewModel
 class AppConfigGeneralLanguageViewModel @Inject constructor(
@@ -32,7 +33,6 @@ class AppConfigGeneralLanguageViewModel @Inject constructor(
     private val _languagePreferences: MutableState<RequestState<Set<Language>>> = mutableStateOf(RequestState.Idle)
     val languagePreferences = _languagePreferences
     val configCurrentUiState = appConfigRepository.configCurrentData.flowOn(ioDispatcher)
-        .onEach { Timber.d("Config Current State: $it") }
         .catch { RequestState.Error(it) }
         .map { RequestState.Success(it) }
         .stateIn(
@@ -42,10 +42,12 @@ class AppConfigGeneralLanguageViewModel @Inject constructor(
         )
 
     fun onOpen() = viewModelScope.launch(ioDispatcher) {
+        Timber.d("Called : fun $TAG.onOpen()")
         getLanguagePreferences()
     }
 
     private fun getLanguagePreferences() = viewModelScope.launch(ioDispatcher) {
+        Timber.d("Called : fun $TAG.getLanguagePreferences()")
         _languagePreferences.value = RequestState.Loading
         _languagePreferences.value = try {
             RequestState.Success(appConfigRepository.getLanguagePreferences())
@@ -55,6 +57,7 @@ class AppConfigGeneralLanguageViewModel @Inject constructor(
     }
 
     fun saveSelectedLanguage(language: Language) = viewModelScope.launch {
+        Timber.d("Called : fun $TAG.saveSelectedLanguage()")
         appConfigRepository.setLanguagePreferences(language)
         AppCompatDelegate.setApplicationLocales(
             LocaleListCompat.create(

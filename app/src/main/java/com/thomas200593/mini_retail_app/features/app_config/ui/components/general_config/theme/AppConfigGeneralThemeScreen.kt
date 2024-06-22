@@ -54,7 +54,7 @@ fun AppConfigGeneralThemeScreen(
     viewModel: AppConfigGeneralThemeViewModel = hiltViewModel(),
     appState: AppState = LocalAppState.current
 ) {
-    Timber.d("Called: %s", TAG)
+    Timber.d("Called : fun $TAG()")
     val configCurrent by viewModel.configCurrentUiState.collectAsStateWithLifecycle()
     val themePreferences by viewModel.themePreferences
 
