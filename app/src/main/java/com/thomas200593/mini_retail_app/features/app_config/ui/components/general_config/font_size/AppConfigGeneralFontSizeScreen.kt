@@ -54,7 +54,7 @@ fun AppConfigGeneralFontSizeScreen(
     viewModel: AppConfigGeneralFontSizeViewModel = hiltViewModel(),
     appState: AppState = LocalAppState.current
 ) {
-    Timber.d("Called: %s", TAG)
+    Timber.d("Called : fun $TAG()")
     val configCurrent by viewModel.configCurrentUiState.collectAsStateWithLifecycle()
     val fontSizePreferences by viewModel.fontSizePreferences
 

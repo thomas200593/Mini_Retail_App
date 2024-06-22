@@ -15,11 +15,12 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
+
+private val TAG = AppConfigGeneralCurrencyViewModel::class.simpleName
 
 @HiltViewModel
 class AppConfigGeneralCurrencyViewModel @Inject constructor(
@@ -29,7 +30,6 @@ class AppConfigGeneralCurrencyViewModel @Inject constructor(
     private val _currencyPreferences: MutableState<RequestState<List<Currency>>> = mutableStateOf(RequestState.Idle)
     val currencyPreferences = _currencyPreferences
     val configCurrentUiState = appConfigRepository.configCurrentData.flowOn(ioDispatcher)
-        .onEach { Timber.d("Config Current State: $it") }
         .catch { RequestState.Error(it) }
         .map { RequestState.Success(it) }
         .stateIn(
@@ -39,10 +39,12 @@ class AppConfigGeneralCurrencyViewModel @Inject constructor(
         )
 
     fun onOpen() = viewModelScope.launch(ioDispatcher) {
+        Timber.d("Called : fun $TAG.onOpen()")
         getCurrencyPreferences()
     }
 
     private fun getCurrencyPreferences() = viewModelScope.launch(ioDispatcher) {
+        Timber.d("Called : fun $TAG.getCurrencyPreferences()")
         _currencyPreferences.value = RequestState.Loading
         _currencyPreferences.value = try{
             RequestState.Success(appConfigRepository.getCurrencyPreferences())
@@ -52,6 +54,7 @@ class AppConfigGeneralCurrencyViewModel @Inject constructor(
     }
 
     fun saveSelectedCurrency(currency: Currency) = viewModelScope.launch {
+        Timber.d("Called : fun $TAG.saveSelectedCurrency()")
         appConfigRepository.setCurrencyPreferences(currency)
     }
 }

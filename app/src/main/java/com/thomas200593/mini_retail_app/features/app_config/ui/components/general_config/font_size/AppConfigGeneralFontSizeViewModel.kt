@@ -15,11 +15,12 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
+
+private val TAG = AppConfigGeneralFontSizeViewModel::class.simpleName
 
 @HiltViewModel
 class AppConfigGeneralFontSizeViewModel @Inject constructor(
@@ -29,7 +30,6 @@ class AppConfigGeneralFontSizeViewModel @Inject constructor(
     private val _fontSizeSizePreferences: MutableState<RequestState<Set<FontSize>>> = mutableStateOf(RequestState.Idle)
     val fontSizePreferences = _fontSizeSizePreferences
     val configCurrentUiState = appConfigRepository.configCurrentData.flowOn(ioDispatcher)
-        .onEach { Timber.d("Config Current State: $it") }
         .catch { RequestState.Error(it) }
         .map { RequestState.Success(it) }
         .stateIn(
@@ -39,11 +39,13 @@ class AppConfigGeneralFontSizeViewModel @Inject constructor(
         )
 
     fun onOpen() = viewModelScope.launch(ioDispatcher) {
+        Timber.d("Called : fun $TAG.onOpen()")
         getFontSizePreferences()
     }
 
 
     private fun getFontSizePreferences() = viewModelScope.launch(ioDispatcher) {
+        Timber.d("Called : fun $TAG.getFontSizePreferences()")
         _fontSizeSizePreferences.value = RequestState.Loading
         _fontSizeSizePreferences.value = try {
             RequestState.Success(appConfigRepository.getFontSizePreferences())
@@ -53,6 +55,7 @@ class AppConfigGeneralFontSizeViewModel @Inject constructor(
     }
 
     fun saveSelectedFontSize(fontSize: FontSize) = viewModelScope.launch{
+        Timber.d("Called : fun $TAG.saveSelectedFontSize()")
         appConfigRepository.setFontSizePreferences(fontSize)
     }
 }

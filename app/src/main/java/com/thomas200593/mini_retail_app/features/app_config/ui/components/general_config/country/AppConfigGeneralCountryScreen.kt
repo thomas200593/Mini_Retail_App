@@ -55,7 +55,7 @@ fun AppConfigGeneralCountryScreen(
     viewModel: AppConfigGeneralCountryViewModel = hiltViewModel(),
     appState: AppState = LocalAppState.current
 ){
-    Timber.d("Called : $TAG()")
+    Timber.d("Called : fun $TAG()")
     val configCurrent by viewModel.configCurrentUiState.collectAsStateWithLifecycle()
     val countryPreferences by viewModel.countryPreferences
 
