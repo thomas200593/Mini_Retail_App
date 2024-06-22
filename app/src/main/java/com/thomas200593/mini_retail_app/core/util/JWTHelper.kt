@@ -15,8 +15,8 @@ import java.time.Instant
 import java.util.UUID
 
 private val TAG = JWTHelper::class.simpleName
-object JWTHelper {
 
+object JWTHelper {
     private val algList = listOf(
         "HS256",
         "HS384",
@@ -31,24 +31,21 @@ object JWTHelper {
         "PS384",
         "PS512",
     )
-
     private val typList = listOf(
-        "JWT"
+        "JWT",
     )
 
-    private const val GOOGLE_OAUTH2_TAG = "GoogleOAuth2"
+    private val TAG_GOOGLE_OAUTH2 = GoogleOAuth2::class.simpleName
     object GoogleOAuth2{
         suspend fun validateToken(
             authSessionToken: AuthSessionToken
         ) = withContext(Dispatchers.IO){
-            Timber.d("Captured Token Value : $authSessionToken")
+            Timber.d("Called : fun $TAG.$TAG_GOOGLE_OAUTH2.validateToken(authSessionToken = $authSessionToken)")
             try {
-                Timber.d("Called %s.%s.validateToken()", TAG, GOOGLE_OAUTH2_TAG)
                 if (authSessionToken.idToken.isNullOrBlank() || authSessionToken.authProvider?.name != OAuthProvider.GOOGLE.name) {
-                    Timber.d("Token is empty / malformed!")
+                    Timber.d("fun $TAG.$TAG_GOOGLE_OAUTH2.validateToken() returned : false")
                     return@withContext false
                 }
-                Timber.d("Validating Token...")
                 val jwt = JWT(authSessionToken.idToken)
                 val hdrAlg = jwt.header["alg"]
                 val hdrTyp = jwt.header["typ"]
@@ -67,17 +64,17 @@ object JWTHelper {
                         (exp != null && (Instant.now().epochSecond <= exp)) &&
                         (authSessionToken.authProvider.name == OAuthProvider.GOOGLE.name)
                 if (validationResult) {
-                    Timber.d("Token is Valid")
+                    Timber.d("fun $TAG.$TAG_GOOGLE_OAUTH2.validateToken() returned : true")
                     return@withContext true
                 } else {
-                    Timber.d("Token is Invalid")
+                    Timber.d("fun $TAG.$TAG_GOOGLE_OAUTH2.validateToken() returned : false")
                     return@withContext false
                 }
             } catch (e: DecodeException) {
-                Timber.e("DecodeException: %s", e)
+                Timber.e("fun $TAG.$TAG_GOOGLE_OAUTH2.validateToken() returned : DecodeException -> $e")
                 return@withContext false
             } catch (e: Exception) {
-                Timber.e("Exception: %s", e)
+                Timber.e("fun $TAG.$TAG_GOOGLE_OAUTH2.validateToken() returned : Exception -> $e")
                 return@withContext false
             }
         }

@@ -8,14 +8,15 @@ import java.time.Instant
 import java.time.ZoneId
 import java.util.Locale
 
-private const val TAG = "TimezoneHelper"
+private val TAG = TimezoneHelper::class.simpleName
+
 object TimezoneHelper {
     private const val ZULU = "+00:00"
     val TIMEZONE_DEFAULT = Timezone(ZULU)
     private const val SECONDS_IN_HOUR = 3_600
     private const val MINUTES_IN_HOUR = 60
     suspend fun getTimezones() = withContext(Dispatchers.IO){
-        Timber.d("Called : %s.getTimezones()", TAG)
+        Timber.d("Called : fun $TAG.getTimezones()")
         val timezones = ZoneId.getAvailableZoneIds()
         val uniqueOffset = HashSet<Timezone>()
         uniqueOffset.add(Timezone(ZULU))
