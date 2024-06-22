@@ -20,7 +20,10 @@ import com.thomas200593.mini_retail_app.features.app_config.navigation.AppConfig
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import javax.inject.Inject
+
+private val TAG = AppConfigRepositoryImpl::class.simpleName
 
 internal class AppConfigRepositoryImpl @Inject constructor(
     private val appDataStore: DataStorePreferences,
@@ -32,6 +35,7 @@ internal class AppConfigRepositoryImpl @Inject constructor(
     override suspend fun getAppConfigMenuData(
         sessionState: SessionState
     ): Set<AppConfigDestination> = withContext(ioDispatcher){
+        Timber.d("Called : fun $TAG.getAppConfigMenuData()")
         when(sessionState){
             SessionState.Loading -> {
                 emptySet()
@@ -48,7 +52,7 @@ internal class AppConfigRepositoryImpl @Inject constructor(
     override suspend fun getAppConfigGeneralMenuData(
         sessionState: SessionState
     ): Set<AppConfigGeneralDestination> = withContext(ioDispatcher){
-        AppConfigGeneralDestination.entries.toSet()
+        Timber.d("Called : fun $TAG.getAppConfigGeneralMenuData()")
         when(sessionState){
             SessionState.Loading -> {
                 emptySet()
@@ -63,58 +67,72 @@ internal class AppConfigRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getThemePreferences(): Set<Theme> = withContext(ioDispatcher){
+        Timber.d("Called : fun $TAG.getThemePreferences()")
         Theme.entries.toSet()
     }
 
     override suspend fun setThemePreferences(theme: Theme) {
+        Timber.d("Called : fun $TAG.setThemePreferences()")
         appDataStore.setThemePreferences(theme)
     }
 
     override suspend fun getDynamicMenuPreferences(): Set<DynamicColor> = withContext(ioDispatcher){
+        Timber.d("Called : fun $TAG.getDynamicMenuPreferences()")
         DynamicColor.entries.toSet()
     }
 
     override suspend fun setDynamicColorPreferences(dynamicColor: DynamicColor) {
+        Timber.d("Called : fun $TAG.setDynamicColorPreferences()")
         appDataStore.setDynamicColorPreferences(dynamicColor)
     }
 
     override suspend fun getLanguagePreferences(): Set<Language> = withContext(ioDispatcher){
+        Timber.d("Called : fun $TAG.getLanguagePreferences()")
         Language.entries.toSet()
     }
 
     override suspend fun setLanguagePreferences(language: Language) {
+        Timber.d("Called : fun $TAG.setLanguagePreferences()")
         appDataStore.setLanguagePreferences(language)
     }
 
     override suspend fun getTimezonePreferences(): List<Timezone> = withContext(ioDispatcher){
+        Timber.d("Called : fun $TAG.getTimezonePreferences()")
         TimezoneHelper.getTimezones()
     }
 
     override suspend fun setTimezonePreferences(timezone: Timezone) {
+        Timber.d("Called : fun $TAG.setTimezonePreferences()")
         appDataStore.setTimezonePreferences(timezone)
     }
 
     override suspend fun getCurrencyPreferences(): List<Currency> = withContext(ioDispatcher){
+        Timber.d("Called : fun $TAG.getCurrencyPreferences()")
         CurrencyHelper.getCurrencies()
     }
 
     override suspend fun setCurrencyPreferences(currency: Currency) {
+        Timber.d("Called : fun $TAG.setCurrencyPreferences()")
         appDataStore.setCurrencyPreferences(currency)
     }
 
     override suspend fun getFontSizePreferences(): Set<FontSize> = withContext(ioDispatcher){
+        Timber.d("Called : fun $TAG.getFontSizePreferences()")
         FontSize.entries.toSet()
     }
 
     override suspend fun setFontSizePreferences(fontSize: FontSize) {
+        Timber.d("Called : fun $TAG.setFontSizePreferences()")
         appDataStore.setFontSizePreferences(fontSize)
     }
 
     override suspend fun getCountryPreferences(): List<Country> = withContext(ioDispatcher){
+        Timber.d("Called : fun $TAG.getCountryPreferences()")
         CountryHelper.getCountryList()
     }
 
     override suspend fun setCountryPreferences(country: Country) {
+        Timber.d("Called : fun $TAG.setCountryPreferences()")
         appDataStore.setCountryPreferences(country)
     }
 }

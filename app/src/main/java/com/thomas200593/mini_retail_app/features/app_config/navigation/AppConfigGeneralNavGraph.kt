@@ -15,9 +15,13 @@ import com.thomas200593.mini_retail_app.features.app_config.ui.components.genera
 import com.thomas200593.mini_retail_app.features.app_config.ui.components.general_config.language.AppConfigGeneralLanguageScreen
 import com.thomas200593.mini_retail_app.features.app_config.ui.components.general_config.theme.AppConfigGeneralThemeScreen
 import com.thomas200593.mini_retail_app.features.app_config.ui.components.general_config.timezone.AppConfigGeneralTimezoneScreen
+import timber.log.Timber
 
+private val TAG_NAV_GRAPH_BUILDER = NavGraphBuilder::class.simpleName
+private val TAG_NAV_CONTROLLER = NavController::class.simpleName
 
 fun NavGraphBuilder.appConfigGeneralNavGraph() {
+    Timber.d("Called : fun $TAG_NAV_GRAPH_BUILDER.appConfigGeneralNavGraph()")
     navigation(
         route = G_APP_CONFIG_GENERAL,
         startDestination = ScreenGraphs.AppConfigGeneral.route
@@ -75,6 +79,7 @@ fun NavGraphBuilder.appConfigGeneralNavGraph() {
 fun NavController.navigateToAppConfigGeneral(
     appConfigGeneralDestination: AppConfigGeneralDestination?
 ) {
+    Timber.d("Called : fun $TAG_NAV_CONTROLLER.navigateToAppConfigGeneral()")
     val navOptions = navOptions {
         launchSingleTop = true
         restoreState = true

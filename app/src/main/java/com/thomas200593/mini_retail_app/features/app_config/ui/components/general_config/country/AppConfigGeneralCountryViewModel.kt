@@ -15,22 +15,21 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
+
+private val TAG = AppConfigGeneralCountryViewModel::class.simpleName
 
 @HiltViewModel
 class AppConfigGeneralCountryViewModel @Inject constructor(
     private val appConfigRepository: AppConfigRepository,
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel(){
-    //TODO CHANGE THIS TO COUNTRY
     private val _countryPreferences: MutableState<RequestState<List<Country>>> = mutableStateOf(RequestState.Idle)
     val countryPreferences = _countryPreferences
     val configCurrentUiState = appConfigRepository.configCurrentData.flowOn(ioDispatcher)
-        .onEach { Timber.d("Config Current State: $it") }
         .catch { RequestState.Error(it) }
         .map { RequestState.Success(it) }
         .stateIn(
@@ -40,10 +39,12 @@ class AppConfigGeneralCountryViewModel @Inject constructor(
         )
 
     fun onOpen() = viewModelScope.launch(ioDispatcher){
+        Timber.d("Called : fun $TAG.onOpen()")
         getCountryPreferences()
     }
 
     private fun getCountryPreferences() = viewModelScope.launch(ioDispatcher){
+        Timber.d("Called : fun $TAG.getCountryPreferences()")
         _countryPreferences.value = RequestState.Loading
         _countryPreferences.value = try {
             RequestState.Success(appConfigRepository.getCountryPreferences())
@@ -53,6 +54,7 @@ class AppConfigGeneralCountryViewModel @Inject constructor(
     }
 
     fun saveSelectedCountry(country: Country) = viewModelScope.launch{
+        Timber.d("Called : fun $TAG.saveSelectedCountry()")
         appConfigRepository.setCountryPreferences(country)
     }
 }
