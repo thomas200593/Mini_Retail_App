@@ -222,4 +222,73 @@ object CommonMessagePanel{
             }
         }
     }
+
+    @Composable
+    fun ErrorPanel(
+        modifier: Modifier = Modifier,
+        showIcon: Boolean= false,
+        @DrawableRes iconRes: Int? = null,
+        title: String?= null,
+        errorMessage: String? = null
+    ){
+        Timber.d("Called : fun $TAG.ErrorPanel()")
+        Surface(
+            modifier = modifier
+                .fillMaxWidth(),
+            shape = MaterialTheme.shapes.medium,
+            border = BorderStroke(1.dp, Color.DarkGray),
+            color = MaterialTheme.colorScheme.errorContainer,
+            contentColor = MaterialTheme.colorScheme.onErrorContainer
+        ) {
+            Column(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Top),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                if(showIcon){
+                    Surface(
+                        modifier = modifier
+                            .fillMaxWidth()
+                            .height(60.dp),
+                        color = MaterialTheme.colorScheme.errorContainer,
+                        contentColor = MaterialTheme.colorScheme.onErrorContainer
+                    ) {
+                        Icon(
+                            imageVector = if(iconRes == null) { Default.Warning }
+                            else { ImageVector.vectorResource(id = iconRes) },
+                            contentDescription = null,
+                        )
+                    }
+                    HorizontalDivider(
+                        thickness = 2.dp,
+                        color = MaterialTheme.colorScheme.error
+                    )
+                }
+                if(title != null){
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = title,
+                        textAlign = TextAlign.Center,
+                        fontSize = MaterialTheme.typography.titleLarge.fontSize,
+                        fontWeight = MaterialTheme.typography.titleLarge.fontWeight
+                    )
+                    HorizontalDivider(
+                        thickness = 2.dp,
+                        color = MaterialTheme.colorScheme.error
+                    )
+                }
+                if(errorMessage != null){
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = errorMessage,
+                        textAlign = TextAlign.Start,
+                        fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                        fontWeight = MaterialTheme.typography.bodyLarge.fontWeight
+                    )
+                }
+            }
+        }
+    }
 }

@@ -52,13 +52,16 @@ import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.app.ui.AppState
 import com.thomas200593.mini_retail_app.app.ui.LocalAppState
 import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
+import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
 import com.thomas200593.mini_retail_app.core.ui.common.Icons.Auth.session_expire
 import com.thomas200593.mini_retail_app.core.ui.common.Icons.Setting.settings
+import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.ErrorPanel
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.LoadingPanelCircularIndicator
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.LoadingScreen
 import com.thomas200593.mini_retail_app.features.app_config.navigation.navigateToAppConfig
 import com.thomas200593.mini_retail_app.features.auth.entity.OAuth2UserMetadata
 import com.thomas200593.mini_retail_app.features.auth.entity.OAuthProvider
+import com.thomas200593.mini_retail_app.features.auth.entity.UserData
 import com.thomas200593.mini_retail_app.features.initial.navigation.navigateToInitial
 import com.thomas200593.mini_retail_app.work.workers.session_monitor.manager.SessionMonitorWorkManager
 import timber.log.Timber
@@ -75,6 +78,7 @@ fun UserProfileScreen(
 
     val applicationContext = LocalContext.current.applicationContext
     val sessionState by appState.isSessionValid.collectAsStateWithLifecycle()
+    val userData by viewModel.currentSessionUserData
 
     when(sessionState){
         SessionState.Loading -> {
@@ -87,13 +91,13 @@ fun UserProfileScreen(
         }
         is SessionState.Valid -> {
             LaunchedEffect(Unit) {
-                viewModel.onOpen()
+                viewModel.onOpen(sessionState as SessionState.Valid)
             }
         }
     }
 
     ScreenContent(
-        sessionState = sessionState,
+        userData = userData,
         onNavigateToConfig = {
             appState.navController.navigateToAppConfig(null)
         },
@@ -107,7 +111,7 @@ fun UserProfileScreen(
 @Composable
 private fun ScreenContent(
     modifier: Modifier = Modifier,
-    sessionState: SessionState,
+    userData: RequestState<UserData>,
     onNavigateToConfig: () -> Unit,
     onSignedOut: () -> Unit
 ) {
@@ -120,8 +124,9 @@ private fun ScreenContent(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         ProfileSection(
-            sessionState = sessionState,
-            onNavigateToConfig = onNavigateToConfig
+            userData = userData,
+            onNavigateToConfig = onNavigateToConfig,
+            onSignedOut = onSignedOut
         )
         MenuSection()
         SignOutSection(
@@ -133,8 +138,9 @@ private fun ScreenContent(
 @Composable
 private fun ProfileSection(
     modifier: Modifier = Modifier,
-    sessionState: SessionState,
-    onNavigateToConfig: () -> Unit
+    userData: RequestState<UserData>,
+    onNavigateToConfig: () -> Unit,
+    onSignedOut: () -> Unit
 ) {
     Column(
         modifier = modifier
@@ -143,160 +149,176 @@ private fun ProfileSection(
         verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterVertically),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        when(sessionState){
-            SessionState.Loading -> {
+        when(userData){
+            RequestState.Idle, RequestState.Loading -> {
                 LoadingPanelCircularIndicator()
             }
-            is SessionState.Invalid -> {
-                LoadingPanelCircularIndicator()
+            is RequestState.Error -> {
+                val error = userData.t
+                ErrorPanel(
+                    showIcon = true,
+                    title = error.message,
+                    errorMessage = error.cause.toString()
+                )
             }
-            is SessionState.Valid -> {
-                when(val provider = sessionState.userData.authSessionToken?.authProvider){
-                    OAuthProvider.GOOGLE -> {
-                        val data = (sessionState.userData.oAuth2UserMetadata as OAuth2UserMetadata.Google)
-                        var infoExpanded by remember { mutableStateOf(false) }
+            is RequestState.Success -> {
+                val data = userData.data
 
-                        Row(
-                            modifier = Modifier.fillMaxWidth(1.0f),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.End
-                        ) {
-                            Surface(
-                                modifier = Modifier.size(ButtonDefaults.IconSize),
-                                onClick = {
-                                    onNavigateToConfig()
-                                }
+                if(data != null){
+                    when(val provider = data.authSessionToken?.authProvider){
+                        OAuthProvider.GOOGLE -> {
+                            val userDetail = (data.oAuth2UserMetadata as OAuth2UserMetadata.Google)
+                            var infoExpanded by remember { mutableStateOf(false) }
+
+                            Row(
+                                modifier = Modifier.fillMaxWidth(1.0f),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.End
                             ) {
-                                Icon(
-                                    imageVector = ImageVector.vectorResource(id = settings),
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.onSurface
-                                )
+                                Surface(
+                                    modifier = Modifier.size(ButtonDefaults.IconSize),
+                                    onClick = {
+                                        onNavigateToConfig()
+                                    }
+                                ) {
+                                    Icon(
+                                        imageVector = ImageVector.vectorResource(id = settings),
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.onSurface
+                                    )
+                                }
                             }
-                        }
-                        AsyncImage(
-                            model = ImageRequest
-                                .Builder(LocalContext.current)
-                                .crossfade(1000)
-                                .data(data = data.pictureUri)
-                                .transformations(CircleCropTransformation()).build(),
-                            contentDescription = null,
-                            modifier = Modifier
-                                .size(100.dp)
-                                .border(2.dp, Color.Gray, CircleShape),
-                            contentScale = ContentScale.Crop
-                        )
-                        Row(
-                            modifier = Modifier.fillMaxWidth(1.0f),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.Center
-                        ){
-                            Text(
-                                modifier = Modifier.weight(0.9f),
-                                text = data.name,
-                                color = MaterialTheme.colorScheme.onSurface,
-                                fontSize = MaterialTheme.typography.titleLarge.fontSize,
-                                fontWeight = FontWeight.Bold,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                                textAlign = TextAlign.Center
+                            AsyncImage(
+                                model = ImageRequest
+                                    .Builder(LocalContext.current)
+                                    .crossfade(1000)
+                                    .data(data = userDetail.pictureUri)
+                                    .transformations(CircleCropTransformation()).build(),
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .size(100.dp)
+                                    .border(2.dp, Color.Gray, CircleShape),
+                                contentScale = ContentScale.Crop
                             )
-                            Surface(
-                                modifier = Modifier.weight(0.1f),
-                                color = MaterialTheme.colorScheme.tertiaryContainer,
-                                shape = MaterialTheme.shapes.extraSmall,
-                                onClick = { infoExpanded = !infoExpanded }
-                            ) {
-                                Icon(
-                                    imageVector = if(!infoExpanded) Icons.Default.KeyboardArrowDown else Icons.Default.KeyboardArrowUp,
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.onTertiaryContainer
+                            Row(
+                                modifier = Modifier.fillMaxWidth(1.0f),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center
+                            ){
+                                Text(
+                                    modifier = Modifier.weight(0.9f),
+                                    text = userDetail.name,
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                    fontSize = MaterialTheme.typography.titleLarge.fontSize,
+                                    fontWeight = FontWeight.Bold,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                    textAlign = TextAlign.Center
                                 )
+                                Surface(
+                                    modifier = Modifier.weight(0.1f),
+                                    color = MaterialTheme.colorScheme.tertiaryContainer,
+                                    shape = MaterialTheme.shapes.extraSmall,
+                                    onClick = { infoExpanded = !infoExpanded }
+                                ) {
+                                    Icon(
+                                        imageVector = if(!infoExpanded) Icons.Default.KeyboardArrowDown else Icons.Default.KeyboardArrowUp,
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.onTertiaryContainer
+                                    )
+                                }
                             }
+
+                            if(infoExpanded){
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(1.0f),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.Center
+                                ) {
+                                    Surface(
+                                        modifier = Modifier
+                                            .weight(0.1f)
+                                            .size(ButtonDefaults.IconSize),
+                                        shape = MaterialTheme.shapes.extraSmall,
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Default.Email,
+                                            contentDescription = null,
+                                            tint = MaterialTheme.colorScheme.onPrimaryContainer
+                                        )
+                                    }
+                                    Text(
+                                        modifier = Modifier.weight(0.9f),
+                                        text = userDetail.email,
+                                        color = MaterialTheme.colorScheme.onSurface,
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis,
+                                        textAlign = TextAlign.Start
+                                    )
+                                }
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(1.0f),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.Center
+                                ) {
+                                    Surface(
+                                        modifier = Modifier
+                                            .weight(0.1f)
+                                            .size(ButtonDefaults.IconSize),
+                                        shape = MaterialTheme.shapes.extraSmall,
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Default.Lock,
+                                            contentDescription = null,
+                                            tint = MaterialTheme.colorScheme.onPrimaryContainer
+                                        )
+                                    }
+                                    Text(
+                                        modifier = Modifier.weight(0.9f),
+                                        text = provider.title,
+                                        color = MaterialTheme.colorScheme.onSurface,
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis,
+                                        textAlign = TextAlign.Start
+                                    )
+                                }
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(1.0f),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.Center
+                                ) {
+                                    Surface(
+                                        modifier = Modifier
+                                            .weight(0.1f)
+                                            .size(ButtonDefaults.IconSize),
+                                        shape = MaterialTheme.shapes.extraSmall,
+                                    ) {
+                                        Icon(
+                                            imageVector = ImageVector.vectorResource(id = session_expire),
+                                            contentDescription = null,
+                                            tint = MaterialTheme.colorScheme.onPrimaryContainer
+                                        )
+                                    }
+                                    Text(
+                                        modifier = Modifier.weight(0.9f),
+                                        text = Instant.ofEpochSecond(userDetail.expiredAt.toLong()).toString(),
+                                        color = MaterialTheme.colorScheme.onSurface,
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis,
+                                        textAlign = TextAlign.Start
+                                    )
+                                }
+                            }
+                            HorizontalDivider(thickness = 2.dp)
                         }
-                        if(infoExpanded){
-                            Row(
-                                modifier = Modifier.fillMaxWidth(1.0f),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.Center
-                            ) {
-                                Surface(
-                                    modifier = Modifier
-                                        .weight(0.1f)
-                                        .size(ButtonDefaults.IconSize),
-                                    shape = MaterialTheme.shapes.extraSmall,
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Default.Email,
-                                        contentDescription = null,
-                                        tint = MaterialTheme.colorScheme.onPrimaryContainer
-                                    )
-                                }
-                                Text(
-                                    modifier = Modifier.weight(0.9f),
-                                    text = data.email,
-                                    color = MaterialTheme.colorScheme.onSurface,
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis,
-                                    textAlign = TextAlign.Start
-                                )
-                            }
-                            Row(
-                                modifier = Modifier.fillMaxWidth(1.0f),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.Center
-                            ) {
-                                Surface(
-                                    modifier = Modifier
-                                        .weight(0.1f)
-                                        .size(ButtonDefaults.IconSize),
-                                    shape = MaterialTheme.shapes.extraSmall,
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Default.Lock,
-                                        contentDescription = null,
-                                        tint = MaterialTheme.colorScheme.onPrimaryContainer
-                                    )
-                                }
-                                Text(
-                                    modifier = Modifier.weight(0.9f),
-                                    text = provider.title,
-                                    color = MaterialTheme.colorScheme.onSurface,
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis,
-                                    textAlign = TextAlign.Start
-                                )
-                            }
-                            Row(
-                                modifier = Modifier.fillMaxWidth(1.0f),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.Center
-                            ) {
-                                Surface(
-                                    modifier = Modifier
-                                        .weight(0.1f)
-                                        .size(ButtonDefaults.IconSize),
-                                    shape = MaterialTheme.shapes.extraSmall,
-                                ) {
-                                    Icon(
-                                        imageVector = ImageVector.vectorResource(id = session_expire),
-                                        contentDescription = null,
-                                        tint = MaterialTheme.colorScheme.onPrimaryContainer
-                                    )
-                                }
-                                Text(
-                                    modifier = Modifier.weight(0.9f),
-                                    text = Instant.ofEpochSecond(data.expiredAt.toLong()).toString(),
-                                    color = MaterialTheme.colorScheme.onSurface,
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis,
-                                    textAlign = TextAlign.Start
-                                )
-                            }
+                        null -> {
+                            Timber.e("Unknown Provider, Illegal Access Exception")
+                            onSignedOut()
                         }
-                        HorizontalDivider(thickness = 2.dp)
                     }
-                    null -> Unit
+                }else{
+                    Timber.e("User Data not detected, Possibly the session is over")
+                    onSignedOut()
                 }
             }
         }
