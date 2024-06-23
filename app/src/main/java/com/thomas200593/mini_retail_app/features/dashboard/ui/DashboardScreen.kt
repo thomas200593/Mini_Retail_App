@@ -113,6 +113,8 @@ private fun ScreenContent() {
         verticalArrangement = Arrangement.spacedBy(20.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
+        //Show Company Profile Card
+        //Show Summary
+        //Show Notifications & Background job if any
     }
 }
