@@ -22,15 +22,11 @@ private const val TAG = "InitialScreen"
 
 @Composable
 fun InitialScreen(
-    viewModel: InitialViewModel = hiltViewModel()
+    viewModel: InitialViewModel = hiltViewModel(),
+    appState: AppState = LocalAppState.current
 ) {
     Timber.d("Called : fun $TAG()")
 
-    /**
-     * TODO: REFINE & EXPERIMENTAL THIS TO OBSERVE SESSION IN APP STATE INSTEAD OF VIA VIEWMODEL MANUALLY
-     */
-
-    val appState = LocalAppState.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     ScreenContent(appState = appState, uiState = uiState)
