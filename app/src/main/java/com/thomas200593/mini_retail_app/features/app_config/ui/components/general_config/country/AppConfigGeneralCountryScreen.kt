@@ -129,8 +129,9 @@ private fun ScreenContent(
     onSaveSelectedCountry: (Country) -> Unit
 ) {
     when(configCurrent){
-        RequestState.Idle -> Unit
-        RequestState.Loading -> LoadingScreen()
+        RequestState.Idle, RequestState.Loading -> {
+            LoadingScreen()
+        }
         is RequestState.Error -> {
             Column(
                 modifier = Modifier

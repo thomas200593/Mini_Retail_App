@@ -125,8 +125,7 @@ private fun ScreenContent(
     onSaveSelectedTimezone: (Timezone) -> Unit
 ) {
     when(configCurrent){
-        RequestState.Idle -> Unit
-        RequestState.Loading -> {
+        RequestState.Idle, RequestState.Loading -> {
             LoadingScreen()
         }
         is RequestState.Error -> {

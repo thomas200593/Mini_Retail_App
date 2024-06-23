@@ -133,8 +133,7 @@ private fun ScreenContent(
     onSaveSelectedLanguage: KFunction1<Language, Job>
 ) {
     when(configCurrent){
-        RequestState.Idle -> Unit
-        RequestState.Loading -> {
+        RequestState.Idle, RequestState.Loading -> {
             LoadingScreen()
         }
         is RequestState.Error -> {

@@ -130,8 +130,7 @@ private fun ScreenContent(
     onSaveSelectedFontSize: (FontSize) -> Unit
 ) {
     when(configCurrent){
-        RequestState.Idle -> Unit
-        RequestState.Loading -> {
+        RequestState.Idle, RequestState.Loading -> {
             LoadingScreen()
         }
         is RequestState.Error -> {

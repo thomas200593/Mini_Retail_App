@@ -130,8 +130,7 @@ private fun ScreenContent(
     onSaveSelectedCurrency: (Currency) -> Unit
 ) {
     when(configCurrent){
-        RequestState.Idle -> Unit
-        RequestState.Loading -> {
+        RequestState.Idle, RequestState.Loading -> {
             LoadingScreen()
         }
         is RequestState.Error -> {

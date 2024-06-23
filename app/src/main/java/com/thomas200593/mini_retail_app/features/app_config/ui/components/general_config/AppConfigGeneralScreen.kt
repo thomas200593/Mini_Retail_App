@@ -141,8 +141,7 @@ private fun ScreenContent(
     onNavigateToMenu: (AppConfigGeneralDestination) -> Unit
 ) {
     when(appConfigGeneralMenuPreferences){
-        RequestState.Idle -> Unit
-        RequestState.Loading -> {
+        RequestState.Idle, RequestState.Loading -> {
             LoadingScreen()
         }
         is RequestState.Error -> {

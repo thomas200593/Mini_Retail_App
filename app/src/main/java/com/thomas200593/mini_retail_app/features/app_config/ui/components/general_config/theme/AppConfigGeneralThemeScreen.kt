@@ -130,8 +130,7 @@ private fun ScreenContent(
     onSaveSelectedTheme: (Theme) -> Unit
 ) {
     when(configCurrent){
-        RequestState.Idle -> Unit
-        RequestState.Loading -> {
+        RequestState.Idle, RequestState.Loading -> {
             LoadingScreen()
         }
         is RequestState.Error -> {
@@ -151,8 +150,7 @@ private fun ScreenContent(
         }
         is RequestState.Success -> {
             when(themePreferences){
-                RequestState.Idle -> Unit
-                RequestState.Loading -> {
+                RequestState.Idle, RequestState.Loading -> {
                     LoadingScreen()
                 }
                 is RequestState.Error -> {
