@@ -141,7 +141,6 @@ fun AuthScreen(
                         }
                     },
                     onDialogDismissed = {
-                        //TODO exit handle sign out
                         coroutineScope.launch {
                             handleClearCredential(
                                 activityContext = activityContext,
