@@ -31,9 +31,11 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.credentials.ClearCredentialStateRequest
 import androidx.credentials.CredentialManager
 import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
+import androidx.credentials.exceptions.ClearCredentialException
 import androidx.credentials.exceptions.GetCredentialCancellationException
 import androidx.credentials.exceptions.GetCredentialException
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
@@ -165,6 +167,24 @@ object Button {
                 catch (e: GetCredentialException){ onError(e) }
                 catch (e: GoogleIdTokenParsingException){ onError(e) }
                 catch (e: GetCredentialCancellationException){ onDialogDismissed(e) }
+            }
+        }
+
+        suspend fun handleClearCredential(
+            activityContext: Activity,
+            onClearSuccess: () -> Unit,
+            onClearError: (Throwable) -> Unit
+        ){
+            Timber.d("Called : fun $TAG.$TAG_GOOGLE.handleClearCredential()")
+            val credentialManager = CredentialManager.create(context = activityContext)
+            val clearCredentialRequest = ClearCredentialStateRequest()
+            try{
+                credentialManager.clearCredentialState(request = clearCredentialRequest)
+                onClearSuccess()
+            }catch (t: ClearCredentialException){
+                onClearError(t)
+            }catch (t: Exception){
+                onClearError(t)
             }
         }
     }

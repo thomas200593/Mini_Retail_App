@@ -45,6 +45,7 @@ import com.thomas200593.mini_retail_app.core.ui.common.Icons
 import com.thomas200593.mini_retail_app.core.ui.common.Icons.Setting.settings
 import com.thomas200593.mini_retail_app.core.ui.component.Button
 import com.thomas200593.mini_retail_app.core.ui.component.Button.Google.SignInWithGoogle
+import com.thomas200593.mini_retail_app.core.ui.component.Button.Google.handleClearCredential
 import com.thomas200593.mini_retail_app.core.ui.component.ScreenUtil
 import com.thomas200593.mini_retail_app.features.app_config.navigation.navigateToAppConfig
 import com.thomas200593.mini_retail_app.features.auth.entity.OAuth2UserMetadata
@@ -69,7 +70,17 @@ fun AuthScreen(
     val authSessionTokenState by viewModel.authSessionTokenState
 
     LaunchedEffect(Unit) {
-        viewModel.onOpen()
+        handleClearCredential(
+            activityContext,
+            onClearSuccess = {
+                Timber.d("fun $TAG().handleClearCredential() returned : Clear Credential Success")
+                viewModel.onOpen()
+            },
+            onClearError = { throwable ->
+                Timber.e("fun $TAG().handleClearCredential() returned : $throwable")
+                viewModel.onOpen()
+            }
+        )
     }
 
     LaunchedEffect(authSessionTokenState) {
@@ -84,7 +95,17 @@ fun AuthScreen(
                     SessionMonitorWorkManager.initialize(applicationContext)
                     appState.navController.navigateToInitial()
                 }else{
-                    viewModel.clearAuthSessionToken()
+                    handleClearCredential(
+                        activityContext = activityContext,
+                        onClearSuccess = {
+                            Timber.d("fun $TAG().handleClearCredential() returned : Clear Credential Success")
+                            viewModel.clearAuthSessionToken()
+                        },
+                        onClearError = { throwable ->
+                            Timber.e("fun $TAG().handleClearCredential() returned : $throwable")
+                            viewModel.clearAuthSessionToken()
+                        }
+                    )
                 }
             }
             else -> Unit
@@ -105,10 +126,35 @@ fun AuthScreen(
                         viewModel.verifyAndSaveAuthSession(it)
                     },
                     onError = {
-                        viewModel.clearAuthSessionToken()
+                        coroutineScope.launch {
+                            handleClearCredential(
+                                activityContext = activityContext,
+                                onClearSuccess = {
+                                    Timber.d("fun $TAG().handleClearCredential() returned : Clear Credential Success")
+                                    viewModel.clearAuthSessionToken()
+                                },
+                                onClearError = { throwable ->
+                                    Timber.e("fun $TAG().handleClearCredential() returned : $throwable")
+                                    viewModel.clearAuthSessionToken()
+                                }
+                            )
+                        }
                     },
                     onDialogDismissed = {
-                        viewModel.clearAuthSessionToken()
+                        //TODO exit handle sign out
+                        coroutineScope.launch {
+                            handleClearCredential(
+                                activityContext = activityContext,
+                                onClearSuccess = {
+                                    Timber.d("fun $TAG().handleClearCredential() returned : Clear Credential Success")
+                                    viewModel.clearAuthSessionToken()
+                                },
+                                onClearError = { throwable ->
+                                    Timber.e("fun $TAG().handleClearCredential() returned : $throwable")
+                                    viewModel.clearAuthSessionToken()
+                                }
+                            )
+                        }
                     }
                 )
             }
