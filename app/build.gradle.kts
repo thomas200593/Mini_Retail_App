@@ -13,6 +13,10 @@ plugins {
     id("com.google.android.gms.oss-licenses-plugin")
     // Android Kotlin Kapt
     // id("kotlin-kapt")
+    // Android SQLDelight
+    alias(libs.plugins.sqldelight)
+    // Kotlin X Serialization
+    alias(libs.plugins.kotlinxSerialization)
 }
 
 android {
@@ -55,11 +59,11 @@ android {
                 name = "APP_LOCAL_DATASTORE_FILENAME",
                 value = "\"app_local_datastore\""
             )
-            buildConfigField(
-                type = "String",
-                name = "APP_LOCAL_DATABASE_FILENAME",
-                value = "\"app_local_database.db\""
-            )
+//            buildConfigField(
+//                type = "String",
+//                name = "APP_LOCAL_DATABASE_FILENAME",
+//                value = "\"app_local_database.db\""
+//            )
             buildConfigField(
                 type = "String",
                 name = "GOOGLE_AUTH_WEB_ID",
@@ -83,11 +87,11 @@ android {
                 name = "APP_LOCAL_DATASTORE_FILENAME",
                 value = "\"app_local_datastore\""
             )
-            buildConfigField(
-                type = "String",
-                name = "APP_LOCAL_DATABASE_FILENAME",
-                value = "\"app_local_database.db\""
-            )
+//            buildConfigField(
+//                type = "String",
+//                name = "APP_LOCAL_DATABASE_FILENAME",
+//                value = "\"app_local_database.db\""
+//            )
             buildConfigField(
                 type = "String",
                 name = "GOOGLE_AUTH_WEB_ID",
@@ -119,14 +123,17 @@ android {
 
 dependencies {
     implementation(kotlin("reflect"))
+    implementation(libs.accompanist.systemuicontroller)
+    implementation(libs.android.driver)
     implementation(libs.android.material)
-    implementation(libs.androidx.tools.core)
     implementation(libs.androidx.activity.ktx)
     implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.credentials)
+    implementation(libs.androidx.credentials.play.services.auth)
     implementation(libs.androidx.foundation)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.material3.window.size.classes)
-    implementation(libs.androidx.runtime.livedata)
+    implementation(libs.androidx.tools.core)
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.text)
     implementation(libs.androidx.ui.tooling.preview)
@@ -145,48 +152,43 @@ dependencies {
     implementation(libs.androidx.multidex)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.security.crypto)
-    implementation(libs.androidx.room.runtime)
-    implementation(libs.androidx.room.ktx)
-    implementation(libs.androidx.room.paging)
     implementation(libs.androidx.paging.common.ktx)
     implementation(libs.androidx.paging.compose)
     implementation(libs.androidx.paging.runtime.ktx)
     implementation(libs.androidx.work.runtime.ktx)
-    implementation(libs.jwtdecode)
-    implementation(libs.accompanist.systemuicontroller)
-    implementation(libs.play.services.oss.licenses)
-    implementation(libs.hilt.android)
-    implementation(libs.gson)
-    implementation(libs.timber)
-    implementation(libs.okhttp)
-    implementation(libs.okhttp.urlconnection)
     implementation(libs.coil.compose)
+    implementation(libs.googleid)
+    implementation(libs.gson)
+    implementation(libs.hilt.android)
+    implementation(libs.joda.money)
+    implementation(libs.jwtdecode)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.datetime)
     implementation(libs.kotlinx.serialization.json)
-    implementation(libs.joda.money)
+    implementation(libs.ktor.client.android)
+    implementation(libs.ktor.client.core)
+    implementation(libs.ktor.client.content.negotiation)
+    implementation(libs.ktor.serialization.kotlinx.json)
+    implementation(libs.okhttp)
+    implementation(libs.okhttp.urlconnection)
+    implementation(libs.play.services.oss.licenses)
+    implementation(libs.runtime)
+    implementation(libs.timber)
     implementation(libs.tracing.trace)
-    implementation(libs.androidx.credentials)
-    implementation(libs.androidx.credentials.play.services.auth)
-    implementation(libs.googleid)
-
 
     testImplementation(libs.junit)
-    testImplementation(libs.androidx.room.testing)
-    testImplementation(libs.kotlin.test)
-    testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.junit.jupiter)
     testImplementation(libs.junit.jupiter.api)
+    testImplementation(libs.kotlin.test)
+    testImplementation(libs.kotlinx.coroutines.test)
     testRuntimeOnly(libs.junit.jupiter.engine)
 
-    androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(libs.androidx.junit)
 
-    annotationProcessor(libs.androidx.room.compiler)
     debugImplementation(libs.androidx.ui.tooling)
 
-    ksp(libs.hilt.android.compiler)
     ksp(libs.androidx.hilt.compiler)
-
-    ksp(libs.androidx.room.compiler)
+    ksp(libs.hilt.android.compiler)
 }
