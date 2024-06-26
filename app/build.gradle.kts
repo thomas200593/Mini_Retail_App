@@ -13,15 +13,13 @@ plugins {
     id("com.google.android.gms.oss-licenses-plugin")
     // Android Kotlin Kapt
     // id("kotlin-kapt")
-    // Android SQLDelight
-    alias(libs.plugins.sqldelight)
     // Kotlin X Serialization
     alias(libs.plugins.kotlinxSerialization)
 }
 
 android {
     namespace = "com.thomas200593.mini_retail_app"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.thomas200593.mini_retail_app"
@@ -59,11 +57,11 @@ android {
                 name = "APP_LOCAL_DATASTORE_FILENAME",
                 value = "\"app_local_datastore\""
             )
-//            buildConfigField(
-//                type = "String",
-//                name = "APP_LOCAL_DATABASE_FILENAME",
-//                value = "\"app_local_database.db\""
-//            )
+            buildConfigField(
+                type = "String",
+                name = "APP_LOCAL_DATABASE_FILENAME",
+                value = "\"app_local_database.db\""
+            )
             buildConfigField(
                 type = "String",
                 name = "GOOGLE_AUTH_WEB_ID",
@@ -87,11 +85,11 @@ android {
                 name = "APP_LOCAL_DATASTORE_FILENAME",
                 value = "\"app_local_datastore\""
             )
-//            buildConfigField(
-//                type = "String",
-//                name = "APP_LOCAL_DATABASE_FILENAME",
-//                value = "\"app_local_database.db\""
-//            )
+            buildConfigField(
+                type = "String",
+                name = "APP_LOCAL_DATABASE_FILENAME",
+                value = "\"app_local_database.db\""
+            )
             buildConfigField(
                 type = "String",
                 name = "GOOGLE_AUTH_WEB_ID",
@@ -124,7 +122,6 @@ android {
 dependencies {
     implementation(kotlin("reflect"))
     implementation(libs.accompanist.systemuicontroller)
-    implementation(libs.android.driver)
     implementation(libs.android.material)
     implementation(libs.androidx.activity.ktx)
     implementation(libs.androidx.appcompat)
@@ -155,10 +152,15 @@ dependencies {
     implementation(libs.androidx.paging.common.ktx)
     implementation(libs.androidx.paging.compose)
     implementation(libs.androidx.paging.runtime.ktx)
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    implementation(libs.androidx.room.paging)
+    implementation(libs.androidx.paging.common.ktx)
+    implementation(libs.androidx.paging.compose)
+    implementation(libs.androidx.paging.runtime.ktx)
     implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.coil.compose)
     implementation(libs.googleid)
-    implementation(libs.gson)
     implementation(libs.hilt.android)
     implementation(libs.joda.money)
     implementation(libs.jwtdecode)
@@ -173,10 +175,10 @@ dependencies {
     implementation(libs.okhttp)
     implementation(libs.okhttp.urlconnection)
     implementation(libs.play.services.oss.licenses)
-    implementation(libs.runtime)
     implementation(libs.timber)
     implementation(libs.tracing.trace)
 
+    testImplementation(libs.androidx.room.testing)
     testImplementation(libs.junit)
     testImplementation(libs.junit.jupiter)
     testImplementation(libs.junit.jupiter.api)
@@ -184,11 +186,14 @@ dependencies {
     testImplementation(libs.kotlinx.coroutines.test)
     testRuntimeOnly(libs.junit.jupiter.engine)
 
+    annotationProcessor(libs.androidx.room.compiler)
+
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)
 
     debugImplementation(libs.androidx.ui.tooling)
 
     ksp(libs.androidx.hilt.compiler)
+    ksp(libs.androidx.room.compiler)
     ksp(libs.hilt.android.compiler)
 }
