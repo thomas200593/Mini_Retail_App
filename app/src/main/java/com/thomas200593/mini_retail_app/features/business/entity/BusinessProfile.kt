@@ -7,7 +7,10 @@ import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
 import com.thomas200593.mini_retail_app.core.data.local.database.entity.AuditTrail
 import com.thomas200593.mini_retail_app.core.data.local.database.entity.TypeConverterAuditTrail
+import com.thomas200593.mini_retail_app.core.data.local.database.entity.Address
 import com.thomas200593.mini_retail_app.features.business.entity.dto.BizIdentity
+import com.thomas200593.mini_retail_app.core.data.local.database.entity.Contact
+import com.thomas200593.mini_retail_app.core.data.local.database.entity.Link
 import kotlinx.serialization.Serializable
 import ulid.ULID
 
@@ -27,7 +30,16 @@ data class BusinessProfile(
     val genId: String = ULID.randomULID(),
 
     @ColumnInfo(name = "biz_identity")
-    val bizIdentity: BizIdentity?,
+    val bizIdentity: BizIdentity? = null,
+
+    @ColumnInfo(name = "addresses")
+    val addresses: List<Address>? = null,
+
+    @ColumnInfo(name = "contacts")
+    val contacts: List<Contact>? = null,
+
+    @ColumnInfo(name = "links")
+    val links: List<Link>? = null,
 
     @ColumnInfo(name = "audit_trail")
     @TypeConverters(TypeConverterAuditTrail::class)

@@ -2,9 +2,8 @@ package com.thomas200593.mini_retail_app.features.business.repository
 
 import com.thomas200593.mini_retail_app.features.business.dao.BusinessProfileDao
 import com.thomas200593.mini_retail_app.features.business.entity.BusinessProfile
-import com.thomas200593.mini_retail_app.features.business.entity.dto.BizIdName
+import com.thomas200593.mini_retail_app.features.business.entity.dto.BizName
 import com.thomas200593.mini_retail_app.features.business.entity.dto.BizIdentity
-import com.thomas200593.mini_retail_app.features.business.entity.dto.BizIndustry
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -22,7 +21,7 @@ class BusinessProfileRepositoryImpl @Inject constructor(
     override suspend fun testGenerate() {
         val businessProfile = BusinessProfile(
             bizIdentity = BizIdentity(
-                BizIdName(
+                BizName(
                     "Test Legal",
                     "Test Common"
                 ),

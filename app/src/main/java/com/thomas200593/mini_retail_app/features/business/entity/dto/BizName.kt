@@ -4,9 +4,8 @@ import com.thomas200593.mini_retail_app.core.data.local.database.entity.AuditTra
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class BizIndustry(
-    val identityKey: Int,
-    val identityValue: Int,
-    val additionalInfo: String? = null,
+data class BizName(
+    val legalName: String? = null,
+    val commonName: String? = null,
     val auditTrail: AuditTrail = AuditTrail()
 )
