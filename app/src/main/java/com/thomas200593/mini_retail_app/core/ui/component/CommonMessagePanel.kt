@@ -5,6 +5,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -338,6 +339,69 @@ object CommonMessagePanel{
                 overflow = textOverflow,
                 textAlign = textAlign
             )
+        }
+    }
+
+    @Composable
+    fun ClickableCardItem(
+        onClick: () -> Unit,
+        icon: ImageVector,
+        title: String,
+        subtitle: String,
+        cardShape: Shape = MaterialTheme.shapes.medium,
+        cardBorder: BorderStroke = BorderStroke(width = 1.dp, color = Color(0xFF747775)),
+        iconWidthRatio: Float = 0.2f,
+        textWidthRatio: Float = 0.8f,
+        titleTextMaxLine: Int? = 1,
+        subtitleTextMaxLine: Int? = 1,
+        titleFontWeight: FontWeight = FontWeight.Bold,
+        titleTextAlign: TextAlign = TextAlign.Start,
+        subtitleTextAlign: TextAlign = TextAlign.Start,
+        titleTextOverflow: TextOverflow = TextOverflow.Ellipsis,
+        subtitleTextOverflow: TextOverflow = TextOverflow.Ellipsis
+    ){
+        Surface(
+            modifier = Modifier
+                .fillMaxWidth(1.0f),
+            onClick = onClick,
+            shape = cardShape,
+            border = cardBorder
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(1.0f)
+                    .padding(8.dp)
+                    .height(intrinsicSize = IntrinsicSize.Max),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Surface(modifier = Modifier.weight(iconWidthRatio)) {
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = null
+                    )
+                }
+                Column(
+                    modifier = Modifier.weight(textWidthRatio),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Text(
+                        text = title,
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = titleTextAlign,
+                        fontWeight = titleFontWeight,
+                        maxLines = titleTextMaxLine?: Int.MAX_VALUE,
+                        overflow = titleTextOverflow
+                    )
+                    Text(
+                        text = subtitle,
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = subtitleTextAlign,
+                        maxLines = subtitleTextMaxLine?: Int.MAX_VALUE,
+                        overflow = subtitleTextOverflow
+                    )
+                }
+            }
         }
     }
 }

@@ -41,6 +41,8 @@ import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
 import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
 import com.thomas200593.mini_retail_app.core.ui.common.Icons.Setting.settings_general
 import com.thomas200593.mini_retail_app.core.ui.component.AppBar
+import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel
+import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.ClickableCardItem
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.LoadingScreen
 import com.thomas200593.mini_retail_app.features.app_config.navigation.AppConfigGeneralDestination
 import com.thomas200593.mini_retail_app.features.app_config.navigation.navigateToAppConfigGeneral
@@ -171,49 +173,12 @@ private fun ScreenContent(
             ) {
                 items(count = menuPreferences.count()){ index ->
                     val menu = menuPreferences.elementAt(index)
-                    Surface(
-                        modifier = Modifier
-                            .fillMaxWidth(1.0f),
-                        shape = MaterialTheme.shapes.medium,
-                        border = BorderStroke(width = 1.dp, color = Color(0xFF747775)),
-                        onClick = { onNavigateToMenu(menu) }
-                    ) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth(1.0f)
-                                .padding(8.dp)
-                                .height(intrinsicSize = IntrinsicSize.Max),
-                            horizontalArrangement = Arrangement.Center,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Surface(modifier = Modifier.weight(0.2f)) {
-                                Icon(
-                                    imageVector = ImageVector.vectorResource(menu.iconRes),
-                                    contentDescription = null
-                                )
-                            }
-                            Column(
-                                modifier = Modifier.weight(0.8f),
-                                verticalArrangement = Arrangement.spacedBy(8.dp)
-                            ) {
-                                Text(
-                                    text = stringResource(id = menu.title),
-                                    modifier = Modifier.fillMaxWidth(),
-                                    textAlign = TextAlign.Start,
-                                    fontWeight = FontWeight.Bold,
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis
-                                )
-                                Text(
-                                    text = stringResource(id = menu.description),
-                                    modifier = Modifier.fillMaxWidth(),
-                                    textAlign = TextAlign.Start,
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis
-                                )
-                            }
-                        }
-                    }
+                    ClickableCardItem(
+                        onClick = { onNavigateToMenu(menu) },
+                        icon = ImageVector.vectorResource(id = menu.iconRes),
+                        title = stringResource(id = menu.title),
+                        subtitle = stringResource(id = menu.description)
+                    )
                 }
             }
         }
