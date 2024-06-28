@@ -1,13 +1,10 @@
 package com.thomas200593.mini_retail_app.features.app_config.ui.general_config.currency
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.lazy.LazyColumn
@@ -42,6 +39,7 @@ import com.thomas200593.mini_retail_app.app.ui.LocalAppState
 import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
 import com.thomas200593.mini_retail_app.core.ui.common.Icons.Currency.currency
 import com.thomas200593.mini_retail_app.core.ui.component.AppBar
+import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.LoadingScreen
 import com.thomas200593.mini_retail_app.features.app_config.entity.ConfigCurrent
 import com.thomas200593.mini_retail_app.features.app_config.entity.Currency
@@ -182,54 +180,39 @@ private fun ScreenContent(
                     ) {
                         items(count = appCurrencyPreferences.count()){ index ->
                             val data = appCurrencyPreferences[index]
-                            Surface(
-                                modifier = Modifier
-                                    .fillMaxWidth(1.0f),
-                                shape = MaterialTheme.shapes.medium,
-                                border = BorderStroke(width = 1.dp, color = Color(0xFF747775))
-                            ){
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth(1.0f)
-                                        .padding(8.dp)
-                                        .height(intrinsicSize = IntrinsicSize.Max),
-                                    horizontalArrangement = Arrangement.Center,
-                                    verticalAlignment = Alignment.CenterVertically
-                                ){
-                                    Column(
-                                        modifier = Modifier.weight(0.2f),
-                                        verticalArrangement = Arrangement.Center,
-                                        horizontalAlignment = Alignment.CenterHorizontally
-                                    ) {
-                                        Text(
-                                            text = data.code,
-                                            modifier = Modifier.fillMaxWidth(),
-                                            textAlign = TextAlign.Center,
-                                            fontWeight = FontWeight.Bold,
-                                            maxLines = 1,
-                                            overflow = TextOverflow.Ellipsis
-                                        )
-                                    }
-                                    Column(modifier = Modifier.weight(0.6f)) {
-                                        Text(
-                                            text = data.displayName,
-                                            modifier = Modifier.fillMaxWidth(),
-                                            textAlign = TextAlign.Start,
-                                            fontWeight = FontWeight.Bold,
-                                            maxLines = 1,
-                                            overflow = TextOverflow.Ellipsis
-                                        )
-                                        Text(
-                                            text = data.symbol,
-                                            modifier = Modifier.fillMaxWidth(),
-                                            textAlign = TextAlign.Start,
-                                            fontWeight = FontWeight.Bold,
-                                            maxLines = 1,
-                                            overflow = TextOverflow.Ellipsis
-                                        )
-                                    }
+
+                            CommonMessagePanel.ThreeRowCardItem(
+                                firstRowContent = {
+                                    Text(
+                                        text = data.code,
+                                        modifier = Modifier.fillMaxWidth(),
+                                        textAlign = TextAlign.Center,
+                                        fontWeight = FontWeight.Bold,
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis
+                                    )
+                                },
+                                secondRowContent = {
+                                    Text(
+                                        text = data.displayName,
+                                        modifier = Modifier.fillMaxWidth(),
+                                        textAlign = TextAlign.Start,
+                                        fontWeight = FontWeight.Bold,
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis
+                                    )
+                                    Text(
+                                        text = data.symbol,
+                                        modifier = Modifier.fillMaxWidth(),
+                                        textAlign = TextAlign.Start,
+                                        fontWeight = FontWeight.Bold,
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis
+                                    )
+                                },
+                                thirdRowContent = {
                                     Surface(
-                                        modifier = Modifier.weight(0.2f),
+                                        modifier = Modifier.fillMaxWidth(),
                                         onClick = { onSaveSelectedCurrency(data) }
                                     ) {
                                         Icon(
@@ -239,7 +222,7 @@ private fun ScreenContent(
                                         )
                                     }
                                 }
-                            }
+                            )
                         }
                     }
                 }
