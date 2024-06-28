@@ -8,7 +8,6 @@ import androidx.room.TypeConverters
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.AuditTrail
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.TypeConverterAuditTrail
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.Address
-import com.thomas200593.mini_retail_app.features.business.entity.dto.BizIdentity
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.Contact
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.Link
 import kotlinx.serialization.Serializable

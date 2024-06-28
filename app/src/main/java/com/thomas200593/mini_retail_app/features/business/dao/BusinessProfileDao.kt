@@ -4,7 +4,6 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.Upsert
 import com.thomas200593.mini_retail_app.core.data.local.database.AppLocalDatabaseHelper
 import com.thomas200593.mini_retail_app.features.business.entity.BusinessProfile
 import kotlinx.coroutines.flow.Flow
@@ -32,7 +31,6 @@ class BusinessProfileDaoImpl @Inject constructor(
     override fun getBusinessProfile(): Flow<BusinessProfile?> =
         dbHelper.getBusinessProfileDao().getBusinessProfile()
 
-    override suspend fun testGenerate(businessProfile: BusinessProfile) {
+    override suspend fun testGenerate(businessProfile: BusinessProfile) =
         dbHelper.getBusinessProfileDao().testGenerate(businessProfile)
-    }
 }

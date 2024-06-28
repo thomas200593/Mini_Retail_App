@@ -1,4 +1,4 @@
-package com.thomas200593.mini_retail_app.features.business.entity.dto
+package com.thomas200593.mini_retail_app.features.business.entity
 
 import androidx.room.TypeConverter
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.AuditTrail

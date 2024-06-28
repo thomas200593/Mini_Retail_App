@@ -7,7 +7,7 @@ import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.T
 import com.thomas200593.mini_retail_app.features.business.dao.BusinessProfileDao
 import com.thomas200593.mini_retail_app.features.business.entity.BusinessProfile
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.TypeConverterAddress
-import com.thomas200593.mini_retail_app.features.business.entity.dto.TypeConverterBizIdentity
+import com.thomas200593.mini_retail_app.features.business.entity.TypeConverterBizIdentity
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.TypeConverterContact
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.TypeConverterLinks
 import javax.inject.Singleton
