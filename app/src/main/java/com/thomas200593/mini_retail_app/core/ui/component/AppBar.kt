@@ -25,12 +25,6 @@ import timber.log.Timber
 private val TAG = AppBar::class.simpleName
 
 object AppBar {
-    private class TopAppBarViewModel: ViewModel(){
-        var navIconState by mutableStateOf(null as (@Composable () -> Unit)?, referentialEqualityPolicy() )
-        var titleState by mutableStateOf(null as (@Composable () -> Unit)?, referentialEqualityPolicy())
-        var actionState by mutableStateOf(null as (@Composable RowScope.() -> Unit)?, referentialEqualityPolicy())
-    }
-
     @Composable
     fun TopAppBar(navController: NavController){
         Timber.d("Called : fun $TAG.TopAppBar()")
@@ -133,5 +127,11 @@ object AppBar {
                 TopAppBarAction(currentContentBackStackEntry)
             }
         )
+    }
+
+    private class TopAppBarViewModel: ViewModel(){
+        var navIconState by mutableStateOf(null as (@Composable () -> Unit)?, referentialEqualityPolicy() )
+        var titleState by mutableStateOf(null as (@Composable () -> Unit)?, referentialEqualityPolicy())
+        var actionState by mutableStateOf(null as (@Composable RowScope.() -> Unit)?, referentialEqualityPolicy())
     }
 }

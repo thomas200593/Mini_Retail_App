@@ -147,7 +147,6 @@ private fun ScreenContent(
         }
         is RequestState.Success -> {
             val menuPreferences = appConfigMenuPreferences.data ?: emptySet()
-
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()

@@ -1,7 +1,6 @@
 package com.thomas200593.mini_retail_app.features.app_config.ui.general_config
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -35,6 +34,7 @@ import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
 import com.thomas200593.mini_retail_app.core.ui.common.Icons.Setting.settings_general
 import com.thomas200593.mini_retail_app.core.ui.component.AppBar
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.ClickableCardItem
+import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.ErrorScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.LoadingScreen
 import com.thomas200593.mini_retail_app.features.app_config.navigation.AppConfigGeneralDestination
 import com.thomas200593.mini_retail_app.features.app_config.navigation.navigateToAppConfigGeneral
@@ -139,23 +139,14 @@ private fun ScreenContent(
             LoadingScreen()
         }
         is RequestState.Error -> {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = stringResource(id = R.string.str_error),
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-            }
+            ErrorScreen(
+                title = stringResource(id = R.string.str_error),
+                errorMessage = "Failed to get Preferences data.",
+                showIcon = true
+            )
         }
         is RequestState.Success -> {
             val menuPreferences = appConfigGeneralMenuPreferences.data ?: emptySet()
-
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
