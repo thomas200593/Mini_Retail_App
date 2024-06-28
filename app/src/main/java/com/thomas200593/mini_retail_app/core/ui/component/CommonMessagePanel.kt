@@ -5,14 +5,17 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons.Default
 import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -23,11 +26,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
@@ -289,6 +295,49 @@ object CommonMessagePanel{
                     )
                 }
             }
+        }
+    }
+
+    @Composable
+    fun TextContentWithIcon(
+        icon: ImageVector,
+        text: String,
+        iconShape: Shape = MaterialTheme.shapes.extraSmall,
+        iconTint: Color = MaterialTheme.colorScheme.onPrimaryContainer,
+        iconSize: Dp = ButtonDefaults.IconSize,
+        textColor: Color = MaterialTheme.colorScheme.onSurface,
+        textMaxLines: Int = 1,
+        textOverflow: TextOverflow = TextOverflow.Ellipsis,
+        textAlign: TextAlign = TextAlign.Start,
+        iconWidthRatio: Float = 0.1f,
+        textWidthRatio: Float = 0.9f
+    ){
+        Timber.d("Called : fun $TAG.TextContentWithIcon()")
+        Row(
+            modifier = Modifier.fillMaxWidth(1.0f),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Surface(
+                modifier = Modifier
+                    .weight(iconWidthRatio)
+                    .size(iconSize),
+                shape = iconShape,
+            ) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    tint = iconTint
+                )
+            }
+            Text(
+                modifier = Modifier.weight(textWidthRatio),
+                text = text,
+                color = textColor,
+                maxLines = textMaxLines,
+                overflow = textOverflow,
+                textAlign = textAlign
+            )
         }
     }
 }

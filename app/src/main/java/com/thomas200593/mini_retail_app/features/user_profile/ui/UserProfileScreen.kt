@@ -58,9 +58,11 @@ import com.thomas200593.mini_retail_app.core.ui.common.Icons.Emotion.sad
 import com.thomas200593.mini_retail_app.core.ui.common.Icons.Setting.settings
 import com.thomas200593.mini_retail_app.core.ui.common.Themes
 import com.thomas200593.mini_retail_app.core.ui.component.Button.Common.AppIconButton
+import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.ErrorPanel
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.LoadingPanelCircularIndicator
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.LoadingScreen
+import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.TextContentWithIcon
 import com.thomas200593.mini_retail_app.features.app_config.navigation.navigateToAppConfig
 import com.thomas200593.mini_retail_app.features.auth.entity.OAuth2UserMetadata
 import com.thomas200593.mini_retail_app.features.auth.entity.OAuthProvider
@@ -244,84 +246,18 @@ private fun ProfileSection(
                             }
 
                             if(infoExpanded){
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(1.0f),
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.Center
-                                ) {
-                                    Surface(
-                                        modifier = Modifier
-                                            .weight(0.1f)
-                                            .size(ButtonDefaults.IconSize),
-                                        shape = MaterialTheme.shapes.extraSmall,
-                                    ) {
-                                        Icon(
-                                            imageVector = Icons.Default.Email,
-                                            contentDescription = null,
-                                            tint = MaterialTheme.colorScheme.onPrimaryContainer
-                                        )
-                                    }
-                                    Text(
-                                        modifier = Modifier.weight(0.9f),
-                                        text = userDetail.email,
-                                        color = MaterialTheme.colorScheme.onSurface,
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis,
-                                        textAlign = TextAlign.Start
-                                    )
-                                }
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(1.0f),
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.Center
-                                ) {
-                                    Surface(
-                                        modifier = Modifier
-                                            .weight(0.1f)
-                                            .size(ButtonDefaults.IconSize),
-                                        shape = MaterialTheme.shapes.extraSmall,
-                                    ) {
-                                        Icon(
-                                            imageVector = Icons.Default.Lock,
-                                            contentDescription = null,
-                                            tint = MaterialTheme.colorScheme.onPrimaryContainer
-                                        )
-                                    }
-                                    Text(
-                                        modifier = Modifier.weight(0.9f),
-                                        text = provider.title,
-                                        color = MaterialTheme.colorScheme.onSurface,
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis,
-                                        textAlign = TextAlign.Start
-                                    )
-                                }
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(1.0f),
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.Center
-                                ) {
-                                    Surface(
-                                        modifier = Modifier
-                                            .weight(0.1f)
-                                            .size(ButtonDefaults.IconSize),
-                                        shape = MaterialTheme.shapes.extraSmall,
-                                    ) {
-                                        Icon(
-                                            imageVector = ImageVector.vectorResource(id = session_expire),
-                                            contentDescription = null,
-                                            tint = MaterialTheme.colorScheme.onPrimaryContainer
-                                        )
-                                    }
-                                    Text(
-                                        modifier = Modifier.weight(0.9f),
-                                        text = Instant.ofEpochSecond(userDetail.expiredAt.toLong()).toString(),
-                                        color = MaterialTheme.colorScheme.onSurface,
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis,
-                                        textAlign = TextAlign.Start
-                                    )
-                                }
+                                TextContentWithIcon(
+                                    icon = Icons.Default.Email,
+                                    text = userDetail.email
+                                )
+                                TextContentWithIcon(
+                                    icon = Icons.Default.Lock,
+                                    text = provider.title
+                                )
+                                TextContentWithIcon(
+                                    icon = ImageVector.vectorResource(id = session_expire),
+                                    text = Instant.ofEpochSecond(userDetail.expiredAt.toLong()).toString()
+                                )
                             }
                             HorizontalDivider(thickness = 2.dp)
                         }
@@ -405,8 +341,7 @@ private fun SignOutSection(
         icon = Icons.AutoMirrored.Filled.ExitToApp,
         text = stringResource(id = R.string.str_auth_sign_out),
         containerColor = MaterialTheme.colorScheme.errorContainer,
-        contentColor = MaterialTheme.colorScheme.onErrorContainer,
-        shape = MaterialTheme.shapes.medium
+        contentColor = MaterialTheme.colorScheme.onErrorContainer
     )
 }
 
