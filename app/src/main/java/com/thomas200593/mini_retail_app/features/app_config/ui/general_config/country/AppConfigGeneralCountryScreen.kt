@@ -163,7 +163,6 @@ private fun ScreenContent(
                     ) {
                         items(count = appCountryPreferences.count()){ index ->
                             val data = appCountryPreferences[index]
-
                             ThreeRowCardItem(
                                 firstRowContent = {
                                     Text(

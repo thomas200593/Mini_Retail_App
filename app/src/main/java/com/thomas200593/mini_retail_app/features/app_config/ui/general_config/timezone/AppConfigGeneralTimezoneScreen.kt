@@ -41,6 +41,7 @@ import com.thomas200593.mini_retail_app.app.ui.LocalAppState
 import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
 import com.thomas200593.mini_retail_app.core.ui.common.Icons.Timezone.timezone
 import com.thomas200593.mini_retail_app.core.ui.component.AppBar
+import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.ErrorScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.LoadingScreen
 import com.thomas200593.mini_retail_app.features.app_config.entity.ConfigCurrent
 import com.thomas200593.mini_retail_app.features.app_config.entity.Timezone
@@ -129,15 +130,11 @@ private fun ScreenContent(
             LoadingScreen()
         }
         is RequestState.Error -> {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(text = "Error getting your preferences data...")
-            }
+            ErrorScreen(
+                title = stringResource(id = R.string.str_error),
+                errorMessage = "Failed to get Preferences data.",
+                showIcon = true
+            )
         }
         is RequestState.Success -> {
             when(timezonePreferences){
@@ -146,15 +143,11 @@ private fun ScreenContent(
                     LoadingScreen()
                 }
                 is RequestState.Error -> {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(8.dp),
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(text = "Error getting preferences data...")
-                    }
+                    ErrorScreen(
+                        title = stringResource(id = R.string.str_error),
+                        errorMessage = "Failed to get Preferences data.",
+                        showIcon = true
+                    )
                 }
                 is RequestState.Success -> {
                     val currentTimezone = configCurrent.data?.currentTimezone?: ConfigCurrent().currentTimezone
