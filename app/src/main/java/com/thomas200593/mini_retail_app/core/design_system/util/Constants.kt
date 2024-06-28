@@ -1,4 +1,4 @@
-package com.thomas200593.mini_retail_app.core.util
+package com.thomas200593.mini_retail_app.core.design_system.util
 
 import java.time.Instant
 

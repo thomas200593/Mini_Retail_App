@@ -2,7 +2,7 @@ package com.thomas200593.mini_retail_app.app
 
 import androidx.multidex.MultiDexApplication
 import androidx.work.Configuration
-import com.thomas200593.mini_retail_app.core.util.TimberHelper
+import com.thomas200593.mini_retail_app.core.design_system.util.TimberHelper
 import com.thomas200593.mini_retail_app.work.factory.WorkWrapperFactory
 import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
