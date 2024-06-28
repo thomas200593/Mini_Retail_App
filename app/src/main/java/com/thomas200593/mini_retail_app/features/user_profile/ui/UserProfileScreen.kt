@@ -58,7 +58,6 @@ import com.thomas200593.mini_retail_app.core.ui.common.Icons.Emotion.sad
 import com.thomas200593.mini_retail_app.core.ui.common.Icons.Setting.settings
 import com.thomas200593.mini_retail_app.core.ui.common.Themes
 import com.thomas200593.mini_retail_app.core.ui.component.Button.Common.AppIconButton
-import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.ErrorPanel
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.LoadingPanelCircularIndicator
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.LoadingScreen

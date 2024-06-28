@@ -161,85 +161,71 @@ private fun ScreenContent(
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(8.dp),
+                            .padding(4.dp),
                         verticalArrangement = Arrangement.spacedBy(10.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Column(
+                        Text(
+                            text = "${stringResource(id = R.string.str_size_font)} : ${stringResource(id = currentFontSize.title)}",
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(4.dp),
-                            verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Text(
-                                text = "Text FontSize Size - ${stringResource(id = currentFontSize.title)}",
-                                modifier = Modifier,
-                                fontWeight = FontWeight.Bold,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                                textAlign = TextAlign.Center,
-                            )
-                        }
-                        Column(
+                            fontWeight = FontWeight.Bold,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            textAlign = TextAlign.Center,
+                        )
+                        LazyColumn(
                             modifier = Modifier
                                 .fillMaxSize()
                                 .padding(4.dp),
                             verticalArrangement = Arrangement.spacedBy(10.dp),
                             horizontalAlignment = Alignment.CenterHorizontally
-                        ){
-                            LazyColumn(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .padding(4.dp),
-                                verticalArrangement = Arrangement.spacedBy(10.dp),
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
-                                items(count = appFontSizePreferences.count()){ index ->
-                                    val data = appFontSizePreferences.elementAt(index)
-                                    Surface(
+                        ) {
+                            items(count = appFontSizePreferences.count()){ index ->
+                                val data = appFontSizePreferences.elementAt(index)
+                                Surface(
+                                    modifier = Modifier
+                                        .fillMaxWidth(1.0f),
+                                    shape = MaterialTheme.shapes.medium,
+                                    border = BorderStroke(width = 1.dp, color = Color(0xFF747775))
+                                ) {
+                                    Row(
                                         modifier = Modifier
-                                            .fillMaxWidth(1.0f),
-                                        shape = MaterialTheme.shapes.medium,
-                                        border = BorderStroke(width = 1.dp, color = Color(0xFF747775))
-                                    ) {
-                                        Row(
-                                            modifier = Modifier
-                                                .fillMaxWidth(1.0f)
-                                                .padding(8.dp)
-                                                .height(intrinsicSize = IntrinsicSize.Max),
-                                            horizontalArrangement = Arrangement.Center,
-                                            verticalAlignment = Alignment.CenterVertically
+                                            .fillMaxWidth(1.0f)
+                                            .padding(8.dp)
+                                            .height(intrinsicSize = IntrinsicSize.Max),
+                                        horizontalArrangement = Arrangement.Center,
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ){
+                                        Surface(modifier = Modifier.weight(0.2f)) {
+                                            Icon(
+                                                imageVector = ImageVector.vectorResource(data.iconRes),
+                                                contentDescription = null
+                                            )
+                                        }
+                                        Column(
+                                            modifier = Modifier.weight(0.6f),
+                                            verticalArrangement = Arrangement.spacedBy(8.dp)
                                         ){
-                                            Surface(modifier = Modifier.weight(0.2f)) {
-                                                Icon(
-                                                    imageVector = ImageVector.vectorResource(data.iconRes),
-                                                    contentDescription = null
-                                                )
-                                            }
-                                            Column(
-                                                modifier = Modifier.weight(0.6f),
-                                                verticalArrangement = Arrangement.spacedBy(8.dp)
-                                            ){
-                                                Text(
-                                                    text = stringResource(id = data.title),
-                                                    modifier = Modifier.fillMaxWidth(),
-                                                    textAlign = TextAlign.Start,
-                                                    fontWeight = FontWeight.Bold,
-                                                    maxLines = 1,
-                                                    overflow = TextOverflow.Ellipsis
-                                                )
-                                            }
-                                            Surface(
-                                                modifier = Modifier.weight(0.2f),
-                                                onClick = { onSaveSelectedFontSize(data) }
-                                            ) {
-                                                Icon(
-                                                    imageVector = if (data == currentFontSize) Icons.Default.CheckCircle else Icons.AutoMirrored.Outlined.KeyboardArrowRight,
-                                                    contentDescription = null,
-                                                    tint = if (data == currentFontSize) Color.Green else MaterialTheme.colorScheme.onTertiaryContainer
-                                                )
-                                            }
+                                            Text(
+                                                text = stringResource(id = data.title),
+                                                modifier = Modifier.fillMaxWidth(),
+                                                textAlign = TextAlign.Start,
+                                                fontWeight = FontWeight.Bold,
+                                                maxLines = 1,
+                                                overflow = TextOverflow.Ellipsis
+                                            )
+                                        }
+                                        Surface(
+                                            modifier = Modifier.weight(0.2f),
+                                            onClick = { onSaveSelectedFontSize(data) }
+                                        ) {
+                                            Icon(
+                                                imageVector = if (data == currentFontSize) Icons.Default.CheckCircle else Icons.AutoMirrored.Outlined.KeyboardArrowRight,
+                                                contentDescription = null,
+                                                tint = if (data == currentFontSize) Color.Green else MaterialTheme.colorScheme.onTertiaryContainer
+                                            )
                                         }
                                     }
                                 }
