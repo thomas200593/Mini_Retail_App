@@ -5,6 +5,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -400,6 +401,56 @@ object CommonMessagePanel{
                         maxLines = subtitleTextMaxLine?: Int.MAX_VALUE,
                         overflow = subtitleTextOverflow
                     )
+                }
+            }
+        }
+    }
+
+    @Composable
+    fun ThreeRowCardItem(
+        cardShape: Shape = MaterialTheme.shapes.medium,
+        cardBorder: BorderStroke = BorderStroke(width = 1.dp, color = Color(0xFF747775)),
+        firstRowContent: @Composable ColumnScope.() -> Unit,
+        secondRowContent: @Composable ColumnScope.() -> Unit,
+        thirdRowContent: @Composable ColumnScope.() -> Unit
+    ){
+        Surface(
+            modifier = Modifier
+                .fillMaxWidth(1.0f),
+            shape = cardShape,
+            border = cardBorder
+        ){
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(1.0f)
+                    .padding(8.dp)
+                    .height(intrinsicSize = IntrinsicSize.Max),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ){
+                //First Row
+                Column(
+                    modifier = Modifier.weight(0.2f),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    firstRowContent()
+                }
+                //Second Row
+                Column(
+                    modifier = Modifier.weight(0.6f),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    secondRowContent()
+                }
+                //Third Row
+                Column(
+                    modifier = Modifier.weight(0.2f),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    thirdRowContent()
                 }
             }
         }
