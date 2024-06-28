@@ -1,4 +1,4 @@
-package com.thomas200593.mini_retail_app.features.app_config.ui.components.general_config.font_size
+package com.thomas200593.mini_retail_app.features.app_config.ui.general_config.country
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
@@ -17,6 +17,7 @@ import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowRight
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -40,23 +41,23 @@ import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.app.ui.AppState
 import com.thomas200593.mini_retail_app.app.ui.LocalAppState
 import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
-import com.thomas200593.mini_retail_app.core.ui.common.Icons.Font.font
+import com.thomas200593.mini_retail_app.core.ui.common.Icons.Currency.currency
 import com.thomas200593.mini_retail_app.core.ui.component.AppBar
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.LoadingScreen
 import com.thomas200593.mini_retail_app.features.app_config.entity.ConfigCurrent
-import com.thomas200593.mini_retail_app.features.app_config.entity.FontSize
+import com.thomas200593.mini_retail_app.features.app_config.entity.Country
 import timber.log.Timber
 
-private const val TAG = "AppConfigGeneralFontSizeScreen"
+private const val TAG = "AppConfigGeneralCountryScreen"
 
 @Composable
-fun AppConfigGeneralFontSizeScreen(
-    viewModel: AppConfigGeneralFontSizeViewModel = hiltViewModel(),
+fun AppConfigGeneralCountryScreen(
+    viewModel: AppConfigGeneralCountryViewModel = hiltViewModel(),
     appState: AppState = LocalAppState.current
-) {
+){
     Timber.d("Called : fun $TAG()")
     val configCurrent by viewModel.configCurrentUiState.collectAsStateWithLifecycle()
-    val fontSizePreferences by viewModel.fontSizePreferences
+    val countryPreferences by viewModel.countryPreferences
 
     LaunchedEffect(Unit) {
         viewModel.onOpen()
@@ -66,16 +67,14 @@ fun AppConfigGeneralFontSizeScreen(
         onNavigateBack = appState::onNavigateUp
     )
     ScreenContent(
-        fontSizeSizePreferences = fontSizePreferences,
+        countryPreferences = countryPreferences,
         configCurrent = configCurrent,
-        onSaveSelectedFontSize = viewModel::saveSelectedFontSize
+        onSaveSelectedCountry = viewModel::saveSelectedCountry
     )
 }
 
 @Composable
-private fun TopAppBar(
-    onNavigateBack: () -> Unit
-) {
+private fun TopAppBar(onNavigateBack: () -> Unit) {
     AppBar.ProvideTopAppBarNavigationIcon {
         Surface(
             onClick =  onNavigateBack,
@@ -97,11 +96,11 @@ private fun TopAppBar(
             Icon(
                 modifier = Modifier
                     .sizeIn(maxHeight = ButtonDefaults.IconSize),
-                imageVector = ImageVector.vectorResource(id = font),
+                imageVector = ImageVector.vectorResource(id = currency),
                 contentDescription = null
             )
             Text(
-                text = stringResource(id = R.string.str_size_font),
+                text = stringResource(id = R.string.str_country),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
@@ -125,9 +124,9 @@ private fun TopAppBar(
 
 @Composable
 private fun ScreenContent(
-    fontSizeSizePreferences: RequestState<Set<FontSize>>,
+    countryPreferences: RequestState<List<Country>>,
     configCurrent: RequestState<ConfigCurrent>,
-    onSaveSelectedFontSize: (FontSize) -> Unit
+    onSaveSelectedCountry: (Country) -> Unit
 ) {
     when(configCurrent){
         RequestState.Idle, RequestState.Loading -> {
@@ -149,7 +148,7 @@ private fun ScreenContent(
             }
         }
         is RequestState.Success -> {
-            when(fontSizeSizePreferences){
+            when(countryPreferences){
                 RequestState.Idle -> Unit
                 RequestState.Loading -> {
                     LoadingScreen()
@@ -170,92 +169,74 @@ private fun ScreenContent(
                     }
                 }
                 is RequestState.Success -> {
-                    val currentFontSize = configCurrent.data?.currentFontSizeSize?:ConfigCurrent().currentFontSizeSize
-                    val appFontSizePreferences = fontSizeSizePreferences.data ?: emptySet()
+                    val currentCountry = configCurrent.data?.currentCountry ?: ConfigCurrent().currentCountry
+                    val appCountryPreferences = countryPreferences.data ?: emptyList()
 
-                    Column(
+                    LazyColumn(
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(8.dp),
                         verticalArrangement = Arrangement.spacedBy(10.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(4.dp),
-                            verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Text(
-                                text = "Text FontSize Size - ${stringResource(id = currentFontSize.title)}",
-                                modifier = Modifier,
-                                fontWeight = FontWeight.Bold,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                                textAlign = TextAlign.Center,
-                            )
-                        }
-                        Column(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(4.dp),
-                            verticalArrangement = Arrangement.spacedBy(10.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ){
-                            LazyColumn(
+                        items(count = appCountryPreferences.count()){ index ->
+                            val data = appCountryPreferences[index]
+                            Surface(
                                 modifier = Modifier
-                                    .fillMaxSize()
-                                    .padding(4.dp),
-                                verticalArrangement = Arrangement.spacedBy(10.dp),
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
-                                items(count = appFontSizePreferences.count()){ index ->
-                                    val data = appFontSizePreferences.elementAt(index)
-                                    Surface(
-                                        modifier = Modifier
-                                            .fillMaxWidth(1.0f),
-                                        shape = MaterialTheme.shapes.medium,
-                                        border = BorderStroke(width = 1.dp, color = Color(0xFF747775))
+                                    .fillMaxWidth(1.0f),
+                                shape = MaterialTheme.shapes.medium,
+                                border = BorderStroke(width = 1.dp, color = Color(0xFF747775))
+                            ){
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth(1.0f)
+                                        .padding(8.dp)
+                                        .height(intrinsicSize = IntrinsicSize.Max),
+                                    horizontalArrangement = Arrangement.Center,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ){
+                                    Column(
+                                        modifier = Modifier.weight(0.2f),
+                                        verticalArrangement = Arrangement.Center,
+                                        horizontalAlignment = Alignment.CenterHorizontally
                                     ) {
-                                        Row(
-                                            modifier = Modifier
-                                                .fillMaxWidth(1.0f)
-                                                .padding(8.dp)
-                                                .height(intrinsicSize = IntrinsicSize.Max),
-                                            horizontalArrangement = Arrangement.Center,
-                                            verticalAlignment = Alignment.CenterVertically
-                                        ){
-                                            Surface(modifier = Modifier.weight(0.2f)) {
-                                                Icon(
-                                                    imageVector = ImageVector.vectorResource(data.iconRes),
-                                                    contentDescription = null
-                                                )
-                                            }
-                                            Column(
-                                                modifier = Modifier.weight(0.6f),
-                                                verticalArrangement = Arrangement.spacedBy(8.dp)
-                                            ){
-                                                Text(
-                                                    text = stringResource(id = data.title),
-                                                    modifier = Modifier.fillMaxWidth(),
-                                                    textAlign = TextAlign.Start,
-                                                    fontWeight = FontWeight.Bold,
-                                                    maxLines = 1,
-                                                    overflow = TextOverflow.Ellipsis
-                                                )
-                                            }
-                                            Surface(
-                                                modifier = Modifier.weight(0.2f),
-                                                onClick = { onSaveSelectedFontSize(data) }
-                                            ) {
-                                                Icon(
-                                                    imageVector = if (data == currentFontSize) Icons.Default.CheckCircle else Icons.AutoMirrored.Outlined.KeyboardArrowRight,
-                                                    contentDescription = null,
-                                                    tint = if (data == currentFontSize) Color.Green else MaterialTheme.colorScheme.onTertiaryContainer
-                                                )
-                                            }
-                                        }
+                                        Text(
+                                            text = data.isoCode,
+                                            modifier = Modifier.fillMaxWidth(),
+                                            textAlign = TextAlign.Center,
+                                            fontWeight = FontWeight.Bold,
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis
+                                        )
+                                        HorizontalDivider()
+                                        Text(
+                                            text = data.iso03Country,
+                                            modifier = Modifier.fillMaxWidth(),
+                                            textAlign = TextAlign.Center,
+                                            fontWeight = FontWeight.Bold,
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis
+                                        )
+                                    }
+                                    Column(modifier = Modifier.weight(0.6f)) {
+                                        Text(
+                                            text = data.displayName,
+                                            modifier = Modifier.fillMaxWidth(),
+                                            textAlign = TextAlign.Start,
+                                            fontWeight = FontWeight.Bold,
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis
+                                        )
+                                    }
+                                    Surface(
+                                        modifier = Modifier.weight(0.2f),
+                                        onClick = { onSaveSelectedCountry(data) }
+                                    ) {
+                                        Icon(
+                                            imageVector = if (data == currentCountry) Icons.Default.CheckCircle else Icons.AutoMirrored.Outlined.KeyboardArrowRight,
+                                            contentDescription = null,
+                                            tint = if (data == currentCountry) Color.Green else MaterialTheme.colorScheme.onTertiaryContainer
+                                        )
                                     }
                                 }
                             }

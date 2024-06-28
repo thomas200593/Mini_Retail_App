@@ -1,13 +1,15 @@
-package com.thomas200593.mini_retail_app.features.app_config.ui.components.general_config.theme
+package com.thomas200593.mini_retail_app.features.app_config.ui.general_config.language
 
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatchers
 import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
-import com.thomas200593.mini_retail_app.features.app_config.entity.Theme
+import com.thomas200593.mini_retail_app.features.app_config.entity.Language
 import com.thomas200593.mini_retail_app.features.app_config.repository.AppConfigRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -18,17 +20,18 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.util.Locale
 import javax.inject.Inject
 
-private val TAG = AppConfigGeneralThemeViewModel::class.simpleName
+private val TAG = AppConfigGeneralLanguageViewModel::class.simpleName
 
 @HiltViewModel
-class AppConfigGeneralThemeViewModel @Inject constructor(
+class AppConfigGeneralLanguageViewModel @Inject constructor(
     private val appConfigRepository: AppConfigRepository,
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
-): ViewModel() {
-    private val _themePreferences: MutableState<RequestState<Set<Theme>>> = mutableStateOf(RequestState.Idle)
-    val themePreferences = _themePreferences
+): ViewModel(){
+    private val _languagePreferences: MutableState<RequestState<Set<Language>>> = mutableStateOf(RequestState.Idle)
+    val languagePreferences = _languagePreferences
     val configCurrentUiState = appConfigRepository.configCurrentData.flowOn(ioDispatcher)
         .catch { RequestState.Error(it) }
         .map { RequestState.Success(it) }
@@ -40,21 +43,26 @@ class AppConfigGeneralThemeViewModel @Inject constructor(
 
     fun onOpen() = viewModelScope.launch(ioDispatcher) {
         Timber.d("Called : fun $TAG.onOpen()")
-        getThemePreferences()
+        getLanguagePreferences()
     }
 
-    private fun getThemePreferences() = viewModelScope.launch(ioDispatcher) {
-        Timber.d("Called : fun $TAG.getThemePreferences()")
-        _themePreferences.value = RequestState.Loading
-        _themePreferences.value = try{
-            RequestState.Success(appConfigRepository.getThemePreferences())
+    private fun getLanguagePreferences() = viewModelScope.launch(ioDispatcher) {
+        Timber.d("Called : fun $TAG.getLanguagePreferences()")
+        _languagePreferences.value = RequestState.Loading
+        _languagePreferences.value = try {
+            RequestState.Success(appConfigRepository.getLanguagePreferences())
         }catch (e: Throwable){
             RequestState.Error(e)
         }
     }
 
-    fun saveSelectedTheme(theme: Theme) = viewModelScope.launch {
-        Timber.d("Called : fun $TAG.saveSelectedTheme()")
-        appConfigRepository.setThemePreferences(theme)
+    fun saveSelectedLanguage(language: Language) = viewModelScope.launch {
+        Timber.d("Called : fun $TAG.saveSelectedLanguage()")
+        appConfigRepository.setLanguagePreferences(language)
+        AppCompatDelegate.setApplicationLocales(
+            LocaleListCompat.create(
+                Locale(language.code)
+            )
+        )
     }
 }

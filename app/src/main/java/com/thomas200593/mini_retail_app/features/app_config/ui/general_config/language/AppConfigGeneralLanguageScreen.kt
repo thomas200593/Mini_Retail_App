@@ -1,6 +1,7 @@
-package com.thomas200593.mini_retail_app.features.app_config.ui.components.general_config.dynamic_color
+package com.thomas200593.mini_retail_app.features.app_config.ui.general_config.language
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -40,23 +41,25 @@ import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.app.ui.AppState
 import com.thomas200593.mini_retail_app.app.ui.LocalAppState
 import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
-import com.thomas200593.mini_retail_app.core.ui.common.Icons.DynamicColor.dynamic_color
+import com.thomas200593.mini_retail_app.core.ui.common.Icons.Language.language
 import com.thomas200593.mini_retail_app.core.ui.component.AppBar
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.LoadingScreen
 import com.thomas200593.mini_retail_app.features.app_config.entity.ConfigCurrent
-import com.thomas200593.mini_retail_app.features.app_config.entity.DynamicColor
+import com.thomas200593.mini_retail_app.features.app_config.entity.Language
+import kotlinx.coroutines.Job
 import timber.log.Timber
+import kotlin.reflect.KFunction1
 
-private const val TAG = "AppConfigGeneralDynamicColorScreen"
+private const val TAG = "AppConfigGeneralLanguageScreen"
 
 @Composable
-fun AppConfigGeneralDynamicColorScreen(
-    viewModel: AppConfigGeneralDynamicColorViewModel = hiltViewModel(),
+fun AppConfigGeneralLanguageScreen(
+    viewModel: AppConfigGeneralLanguageViewModel = hiltViewModel(),
     appState: AppState = LocalAppState.current
 ) {
     Timber.d("Called : fun $TAG()")
     val configCurrent by viewModel.configCurrentUiState.collectAsStateWithLifecycle()
-    val dynamicColorPreferences by viewModel.dynamicColorPreferences
+    val languagePreferences by viewModel.languagePreferences
 
     LaunchedEffect(Unit) {
         viewModel.onOpen()
@@ -66,9 +69,9 @@ fun AppConfigGeneralDynamicColorScreen(
         onNavigateBack = appState::onNavigateUp
     )
     ScreenContent(
-        dynamicColorPreferences = dynamicColorPreferences,
+        languagePreferences = languagePreferences,
         configCurrent = configCurrent,
-        onSaveSelectedDynamicColor = viewModel::saveSelectedDynamicColor
+        onSaveSelectedLanguage = viewModel::saveSelectedLanguage
     )
 }
 
@@ -97,11 +100,11 @@ private fun TopAppBar(
             Icon(
                 modifier = Modifier
                     .sizeIn(maxHeight = ButtonDefaults.IconSize),
-                imageVector = ImageVector.vectorResource(id = dynamic_color),
+                imageVector = ImageVector.vectorResource(id = language),
                 contentDescription = null
             )
             Text(
-                text = stringResource(id = R.string.str_dynamic_color),
+                text = stringResource(id = R.string.str_lang),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
@@ -125,9 +128,9 @@ private fun TopAppBar(
 
 @Composable
 private fun ScreenContent(
-    dynamicColorPreferences: RequestState<Set<DynamicColor>>,
+    languagePreferences: RequestState<Set<Language>>,
     configCurrent: RequestState<ConfigCurrent>,
-    onSaveSelectedDynamicColor: (DynamicColor) -> Unit
+    onSaveSelectedLanguage: KFunction1<Language, Job>
 ) {
     when(configCurrent){
         RequestState.Idle, RequestState.Loading -> {
@@ -149,7 +152,7 @@ private fun ScreenContent(
             }
         }
         is RequestState.Success -> {
-            when(dynamicColorPreferences){
+            when(languagePreferences){
                 RequestState.Idle -> Unit
                 RequestState.Loading -> {
                     LoadingScreen()
@@ -170,8 +173,8 @@ private fun ScreenContent(
                     }
                 }
                 is RequestState.Success -> {
-                    val currentDynamicColor = configCurrent.data?.currentDynamicColor?:ConfigCurrent().currentDynamicColor
-                    val appDynamicColorPreferences = dynamicColorPreferences.data ?: emptySet()
+                    val currentLanguage = configCurrent.data?.currentLanguage?:ConfigCurrent().currentLanguage
+                    val appLanguagePreferences = languagePreferences.data ?: emptySet()
 
                     LazyColumn(
                         modifier = Modifier
@@ -180,8 +183,8 @@ private fun ScreenContent(
                         verticalArrangement = Arrangement.spacedBy(10.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        items(count = appDynamicColorPreferences.count()){ index ->
-                            val data = appDynamicColorPreferences.elementAt(index)
+                        items(count = appLanguagePreferences.count()){ index ->
+                            val data = appLanguagePreferences.elementAt(index)
                             Surface(
                                 modifier = Modifier
                                     .fillMaxWidth(1.0f),
@@ -197,7 +200,8 @@ private fun ScreenContent(
                                     verticalAlignment = Alignment.CenterVertically
                                 ){
                                     Surface(modifier = Modifier.weight(0.2f)) {
-                                        Icon(
+                                        Image(
+                                            modifier = Modifier.height(20.dp),
                                             imageVector = ImageVector.vectorResource(data.iconRes),
                                             contentDescription = null
                                         )
@@ -214,12 +218,12 @@ private fun ScreenContent(
                                     }
                                     Surface(
                                         modifier = Modifier.weight(0.2f),
-                                        onClick = { onSaveSelectedDynamicColor(data) }
+                                        onClick = { onSaveSelectedLanguage(data) }
                                     ) {
                                         Icon(
-                                            imageVector = if (data == currentDynamicColor) Icons.Default.CheckCircle else Icons.AutoMirrored.Outlined.KeyboardArrowRight,
+                                            imageVector = if (data == currentLanguage) Icons.Default.CheckCircle else Icons.AutoMirrored.Outlined.KeyboardArrowRight,
                                             contentDescription = null,
-                                            tint = if (data == currentDynamicColor) Color.Green else MaterialTheme.colorScheme.onTertiaryContainer
+                                            tint = if (data == currentLanguage) Color.Green else MaterialTheme.colorScheme.onTertiaryContainer
                                         )
                                     }
                                 }

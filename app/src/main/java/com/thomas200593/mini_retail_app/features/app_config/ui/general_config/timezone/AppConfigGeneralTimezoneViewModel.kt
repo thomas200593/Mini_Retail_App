@@ -1,4 +1,4 @@
-package com.thomas200593.mini_retail_app.features.app_config.ui.components.general_config.currency
+package com.thomas200593.mini_retail_app.features.app_config.ui.general_config.timezone
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatchers
 import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
-import com.thomas200593.mini_retail_app.features.app_config.entity.Currency
+import com.thomas200593.mini_retail_app.features.app_config.entity.Timezone
 import com.thomas200593.mini_retail_app.features.app_config.repository.AppConfigRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -20,15 +20,15 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
-private val TAG = AppConfigGeneralCurrencyViewModel::class.simpleName
+private val TAG = AppConfigGeneralTimezoneViewModel::class.simpleName
 
 @HiltViewModel
-class AppConfigGeneralCurrencyViewModel @Inject constructor(
+class AppConfigGeneralTimezoneViewModel @Inject constructor(
     private val appConfigRepository: AppConfigRepository,
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ): ViewModel() {
-    private val _currencyPreferences: MutableState<RequestState<List<Currency>>> = mutableStateOf(RequestState.Idle)
-    val currencyPreferences = _currencyPreferences
+    private val _timezonePreferences: MutableState<RequestState<List<Timezone>>> = mutableStateOf(RequestState.Idle)
+    val timezonePreferences = _timezonePreferences
     val configCurrentUiState = appConfigRepository.configCurrentData.flowOn(ioDispatcher)
         .catch { RequestState.Error(it) }
         .map { RequestState.Success(it) }
@@ -40,21 +40,21 @@ class AppConfigGeneralCurrencyViewModel @Inject constructor(
 
     fun onOpen() = viewModelScope.launch(ioDispatcher) {
         Timber.d("Called : fun $TAG.onOpen()")
-        getCurrencyPreferences()
+        getTimezonePreferences()
     }
 
-    private fun getCurrencyPreferences() = viewModelScope.launch(ioDispatcher) {
-        Timber.d("Called : fun $TAG.getCurrencyPreferences()")
-        _currencyPreferences.value = RequestState.Loading
-        _currencyPreferences.value = try{
-            RequestState.Success(appConfigRepository.getCurrencyPreferences())
+    private fun getTimezonePreferences() = viewModelScope.launch(ioDispatcher) {
+        Timber.d("Called : fun $TAG.getTimezonePreferences()")
+        _timezonePreferences.value = RequestState.Loading
+        _timezonePreferences.value = try{
+            RequestState.Success(appConfigRepository.getTimezonePreferences())
         }catch (e: Throwable){
             RequestState.Error(e)
         }
     }
 
-    fun saveSelectedCurrency(currency: Currency) = viewModelScope.launch {
-        Timber.d("Called : fun $TAG.saveSelectedCurrency()")
-        appConfigRepository.setCurrencyPreferences(currency)
+    fun saveSelectedTimezone(timezone: Timezone) = viewModelScope.launch {
+        Timber.d("Called : fun $TAG.saveSelectedTimezone()")
+        appConfigRepository.setTimezonePreferences(timezone)
     }
 }

@@ -7,7 +7,7 @@ import androidx.navigation.navOptions
 import androidx.navigation.navigation
 import com.thomas200593.mini_retail_app.app.navigation.NavigationGraphs.G_APP_CONFIG_DATA
 import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs
-import com.thomas200593.mini_retail_app.features.app_config.ui.components.data_config.AppConfigDataScreen
+import com.thomas200593.mini_retail_app.features.app_config.ui.data_config.AppConfigDataScreen
 import timber.log.Timber
 
 private val TAG_NAV_GRAPH_BUILDER = NavGraphBuilder::class.simpleName

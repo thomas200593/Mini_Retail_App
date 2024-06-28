@@ -1,4 +1,4 @@
-package com.thomas200593.mini_retail_app.features.app_config.ui.components.general_config.timezone
+package com.thomas200593.mini_retail_app.features.app_config.ui.general_config.theme
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
@@ -32,6 +32,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -39,23 +40,23 @@ import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.app.ui.AppState
 import com.thomas200593.mini_retail_app.app.ui.LocalAppState
 import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
-import com.thomas200593.mini_retail_app.core.ui.common.Icons.Timezone.timezone
+import com.thomas200593.mini_retail_app.core.ui.common.Icons.Theme.theme
 import com.thomas200593.mini_retail_app.core.ui.component.AppBar
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.LoadingScreen
 import com.thomas200593.mini_retail_app.features.app_config.entity.ConfigCurrent
-import com.thomas200593.mini_retail_app.features.app_config.entity.Timezone
+import com.thomas200593.mini_retail_app.features.app_config.entity.Theme
 import timber.log.Timber
 
-private const val TAG = "AppConfigGeneralTimezoneScreen"
+private const val TAG = "AppConfigGeneralThemeScreen"
 
 @Composable
-fun AppConfigGeneralTimezoneScreen(
-    viewModel: AppConfigGeneralTimezoneViewModel = hiltViewModel(),
+fun AppConfigGeneralThemeScreen(
+    viewModel: AppConfigGeneralThemeViewModel = hiltViewModel(),
     appState: AppState = LocalAppState.current
 ) {
     Timber.d("Called : fun $TAG()")
     val configCurrent by viewModel.configCurrentUiState.collectAsStateWithLifecycle()
-    val timezonePreferences by viewModel.timezonePreferences
+    val themePreferences by viewModel.themePreferences
 
     LaunchedEffect(Unit) {
         viewModel.onOpen()
@@ -65,9 +66,9 @@ fun AppConfigGeneralTimezoneScreen(
         onNavigateBack = appState::onNavigateUp
     )
     ScreenContent(
-        timezonePreferences = timezonePreferences,
+        themePreferences = themePreferences,
         configCurrent = configCurrent,
-        onSaveSelectedTimezone = viewModel::saveSelectedTimezone
+        onSaveSelectedTheme = viewModel::saveSelectedTheme
     )
 }
 
@@ -96,10 +97,14 @@ private fun TopAppBar(
             Icon(
                 modifier = Modifier
                     .sizeIn(maxHeight = ButtonDefaults.IconSize),
-                imageVector = ImageVector.vectorResource(id = timezone),
+                imageVector = ImageVector.vectorResource(id = theme),
                 contentDescription = null
             )
-            Text(text = stringResource(id = R.string.str_timezone))
+            Text(
+                text = stringResource(id = R.string.str_theme),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
         }
     }
     AppBar.ProvideTopAppBarAction {
@@ -120,9 +125,9 @@ private fun TopAppBar(
 
 @Composable
 private fun ScreenContent(
-    timezonePreferences: RequestState<List<Timezone>>,
+    themePreferences: RequestState<Set<Theme>>,
     configCurrent: RequestState<ConfigCurrent>,
-    onSaveSelectedTimezone: (Timezone) -> Unit
+    onSaveSelectedTheme: (Theme) -> Unit
 ) {
     when(configCurrent){
         RequestState.Idle, RequestState.Loading -> {
@@ -136,13 +141,16 @@ private fun ScreenContent(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(text = "Error getting your preferences data...")
+                Text(
+                    text = stringResource(id = R.string.str_error),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
             }
         }
         is RequestState.Success -> {
-            when(timezonePreferences){
-                RequestState.Idle -> Unit
-                RequestState.Loading -> {
+            when(themePreferences){
+                RequestState.Idle, RequestState.Loading -> {
                     LoadingScreen()
                 }
                 is RequestState.Error -> {
@@ -153,12 +161,16 @@ private fun ScreenContent(
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text(text = "Error getting preferences data...")
+                        Text(
+                            text = stringResource(id = R.string.str_error),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
                     }
                 }
                 is RequestState.Success -> {
-                    val currentTimezone = configCurrent.data?.currentTimezone?: ConfigCurrent().currentTimezone
-                    val appTimezonePreferences = timezonePreferences.data ?: emptyList()
+                    val currentTheme = configCurrent.data?.currentTheme?:ConfigCurrent().currentTheme
+                    val appThemePreferences = themePreferences.data ?: emptySet()
 
                     LazyColumn(
                         modifier = Modifier
@@ -167,8 +179,8 @@ private fun ScreenContent(
                         verticalArrangement = Arrangement.spacedBy(10.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        items(count = appTimezonePreferences.count()){ index ->
-                            val data = appTimezonePreferences[index]
+                        items(count = appThemePreferences.count()){index ->
+                            val data = appThemePreferences.elementAt(index)
                             Surface(
                                 modifier = Modifier
                                     .fillMaxWidth(1.0f),
@@ -182,23 +194,41 @@ private fun ScreenContent(
                                         .height(intrinsicSize = IntrinsicSize.Max),
                                     horizontalArrangement = Arrangement.Center,
                                     verticalAlignment = Alignment.CenterVertically
-                                ){
-                                    Column(modifier = Modifier.weight(0.8f)) {
+                                ) {
+                                    Surface(modifier = Modifier.weight(0.2f)) {
+                                        Icon(
+                                            imageVector = ImageVector.vectorResource(data.iconRes),
+                                            contentDescription = null
+                                        )
+                                    }
+                                    Column(
+                                        modifier = Modifier.weight(0.6f),
+                                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                                    ) {
                                         Text(
-                                            text = data.timezoneOffset,
+                                            text = stringResource(id = data.title),
                                             modifier = Modifier.fillMaxWidth(),
                                             textAlign = TextAlign.Start,
-                                            fontWeight = FontWeight.Bold
+                                            fontWeight = FontWeight.Bold,
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis
+                                        )
+                                        Text(
+                                            text = stringResource(id = data.description),
+                                            modifier = Modifier.fillMaxWidth(),
+                                            textAlign = TextAlign.Start,
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis
                                         )
                                     }
                                     Surface(
                                         modifier = Modifier.weight(0.2f),
-                                        onClick = { onSaveSelectedTimezone(data) }
+                                        onClick = { onSaveSelectedTheme(data) }
                                     ) {
                                         Icon(
-                                            imageVector = if (data == currentTimezone) Icons.Default.CheckCircle else Icons.AutoMirrored.Outlined.KeyboardArrowRight,
+                                            imageVector = if (data == currentTheme) Icons.Default.CheckCircle else Icons.AutoMirrored.Outlined.KeyboardArrowRight,
                                             contentDescription = null,
-                                            tint = if (data == currentTimezone) Color.Green else MaterialTheme.colorScheme.onTertiaryContainer
+                                            tint = if (data == currentTheme) Color.Green else MaterialTheme.colorScheme.onTertiaryContainer
                                         )
                                     }
                                 }

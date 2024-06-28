@@ -1,4 +1,4 @@
-package com.thomas200593.mini_retail_app.features.app_config.ui.components.general_config
+package com.thomas200593.mini_retail_app.features.app_config.ui.general_config
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf

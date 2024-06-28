@@ -7,14 +7,14 @@ import androidx.navigation.navOptions
 import androidx.navigation.navigation
 import com.thomas200593.mini_retail_app.app.navigation.NavigationGraphs.G_APP_CONFIG_GENERAL
 import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs
-import com.thomas200593.mini_retail_app.features.app_config.ui.components.general_config.AppConfigGeneralScreen
-import com.thomas200593.mini_retail_app.features.app_config.ui.components.general_config.country.AppConfigGeneralCountryScreen
-import com.thomas200593.mini_retail_app.features.app_config.ui.components.general_config.currency.AppConfigGeneralCurrencyScreen
-import com.thomas200593.mini_retail_app.features.app_config.ui.components.general_config.dynamic_color.AppConfigGeneralDynamicColorScreen
-import com.thomas200593.mini_retail_app.features.app_config.ui.components.general_config.font_size.AppConfigGeneralFontSizeScreen
-import com.thomas200593.mini_retail_app.features.app_config.ui.components.general_config.language.AppConfigGeneralLanguageScreen
-import com.thomas200593.mini_retail_app.features.app_config.ui.components.general_config.theme.AppConfigGeneralThemeScreen
-import com.thomas200593.mini_retail_app.features.app_config.ui.components.general_config.timezone.AppConfigGeneralTimezoneScreen
+import com.thomas200593.mini_retail_app.features.app_config.ui.general_config.AppConfigGeneralScreen
+import com.thomas200593.mini_retail_app.features.app_config.ui.general_config.country.AppConfigGeneralCountryScreen
+import com.thomas200593.mini_retail_app.features.app_config.ui.general_config.currency.AppConfigGeneralCurrencyScreen
+import com.thomas200593.mini_retail_app.features.app_config.ui.general_config.dynamic_color.AppConfigGeneralDynamicColorScreen
+import com.thomas200593.mini_retail_app.features.app_config.ui.general_config.font_size.AppConfigGeneralFontSizeScreen
+import com.thomas200593.mini_retail_app.features.app_config.ui.general_config.language.AppConfigGeneralLanguageScreen
+import com.thomas200593.mini_retail_app.features.app_config.ui.general_config.theme.AppConfigGeneralThemeScreen
+import com.thomas200593.mini_retail_app.features.app_config.ui.general_config.timezone.AppConfigGeneralTimezoneScreen
 import timber.log.Timber
 
 private val TAG_NAV_GRAPH_BUILDER = NavGraphBuilder::class.simpleName

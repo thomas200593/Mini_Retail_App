@@ -1,4 +1,4 @@
-package com.thomas200593.mini_retail_app.features.app_config.ui.components.general_config.currency
+package com.thomas200593.mini_retail_app.features.app_config.ui.general_config.dynamic_color
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
@@ -40,23 +40,23 @@ import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.app.ui.AppState
 import com.thomas200593.mini_retail_app.app.ui.LocalAppState
 import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
-import com.thomas200593.mini_retail_app.core.ui.common.Icons.Currency.currency
+import com.thomas200593.mini_retail_app.core.ui.common.Icons.DynamicColor.dynamic_color
 import com.thomas200593.mini_retail_app.core.ui.component.AppBar
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.LoadingScreen
 import com.thomas200593.mini_retail_app.features.app_config.entity.ConfigCurrent
-import com.thomas200593.mini_retail_app.features.app_config.entity.Currency
+import com.thomas200593.mini_retail_app.features.app_config.entity.DynamicColor
 import timber.log.Timber
 
-private const val TAG = "AppConfigGeneralCurrencyScreen"
+private const val TAG = "AppConfigGeneralDynamicColorScreen"
 
 @Composable
-fun AppConfigGeneralCurrencyScreen(
-    viewModel: AppConfigGeneralCurrencyViewModel = hiltViewModel(),
+fun AppConfigGeneralDynamicColorScreen(
+    viewModel: AppConfigGeneralDynamicColorViewModel = hiltViewModel(),
     appState: AppState = LocalAppState.current
 ) {
     Timber.d("Called : fun $TAG()")
     val configCurrent by viewModel.configCurrentUiState.collectAsStateWithLifecycle()
-    val currencyPreferences by viewModel.currencyPreferences
+    val dynamicColorPreferences by viewModel.dynamicColorPreferences
 
     LaunchedEffect(Unit) {
         viewModel.onOpen()
@@ -66,9 +66,9 @@ fun AppConfigGeneralCurrencyScreen(
         onNavigateBack = appState::onNavigateUp
     )
     ScreenContent(
-        currencyPreferences = currencyPreferences,
+        dynamicColorPreferences = dynamicColorPreferences,
         configCurrent = configCurrent,
-        onSaveSelectedCurrency = viewModel::saveSelectedCurrency
+        onSaveSelectedDynamicColor = viewModel::saveSelectedDynamicColor
     )
 }
 
@@ -97,11 +97,11 @@ private fun TopAppBar(
             Icon(
                 modifier = Modifier
                     .sizeIn(maxHeight = ButtonDefaults.IconSize),
-                imageVector = ImageVector.vectorResource(id = currency),
+                imageVector = ImageVector.vectorResource(id = dynamic_color),
                 contentDescription = null
             )
             Text(
-                text = stringResource(id = R.string.str_currency),
+                text = stringResource(id = R.string.str_dynamic_color),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
@@ -125,9 +125,9 @@ private fun TopAppBar(
 
 @Composable
 private fun ScreenContent(
-    currencyPreferences: RequestState<List<Currency>>,
+    dynamicColorPreferences: RequestState<Set<DynamicColor>>,
     configCurrent: RequestState<ConfigCurrent>,
-    onSaveSelectedCurrency: (Currency) -> Unit
+    onSaveSelectedDynamicColor: (DynamicColor) -> Unit
 ) {
     when(configCurrent){
         RequestState.Idle, RequestState.Loading -> {
@@ -149,7 +149,7 @@ private fun ScreenContent(
             }
         }
         is RequestState.Success -> {
-            when(currencyPreferences){
+            when(dynamicColorPreferences){
                 RequestState.Idle -> Unit
                 RequestState.Loading -> {
                     LoadingScreen()
@@ -170,8 +170,8 @@ private fun ScreenContent(
                     }
                 }
                 is RequestState.Success -> {
-                    val currentCurrency = configCurrent.data?.currentCurrency ?: ConfigCurrent().currentCurrency
-                    val appCurrencyPreferences = currencyPreferences.data ?: emptyList()
+                    val currentDynamicColor = configCurrent.data?.currentDynamicColor?:ConfigCurrent().currentDynamicColor
+                    val appDynamicColorPreferences = dynamicColorPreferences.data ?: emptySet()
 
                     LazyColumn(
                         modifier = Modifier
@@ -180,14 +180,14 @@ private fun ScreenContent(
                         verticalArrangement = Arrangement.spacedBy(10.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        items(count = appCurrencyPreferences.count()){ index ->
-                            val data = appCurrencyPreferences[index]
+                        items(count = appDynamicColorPreferences.count()){ index ->
+                            val data = appDynamicColorPreferences.elementAt(index)
                             Surface(
                                 modifier = Modifier
                                     .fillMaxWidth(1.0f),
                                 shape = MaterialTheme.shapes.medium,
                                 border = BorderStroke(width = 1.dp, color = Color(0xFF747775))
-                            ){
+                            ) {
                                 Row(
                                     modifier = Modifier
                                         .fillMaxWidth(1.0f)
@@ -196,31 +196,15 @@ private fun ScreenContent(
                                     horizontalArrangement = Arrangement.Center,
                                     verticalAlignment = Alignment.CenterVertically
                                 ){
-                                    Column(
-                                        modifier = Modifier.weight(0.2f),
-                                        verticalArrangement = Arrangement.Center,
-                                        horizontalAlignment = Alignment.CenterHorizontally
-                                    ) {
-                                        Text(
-                                            text = data.code,
-                                            modifier = Modifier.fillMaxWidth(),
-                                            textAlign = TextAlign.Center,
-                                            fontWeight = FontWeight.Bold,
-                                            maxLines = 1,
-                                            overflow = TextOverflow.Ellipsis
+                                    Surface(modifier = Modifier.weight(0.2f)) {
+                                        Icon(
+                                            imageVector = ImageVector.vectorResource(data.iconRes),
+                                            contentDescription = null
                                         )
                                     }
                                     Column(modifier = Modifier.weight(0.6f)) {
                                         Text(
-                                            text = data.displayName,
-                                            modifier = Modifier.fillMaxWidth(),
-                                            textAlign = TextAlign.Start,
-                                            fontWeight = FontWeight.Bold,
-                                            maxLines = 1,
-                                            overflow = TextOverflow.Ellipsis
-                                        )
-                                        Text(
-                                            text = data.symbol,
+                                            text = stringResource(id = data.title),
                                             modifier = Modifier.fillMaxWidth(),
                                             textAlign = TextAlign.Start,
                                             fontWeight = FontWeight.Bold,
@@ -230,12 +214,12 @@ private fun ScreenContent(
                                     }
                                     Surface(
                                         modifier = Modifier.weight(0.2f),
-                                        onClick = { onSaveSelectedCurrency(data) }
+                                        onClick = { onSaveSelectedDynamicColor(data) }
                                     ) {
                                         Icon(
-                                            imageVector = if (data == currentCurrency) Icons.Default.CheckCircle else Icons.AutoMirrored.Outlined.KeyboardArrowRight,
+                                            imageVector = if (data == currentDynamicColor) Icons.Default.CheckCircle else Icons.AutoMirrored.Outlined.KeyboardArrowRight,
                                             contentDescription = null,
-                                            tint = if (data == currentCurrency) Color.Green else MaterialTheme.colorScheme.onTertiaryContainer
+                                            tint = if (data == currentDynamicColor) Color.Green else MaterialTheme.colorScheme.onTertiaryContainer
                                         )
                                     }
                                 }

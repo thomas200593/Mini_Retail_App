@@ -1,7 +1,6 @@
-package com.thomas200593.mini_retail_app.features.app_config.ui.components.general_config.language
+package com.thomas200593.mini_retail_app.features.app_config.ui.general_config.currency
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -41,25 +40,23 @@ import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.app.ui.AppState
 import com.thomas200593.mini_retail_app.app.ui.LocalAppState
 import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
-import com.thomas200593.mini_retail_app.core.ui.common.Icons.Language.language
+import com.thomas200593.mini_retail_app.core.ui.common.Icons.Currency.currency
 import com.thomas200593.mini_retail_app.core.ui.component.AppBar
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.LoadingScreen
 import com.thomas200593.mini_retail_app.features.app_config.entity.ConfigCurrent
-import com.thomas200593.mini_retail_app.features.app_config.entity.Language
-import kotlinx.coroutines.Job
+import com.thomas200593.mini_retail_app.features.app_config.entity.Currency
 import timber.log.Timber
-import kotlin.reflect.KFunction1
 
-private const val TAG = "AppConfigGeneralLanguageScreen"
+private const val TAG = "AppConfigGeneralCurrencyScreen"
 
 @Composable
-fun AppConfigGeneralLanguageScreen(
-    viewModel: AppConfigGeneralLanguageViewModel = hiltViewModel(),
+fun AppConfigGeneralCurrencyScreen(
+    viewModel: AppConfigGeneralCurrencyViewModel = hiltViewModel(),
     appState: AppState = LocalAppState.current
 ) {
     Timber.d("Called : fun $TAG()")
     val configCurrent by viewModel.configCurrentUiState.collectAsStateWithLifecycle()
-    val languagePreferences by viewModel.languagePreferences
+    val currencyPreferences by viewModel.currencyPreferences
 
     LaunchedEffect(Unit) {
         viewModel.onOpen()
@@ -69,9 +66,9 @@ fun AppConfigGeneralLanguageScreen(
         onNavigateBack = appState::onNavigateUp
     )
     ScreenContent(
-        languagePreferences = languagePreferences,
+        currencyPreferences = currencyPreferences,
         configCurrent = configCurrent,
-        onSaveSelectedLanguage = viewModel::saveSelectedLanguage
+        onSaveSelectedCurrency = viewModel::saveSelectedCurrency
     )
 }
 
@@ -100,11 +97,11 @@ private fun TopAppBar(
             Icon(
                 modifier = Modifier
                     .sizeIn(maxHeight = ButtonDefaults.IconSize),
-                imageVector = ImageVector.vectorResource(id = language),
+                imageVector = ImageVector.vectorResource(id = currency),
                 contentDescription = null
             )
             Text(
-                text = stringResource(id = R.string.str_lang),
+                text = stringResource(id = R.string.str_currency),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
@@ -128,9 +125,9 @@ private fun TopAppBar(
 
 @Composable
 private fun ScreenContent(
-    languagePreferences: RequestState<Set<Language>>,
+    currencyPreferences: RequestState<List<Currency>>,
     configCurrent: RequestState<ConfigCurrent>,
-    onSaveSelectedLanguage: KFunction1<Language, Job>
+    onSaveSelectedCurrency: (Currency) -> Unit
 ) {
     when(configCurrent){
         RequestState.Idle, RequestState.Loading -> {
@@ -152,7 +149,7 @@ private fun ScreenContent(
             }
         }
         is RequestState.Success -> {
-            when(languagePreferences){
+            when(currencyPreferences){
                 RequestState.Idle -> Unit
                 RequestState.Loading -> {
                     LoadingScreen()
@@ -173,8 +170,8 @@ private fun ScreenContent(
                     }
                 }
                 is RequestState.Success -> {
-                    val currentLanguage = configCurrent.data?.currentLanguage?:ConfigCurrent().currentLanguage
-                    val appLanguagePreferences = languagePreferences.data ?: emptySet()
+                    val currentCurrency = configCurrent.data?.currentCurrency ?: ConfigCurrent().currentCurrency
+                    val appCurrencyPreferences = currencyPreferences.data ?: emptyList()
 
                     LazyColumn(
                         modifier = Modifier
@@ -183,14 +180,14 @@ private fun ScreenContent(
                         verticalArrangement = Arrangement.spacedBy(10.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        items(count = appLanguagePreferences.count()){ index ->
-                            val data = appLanguagePreferences.elementAt(index)
+                        items(count = appCurrencyPreferences.count()){ index ->
+                            val data = appCurrencyPreferences[index]
                             Surface(
                                 modifier = Modifier
                                     .fillMaxWidth(1.0f),
                                 shape = MaterialTheme.shapes.medium,
                                 border = BorderStroke(width = 1.dp, color = Color(0xFF747775))
-                            ) {
+                            ){
                                 Row(
                                     modifier = Modifier
                                         .fillMaxWidth(1.0f)
@@ -199,16 +196,31 @@ private fun ScreenContent(
                                     horizontalArrangement = Arrangement.Center,
                                     verticalAlignment = Alignment.CenterVertically
                                 ){
-                                    Surface(modifier = Modifier.weight(0.2f)) {
-                                        Image(
-                                            modifier = Modifier.height(20.dp),
-                                            imageVector = ImageVector.vectorResource(data.iconRes),
-                                            contentDescription = null
+                                    Column(
+                                        modifier = Modifier.weight(0.2f),
+                                        verticalArrangement = Arrangement.Center,
+                                        horizontalAlignment = Alignment.CenterHorizontally
+                                    ) {
+                                        Text(
+                                            text = data.code,
+                                            modifier = Modifier.fillMaxWidth(),
+                                            textAlign = TextAlign.Center,
+                                            fontWeight = FontWeight.Bold,
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis
                                         )
                                     }
                                     Column(modifier = Modifier.weight(0.6f)) {
                                         Text(
-                                            text = stringResource(id = data.title),
+                                            text = data.displayName,
+                                            modifier = Modifier.fillMaxWidth(),
+                                            textAlign = TextAlign.Start,
+                                            fontWeight = FontWeight.Bold,
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis
+                                        )
+                                        Text(
+                                            text = data.symbol,
                                             modifier = Modifier.fillMaxWidth(),
                                             textAlign = TextAlign.Start,
                                             fontWeight = FontWeight.Bold,
@@ -218,12 +230,12 @@ private fun ScreenContent(
                                     }
                                     Surface(
                                         modifier = Modifier.weight(0.2f),
-                                        onClick = { onSaveSelectedLanguage(data) }
+                                        onClick = { onSaveSelectedCurrency(data) }
                                     ) {
                                         Icon(
-                                            imageVector = if (data == currentLanguage) Icons.Default.CheckCircle else Icons.AutoMirrored.Outlined.KeyboardArrowRight,
+                                            imageVector = if (data == currentCurrency) Icons.Default.CheckCircle else Icons.AutoMirrored.Outlined.KeyboardArrowRight,
                                             contentDescription = null,
-                                            tint = if (data == currentLanguage) Color.Green else MaterialTheme.colorScheme.onTertiaryContainer
+                                            tint = if (data == currentCurrency) Color.Green else MaterialTheme.colorScheme.onTertiaryContainer
                                         )
                                     }
                                 }

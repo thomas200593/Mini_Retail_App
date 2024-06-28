@@ -1,4 +1,4 @@
-package com.thomas200593.mini_retail_app.features.app_config.ui.components.general_config.font_size
+package com.thomas200593.mini_retail_app.features.app_config.ui.general_config.currency
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatchers
 import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
-import com.thomas200593.mini_retail_app.features.app_config.entity.FontSize
+import com.thomas200593.mini_retail_app.features.app_config.entity.Currency
 import com.thomas200593.mini_retail_app.features.app_config.repository.AppConfigRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -20,15 +20,15 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
-private val TAG = AppConfigGeneralFontSizeViewModel::class.simpleName
+private val TAG = AppConfigGeneralCurrencyViewModel::class.simpleName
 
 @HiltViewModel
-class AppConfigGeneralFontSizeViewModel @Inject constructor(
+class AppConfigGeneralCurrencyViewModel @Inject constructor(
     private val appConfigRepository: AppConfigRepository,
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ): ViewModel() {
-    private val _fontSizeSizePreferences: MutableState<RequestState<Set<FontSize>>> = mutableStateOf(RequestState.Idle)
-    val fontSizePreferences = _fontSizeSizePreferences
+    private val _currencyPreferences: MutableState<RequestState<List<Currency>>> = mutableStateOf(RequestState.Idle)
+    val currencyPreferences = _currencyPreferences
     val configCurrentUiState = appConfigRepository.configCurrentData.flowOn(ioDispatcher)
         .catch { RequestState.Error(it) }
         .map { RequestState.Success(it) }
@@ -40,22 +40,21 @@ class AppConfigGeneralFontSizeViewModel @Inject constructor(
 
     fun onOpen() = viewModelScope.launch(ioDispatcher) {
         Timber.d("Called : fun $TAG.onOpen()")
-        getFontSizePreferences()
+        getCurrencyPreferences()
     }
 
-
-    private fun getFontSizePreferences() = viewModelScope.launch(ioDispatcher) {
-        Timber.d("Called : fun $TAG.getFontSizePreferences()")
-        _fontSizeSizePreferences.value = RequestState.Loading
-        _fontSizeSizePreferences.value = try {
-            RequestState.Success(appConfigRepository.getFontSizePreferences())
+    private fun getCurrencyPreferences() = viewModelScope.launch(ioDispatcher) {
+        Timber.d("Called : fun $TAG.getCurrencyPreferences()")
+        _currencyPreferences.value = RequestState.Loading
+        _currencyPreferences.value = try{
+            RequestState.Success(appConfigRepository.getCurrencyPreferences())
         }catch (e: Throwable){
             RequestState.Error(e)
         }
     }
 
-    fun saveSelectedFontSize(fontSize: FontSize) = viewModelScope.launch{
-        Timber.d("Called : fun $TAG.saveSelectedFontSize()")
-        appConfigRepository.setFontSizePreferences(fontSize)
+    fun saveSelectedCurrency(currency: Currency) = viewModelScope.launch {
+        Timber.d("Called : fun $TAG.saveSelectedCurrency()")
+        appConfigRepository.setCurrencyPreferences(currency)
     }
 }
