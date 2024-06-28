@@ -1,52 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="str_configuration">Konfigurasi</string>
+<!-- App Config -->
+    <string name="str_configuration">Pengaturan</string>
+    <string name="str_configuration_general">Pengaturan Umum</string>
+    <string name="str_configuration_data">Pengaturan Data</string>
+<!-- Themes -->
     <string name="str_theme">Tema</string>
-    <string name="str_theme_desc">Ubah tema favorit sesuai preferensi-mu</string>
+    <string name="str_theme_desc">Pilih tema favoritmu</string>
     <string name="str_theme_system">Tema Sistem</string>
+    <string name="str_theme_system_desc">Mengikuti tema sistem</string>
     <string name="str_theme_light">Tema Terang</string>
+    <string name="str_theme_light_desc">Tema dengan skema warna cerah</string>
     <string name="str_theme_dark">Tema Gelap</string>
+    <string name="str_theme_dark_desc">Tema dengan skema warna gelap</string>
+<!-- Timezone -->
     <string name="str_timezone">Zona waktu</string>
+<!-- Dynamic Colors -->
     <string name="str_dynamic_color">Warna Dinamis</string>
-    <string name="str_dynamic_color_desc">Ubah tema-mu menggunakan warna dinamis</string>
-    <string name="str_dynamic_color_enabled">Aktif</string>
-    <string name="str_dynamic_color_disabled">Non Aktif</string>
+    <string name="str_dynamic_color_desc">Gunakan warna dinamis untuk tema kamu</string>
+    <string name="str_dynamic_color_enabled">Hidup</string>
+    <string name="str_dynamic_color_disabled">Mati</string>
+<!-- Languages -->
     <string name="str_lang">Bahasa</string>
-    <string name="str_lang_en">Bahasa Inggris</string>
-    <string name="str_lang_in">Bahasa Indonesia</string>
+    <string name="str_lang_desc">Pilih bahasa yang kamu mau</string>
+    <string name="str_lang_en">Inggris</string>
+    <string name="str_lang_in">Indonesia</string>
+<!-- Size -->
     <string name="str_size_font">Ukuran Font</string>
+    <string name="str_size_font_desc">Sesuaikan preferensi ukuran fontmu</string>
     <string name="str_size_small">Kecil</string>
     <string name="str_size_medium">Sedang</string>
     <string name="str_size_large">Besar</string>
     <string name="str_size_extra_large">Ekstra Besar</string>
+<!-- Currency -->
     <string name="str_currency">Mata Uang</string>
-    <string name="str_currency_desc">Ubah preferensi mata uang untuk bertransaksi-mu</string>
+    <string name="str_currency_desc">Sesuaikan preferensi mata uangmu untuk transaksi</string>
+<!-- Network -->
     <string name="str_network">Jaringan</string>
     <string name="str_network_not_connected">Jaringan Tidak Terhubung</string>
-    <string name="str_onboarding">Halaman Onboarding</string>
-    <string name="str_onboarding_show">Tampilkan Halaman Onboarding</string>
-    <string name="str_onboarding_hide">Sembunyikan Halaman Onboarding</string>
+<!-- OnboardingStatus -->
+    <string name="str_onboarding">Onboarding</string>
+    <string name="str_onboarding_show">Tampilkan Onboarding</string>
+    <string name="str_onboarding_hide">Sembunyikan Onboarding</string>
     <string name="str_onboarding_next">Lanjut</string>
     <string name="str_onboarding_get_started">Mulai</string>
-    <string name="str_auth">Otentikasi</string>
+<!-- Auth -->
+    <string name="str_auth">Masuk</string>
+    <string name="str_auth_sign_out">Keluar</string>
+<!-- Dashboard -->
     <string name="str_dashboard">Dashbor</string>
     <string name="str_business">Bisnis</string>
     <string name="str_reporting">Laporan</string>
     <string name="str_user_profile">Profil</string>
-    <string name="str_theme_system_desc">Tema-mu akan mengikuti Sistem saat ini</string>
-    <string name="str_theme_light_desc">Tema dengan skema warna cerah</string>
-    <string name="str_theme_dark_desc">Tema dengan skema warna gelap</string>
-    <string name="str_size_font_desc">Ubah ukuran fontSize sesuai pilihan-mu</string>
-    <string name="str_lang_desc">Ubah Bahasa sesuai pilihan-mu</string>
-    <string name="str_configuration_general">Pengaturan Umum</string>
-    <string name="str_loading">Memuat</string>
-    <string name="str_error">Galat</string>
-    <string name="str_session_expired">Sesi-mu telah berakhir</string>
-    <string name="str_session_error">Telah terjadi error</string>
+    <string name="str_loading">Memuat…</string>
+    <string name="str_error">Oops! Terjadi kesalahan.</string>
+    <string name="str_session_expired">Sesi kamu telah berakhir</string>
+    <string name="str_session_error">Terjadi kesalahan pada sesi</string>
+<!-- Country -->
     <string name="str_country">Negara</string>
-    <string name="str_country_desc">Ubah preferensi negara-mu</string>
-    <string name="str_configuration_data">Pengaturan Data</string>
+    <string name="str_country_desc">Sesuaikan preferensi negaramu</string>
+
     <string name="str_backup">Pencadangan</string>
     <string name="str_backup_desc">Konfigurasi Pencadangan</string>
-    <string name="str_auth_sign_out">Keluar</string>
+
+    <string name="str_biz_profile_not_set">Kamu belum mengatur profil bisnismu</string>
+    <string name="str_detail">Detil</string>
 </resources>

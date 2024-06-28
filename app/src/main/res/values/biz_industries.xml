@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="biz_industry_keys">
+        <item>biz_industry_00001</item>
+        <item>biz_industry_00002</item>
+        <item>biz_industry_00003</item>
+    </string-array>
+    <string-array name="biz_industry_values">
+        <item>Others</item>
+        <item>Agriculture; plantations; other rural sectors</item>
+        <item>Basic metal production</item>
+    </string-array>
+</resources>

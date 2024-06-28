@@ -14,12 +14,15 @@ import com.thomas200593.mini_retail_app.R.drawable.app_icon_dynamic_color_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_dynamic_color_disabled_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_dynamic_color_enabled_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_export_48px
+import com.thomas200593.mini_retail_app.R.drawable.app_icon_happy_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_import_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_language_48px
+import com.thomas200593.mini_retail_app.R.drawable.app_icon_neutral_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_onboarding_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_onboarding_hide_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_onboarding_show_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_reporting_48px
+import com.thomas200593.mini_retail_app.R.drawable.app_icon_sad_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_session_expired_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_settings_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_settings_general_48px
@@ -56,6 +59,11 @@ object Icons {
         @DrawableRes val dynamic_color = +app_icon_dynamic_color_48px
         @DrawableRes val disabled = +app_icon_dynamic_color_disabled_48px
         @DrawableRes val enabled = +app_icon_dynamic_color_enabled_48px
+    }
+    object Emotion {
+        @DrawableRes val happy = +app_icon_happy_48px
+        @DrawableRes val sad = +app_icon_sad_48px
+        @DrawableRes val neutral = +app_icon_neutral_48px
     }
     object Font {
         @DrawableRes val font = +app_icon_text_size_48px

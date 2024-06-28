@@ -13,12 +13,11 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
+import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -42,6 +41,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -54,7 +54,10 @@ import com.thomas200593.mini_retail_app.app.ui.LocalAppState
 import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
 import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
 import com.thomas200593.mini_retail_app.core.ui.common.Icons.Auth.session_expire
+import com.thomas200593.mini_retail_app.core.ui.common.Icons.Emotion.sad
 import com.thomas200593.mini_retail_app.core.ui.common.Icons.Setting.settings
+import com.thomas200593.mini_retail_app.core.ui.common.Themes
+import com.thomas200593.mini_retail_app.core.ui.component.Button.Common.AppIconButton
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.ErrorPanel
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.LoadingPanelCircularIndicator
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.LoadingScreen
@@ -62,6 +65,7 @@ import com.thomas200593.mini_retail_app.features.app_config.navigation.navigateT
 import com.thomas200593.mini_retail_app.features.auth.entity.OAuth2UserMetadata
 import com.thomas200593.mini_retail_app.features.auth.entity.OAuthProvider
 import com.thomas200593.mini_retail_app.features.auth.entity.UserData
+import com.thomas200593.mini_retail_app.features.business.entity.BusinessProfile
 import com.thomas200593.mini_retail_app.features.initial.navigation.navigateToInitial
 import com.thomas200593.mini_retail_app.work.workers.session_monitor.manager.SessionMonitorWorkManager
 import timber.log.Timber
@@ -79,6 +83,7 @@ fun UserProfileScreen(
     val applicationContext = LocalContext.current.applicationContext
     val sessionState by appState.isSessionValid.collectAsStateWithLifecycle()
     val userData by viewModel.currentSessionUserData
+    val businessProfileData by viewModel.businessProfile
 
     when(sessionState){
         SessionState.Loading -> {
@@ -98,12 +103,16 @@ fun UserProfileScreen(
 
     ScreenContent(
         userData = userData,
+        businessProfileData = businessProfileData,
         onNavigateToConfig = {
             appState.navController.navigateToAppConfig(null)
         },
         onSignedOut = {
             viewModel.handleSignOut()
             SessionMonitorWorkManager.terminate(applicationContext)
+        },
+        testGenerate = {
+            viewModel.testGenerate()
         }
     )
 }
@@ -113,7 +122,9 @@ private fun ScreenContent(
     modifier: Modifier = Modifier,
     userData: RequestState<UserData>,
     onNavigateToConfig: () -> Unit,
-    onSignedOut: () -> Unit
+    onSignedOut: () -> Unit,
+    businessProfileData: RequestState<BusinessProfile?>,
+    testGenerate: () -> Unit
 ) {
     Column(
         modifier = modifier
@@ -128,7 +139,10 @@ private fun ScreenContent(
             onNavigateToConfig = onNavigateToConfig,
             onSignedOut = onSignedOut
         )
-        MenuSection()
+        MenuSection(
+            businessProfileData = businessProfileData,
+            testGenerate = testGenerate
+        )
         SignOutSection(
             onSignedOut = onSignedOut
         )
@@ -326,45 +340,94 @@ private fun ProfileSection(
 }
 
 @Composable
-private fun MenuSection() {
-
+private fun MenuSection(
+    businessProfileData: RequestState<BusinessProfile?>,
+    testGenerate: () -> Unit
+) {
+    when(businessProfileData){
+        RequestState.Idle, RequestState.Loading -> {
+            LoadingPanelCircularIndicator()
+        }
+        is RequestState.Error -> {
+            ErrorPanel(
+                showIcon = true,
+                title = businessProfileData.t.message,
+                errorMessage = businessProfileData.t.cause.toString()
+            )
+        }
+        is RequestState.Success -> {
+            if(businessProfileData.data == null){
+                Surface(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp),
+                    shape = MaterialTheme.shapes.medium,
+                    color = MaterialTheme.colorScheme.surfaceVariant,
+                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Top),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Icon(
+                            imageVector = ImageVector.vectorResource(id = sad),
+                            contentDescription = null
+                        )
+                        Text(
+                            text = stringResource(R.string.str_biz_profile_not_set),
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            textAlign = TextAlign.Start
+                        )
+                        HorizontalDivider()
+                        AppIconButton(
+                            onClick = { testGenerate() },
+                            icon = Icons.Default.Build,
+                            text = stringResource(id = R.string.str_detail)
+                        )
+                    }
+                }
+            }else{
+                Text(text = businessProfileData.data.toString())
+            }
+        }
+    }
 }
 
 @Composable
 private fun SignOutSection(
     onSignedOut: () -> Unit
 ) {
-    Button(
+    AppIconButton(
         onClick = onSignedOut,
-        shape = MaterialTheme.shapes.medium,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp),
-        colors = ButtonColors(
-            containerColor = MaterialTheme.colorScheme.errorContainer,
-            contentColor = MaterialTheme.colorScheme.onErrorContainer,
-            disabledContainerColor = ButtonDefaults.buttonColors().disabledContainerColor,
-            disabledContentColor = ButtonDefaults.buttonColors().disabledContentColor
-        )
-    ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(1.0f),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
+        icon = Icons.AutoMirrored.Filled.ExitToApp,
+        text = stringResource(id = R.string.str_auth_sign_out),
+        containerColor = MaterialTheme.colorScheme.errorContainer,
+        contentColor = MaterialTheme.colorScheme.onErrorContainer,
+        shape = MaterialTheme.shapes.medium
+    )
+}
+
+@Preview(
+    showBackground = true,
+    showSystemUi = true,
+)
+@Composable
+fun PreviewMenuSection(){
+    Themes.ApplicationTheme {
+        ScreenContent(
+            userData = RequestState.Success(
+                data = null
+            ),
+            onNavigateToConfig = {},
+            onSignedOut = {},
+            businessProfileData = RequestState.Success(
+                data = null
+            )
         ) {
-            Icon(
-                modifier = Modifier.weight(0.1f),
-                imageVector = Icons.AutoMirrored.Filled.ExitToApp,
-                contentDescription = null
-            )
-            Text(
-                modifier = Modifier.weight(0.9f),
-                text = stringResource(id = R.string.str_auth_sign_out),
-                textAlign = TextAlign.Center,
-                fontWeight = FontWeight.Bold,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
+
         }
     }
 }

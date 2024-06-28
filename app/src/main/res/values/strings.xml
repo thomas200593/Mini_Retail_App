@@ -2,14 +2,14 @@
 <!-- App Identifier -->
     <string name="app_name" translatable="false">Mini Retail App</string>
 <!-- App Config -->
-    <string name="str_configuration">Configuration</string>
-    <string name="str_configuration_general">General Config</string>
-    <string name="str_configuration_data">Data Config</string>
+    <string name="str_configuration">Settings</string>
+    <string name="str_configuration_general">General Settings</string>
+    <string name="str_configuration_data">Data Settings</string>
 <!-- Themes -->
-    <string name="str_theme">Theme</string>
-    <string name="str_theme_desc">Change Your favorite theme preferences</string>
+    <string name="str_theme">Themes</string>
+    <string name="str_theme_desc">Pick your favorite theme</string>
     <string name="str_theme_system">System Theme</string>
-    <string name="str_theme_system_desc">Your theme will following the System Configuration</string>
+    <string name="str_theme_system_desc">Follow the system theme</string>
     <string name="str_theme_light">Light Theme</string>
     <string name="str_theme_light_desc">Theme with light color scheme</string>
     <string name="str_theme_dark">Dark Theme</string>
@@ -17,50 +17,53 @@
 <!-- Timezone -->
     <string name="str_timezone">Timezone</string>
 <!-- Dynamic Colors -->
-    <string name="str_dynamic_color">Dynamic Color</string>
-    <string name="str_dynamic_color_desc">Change your theme to use dynamic color</string>
-    <string name="str_dynamic_color_enabled">Active</string>
-    <string name="str_dynamic_color_disabled">Inactive</string>
+    <string name="str_dynamic_color">Dynamic Colors</string>
+    <string name="str_dynamic_color_desc">Use dynamic colors for your theme</string>
+    <string name="str_dynamic_color_enabled">On</string>
+    <string name="str_dynamic_color_disabled">Off</string>
 <!-- Languages -->
     <string name="str_lang">Language</string>
-    <string name="str_lang_desc">Change Your preferred language</string>
-    <string name="str_lang_en">English Language</string>
-    <string name="str_lang_in">Indonesian Language</string>
+    <string name="str_lang_desc">Select your preferred language</string>
+    <string name="str_lang_en">English</string>
+    <string name="str_lang_in">Indonesian</string>
 <!-- Size -->
     <string name="str_size_font">Font Size</string>
-    <string name="str_size_font_desc">Change Your preferred fontSize size</string>
+    <string name="str_size_font_desc">Select your preferred font size</string>
     <string name="str_size_small">Small</string>
     <string name="str_size_medium">Medium</string>
     <string name="str_size_large">Large</string>
     <string name="str_size_extra_large">Extra Large</string>
 <!-- Currency -->
     <string name="str_currency">Currency</string>
-    <string name="str_currency_desc">Change Your preferred currency for Your transaction</string>
+    <string name="str_currency_desc">Choose your preferred currency for transactions</string>
 <!-- Network -->
     <string name="str_network">Network</string>
-    <string name="str_network_not_connected">Network Not Connected</string>
+    <string name="str_network_not_connected">No Network Connection</string>
 <!-- OnboardingStatus -->
-    <string name="str_onboarding">Onboarding Pages</string>
-    <string name="str_onboarding_show">Show Onboarding Pages</string>
-    <string name="str_onboarding_hide">Hide Onboarding Pages</string>
+    <string name="str_onboarding">Onboarding</string>
+    <string name="str_onboarding_show">Show Onboarding</string>
+    <string name="str_onboarding_hide">Hide Onboarding</string>
     <string name="str_onboarding_next">Next</string>
     <string name="str_onboarding_get_started">Get Started</string>
 <!-- Auth -->
-    <string name="str_auth">Authentication</string>
-    <string name="str_auth_sign_out">Sign out</string>
+    <string name="str_auth">Sign In</string>
+    <string name="str_auth_sign_out">Sign Out</string>
 <!-- Dashboard -->
     <string name="str_dashboard">Dashboard</string>
     <string name="str_business">Business</string>
     <string name="str_reporting">Reports</string>
     <string name="str_user_profile">Profile</string>
-    <string name="str_loading">Loading</string>
-    <string name="str_error">Error</string>
-    <string name="str_session_expired">Your session is expired</string>
-    <string name="str_session_error">Something was wrong</string>
+    <string name="str_loading">Loading…</string>
+    <string name="str_error">Oops! Something went wrong.</string>
+    <string name="str_session_expired">Session expired</string>
+    <string name="str_session_error">An error occurred in session</string>
 <!-- Country -->
     <string name="str_country">Country</string>
-    <string name="str_country_desc">Change Your preferred country</string>
-    <string name="str_backup">Backup</string>
-    <string name="str_backup_desc">Backup Configuration</string>
+    <string name="str_country_desc">Choose your preferred country</string>
 
+    <string name="str_backup">Backup</string>
+    <string name="str_backup_desc">Backup Settings</string>
+
+    <string name="str_biz_profile_not_set">You haven\'t set up your business profile</string>
+    <string name="str_detail">Detail</string>
 </resources>

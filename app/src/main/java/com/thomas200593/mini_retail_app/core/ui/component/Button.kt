@@ -9,9 +9,13 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -29,6 +33,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.credentials.ClearCredentialStateRequest
@@ -54,6 +61,71 @@ import timber.log.Timber
 private val TAG = Button::class.simpleName
 
 object Button {
+    private val TAG_COMMON = Common::class.simpleName
+    object Common{
+        @Composable
+        fun AppButton(){}
+
+        @Composable
+        fun AppIconButton(
+            onClick: () -> Unit,
+            icon: ImageVector,
+            text: String = String(),
+            shape: Shape = MaterialTheme.shapes.medium,
+            padding: Dp = 8.dp,
+            containerColor: Color = ButtonDefaults.buttonColors().containerColor,
+            contentColor: Color = ButtonDefaults.buttonColors().contentColor,
+            disabledContainerColor: Color = ButtonDefaults.buttonColors().disabledContainerColor,
+            disabledContentColor: Color = ButtonDefaults.buttonColors().disabledContentColor
+        ){
+            Button(
+                onClick = onClick,
+                shape = shape,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(padding),
+                colors = ButtonColors(
+                    containerColor = containerColor,
+                    contentColor = contentColor,
+                    disabledContainerColor = disabledContainerColor,
+                    disabledContentColor = disabledContentColor
+                )
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(1.0f),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Icon(
+                        modifier = Modifier.weight(0.1f),
+                        imageVector = icon,
+                        contentDescription = null
+                    )
+                    Text(
+                        modifier = Modifier.weight(0.9f),
+                        text = text,
+                        textAlign = TextAlign.Center,
+                        fontWeight = FontWeight.Bold,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+            }
+        }
+
+        @Composable
+        fun AppOutlinedButton(){}
+
+        @Composable
+        fun AppOutlinedIconButton(){}
+
+        @Composable
+        fun AppTextButton(){}
+
+        @Composable
+        fun AppTextIconButton(){}
+    }
+
     private val TAG_GOOGLE = Google::class.simpleName
     object Google{
         @Composable

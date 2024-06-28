@@ -177,6 +177,7 @@ dependencies {
     implementation(libs.play.services.oss.licenses)
     implementation(libs.timber)
     implementation(libs.tracing.trace)
+    implementation(libs.ulid.kotlin)
 
     testImplementation(libs.androidx.room.testing)
     testImplementation(libs.junit)
