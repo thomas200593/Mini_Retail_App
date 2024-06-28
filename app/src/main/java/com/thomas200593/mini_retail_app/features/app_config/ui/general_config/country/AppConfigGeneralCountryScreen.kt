@@ -196,7 +196,8 @@ private fun ScreenContent(
                                 },
                                 thirdRowContent = {
                                     Surface(
-                                        modifier = Modifier.weight(0.2f),
+                                        modifier = Modifier
+                                            .fillMaxWidth(),
                                         onClick = { onSaveSelectedCountry(data) }
                                     ) {
                                         Icon(
