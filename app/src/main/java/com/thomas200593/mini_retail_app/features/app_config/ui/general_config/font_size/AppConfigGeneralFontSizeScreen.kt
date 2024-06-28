@@ -1,13 +1,10 @@
 package com.thomas200593.mini_retail_app.features.app_config.ui.general_config.font_size
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.lazy.LazyColumn
@@ -44,6 +41,7 @@ import com.thomas200593.mini_retail_app.core.ui.common.Icons.Font.font
 import com.thomas200593.mini_retail_app.core.ui.component.AppBar
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.ErrorScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.LoadingScreen
+import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.ThreeRowCardItem
 import com.thomas200593.mini_retail_app.features.app_config.entity.ConfigCurrent
 import com.thomas200593.mini_retail_app.features.app_config.entity.FontSize
 import timber.log.Timber
@@ -184,41 +182,28 @@ private fun ScreenContent(
                         ) {
                             items(count = appFontSizePreferences.count()){ index ->
                                 val data = appFontSizePreferences.elementAt(index)
-                                Surface(
-                                    modifier = Modifier
-                                        .fillMaxWidth(1.0f),
-                                    shape = MaterialTheme.shapes.medium,
-                                    border = BorderStroke(width = 1.dp, color = Color(0xFF747775))
-                                ) {
-                                    Row(
-                                        modifier = Modifier
-                                            .fillMaxWidth(1.0f)
-                                            .padding(8.dp)
-                                            .height(intrinsicSize = IntrinsicSize.Max),
-                                        horizontalArrangement = Arrangement.Center,
-                                        verticalAlignment = Alignment.CenterVertically
-                                    ){
-                                        Surface(modifier = Modifier.weight(0.2f)) {
+                                ThreeRowCardItem(
+                                    firstRowContent = {
+                                        Surface(modifier = Modifier.fillMaxWidth()) {
                                             Icon(
                                                 imageVector = ImageVector.vectorResource(data.iconRes),
                                                 contentDescription = null
                                             )
                                         }
-                                        Column(
-                                            modifier = Modifier.weight(0.6f),
-                                            verticalArrangement = Arrangement.spacedBy(8.dp)
-                                        ){
-                                            Text(
-                                                text = stringResource(id = data.title),
-                                                modifier = Modifier.fillMaxWidth(),
-                                                textAlign = TextAlign.Start,
-                                                fontWeight = FontWeight.Bold,
-                                                maxLines = 1,
-                                                overflow = TextOverflow.Ellipsis
-                                            )
-                                        }
+                                    },
+                                    secondRowContent = {
+                                        Text(
+                                            text = stringResource(id = data.title),
+                                            modifier = Modifier.fillMaxWidth(),
+                                            textAlign = TextAlign.Start,
+                                            fontWeight = FontWeight.Bold,
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis
+                                        )
+                                    },
+                                    thirdRowContent = {
                                         Surface(
-                                            modifier = Modifier.weight(0.2f),
+                                            modifier = Modifier.fillMaxWidth(),
                                             onClick = { onSaveSelectedFontSize(data) }
                                         ) {
                                             Icon(
@@ -228,7 +213,7 @@ private fun ScreenContent(
                                             )
                                         }
                                     }
-                                }
+                                )
                             }
                         }
                     }

@@ -1,6 +1,7 @@
 package com.thomas200593.mini_retail_app.features.app_config.ui.general_config.currency
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -154,57 +155,76 @@ private fun ScreenContent(
                 is RequestState.Success -> {
                     val currentCurrency = configCurrent.data?.currentCurrency ?: ConfigCurrent().currentCurrency
                     val appCurrencyPreferences = currencyPreferences.data ?: emptyList()
-                    LazyColumn(
+
+                    Column(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(8.dp),
+                            .padding(4.dp),
                         verticalArrangement = Arrangement.spacedBy(10.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        items(count = appCurrencyPreferences.count()){ index ->
-                            val data = appCurrencyPreferences[index]
-                            ThreeRowCardItem(
-                                firstRowContent = {
-                                    Text(
-                                        text = data.code,
-                                        modifier = Modifier.fillMaxWidth(),
-                                        textAlign = TextAlign.Center,
-                                        fontWeight = FontWeight.Bold,
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis
-                                    )
-                                },
-                                secondRowContent = {
-                                    Text(
-                                        text = data.displayName,
-                                        modifier = Modifier.fillMaxWidth(),
-                                        textAlign = TextAlign.Start,
-                                        fontWeight = FontWeight.Bold,
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis
-                                    )
-                                    Text(
-                                        text = data.symbol,
-                                        modifier = Modifier.fillMaxWidth(),
-                                        textAlign = TextAlign.Start,
-                                        fontWeight = FontWeight.Bold,
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis
-                                    )
-                                },
-                                thirdRowContent = {
-                                    Surface(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        onClick = { onSaveSelectedCurrency(data) }
-                                    ) {
-                                        Icon(
-                                            imageVector = if (data == currentCurrency) Icons.Default.CheckCircle else Icons.AutoMirrored.Outlined.KeyboardArrowRight,
-                                            contentDescription = null,
-                                            tint = if (data == currentCurrency) Color.Green else MaterialTheme.colorScheme.onTertiaryContainer
+                        Text(
+                            text = "${stringResource(id = R.string.str_currency)} : ${currentCurrency.displayName}",
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(4.dp),
+                            fontWeight = FontWeight.Bold,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            textAlign = TextAlign.Center,
+                        )
+                        LazyColumn(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(4.dp),
+                            verticalArrangement = Arrangement.spacedBy(10.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            items(count = appCurrencyPreferences.count()){ index ->
+                                val data = appCurrencyPreferences[index]
+                                ThreeRowCardItem(
+                                    firstRowContent = {
+                                        Text(
+                                            text = data.code,
+                                            modifier = Modifier.fillMaxWidth(),
+                                            textAlign = TextAlign.Center,
+                                            fontWeight = FontWeight.Bold,
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis
                                         )
+                                    },
+                                    secondRowContent = {
+                                        Text(
+                                            text = data.displayName,
+                                            modifier = Modifier.fillMaxWidth(),
+                                            textAlign = TextAlign.Start,
+                                            fontWeight = FontWeight.Bold,
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis
+                                        )
+                                        Text(
+                                            text = data.symbol,
+                                            modifier = Modifier.fillMaxWidth(),
+                                            textAlign = TextAlign.Start,
+                                            fontWeight = FontWeight.Bold,
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis
+                                        )
+                                    },
+                                    thirdRowContent = {
+                                        Surface(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            onClick = { onSaveSelectedCurrency(data) }
+                                        ) {
+                                            Icon(
+                                                imageVector = if (data == currentCurrency) Icons.Default.CheckCircle else Icons.AutoMirrored.Outlined.KeyboardArrowRight,
+                                                contentDescription = null,
+                                                tint = if (data == currentCurrency) Color.Green else MaterialTheme.colorScheme.onTertiaryContainer
+                                            )
+                                        }
                                     }
-                                }
-                            )
+                                )
+                            }
                         }
                     }
                 }

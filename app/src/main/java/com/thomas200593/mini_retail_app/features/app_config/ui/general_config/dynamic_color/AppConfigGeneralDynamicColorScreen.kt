@@ -1,6 +1,7 @@
 package com.thomas200593.mini_retail_app.features.app_config.ui.general_config.dynamic_color
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -155,47 +156,65 @@ private fun ScreenContent(
                     val currentDynamicColor = configCurrent.data?.currentDynamicColor?:ConfigCurrent().currentDynamicColor
                     val appDynamicColorPreferences = dynamicColorPreferences.data ?: emptySet()
 
-                    LazyColumn(
+                    Column(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(8.dp),
+                            .padding(4.dp),
                         verticalArrangement = Arrangement.spacedBy(10.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        items(count = appDynamicColorPreferences.count()){ index ->
-                            val data = appDynamicColorPreferences.elementAt(index)
-                            ThreeRowCardItem(
-                                firstRowContent = {
-                                    Surface(modifier = Modifier.fillMaxWidth()) {
-                                        Icon(
-                                            imageVector = ImageVector.vectorResource(data.iconRes),
-                                            contentDescription = null
+                        Text(
+                            text = "${stringResource(id = R.string.str_dynamic_color)} : ${stringResource(id = currentDynamicColor.title)}",
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(4.dp),
+                            fontWeight = FontWeight.Bold,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            textAlign = TextAlign.Center,
+                        )
+                        LazyColumn(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(4.dp),
+                            verticalArrangement = Arrangement.spacedBy(10.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            items(count = appDynamicColorPreferences.count()){ index ->
+                                val data = appDynamicColorPreferences.elementAt(index)
+                                ThreeRowCardItem(
+                                    firstRowContent = {
+                                        Surface(modifier = Modifier.fillMaxWidth()) {
+                                            Icon(
+                                                imageVector = ImageVector.vectorResource(data.iconRes),
+                                                contentDescription = null
+                                            )
+                                        }
+                                    },
+                                    secondRowContent = {
+                                        Text(
+                                            text = stringResource(id = data.title),
+                                            modifier = Modifier.fillMaxWidth(),
+                                            textAlign = TextAlign.Start,
+                                            fontWeight = FontWeight.Bold,
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis
                                         )
+                                    },
+                                    thirdRowContent = {
+                                        Surface(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            onClick = { onSaveSelectedDynamicColor(data) }
+                                        ) {
+                                            Icon(
+                                                imageVector = if (data == currentDynamicColor) Icons.Default.CheckCircle else Icons.AutoMirrored.Outlined.KeyboardArrowRight,
+                                                contentDescription = null,
+                                                tint = if (data == currentDynamicColor) Color.Green else MaterialTheme.colorScheme.onTertiaryContainer
+                                            )
+                                        }
                                     }
-                                },
-                                secondRowContent = {
-                                    Text(
-                                        text = stringResource(id = data.title),
-                                        modifier = Modifier.fillMaxWidth(),
-                                        textAlign = TextAlign.Start,
-                                        fontWeight = FontWeight.Bold,
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis
-                                    )
-                                },
-                                thirdRowContent = {
-                                    Surface(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        onClick = { onSaveSelectedDynamicColor(data) }
-                                    ) {
-                                        Icon(
-                                            imageVector = if (data == currentDynamicColor) Icons.Default.CheckCircle else Icons.AutoMirrored.Outlined.KeyboardArrowRight,
-                                            contentDescription = null,
-                                            tint = if (data == currentDynamicColor) Color.Green else MaterialTheme.colorScheme.onTertiaryContainer
-                                        )
-                                    }
-                                }
-                            )
+                                )
+                            }
                         }
                     }
                 }

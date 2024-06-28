@@ -1,13 +1,10 @@
 package com.thomas200593.mini_retail_app.features.app_config.ui.general_config.timezone
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.lazy.LazyColumn
@@ -32,6 +29,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -43,6 +41,7 @@ import com.thomas200593.mini_retail_app.core.ui.common.Icons.Timezone.timezone
 import com.thomas200593.mini_retail_app.core.ui.component.AppBar
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.ErrorScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.LoadingScreen
+import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.ThreeRowCardItem
 import com.thomas200593.mini_retail_app.features.app_config.entity.ConfigCurrent
 import com.thomas200593.mini_retail_app.features.app_config.entity.Timezone
 import timber.log.Timber
@@ -153,48 +152,62 @@ private fun ScreenContent(
                     val currentTimezone = configCurrent.data?.currentTimezone?: ConfigCurrent().currentTimezone
                     val appTimezonePreferences = timezonePreferences.data ?: emptyList()
 
-                    LazyColumn(
+                    Column(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(8.dp),
+                            .padding(4.dp),
                         verticalArrangement = Arrangement.spacedBy(10.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        items(count = appTimezonePreferences.count()){ index ->
-                            val data = appTimezonePreferences[index]
-                            Surface(
-                                modifier = Modifier
-                                    .fillMaxWidth(1.0f),
-                                shape = MaterialTheme.shapes.medium,
-                                border = BorderStroke(width = 1.dp, color = Color(0xFF747775))
-                            ) {
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth(1.0f)
-                                        .padding(8.dp)
-                                        .height(intrinsicSize = IntrinsicSize.Max),
-                                    horizontalArrangement = Arrangement.Center,
-                                    verticalAlignment = Alignment.CenterVertically
-                                ){
-                                    Column(modifier = Modifier.weight(0.8f)) {
+                        Text(
+                            text = "${stringResource(id = R.string.str_timezone)} : ${currentTimezone.timezoneOffset}",
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(4.dp),
+                            fontWeight = FontWeight.Bold,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            textAlign = TextAlign.Center,
+                        )
+                        LazyColumn(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(4.dp),
+                            verticalArrangement = Arrangement.spacedBy(10.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            items(count = appTimezonePreferences.count()){ index ->
+                                val data = appTimezonePreferences[index]
+                                ThreeRowCardItem(
+                                    firstRowContent = {
+                                        Surface(modifier = Modifier.fillMaxWidth()) {
+                                            Icon(
+                                                imageVector = ImageVector.vectorResource(id = timezone),
+                                                contentDescription = null
+                                            )
+                                        }
+                                    },
+                                    secondRowContent = {
                                         Text(
                                             text = data.timezoneOffset,
                                             modifier = Modifier.fillMaxWidth(),
                                             textAlign = TextAlign.Start,
                                             fontWeight = FontWeight.Bold
                                         )
+                                    },
+                                    thirdRowContent = {
+                                        Surface(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            onClick = { onSaveSelectedTimezone(data) }
+                                        ) {
+                                            Icon(
+                                                imageVector = if (data == currentTimezone) Icons.Default.CheckCircle else Icons.AutoMirrored.Outlined.KeyboardArrowRight,
+                                                contentDescription = null,
+                                                tint = if (data == currentTimezone) Color.Green else MaterialTheme.colorScheme.onTertiaryContainer
+                                            )
+                                        }
                                     }
-                                    Surface(
-                                        modifier = Modifier.weight(0.2f),
-                                        onClick = { onSaveSelectedTimezone(data) }
-                                    ) {
-                                        Icon(
-                                            imageVector = if (data == currentTimezone) Icons.Default.CheckCircle else Icons.AutoMirrored.Outlined.KeyboardArrowRight,
-                                            contentDescription = null,
-                                            tint = if (data == currentTimezone) Color.Green else MaterialTheme.colorScheme.onTertiaryContainer
-                                        )
-                                    }
-                                }
+                                )
                             }
                         }
                     }
