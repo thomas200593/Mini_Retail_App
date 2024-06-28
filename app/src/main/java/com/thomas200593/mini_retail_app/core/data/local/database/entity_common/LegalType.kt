@@ -1,4 +1,4 @@
-package com.thomas200593.mini_retail_app.core.data.local.database.entity
+package com.thomas200593.mini_retail_app.core.data.local.database.entity_common
 
 import kotlinx.serialization.Serializable
 

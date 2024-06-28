@@ -1,10 +1,10 @@
 package com.thomas200593.mini_retail_app.features.business.entity.dto
 
 import androidx.room.TypeConverter
-import com.thomas200593.mini_retail_app.core.data.local.database.entity.AuditTrail
-import com.thomas200593.mini_retail_app.core.data.local.database.entity.Industries
-import com.thomas200593.mini_retail_app.core.data.local.database.entity.LegalType
-import com.thomas200593.mini_retail_app.core.data.local.database.entity.Taxation
+import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.AuditTrail
+import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.Industries
+import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.LegalType
+import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.Taxation
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
