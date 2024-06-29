@@ -19,7 +19,7 @@ plugins {
 
 android {
     namespace = "com.thomas200593.mini_retail_app"
-    compileSdk = 35
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.thomas200593.mini_retail_app"
@@ -121,6 +121,7 @@ android {
 
 dependencies {
     implementation(kotlin("reflect"))
+    implementation(libs.accompanist.permissions)
     implementation(libs.accompanist.systemuicontroller)
     implementation(libs.android.material)
     implementation(libs.androidx.activity.ktx)
