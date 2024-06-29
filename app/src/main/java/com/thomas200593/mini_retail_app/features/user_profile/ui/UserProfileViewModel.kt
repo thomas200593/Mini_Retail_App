@@ -16,6 +16,7 @@ import com.thomas200593.mini_retail_app.features.business.repository.BusinessPro
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -74,8 +75,13 @@ class UserProfileViewModel @Inject constructor(
             .catch {
                 RequestState.Error(it)
             }
-            .collect{ bps ->
-                _businessProfileSummary.value = RequestState.Success(bps)
+            .map {
+                it.takeIf { it != null }?.let { businessSummary ->
+                    RequestState.Success(businessSummary)
+                }?: RequestState.Empty
+            }
+            .collect{ data ->
+                _businessProfileSummary.value = data
             }
     }
 
