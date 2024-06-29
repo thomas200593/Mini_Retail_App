@@ -13,6 +13,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -255,6 +256,16 @@ private fun ProfileSection(
                             TextContentWithIcon(
                                 icon = Icons.Default.Email,
                                 text = userDetail.email
+                            )
+                            TextContentWithIcon(
+                                icon = Icons.Default.Check,
+                                text = when(userDetail.emailVerified){
+                                    "true" -> stringResource(id = R.string.str_email_verified)
+                                    "false" -> stringResource(id = R.string.str_email_not_verified)
+                                    else -> {
+                                        stringResource(id = R.string.str_email_not_verified)
+                                    }
+                                }
                             )
                             TextContentWithIcon(
                                 icon = Icons.Default.Lock,

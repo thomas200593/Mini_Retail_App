@@ -72,4 +72,6 @@
     <string name="str_error_fetching_preferences">Failed to read preferences</string>
     <string name="str_biz_master_data">Master Data</string>
     <string name="str_biz_master_data_desc">Configure the Master Data</string>
+    <string name="str_email_verified">Verified</string>
+    <string name="str_email_not_verified">Not Verified</string>
 </resources>
