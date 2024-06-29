@@ -1,4 +1,4 @@
-package com.thomas200593.mini_retail_app.features.app_config.navigation
+package com.thomas200593.mini_retail_app.features.business.navigation
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
@@ -6,18 +6,24 @@ import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs
 import com.thomas200593.mini_retail_app.core.ui.common.Icons
 
-enum class AppConfigDataDestination(
+enum class DestinationBusiness(
     val route: String,
     @DrawableRes val iconRes: Int,
     @StringRes val title: Int,
     @StringRes val description: Int,
     val usesAuth: Boolean
-){
-    BACKUP_DATA(
-        route = ScreenGraphs.AppConfigDataBackup.route,
-        iconRes = Icons.Data.backup,
-        title = R.string.str_backup,
-        description = R.string.str_backup_desc,
+) {
+    BUSINESS_MASTER_DATA(
+        route = ScreenGraphs.BusinessMasterData.route,
+        iconRes = Icons.Data.master_data,
+        title = R.string.str_biz_master_data,
+        description = R.string.str_biz_master_data_desc,
         usesAuth = true
-    )
+    ),
+//    BUSINESS_OPERATIONAL(
+//
+//    ),
+//    BUSINESS_CONFIGURATION(
+//
+//    )
 }

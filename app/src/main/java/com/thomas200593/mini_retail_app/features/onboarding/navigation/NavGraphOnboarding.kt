@@ -10,7 +10,7 @@ import com.thomas200593.mini_retail_app.app.navigation.NavigationGraphs.G_ONBOAR
 import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs
 
 
-fun NavGraphBuilder.onBoardingNavGraph(){
+fun NavGraphBuilder.navGraphOnboarding(){
     navigation(
         route = G_ONBOARDING,
         startDestination = ScreenGraphs.Onboarding.route

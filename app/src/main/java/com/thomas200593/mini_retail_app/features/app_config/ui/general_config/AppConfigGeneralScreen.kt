@@ -37,7 +37,7 @@ import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.Cli
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.EmptyScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.ErrorScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.LoadingScreen
-import com.thomas200593.mini_retail_app.features.app_config.navigation.AppConfigGeneralDestination
+import com.thomas200593.mini_retail_app.features.app_config.navigation.DestinationAppConfigGeneral
 import com.thomas200593.mini_retail_app.features.app_config.navigation.navigateToAppConfigGeneral
 import timber.log.Timber
 
@@ -132,8 +132,8 @@ private fun TopAppBar(
 
 @Composable
 private fun ScreenContent(
-    appConfigGeneralMenuPreferences: RequestState<Set<AppConfigGeneralDestination>>,
-    onNavigateToMenu: (AppConfigGeneralDestination) -> Unit
+    appConfigGeneralMenuPreferences: RequestState<Set<DestinationAppConfigGeneral>>,
+    onNavigateToMenu: (DestinationAppConfigGeneral) -> Unit
 ) {
     when(appConfigGeneralMenuPreferences){
         RequestState.Idle, RequestState.Loading -> {

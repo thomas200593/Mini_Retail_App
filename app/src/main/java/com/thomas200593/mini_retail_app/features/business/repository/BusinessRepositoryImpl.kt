@@ -3,7 +3,7 @@ package com.thomas200593.mini_retail_app.features.business.repository
 import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatchers
-import com.thomas200593.mini_retail_app.features.business.navigation.BusinessDestination
+import com.thomas200593.mini_retail_app.features.business.navigation.DestinationBusiness
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -16,17 +16,17 @@ internal class BusinessRepositoryImpl @Inject constructor(
 ): BusinessRepository {
     override suspend fun getBusinessMenuData(
         sessionState: SessionState
-    ): Set<BusinessDestination> = withContext(ioDispatcher){
+    ): Set<DestinationBusiness> = withContext(ioDispatcher){
         Timber.d("Called : fun $TAG.getBusinessMenuData()")
         when(sessionState){
             SessionState.Loading -> {
                 emptySet()
             }
             is SessionState.Invalid -> {
-                BusinessDestination.entries.filter { !it.usesAuth }.toSet()
+                DestinationBusiness.entries.filter { !it.usesAuth }.toSet()
             }
             is SessionState.Valid -> {
-                BusinessDestination.entries.toSet()
+                DestinationBusiness.entries.toSet()
             }
         }
     }

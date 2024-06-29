@@ -32,7 +32,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.navOptions
 import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.app.ui.AppState
 import com.thomas200593.mini_retail_app.app.ui.LocalAppState
@@ -43,8 +42,7 @@ import com.thomas200593.mini_retail_app.core.ui.component.AppBar
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.EmptyScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.ErrorScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.LoadingScreen
-import com.thomas200593.mini_retail_app.features.business.navigation.BusinessDestination
-import com.thomas200593.mini_retail_app.features.business.navigation.navigateToBusiness
+import com.thomas200593.mini_retail_app.features.business.navigation.DestinationBusiness
 import timber.log.Timber
 
 private const val TAG = "BusinessScreen"
@@ -130,8 +128,8 @@ private fun TopAppBar() {
 
 @Composable
 private fun ScreenContent(
-    businessMenuPreferences: RequestState<Set<BusinessDestination>>,
-    onNavigateToMenu: (BusinessDestination) -> Unit
+    businessMenuPreferences: RequestState<Set<DestinationBusiness>>,
+    onNavigateToMenu: (DestinationBusiness) -> Unit
 ) {
     when(businessMenuPreferences){
         RequestState.Idle, RequestState.Loading -> {

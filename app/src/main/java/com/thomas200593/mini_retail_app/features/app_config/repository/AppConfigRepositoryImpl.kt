@@ -7,7 +7,7 @@ import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatche
 import com.thomas200593.mini_retail_app.core.util.CountryHelper
 import com.thomas200593.mini_retail_app.core.util.CurrencyHelper
 import com.thomas200593.mini_retail_app.core.util.TimezoneHelper
-import com.thomas200593.mini_retail_app.features.app_config.navigation.AppConfigGeneralDestination
+import com.thomas200593.mini_retail_app.features.app_config.navigation.DestinationAppConfigGeneral
 import com.thomas200593.mini_retail_app.features.app_config.entity.ConfigCurrent
 import com.thomas200593.mini_retail_app.features.app_config.entity.Country
 import com.thomas200593.mini_retail_app.features.app_config.entity.Currency
@@ -16,7 +16,7 @@ import com.thomas200593.mini_retail_app.features.app_config.entity.FontSize
 import com.thomas200593.mini_retail_app.features.app_config.entity.Language
 import com.thomas200593.mini_retail_app.features.app_config.entity.Theme
 import com.thomas200593.mini_retail_app.features.app_config.entity.Timezone
-import com.thomas200593.mini_retail_app.features.app_config.navigation.AppConfigDestination
+import com.thomas200593.mini_retail_app.features.app_config.navigation.DestinationAppConfig
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
@@ -34,34 +34,34 @@ internal class AppConfigRepositoryImpl @Inject constructor(
 
     override suspend fun getAppConfigMenuData(
         sessionState: SessionState
-    ): Set<AppConfigDestination> = withContext(ioDispatcher){
+    ): Set<DestinationAppConfig> = withContext(ioDispatcher){
         Timber.d("Called : fun $TAG.getAppConfigMenuData()")
         when(sessionState){
             SessionState.Loading -> {
                 emptySet()
             }
             is SessionState.Invalid -> {
-                AppConfigDestination.entries.filter { !it.usesAuth }.toSet()
+                DestinationAppConfig.entries.filter { !it.usesAuth }.toSet()
             }
             is SessionState.Valid -> {
-                AppConfigDestination.entries.toSet()
+                DestinationAppConfig.entries.toSet()
             }
         }
     }
 
     override suspend fun getAppConfigGeneralMenuData(
         sessionState: SessionState
-    ): Set<AppConfigGeneralDestination> = withContext(ioDispatcher){
+    ): Set<DestinationAppConfigGeneral> = withContext(ioDispatcher){
         Timber.d("Called : fun $TAG.getAppConfigGeneralMenuData()")
         when(sessionState){
             SessionState.Loading -> {
                 emptySet()
             }
             is SessionState.Invalid -> {
-                AppConfigGeneralDestination.entries.filter { !it.usesAuth }.toSet()
+                DestinationAppConfigGeneral.entries.filter { !it.usesAuth }.toSet()
             }
             is SessionState.Valid -> {
-                AppConfigGeneralDestination.entries.toSet()
+                DestinationAppConfigGeneral.entries.toSet()
             }
         }
     }

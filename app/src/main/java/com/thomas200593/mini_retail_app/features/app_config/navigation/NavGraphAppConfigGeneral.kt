@@ -20,7 +20,7 @@ import timber.log.Timber
 private val TAG_NAV_GRAPH_BUILDER = NavGraphBuilder::class.simpleName
 private val TAG_NAV_CONTROLLER = NavController::class.simpleName
 
-fun NavGraphBuilder.appConfigGeneralNavGraph() {
+fun NavGraphBuilder.navGraphAppConfigGeneral() {
     Timber.d("Called : fun $TAG_NAV_GRAPH_BUILDER.appConfigGeneralNavGraph()")
     navigation(
         route = G_APP_CONFIG_GENERAL,
@@ -77,7 +77,7 @@ fun NavGraphBuilder.appConfigGeneralNavGraph() {
 }
 
 fun NavController.navigateToAppConfigGeneral(
-    appConfigGeneralDestination: AppConfigGeneralDestination?
+    destinationAppConfigGeneral: DestinationAppConfigGeneral?
 ) {
     Timber.d("Called : fun $TAG_NAV_CONTROLLER.navigateToAppConfigGeneral()")
     val navOptions = navOptions {
@@ -85,7 +85,7 @@ fun NavController.navigateToAppConfigGeneral(
         restoreState = true
     }
     this.navigate(
-        route = appConfigGeneralDestination?.route?:G_APP_CONFIG_GENERAL,
+        route = destinationAppConfigGeneral?.route?:G_APP_CONFIG_GENERAL,
         navOptions = navOptions
     )
 }

@@ -13,7 +13,7 @@ import timber.log.Timber
 private val TAG_NAV_GRAPH_BUILDER = NavGraphBuilder::class.simpleName
 private val TAG_NAV_CONTROLLER = NavController::class.simpleName
 
-fun NavGraphBuilder.businessNavGraph(){
+fun NavGraphBuilder.navGraphBusiness(){
     Timber.d("Called : fun $TAG_NAV_GRAPH_BUILDER.businessNavGraph()")
     navigation(
         route = G_BUSINESS,
@@ -29,11 +29,11 @@ fun NavGraphBuilder.businessNavGraph(){
 
 fun NavController.navigateToBusiness(
     navOptions: NavOptions?,
-    businessDestination: BusinessDestination? = null
+    destinationBusiness: DestinationBusiness? = null
 ) {
     Timber.d("Called : fun $TAG_NAV_CONTROLLER.navigateToBusiness()")
     this.navigate(
-        route = businessDestination?.route?: G_BUSINESS,
+        route = destinationBusiness?.route?: G_BUSINESS,
         navOptions
     )
 }

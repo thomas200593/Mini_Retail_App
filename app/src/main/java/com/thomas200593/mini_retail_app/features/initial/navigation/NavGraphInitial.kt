@@ -4,9 +4,9 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.thomas200593.mini_retail_app.features.auth.navigation.authNavGraph
+import com.thomas200593.mini_retail_app.features.auth.navigation.navGraphAuth
 import com.thomas200593.mini_retail_app.features.initial.ui.InitialScreen
-import com.thomas200593.mini_retail_app.features.onboarding.navigation.onBoardingNavGraph
+import com.thomas200593.mini_retail_app.features.onboarding.navigation.navGraphOnboarding
 import com.thomas200593.mini_retail_app.app.navigation.NavigationGraphs.G_INITIAL
 import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs
 import timber.log.Timber
@@ -14,7 +14,7 @@ import timber.log.Timber
 private val TAG_NAV_GRAPH_BUILDER = NavGraphBuilder::class.simpleName
 private val TAG_NAV_CONTROLLER = NavController::class.simpleName
 
-fun NavGraphBuilder.initialNavGraph() {
+fun NavGraphBuilder.navGraphInitial() {
     Timber.d("Called : fun $TAG_NAV_GRAPH_BUILDER.initialNavGraph()")
     navigation(
         route = G_INITIAL,
@@ -25,8 +25,8 @@ fun NavGraphBuilder.initialNavGraph() {
         ){
             InitialScreen()
         }
-        onBoardingNavGraph()
-        authNavGraph()
+        navGraphOnboarding()
+        navGraphAuth()
     }
 }
 

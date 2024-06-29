@@ -9,7 +9,7 @@ import com.thomas200593.mini_retail_app.app.navigation.NavigationGraphs.G_REPORT
 import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs
 import com.thomas200593.mini_retail_app.features.reporting.ui.ReportingScreen
 
-fun NavGraphBuilder.reportingNavGraph(){
+fun NavGraphBuilder.navGraphReporting(){
     navigation(
         route = G_REPORTING,
         startDestination = ScreenGraphs.Reporting.route

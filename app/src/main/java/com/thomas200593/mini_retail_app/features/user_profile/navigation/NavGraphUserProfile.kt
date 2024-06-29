@@ -13,7 +13,7 @@ import timber.log.Timber
 private val TAG_NAV_GRAPH_BUILDER = NavGraphBuilder::class.simpleName
 private val TAG_NAV_CONTROLLER = NavController::class.simpleName
 
-fun NavGraphBuilder.userProfileNavGraph(){
+fun NavGraphBuilder.navGraphUserProfile(){
     Timber.d("Called : fun $TAG_NAV_GRAPH_BUILDER.userProfileNavGraph()")
     navigation(
         route = G_USER_PROFILE,

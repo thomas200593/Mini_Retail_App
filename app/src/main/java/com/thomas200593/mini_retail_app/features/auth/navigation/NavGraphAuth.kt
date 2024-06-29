@@ -4,9 +4,9 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.thomas200593.mini_retail_app.features.app_config.navigation.appConfigNavGraph
+import com.thomas200593.mini_retail_app.features.app_config.navigation.navGraphAppConfig
 import com.thomas200593.mini_retail_app.features.auth.ui.AuthScreen
-import com.thomas200593.mini_retail_app.features.dashboard.navigation.dashboardNavGraph
+import com.thomas200593.mini_retail_app.features.dashboard.navigation.navGraphDashboard
 import com.thomas200593.mini_retail_app.app.navigation.NavigationGraphs.G_AUTH
 import com.thomas200593.mini_retail_app.app.navigation.NavigationGraphs.G_INITIAL
 import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs
@@ -15,7 +15,7 @@ import timber.log.Timber
 private val TAG_NAV_GRAPH_BUILDER = NavGraphBuilder::class.simpleName
 private val TAG_NAV_CONTROLLER = NavController::class.simpleName
 
-fun NavGraphBuilder.authNavGraph() {
+fun NavGraphBuilder.navGraphAuth() {
     navigation(
         route = G_AUTH,
         startDestination = ScreenGraphs.Auth.route
@@ -26,8 +26,8 @@ fun NavGraphBuilder.authNavGraph() {
         ){
             AuthScreen()
         }
-        appConfigNavGraph()
-        dashboardNavGraph()
+        navGraphAppConfig()
+        navGraphDashboard()
     }
 }
 

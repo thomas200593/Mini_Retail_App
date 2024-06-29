@@ -3,7 +3,7 @@ package com.thomas200593.mini_retail_app.app.navigation
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
-import com.thomas200593.mini_retail_app.features.initial.navigation.initialNavGraph
+import com.thomas200593.mini_retail_app.features.initial.navigation.navGraphInitial
 import com.thomas200593.mini_retail_app.app.navigation.NavigationGraphs.G_INITIAL
 import com.thomas200593.mini_retail_app.app.navigation.NavigationGraphs.G_ROOT
 import com.thomas200593.mini_retail_app.app.ui.LocalAppState
@@ -25,7 +25,7 @@ object NavigationHost{
             startDestination = G_INITIAL,
         ){
             Timber.d("Called : fun $TAG.NavHost()")
-            initialNavGraph()
+            navGraphInitial()
         }
     }
 }
