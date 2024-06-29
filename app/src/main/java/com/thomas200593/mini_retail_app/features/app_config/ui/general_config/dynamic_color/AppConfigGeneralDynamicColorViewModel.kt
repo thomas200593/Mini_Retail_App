@@ -8,6 +8,7 @@ import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatche
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatchers.Dispatchers.IO
 import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
 import com.thomas200593.mini_retail_app.features.app_config.entity.DynamicColor
+import com.thomas200593.mini_retail_app.features.app_config.repository.AppConfigGeneralRepository
 import com.thomas200593.mini_retail_app.features.app_config.repository.AppConfigRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -24,7 +25,8 @@ private val TAG = AppConfigGeneralDynamicColorViewModel::class.simpleName
 
 @HiltViewModel
 class AppConfigGeneralDynamicColorViewModel @Inject constructor(
-    private val appConfigRepository: AppConfigRepository,
+    appConfigRepository: AppConfigRepository,
+    private val appConfigGeneralRepository: AppConfigGeneralRepository,
     @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
 ): ViewModel() {
     private val _dynamicColorPreferences: MutableState<RequestState<Set<DynamicColor>>> =
@@ -48,7 +50,7 @@ class AppConfigGeneralDynamicColorViewModel @Inject constructor(
         Timber.d("Called : fun $TAG.getDynamicColorPreferences()")
         _dynamicColorPreferences.value = RequestState.Loading
         _dynamicColorPreferences.value = try {
-            RequestState.Success(appConfigRepository.getDynamicMenuPreferences())
+            RequestState.Success(appConfigGeneralRepository.getDynamicMenuPreferences())
         }catch (e: Throwable){
             RequestState.Error(e)
         }
@@ -56,6 +58,6 @@ class AppConfigGeneralDynamicColorViewModel @Inject constructor(
 
     fun saveSelectedDynamicColor(dynamicColor: DynamicColor) = viewModelScope.launch {
         Timber.d("Called : fun $TAG.saveSelectedDynamicColor()")
-        appConfigRepository.setDynamicColorPreferences(dynamicColor)
+        appConfigGeneralRepository.setDynamicColorPreferences(dynamicColor)
     }
 }

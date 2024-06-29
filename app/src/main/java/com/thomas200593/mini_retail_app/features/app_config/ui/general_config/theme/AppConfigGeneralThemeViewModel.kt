@@ -8,6 +8,7 @@ import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatche
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatchers
 import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
 import com.thomas200593.mini_retail_app.features.app_config.entity.Theme
+import com.thomas200593.mini_retail_app.features.app_config.repository.AppConfigGeneralRepository
 import com.thomas200593.mini_retail_app.features.app_config.repository.AppConfigRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -24,7 +25,8 @@ private val TAG = AppConfigGeneralThemeViewModel::class.simpleName
 
 @HiltViewModel
 class AppConfigGeneralThemeViewModel @Inject constructor(
-    private val appConfigRepository: AppConfigRepository,
+    appConfigRepository: AppConfigRepository,
+    private val appConfigGeneralRepository: AppConfigGeneralRepository,
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ): ViewModel() {
     private val _themePreferences: MutableState<RequestState<Set<Theme>>> = mutableStateOf(RequestState.Idle)
@@ -47,7 +49,7 @@ class AppConfigGeneralThemeViewModel @Inject constructor(
         Timber.d("Called : fun $TAG.getThemePreferences()")
         _themePreferences.value = RequestState.Loading
         _themePreferences.value = try{
-            RequestState.Success(appConfigRepository.getThemePreferences())
+            RequestState.Success(appConfigGeneralRepository.getThemePreferences())
         }catch (e: Throwable){
             RequestState.Error(e)
         }
@@ -55,6 +57,6 @@ class AppConfigGeneralThemeViewModel @Inject constructor(
 
     fun saveSelectedTheme(theme: Theme) = viewModelScope.launch {
         Timber.d("Called : fun $TAG.saveSelectedTheme()")
-        appConfigRepository.setThemePreferences(theme)
+        appConfigGeneralRepository.setThemePreferences(theme)
     }
 }

@@ -10,6 +10,7 @@ import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatche
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatchers
 import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
 import com.thomas200593.mini_retail_app.features.app_config.entity.Language
+import com.thomas200593.mini_retail_app.features.app_config.repository.AppConfigGeneralRepository
 import com.thomas200593.mini_retail_app.features.app_config.repository.AppConfigRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -27,7 +28,8 @@ private val TAG = AppConfigGeneralLanguageViewModel::class.simpleName
 
 @HiltViewModel
 class AppConfigGeneralLanguageViewModel @Inject constructor(
-    private val appConfigRepository: AppConfigRepository,
+    appConfigRepository: AppConfigRepository,
+    private val appConfigGeneralRepository: AppConfigGeneralRepository,
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ): ViewModel(){
     private val _languagePreferences: MutableState<RequestState<Set<Language>>> = mutableStateOf(RequestState.Idle)
@@ -50,7 +52,7 @@ class AppConfigGeneralLanguageViewModel @Inject constructor(
         Timber.d("Called : fun $TAG.getLanguagePreferences()")
         _languagePreferences.value = RequestState.Loading
         _languagePreferences.value = try {
-            RequestState.Success(appConfigRepository.getLanguagePreferences())
+            RequestState.Success(appConfigGeneralRepository.getLanguagePreferences())
         }catch (e: Throwable){
             RequestState.Error(e)
         }
@@ -58,7 +60,7 @@ class AppConfigGeneralLanguageViewModel @Inject constructor(
 
     fun saveSelectedLanguage(language: Language) = viewModelScope.launch {
         Timber.d("Called : fun $TAG.saveSelectedLanguage()")
-        appConfigRepository.setLanguagePreferences(language)
+        appConfigGeneralRepository.setLanguagePreferences(language)
         AppCompatDelegate.setApplicationLocales(
             LocaleListCompat.create(
                 Locale(language.code)

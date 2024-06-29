@@ -8,6 +8,7 @@ import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatche
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatchers
 import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
 import com.thomas200593.mini_retail_app.features.app_config.entity.FontSize
+import com.thomas200593.mini_retail_app.features.app_config.repository.AppConfigGeneralRepository
 import com.thomas200593.mini_retail_app.features.app_config.repository.AppConfigRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -24,7 +25,8 @@ private val TAG = AppConfigGeneralFontSizeViewModel::class.simpleName
 
 @HiltViewModel
 class AppConfigGeneralFontSizeViewModel @Inject constructor(
-    private val appConfigRepository: AppConfigRepository,
+    appConfigRepository: AppConfigRepository,
+    private val appConfigGeneralRepository: AppConfigGeneralRepository,
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ): ViewModel() {
     private val _fontSizeSizePreferences: MutableState<RequestState<Set<FontSize>>> = mutableStateOf(RequestState.Idle)
@@ -48,7 +50,7 @@ class AppConfigGeneralFontSizeViewModel @Inject constructor(
         Timber.d("Called : fun $TAG.getFontSizePreferences()")
         _fontSizeSizePreferences.value = RequestState.Loading
         _fontSizeSizePreferences.value = try {
-            RequestState.Success(appConfigRepository.getFontSizePreferences())
+            RequestState.Success(appConfigGeneralRepository.getFontSizePreferences())
         }catch (e: Throwable){
             RequestState.Error(e)
         }
@@ -56,6 +58,6 @@ class AppConfigGeneralFontSizeViewModel @Inject constructor(
 
     fun saveSelectedFontSize(fontSize: FontSize) = viewModelScope.launch{
         Timber.d("Called : fun $TAG.saveSelectedFontSize()")
-        appConfigRepository.setFontSizePreferences(fontSize)
+        appConfigGeneralRepository.setFontSizePreferences(fontSize)
     }
 }

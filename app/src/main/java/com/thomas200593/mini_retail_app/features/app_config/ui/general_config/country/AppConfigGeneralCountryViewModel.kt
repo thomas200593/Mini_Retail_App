@@ -8,6 +8,7 @@ import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatche
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatchers
 import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
 import com.thomas200593.mini_retail_app.features.app_config.entity.Country
+import com.thomas200593.mini_retail_app.features.app_config.repository.AppConfigGeneralRepository
 import com.thomas200593.mini_retail_app.features.app_config.repository.AppConfigRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -24,7 +25,8 @@ private val TAG = AppConfigGeneralCountryViewModel::class.simpleName
 
 @HiltViewModel
 class AppConfigGeneralCountryViewModel @Inject constructor(
-    private val appConfigRepository: AppConfigRepository,
+    appConfigRepository: AppConfigRepository,
+    private val appConfigGeneralRepository: AppConfigGeneralRepository,
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel(){
     private val _countryPreferences: MutableState<RequestState<List<Country>>> = mutableStateOf(RequestState.Idle)
@@ -47,7 +49,7 @@ class AppConfigGeneralCountryViewModel @Inject constructor(
         Timber.d("Called : fun $TAG.getCountryPreferences()")
         _countryPreferences.value = RequestState.Loading
         _countryPreferences.value = try {
-            RequestState.Success(appConfigRepository.getCountryPreferences())
+            RequestState.Success(appConfigGeneralRepository.getCountryPreferences())
         }catch (e: Throwable){
             RequestState.Error(e)
         }
@@ -55,6 +57,6 @@ class AppConfigGeneralCountryViewModel @Inject constructor(
 
     fun saveSelectedCountry(country: Country) = viewModelScope.launch{
         Timber.d("Called : fun $TAG.saveSelectedCountry()")
-        appConfigRepository.setCountryPreferences(country)
+        appConfigGeneralRepository.setCountryPreferences(country)
     }
 }
