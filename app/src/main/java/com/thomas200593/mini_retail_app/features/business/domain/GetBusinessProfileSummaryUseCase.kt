@@ -3,7 +3,6 @@ package com.thomas200593.mini_retail_app.features.business.domain
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatchers
 import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
-import com.thomas200593.mini_retail_app.features.business.entity.BizName
 import com.thomas200593.mini_retail_app.features.business.entity.dto.BusinessProfileSummary
 import com.thomas200593.mini_retail_app.features.business.repository.BusinessProfileRepository
 import kotlinx.coroutines.CoroutineDispatcher

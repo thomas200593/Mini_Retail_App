@@ -6,10 +6,15 @@ import androidx.work.Constraints
 import androidx.work.CoroutineWorker
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkerParameters
+import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatcher
+import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatchers
+import com.thomas200593.mini_retail_app.features.auth.domain.ValidateAuthSessionUseCase
 import com.thomas200593.mini_retail_app.features.auth.repository.AuthRepository
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOn
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
@@ -18,17 +23,18 @@ private val TAG = SessionMonitorWorker::class.simpleName
 class SessionMonitorWorker @AssistedInject constructor(
     @Assisted context: Context,
     @Assisted workerParameters: WorkerParameters,
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    private val validateAuthSessionUseCase: ValidateAuthSessionUseCase,
+    @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ): CoroutineWorker(context, workerParameters) {
 
     override suspend fun doWork(): Result {
         Timber.d("Called : fun $TAG.doWork()")
-        if(! authRepository.validateAuthSessionToken(authRepository.authSessionToken.first())){
-            Timber.d("fun $TAG.doWork() returned : SessionInvalid -> Clear Auth Session Token")
-            authRepository.clearAuthSessionToken()
+        if(validateAuthSessionUseCase.invoke(authRepository.authSessionToken.flowOn(ioDispatcher).first())){
+            Timber.d("fun $TAG.doWork() returned : SessionValid")
             return Result.success()
         }else{
-            Timber.d("fun $TAG.doWork() returned : SessionValid")
+            Timber.d("fun $TAG.doWork() returned : SessionInvalid")
             return Result.success()
         }
     }

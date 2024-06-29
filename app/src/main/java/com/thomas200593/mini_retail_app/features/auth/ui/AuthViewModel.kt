@@ -9,6 +9,7 @@ import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatche
 import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
 import com.thomas200593.mini_retail_app.core.design_system.util.RequestState.Idle
 import com.thomas200593.mini_retail_app.core.design_system.util.RequestState.Loading
+import com.thomas200593.mini_retail_app.features.auth.domain.ValidateAuthSessionUseCase
 import com.thomas200593.mini_retail_app.features.auth.entity.AuthSessionToken
 import com.thomas200593.mini_retail_app.features.auth.repository.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,8 +25,8 @@ private val TAG = AuthViewModel::class.simpleName
 @HiltViewModel
 class AuthViewModel @Inject constructor(
     private val authRepository: AuthRepository,
-    @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
-    @Dispatcher(Dispatchers.Dispatchers.Default) private val defaultDispatcher: CoroutineDispatcher
+    private val validateAuthSessionUseCase: ValidateAuthSessionUseCase,
+    @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
     private val _authSessionTokenState: MutableState<RequestState<AuthSessionToken>> = mutableStateOf(Idle)
@@ -43,13 +44,10 @@ class AuthViewModel @Inject constructor(
         Timber.d("Called : fun $TAG.verifyAndSaveAuthSession()")
         updateAuthSIWGButtonState(true)
         _authSessionTokenState.value = Loading
-        if(authRepository.validateAuthSessionToken(authSessionToken)){
-            authRepository.saveAuthSessionToken(authSessionToken)
-            withContext(defaultDispatcher) {
-                _authSessionTokenState.value = RequestState.Success(authSessionToken)
-            }
+        if(validateAuthSessionUseCase.invoke(authSessionToken)){
+            _authSessionTokenState.value = RequestState.Success(authSessionToken)
         }else{
-            authRepository.clearAuthSessionToken()
+            clearAuthSessionToken()
         }
     }
 

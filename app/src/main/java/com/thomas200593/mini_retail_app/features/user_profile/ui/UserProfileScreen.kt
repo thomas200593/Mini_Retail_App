@@ -13,7 +13,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
-import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
@@ -67,7 +66,7 @@ import com.thomas200593.mini_retail_app.features.app_config.navigation.navigateT
 import com.thomas200593.mini_retail_app.features.auth.entity.OAuth2UserMetadata
 import com.thomas200593.mini_retail_app.features.auth.entity.OAuthProvider
 import com.thomas200593.mini_retail_app.features.auth.entity.UserData
-import com.thomas200593.mini_retail_app.features.business.entity.BusinessProfile
+import com.thomas200593.mini_retail_app.features.business.entity.dto.BusinessProfileSummary
 import com.thomas200593.mini_retail_app.features.initial.navigation.navigateToInitial
 import com.thomas200593.mini_retail_app.work.workers.session_monitor.manager.SessionMonitorWorkManager
 import timber.log.Timber
@@ -85,7 +84,7 @@ fun UserProfileScreen(
     val applicationContext = LocalContext.current.applicationContext
     val sessionState by appState.isSessionValid.collectAsStateWithLifecycle()
     val userData by viewModel.currentSessionUserData
-    val businessProfileData by viewModel.businessProfile
+    val businessProfileSummaryData by viewModel.businessProfileSummary
 
     when(sessionState){
         SessionState.Loading -> {
@@ -105,16 +104,13 @@ fun UserProfileScreen(
 
     ScreenContent(
         userData = userData,
-        businessProfileData = businessProfileData,
+        businessProfileSummaryData = businessProfileSummaryData,
         onNavigateToConfig = {
             appState.navController.navigateToAppConfig(null)
         },
         onSignedOut = {
             viewModel.handleSignOut()
             SessionMonitorWorkManager.terminate(applicationContext)
-        },
-        testGenerate = {
-            viewModel.testGenerate()
         }
     )
 }
@@ -123,10 +119,9 @@ fun UserProfileScreen(
 private fun ScreenContent(
     modifier: Modifier = Modifier,
     userData: RequestState<UserData>,
+    businessProfileSummaryData: RequestState<BusinessProfileSummary>,
     onNavigateToConfig: () -> Unit,
     onSignedOut: () -> Unit,
-    businessProfileData: RequestState<BusinessProfile?>,
-    testGenerate: () -> Unit,
 ) {
     Column(
         modifier = modifier
@@ -142,8 +137,7 @@ private fun ScreenContent(
             onSignedOut = onSignedOut
         )
         MenuSection(
-            businessProfileData = businessProfileData,
-            testGenerate = testGenerate
+            businessProfileSummaryData = businessProfileSummaryData,
         )
         SignOutSection(
             onSignedOut = onSignedOut
@@ -279,64 +273,50 @@ private fun ProfileSection(
 
 @Composable
 private fun MenuSection(
-    businessProfileData: RequestState<BusinessProfile?>,
-    testGenerate: () -> Unit,
+    businessProfileSummaryData: RequestState<BusinessProfileSummary>,
 ) {
-    when(businessProfileData){
+    when(businessProfileSummaryData){
         RequestState.Idle, RequestState.Loading -> {
             LoadingPanelCircularIndicator()
         }
         is RequestState.Error -> {
             ErrorPanel(
                 showIcon = true,
-                title = businessProfileData.t.message,
-                errorMessage = businessProfileData.t.cause.toString()
+                title = businessProfileSummaryData.t.message,
+                errorMessage = businessProfileSummaryData.t.cause.toString()
             )
         }
         RequestState.Empty -> {
-            EmptyPanel(
-                title = stringResource(id = R.string.str_empty_message_title),
-                emptyMessage = stringResource(id = R.string.str_empty_message),
-                showIcon = true
-            )
-        }
-        is RequestState.Success -> {
-            if(businessProfileData.data == null){
-                Surface(
+            Surface(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                shape = MaterialTheme.shapes.medium,
+                color = MaterialTheme.colorScheme.surfaceContainerHighest,
+                contentColor = MaterialTheme.colorScheme.onSurface
+            ) {
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(8.dp),
-                    shape = MaterialTheme.shapes.medium,
-                    color = MaterialTheme.colorScheme.surfaceVariant,
-                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant
+                        .padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Top),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                        verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Top),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Icon(
-                            imageVector = ImageVector.vectorResource(id = sad),
-                            contentDescription = null
-                        )
-                        Text(
-                            text = stringResource(R.string.str_biz_profile_not_set),
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            textAlign = TextAlign.Start
-                        )
-                        HorizontalDivider()
-                        AppIconButton(
-                            onClick = { testGenerate() },
-                            icon = Icons.Default.Build,
-                            text = stringResource(id = R.string.str_detail)
-                        )
-                    }
+                    Icon(
+                        imageVector = ImageVector.vectorResource(id = sad),
+                        contentDescription = null
+                    )
+                    Text(
+                        text = stringResource(R.string.str_biz_profile_not_set),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        textAlign = TextAlign.Start
+                    )
+                    HorizontalDivider()
                 }
-            }else{
-                Text(text = businessProfileData.data.toString())
             }
+        }
+        is RequestState.Success -> {
+
         }
     }
 }
@@ -365,12 +345,7 @@ fun PreviewMenuSection(){
             userData = RequestState.Empty,
             onNavigateToConfig = {},
             onSignedOut = {},
-            businessProfileData = RequestState.Success(
-                data = null
-            ),
-            testGenerate = {
-
-            },
+            businessProfileSummaryData = RequestState.Empty
         )
     }
 }
