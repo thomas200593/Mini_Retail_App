@@ -44,7 +44,7 @@ class OnboardingViewModel @Inject constructor(
         }
     }
 
-    fun hideOnboarding() = viewModelScope.launch {
+    fun hideOnboarding() = viewModelScope.launch(ioDispatcher) {
         onboardingRepository.hideOnboarding().also {
             _isOnboardingFinished.value = true
         }
