@@ -13,6 +13,7 @@ import com.thomas200593.mini_retail_app.R.drawable.app_icon_data_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_dynamic_color_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_dynamic_color_disabled_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_dynamic_color_enabled_48px
+import com.thomas200593.mini_retail_app.R.drawable.app_icon_empty_24px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_export_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_happy_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_import_48px
@@ -44,6 +45,9 @@ object Icons {
     }
     object Auth{
         @DrawableRes val session_expire = +app_icon_session_expired_48px
+    }
+    object Content{
+        @DrawableRes val empty = +app_icon_empty_24px
     }
     object Country{
         @DrawableRes val country = +app_icon_country_48px

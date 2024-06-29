@@ -65,4 +65,7 @@
 
     <string name="str_biz_profile_not_set">Kamu belum mengatur profil bisnismu</string>
     <string name="str_detail">Detil</string>
+    <string name="str_empty_message_title">Oops, tidak ada apapun disini!</string>
+    <string name="str_empty_message">Data yang kamu cari tidak tersedia</string>
+    <string name="str_error_fetching_preferences">Gagal membaca preferensi</string>
 </resources>

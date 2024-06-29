@@ -42,6 +42,7 @@ import androidx.constraintlayout.compose.Dimension
 import com.thomas200593.mini_retail_app.BuildConfig
 import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.core.ui.common.Icons
+import com.thomas200593.mini_retail_app.core.ui.common.Icons.Content.empty
 import com.thomas200593.mini_retail_app.core.ui.common.Shapes
 import timber.log.Timber
 
@@ -266,7 +267,7 @@ object CommonMessagePanel{
                         Icon(
                             imageVector = if(iconRes == null) { Default.Warning }
                             else { ImageVector.vectorResource(id = iconRes) },
-                            contentDescription = null,
+                            contentDescription = null
                         )
                     }
                     HorizontalDivider(
@@ -291,6 +292,145 @@ object CommonMessagePanel{
                     Text(
                         modifier = Modifier.fillMaxWidth(),
                         text = errorMessage,
+                        textAlign = TextAlign.Start,
+                        fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                        fontWeight = MaterialTheme.typography.bodyLarge.fontWeight
+                    )
+                }
+            }
+        }
+    }
+
+    @Composable
+    fun EmptyScreen(
+        modifier: Modifier = Modifier,
+        showIcon: Boolean = false,
+        @DrawableRes iconRes: Int? = null,
+        title: String? = null,
+        emptyMessage: String? = null
+    ) {
+        Timber.d("Called : fun $TAG.EmptyScreen()")
+        Surface(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            shape = MaterialTheme.shapes.medium,
+            color = MaterialTheme.colorScheme.surfaceContainerHighest,
+            contentColor = MaterialTheme.colorScheme.onSurfaceVariant
+        ){
+            Column(
+                modifier = modifier
+                    .fillMaxSize()
+                    .padding(16.dp)
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Top),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                if(showIcon){
+                    Surface(
+                        modifier = modifier
+                            .fillMaxWidth()
+                            .height(60.dp),
+                        color = MaterialTheme.colorScheme.errorContainer,
+                        contentColor = MaterialTheme.colorScheme.onErrorContainer
+                    ) {
+                        Icon(
+                            imageVector = if(iconRes == null) { ImageVector.vectorResource(id = empty) }
+                            else { ImageVector.vectorResource(id = iconRes) },
+                            contentDescription = null,
+                        )
+                    }
+                    HorizontalDivider(
+                        thickness = 2.dp,
+                        color = MaterialTheme.colorScheme.surfaceVariant
+                    )
+                }
+                if(title != null){
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = title,
+                        textAlign = TextAlign.Center,
+                        fontSize = MaterialTheme.typography.titleLarge.fontSize,
+                        fontWeight = MaterialTheme.typography.titleLarge.fontWeight
+                    )
+                    HorizontalDivider(
+                        thickness = 2.dp,
+                        color = MaterialTheme.colorScheme.surfaceVariant
+                    )
+                }
+                if(emptyMessage != null){
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = emptyMessage,
+                        textAlign = TextAlign.Start,
+                        fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                        fontWeight = MaterialTheme.typography.bodyLarge.fontWeight
+                    )
+                }
+            }
+        }
+    }
+
+    @Composable
+    fun EmptyPanel(
+        modifier: Modifier = Modifier,
+        showIcon: Boolean = false,
+        @DrawableRes iconRes: Int? = null,
+        title: String? = null,
+        emptyMessage: String? = null
+    ){
+        Timber.d("Called : fun $TAG.EmptyPanel()")
+        Surface(
+            modifier = modifier
+                .fillMaxWidth(),
+            shape = MaterialTheme.shapes.medium,
+            border = BorderStroke(1.dp, Color.DarkGray),
+            color = MaterialTheme.colorScheme.surfaceContainerHighest,
+            contentColor = MaterialTheme.colorScheme.onSurface
+        ) {
+            Column(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Top),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                if(showIcon){
+                    Surface(
+                        modifier = modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        color = MaterialTheme.colorScheme.surfaceContainerHighest,
+                        contentColor = MaterialTheme.colorScheme.onSurface
+                    ) {
+                        Icon(
+                            imageVector = if(iconRes == null){ ImageVector.vectorResource(id = empty) }
+                            else { ImageVector.vectorResource(id = iconRes) },
+                            contentDescription = null
+                        )
+                    }
+                    HorizontalDivider(
+                        thickness = 2.dp,
+                        color = MaterialTheme.colorScheme.surfaceVariant
+                    )
+                }
+                if(title != null){
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = title,
+                        textAlign = TextAlign.Center,
+                        fontSize = MaterialTheme.typography.titleLarge.fontSize,
+                        fontWeight = MaterialTheme.typography.titleLarge.fontWeight
+                    )
+                    HorizontalDivider(
+                        thickness = 2.dp,
+                        color = MaterialTheme.colorScheme.surfaceVariant
+                    )
+                }
+                if(emptyMessage != null){
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = emptyMessage,
                         textAlign = TextAlign.Start,
                         fontSize = MaterialTheme.typography.bodyLarge.fontSize,
                         fontWeight = MaterialTheme.typography.bodyLarge.fontWeight

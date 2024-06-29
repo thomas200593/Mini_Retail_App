@@ -14,6 +14,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.Lifecycle.State.STARTED
+import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.thomas200593.mini_retail_app.app.MainActivityUiState.Loading
@@ -44,6 +45,7 @@ class MainActivity: AppCompatActivity() {
 
     @Inject lateinit var networkMonitor: NetworkMonitor
     @Inject lateinit var session: Session
+
     private val viewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -69,7 +71,6 @@ class MainActivity: AppCompatActivity() {
         setupSplashscreen(splashscreen)
         enableEdgeToEdge()
         setContent {
-
             val darkTheme = shouldUseDarkTheme(uiState)
             val dynamicColor = shouldUseDynamicColor(uiState)
             val font = calculateInitialFontSize(uiState)

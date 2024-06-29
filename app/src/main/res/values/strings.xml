@@ -66,4 +66,8 @@
 
     <string name="str_biz_profile_not_set">You haven\'t set up your business profile</string>
     <string name="str_detail">Detail</string>
+
+    <string name="str_empty_message_title">Oops, nothing here!</string>
+    <string name="str_empty_message">Data you\'re looking for isn\'t available</string>
+    <string name="str_error_fetching_preferences">Failed to read preferences</string>
 </resources>

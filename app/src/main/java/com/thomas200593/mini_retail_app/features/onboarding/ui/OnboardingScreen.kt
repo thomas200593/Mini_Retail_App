@@ -37,6 +37,9 @@ import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.app.ui.AppState
 import com.thomas200593.mini_retail_app.app.ui.LocalAppState
 import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
+import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.EmptyScreen
+import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.ErrorScreen
+import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.LoadingScreen
 import com.thomas200593.mini_retail_app.core.ui.component.ScreenUtil
 import com.thomas200593.mini_retail_app.features.initial.navigation.navigateToInitial
 import com.thomas200593.mini_retail_app.features.onboarding.entity.Onboarding
@@ -92,10 +95,25 @@ private fun ScreenContent(
 ) {
     when(onboardingPages){
         RequestState.Idle -> Unit
-        RequestState.Loading -> {}
-        is RequestState.Error -> {}
+        RequestState.Loading -> {
+            LoadingScreen()
+        }
+        is RequestState.Error -> {
+            ErrorScreen(
+                title = stringResource(id = R.string.str_error),
+                errorMessage = stringResource(id = R.string.str_error_fetching_preferences),
+                showIcon = true
+            )
+        }
+        RequestState.Empty -> {
+            EmptyScreen(
+                title = stringResource(id = R.string.str_empty_message_title),
+                emptyMessage = stringResource(id = R.string.str_empty_message),
+                showIcon = true
+            )
+        }
         is RequestState.Success -> {
-            val onboardingPagesData = onboardingPages.data?: emptyList()
+            val onboardingPagesData = onboardingPages.data
 
             Column(
                 modifier = Modifier

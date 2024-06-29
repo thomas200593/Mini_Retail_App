@@ -1,5 +1,6 @@
 package com.thomas200593.mini_retail_app.features.user_profile.ui
 
+import android.view.PixelCopy.Request
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -11,9 +12,11 @@ import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
 import com.thomas200593.mini_retail_app.features.auth.entity.UserData
 import com.thomas200593.mini_retail_app.features.auth.repository.AuthRepository
 import com.thomas200593.mini_retail_app.features.business.entity.BusinessProfile
+import com.thomas200593.mini_retail_app.features.business.entity.dto.BusinessProfileSummary
 import com.thomas200593.mini_retail_app.features.business.repository.BusinessProfileRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -34,10 +37,14 @@ class UserProfileViewModel @Inject constructor(
     private val _businessProfile: MutableState<RequestState<BusinessProfile?>> = mutableStateOf(RequestState.Idle)
     val businessProfile = _businessProfile
 
+    private val _businessProfileSummary: MutableState<RequestState<BusinessProfileSummary?>> = mutableStateOf(RequestState.Idle)
+    val businessProfileSummary = _businessProfileSummary
+
     fun onOpen(validSession: SessionState.Valid) = viewModelScope.launch(ioDispatcher){
         Timber.d("Called : fun $TAG.onOpen()")
         getCurrentSessionUserData(validSession)
         getBusinessProfile()
+        getBusinessProfileSummary()
     }
 
     private fun getCurrentSessionUserData(validSession: SessionState.Valid) = viewModelScope.launch(ioDispatcher){
@@ -58,6 +65,19 @@ class UserProfileViewModel @Inject constructor(
         }.collect { businessProfile ->
             _businessProfile.value = RequestState.Success(businessProfile)
         }
+    }
+
+    private fun getBusinessProfileSummary() = viewModelScope.launch(ioDispatcher){
+        Timber.d("Called : fun $TAG.getBusinessProfileSummary()")
+        _businessProfileSummary.value = RequestState.Loading
+        businessProfileRepository
+            .getBusinessProfileSummary()
+            .catch {
+                RequestState.Error(it)
+            }
+            .collect{ bps ->
+                _businessProfileSummary.value = RequestState.Success(bps)
+            }
     }
 
     fun handleSignOut() = viewModelScope.launch(ioDispatcher){

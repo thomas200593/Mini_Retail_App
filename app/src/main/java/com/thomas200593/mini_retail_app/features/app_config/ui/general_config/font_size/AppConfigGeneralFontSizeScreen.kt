@@ -39,6 +39,7 @@ import com.thomas200593.mini_retail_app.app.ui.LocalAppState
 import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
 import com.thomas200593.mini_retail_app.core.ui.common.Icons.Font.font
 import com.thomas200593.mini_retail_app.core.ui.component.AppBar
+import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.EmptyScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.ErrorScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.LoadingScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.ThreeRowCardItem
@@ -139,6 +140,13 @@ private fun ScreenContent(
                 showIcon = true
             )
         }
+        RequestState.Empty -> {
+            EmptyScreen(
+                title = stringResource(id = R.string.str_empty_message_title),
+                emptyMessage = stringResource(id = R.string.str_empty_message),
+                showIcon = true
+            )
+        }
         is RequestState.Success -> {
             when(fontSizeSizePreferences){
                 RequestState.Idle -> Unit
@@ -152,9 +160,16 @@ private fun ScreenContent(
                         showIcon = true
                     )
                 }
+                RequestState.Empty -> {
+                    EmptyScreen(
+                        title = stringResource(id = R.string.str_empty_message_title),
+                        emptyMessage = stringResource(id = R.string.str_empty_message),
+                        showIcon = true
+                    )
+                }
                 is RequestState.Success -> {
-                    val currentFontSize = configCurrent.data?.currentFontSizeSize?:ConfigCurrent().currentFontSizeSize
-                    val appFontSizePreferences = fontSizeSizePreferences.data ?: emptySet()
+                    val currentFontSize = configCurrent.data.currentFontSizeSize
+                    val appFontSizePreferences = fontSizeSizePreferences.data
 
                     Column(
                         modifier = Modifier

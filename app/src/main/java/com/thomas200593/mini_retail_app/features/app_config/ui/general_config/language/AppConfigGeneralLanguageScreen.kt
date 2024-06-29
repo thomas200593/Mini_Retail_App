@@ -41,6 +41,7 @@ import com.thomas200593.mini_retail_app.app.ui.LocalAppState
 import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
 import com.thomas200593.mini_retail_app.core.ui.common.Icons.Language.language
 import com.thomas200593.mini_retail_app.core.ui.component.AppBar
+import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.EmptyScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.ErrorScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.LoadingScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.ThreeRowCardItem
@@ -143,6 +144,13 @@ private fun ScreenContent(
                 showIcon = true
             )
         }
+        RequestState.Empty -> {
+            EmptyScreen(
+                title = stringResource(id = R.string.str_empty_message_title),
+                emptyMessage = stringResource(id = R.string.str_empty_message),
+                showIcon = true
+            )
+        }
         is RequestState.Success -> {
             when(languagePreferences){
                 RequestState.Idle -> Unit
@@ -156,9 +164,16 @@ private fun ScreenContent(
                         showIcon = true
                     )
                 }
+                RequestState.Empty -> {
+                    EmptyScreen(
+                        title = stringResource(id = R.string.str_empty_message_title),
+                        emptyMessage = stringResource(id = R.string.str_empty_message),
+                        showIcon = true
+                    )
+                }
                 is RequestState.Success -> {
-                    val currentLanguage = configCurrent.data?.currentLanguage?:ConfigCurrent().currentLanguage
-                    val appLanguagePreferences = languagePreferences.data ?: emptySet()
+                    val currentLanguage = configCurrent.data.currentLanguage
+                    val appLanguagePreferences = languagePreferences.data
 
                     Column(
                         modifier = Modifier

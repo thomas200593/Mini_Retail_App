@@ -4,13 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatchers
-import com.thomas200593.mini_retail_app.features.app_config.entity.OnboardingStatus
-import com.thomas200593.mini_retail_app.features.app_config.repository.AppConfigRepository
-import com.thomas200593.mini_retail_app.features.auth.repository.AuthRepository
+import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
+import com.thomas200593.mini_retail_app.features.initial.domain.InitialUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
@@ -21,31 +19,17 @@ private val TAG = InitialViewModel::class.simpleName
 
 @HiltViewModel
 class InitialViewModel @Inject constructor(
-    authRepository: AuthRepository,
-    appConfigRepository: AppConfigRepository,
-    @Dispatcher(Dispatchers.Dispatchers.IO) ioDispatchers: CoroutineDispatcher
+    initialUseCase: InitialUseCase,
+    @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ): ViewModel(){
-    val uiState = appConfigRepository.configCurrentData.flowOn(ioDispatchers)
-        .combine(authRepository.authSessionToken){ currentConfig, authToken ->
-            InitialUiState.Success(
-                onboardingPagesStatus = currentConfig.onboardingPagesStatus,
-                isSessionValid = authRepository.validateAuthSessionToken(authToken)
-            )
-        }
+    val uiState = initialUseCase.invoke()
+        .flowOn(ioDispatcher)
         .onEach {
-            Timber.d("Called : $TAG.uiState -> $it")
+            Timber.d("$TAG.uiState : $it")
         }
         .stateIn(
             scope = viewModelScope,
-            initialValue = InitialUiState.Loading,
-            started = SharingStarted.Eagerly
+            started = SharingStarted.Eagerly,
+            initialValue = RequestState.Loading
         )
-}
-
-sealed interface InitialUiState{
-    data object Loading: InitialUiState
-    data class Success(
-        val isSessionValid: Boolean,
-        val onboardingPagesStatus: OnboardingStatus
-    ): InitialUiState
 }

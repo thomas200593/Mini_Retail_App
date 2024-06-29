@@ -58,6 +58,7 @@ import com.thomas200593.mini_retail_app.core.ui.common.Icons.Emotion.sad
 import com.thomas200593.mini_retail_app.core.ui.common.Icons.Setting.settings
 import com.thomas200593.mini_retail_app.core.ui.common.Themes
 import com.thomas200593.mini_retail_app.core.ui.component.Button.Common.AppIconButton
+import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.EmptyPanel
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.ErrorPanel
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.LoadingPanelCircularIndicator
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.LoadingScreen
@@ -125,7 +126,7 @@ private fun ScreenContent(
     onNavigateToConfig: () -> Unit,
     onSignedOut: () -> Unit,
     businessProfileData: RequestState<BusinessProfile?>,
-    testGenerate: () -> Unit
+    testGenerate: () -> Unit,
 ) {
     Column(
         modifier = modifier
@@ -176,98 +177,100 @@ private fun ProfileSection(
                     errorMessage = error.cause.toString()
                 )
             }
+            RequestState.Empty -> {
+                EmptyPanel(
+                    title = stringResource(id = R.string.str_empty_message_title),
+                    emptyMessage = stringResource(id = R.string.str_empty_message),
+                    showIcon = true
+                )
+            }
             is RequestState.Success -> {
                 val data = userData.data
 
-                if(data != null){
-                    when(val provider = data.authSessionToken?.authProvider){
-                        OAuthProvider.GOOGLE -> {
-                            val userDetail = (data.oAuth2UserMetadata as OAuth2UserMetadata.Google)
-                            var infoExpanded by remember { mutableStateOf(false) }
+                when(val provider = data.authSessionToken?.authProvider){
+                    OAuthProvider.GOOGLE -> {
+                        val userDetail = (data.oAuth2UserMetadata as OAuth2UserMetadata.Google)
+                        var infoExpanded by remember { mutableStateOf(false) }
 
-                            Row(
-                                modifier = Modifier.fillMaxWidth(1.0f),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.End
+                        Row(
+                            modifier = Modifier.fillMaxWidth(1.0f),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.End
+                        ) {
+                            Surface(
+                                modifier = Modifier.size(ButtonDefaults.IconSize),
+                                onClick = {
+                                    onNavigateToConfig()
+                                }
                             ) {
-                                Surface(
-                                    modifier = Modifier.size(ButtonDefaults.IconSize),
-                                    onClick = {
-                                        onNavigateToConfig()
-                                    }
-                                ) {
-                                    Icon(
-                                        imageVector = ImageVector.vectorResource(id = settings),
-                                        contentDescription = null,
-                                        tint = MaterialTheme.colorScheme.onSurface
-                                    )
-                                }
+                                Icon(
+                                    imageVector = ImageVector.vectorResource(id = settings),
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.onSurface
+                                )
                             }
-                            AsyncImage(
-                                model = ImageRequest
-                                    .Builder(LocalContext.current)
-                                    .crossfade(1000)
-                                    .data(data = userDetail.pictureUri)
-                                    .transformations(CircleCropTransformation()).build(),
-                                contentDescription = null,
-                                modifier = Modifier
-                                    .size(100.dp)
-                                    .border(2.dp, Color.Gray, CircleShape),
-                                contentScale = ContentScale.Crop
+                        }
+                        AsyncImage(
+                            model = ImageRequest
+                                .Builder(LocalContext.current)
+                                .crossfade(1000)
+                                .data(data = userDetail.pictureUri)
+                                .transformations(CircleCropTransformation()).build(),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(100.dp)
+                                .border(2.dp, Color.Gray, CircleShape),
+                            contentScale = ContentScale.Crop
+                        )
+                        Row(
+                            modifier = Modifier.fillMaxWidth(1.0f),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
+                        ){
+                            Text(
+                                modifier = Modifier.weight(0.9f),
+                                text = userDetail.name,
+                                color = MaterialTheme.colorScheme.onSurface,
+                                fontSize = MaterialTheme.typography.titleLarge.fontSize,
+                                fontWeight = FontWeight.Bold,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                textAlign = TextAlign.Center
                             )
-                            Row(
-                                modifier = Modifier.fillMaxWidth(1.0f),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.Center
-                            ){
-                                Text(
-                                    modifier = Modifier.weight(0.9f),
-                                    text = userDetail.name,
-                                    color = MaterialTheme.colorScheme.onSurface,
-                                    fontSize = MaterialTheme.typography.titleLarge.fontSize,
-                                    fontWeight = FontWeight.Bold,
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis,
-                                    textAlign = TextAlign.Center
+                            Surface(
+                                modifier = Modifier.weight(0.1f),
+                                color = MaterialTheme.colorScheme.tertiaryContainer,
+                                shape = MaterialTheme.shapes.extraSmall,
+                                onClick = { infoExpanded = !infoExpanded }
+                            ) {
+                                Icon(
+                                    imageVector = if(!infoExpanded) Icons.Default.KeyboardArrowDown else Icons.Default.KeyboardArrowUp,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.onTertiaryContainer
                                 )
-                                Surface(
-                                    modifier = Modifier.weight(0.1f),
-                                    color = MaterialTheme.colorScheme.tertiaryContainer,
-                                    shape = MaterialTheme.shapes.extraSmall,
-                                    onClick = { infoExpanded = !infoExpanded }
-                                ) {
-                                    Icon(
-                                        imageVector = if(!infoExpanded) Icons.Default.KeyboardArrowDown else Icons.Default.KeyboardArrowUp,
-                                        contentDescription = null,
-                                        tint = MaterialTheme.colorScheme.onTertiaryContainer
-                                    )
-                                }
                             }
+                        }
 
-                            if(infoExpanded){
-                                TextContentWithIcon(
-                                    icon = Icons.Default.Email,
-                                    text = userDetail.email
-                                )
-                                TextContentWithIcon(
-                                    icon = Icons.Default.Lock,
-                                    text = provider.title
-                                )
-                                TextContentWithIcon(
-                                    icon = ImageVector.vectorResource(id = session_expire),
-                                    text = Instant.ofEpochSecond(userDetail.expiredAt.toLong()).toString()
-                                )
-                            }
-                            HorizontalDivider(thickness = 2.dp)
+                        if(infoExpanded){
+                            TextContentWithIcon(
+                                icon = Icons.Default.Email,
+                                text = userDetail.email
+                            )
+                            TextContentWithIcon(
+                                icon = Icons.Default.Lock,
+                                text = provider.title
+                            )
+                            TextContentWithIcon(
+                                icon = ImageVector.vectorResource(id = session_expire),
+                                text = Instant.ofEpochSecond(userDetail.expiredAt.toLong()).toString()
+                            )
                         }
-                        null -> {
-                            Timber.e("Unknown Provider, Illegal Access Exception")
-                            onSignedOut()
-                        }
+                        HorizontalDivider(thickness = 2.dp)
                     }
-                }else{
-                    Timber.e("User Data not detected, Possibly the session is over")
-                    onSignedOut()
+                    null -> {
+                        Timber.e("Unknown Provider, Illegal Access Exception")
+                        onSignedOut()
+                    }
                 }
             }
         }
@@ -277,7 +280,7 @@ private fun ProfileSection(
 @Composable
 private fun MenuSection(
     businessProfileData: RequestState<BusinessProfile?>,
-    testGenerate: () -> Unit
+    testGenerate: () -> Unit,
 ) {
     when(businessProfileData){
         RequestState.Idle, RequestState.Loading -> {
@@ -288,6 +291,13 @@ private fun MenuSection(
                 showIcon = true,
                 title = businessProfileData.t.message,
                 errorMessage = businessProfileData.t.cause.toString()
+            )
+        }
+        RequestState.Empty -> {
+            EmptyPanel(
+                title = stringResource(id = R.string.str_empty_message_title),
+                emptyMessage = stringResource(id = R.string.str_empty_message),
+                showIcon = true
             )
         }
         is RequestState.Success -> {
@@ -352,16 +362,15 @@ private fun SignOutSection(
 fun PreviewMenuSection(){
     Themes.ApplicationTheme {
         ScreenContent(
-            userData = RequestState.Success(
-                data = null
-            ),
+            userData = RequestState.Empty,
             onNavigateToConfig = {},
             onSignedOut = {},
             businessProfileData = RequestState.Success(
                 data = null
-            )
-        ) {
+            ),
+            testGenerate = {
 
-        }
+            },
+        )
     }
 }

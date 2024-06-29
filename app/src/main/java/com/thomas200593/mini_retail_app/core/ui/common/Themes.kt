@@ -14,12 +14,12 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat.getInsetsController
+import com.thomas200593.mini_retail_app.app.MainActivityUiState
 import com.thomas200593.mini_retail_app.core.ui.common.Types.personalizedTypography
 import com.thomas200593.mini_retail_app.features.app_config.entity.DynamicColor
 import com.thomas200593.mini_retail_app.features.app_config.entity.FontSize
 import com.thomas200593.mini_retail_app.features.app_config.entity.FontSize.MEDIUM
 import com.thomas200593.mini_retail_app.features.app_config.entity.Theme
-import com.thomas200593.mini_retail_app.app.MainActivityUiState
 import timber.log.Timber
 
 private val TAG = Themes::class.simpleName
@@ -96,6 +96,7 @@ object Themes{
         if (!view.isInEditMode) {
             SideEffect {
                 val window = (view.context as Activity).window
+                @Suppress("DEPRECATION")
                 window.statusBarColor = colorScheme.primary.toArgb()
                 getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
             }
