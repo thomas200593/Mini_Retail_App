@@ -27,10 +27,13 @@ fun NavGraphBuilder.businessNavGraph(){
     }
 }
 
-fun NavController.navigateToBusiness(navOptions: NavOptions?) {
+fun NavController.navigateToBusiness(
+    navOptions: NavOptions?,
+    businessDestination: BusinessDestination? = null
+) {
     Timber.d("Called : fun $TAG_NAV_CONTROLLER.navigateToBusiness()")
     this.navigate(
-        route = G_BUSINESS,
+        route = businessDestination?.route?: G_BUSINESS,
         navOptions
     )
 }
