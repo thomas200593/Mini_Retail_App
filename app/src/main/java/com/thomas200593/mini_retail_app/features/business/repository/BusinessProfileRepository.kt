@@ -9,7 +9,6 @@ import com.thomas200593.mini_retail_app.features.business.entity.BusinessProfile
 import com.thomas200593.mini_retail_app.features.business.entity.dto.BusinessProfileSummary
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject

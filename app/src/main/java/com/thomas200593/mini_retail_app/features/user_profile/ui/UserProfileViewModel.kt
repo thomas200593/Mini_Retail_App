@@ -1,6 +1,5 @@
 package com.thomas200593.mini_retail_app.features.user_profile.ui
 
-import android.view.PixelCopy.Request
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel

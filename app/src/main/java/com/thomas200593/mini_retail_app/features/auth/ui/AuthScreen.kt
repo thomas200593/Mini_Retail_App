@@ -87,26 +87,25 @@ fun AuthScreen(
         when(authSessionTokenState){
             is RequestState.Success -> {
                 val authSessionToken = (authSessionTokenState as RequestState.Success).data
-                if(authSessionToken != null){
-                    val userData = viewModel.mapAuthSessionTokenToUserData(authSessionToken)
-                    val googleUserData = userData?.oAuth2UserMetadata as OAuth2UserMetadata.Google
-                    val email = googleUserData.email
-                    Toast.makeText(activityContext, "Welcome $email", Toast.LENGTH_LONG).show()
-                    SessionMonitorWorkManager.initialize(applicationContext)
-                    appState.navController.navigateToInitial()
-                }else{
-                    handleClearCredential(
-                        activityContext = activityContext,
-                        onClearSuccess = {
-                            Timber.d("fun $TAG().handleClearCredential() returned : Clear Credential Success")
-                            viewModel.clearAuthSessionToken()
-                        },
-                        onClearError = { throwable ->
-                            Timber.e("fun $TAG().handleClearCredential() returned : $throwable")
-                            viewModel.clearAuthSessionToken()
-                        }
-                    )
-                }
+                val userData = viewModel.mapAuthSessionTokenToUserData(authSessionToken)
+                val googleUserData = userData?.oAuth2UserMetadata as OAuth2UserMetadata.Google
+                val email = googleUserData.email
+                Toast.makeText(activityContext, "Welcome $email", Toast.LENGTH_LONG).show()
+                SessionMonitorWorkManager.initialize(applicationContext)
+                appState.navController.navigateToInitial()
+            }
+            is RequestState.Error -> {
+                handleClearCredential(
+                    activityContext = activityContext,
+                    onClearSuccess = {
+                        Timber.d("fun $TAG().handleClearCredential() returned : Clear Credential Success")
+                        viewModel.clearAuthSessionToken()
+                    },
+                    onClearError = { throwable ->
+                        Timber.e("fun $TAG().handleClearCredential() returned : $throwable")
+                        viewModel.clearAuthSessionToken()
+                    }
+                )
             }
             else -> Unit
         }

@@ -13,7 +13,7 @@ import com.thomas200593.mini_retail_app.app.navigation.NavigationGraphs.G_INITIA
 import com.thomas200593.mini_retail_app.app.ui.AppState
 import com.thomas200593.mini_retail_app.app.ui.LocalAppState
 import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
-import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.ErrorPanel
+import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.ErrorScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.LoadingScreen
 import com.thomas200593.mini_retail_app.features.app_config.entity.OnboardingStatus
 import com.thomas200593.mini_retail_app.features.auth.navigation.navigateToAuth
@@ -45,14 +45,11 @@ fun InitialScreen(
         onError = { error ->
             showErrorPage = true
             throwable = error
-        },
-        onSuccess = { data ->
-            handleSuccessState(data)
         }
     )
 
     if(showErrorPage){
-        ErrorPanel(
+        ErrorScreen(
             showIcon = true,
             title = throwable?.message,
             errorMessage = throwable?.cause.toString()
@@ -64,29 +61,20 @@ fun InitialScreen(
     }
 }
 
-fun handleSuccessState(data: Initial) {
-
-}
-
 @Composable
 private fun ScreenContent(
     appState: AppState,
     uiState: RequestState<Initial>,
     onLoading: () -> Unit,
-    onError: (Throwable) -> Unit,
-    onSuccess: (Initial) -> Unit
+    onError: (Throwable) -> Unit
 ) {
     when(uiState){
-        RequestState.Idle, RequestState.Loading -> onLoading()
+        RequestState.Idle, RequestState.Loading, RequestState.Empty -> onLoading()
         is RequestState.Error -> onError(uiState.t)
         is RequestState.Success -> {
-            onSuccess(uiState.data)
-        }
-        RequestState.Empty -> {}
-        /*{
             val data = uiState.data
-            val isSessionValid = data?.isSessionValid?:false
-            val shouldShowOnboarding = data?.onboardingPageStatus?:OnboardingStatus.SHOW
+            val isSessionValid = data.isSessionValid
+            val shouldShowOnboarding = data.onboardingPageStatus
             when(isSessionValid){
                 true -> {
                     when(shouldShowOnboarding){
@@ -123,6 +111,6 @@ private fun ScreenContent(
                     }
                 }
             }
-        }*/
+        }
     }
 }
