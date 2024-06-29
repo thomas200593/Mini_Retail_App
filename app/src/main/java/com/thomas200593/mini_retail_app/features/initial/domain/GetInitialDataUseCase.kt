@@ -15,9 +15,9 @@ import kotlinx.coroutines.flow.onEach
 import timber.log.Timber
 import javax.inject.Inject
 
-private val TAG = InitialUseCase::class.simpleName
+private val TAG = GetInitialDataUseCase::class.simpleName
 
-class InitialUseCase @Inject constructor(
+class GetInitialDataUseCase @Inject constructor(
     private val authRepository: AuthRepository,
     private val appConfigRepository: AppConfigRepository,
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher

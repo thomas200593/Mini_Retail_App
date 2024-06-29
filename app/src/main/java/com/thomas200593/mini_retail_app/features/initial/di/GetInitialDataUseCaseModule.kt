@@ -4,7 +4,7 @@ import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatche
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatchers
 import com.thomas200593.mini_retail_app.features.app_config.repository.AppConfigRepository
 import com.thomas200593.mini_retail_app.features.auth.repository.AuthRepository
-import com.thomas200593.mini_retail_app.features.initial.domain.InitialUseCase
+import com.thomas200593.mini_retail_app.features.initial.domain.GetInitialDataUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -14,14 +14,14 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object InitialUseCaseModule {
+object GetInitialDataUseCaseModule {
     @Provides
     @Singleton
-    fun providesInitialUseCase(
+    fun providesGetInitialDataUseCase(
         authRepository: AuthRepository,
         appConfigRepository: AppConfigRepository,
         @Dispatcher(Dispatchers.Dispatchers.IO) ioDispatcher: CoroutineDispatcher
-    ) = InitialUseCase(
+    ) = GetInitialDataUseCase(
         authRepository = authRepository,
         appConfigRepository = appConfigRepository,
         ioDispatcher = ioDispatcher

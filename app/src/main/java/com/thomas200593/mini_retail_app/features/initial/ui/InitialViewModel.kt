@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatchers
 import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
-import com.thomas200593.mini_retail_app.features.initial.domain.InitialUseCase
+import com.thomas200593.mini_retail_app.features.initial.domain.GetInitialDataUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.SharingStarted
@@ -19,10 +19,10 @@ private val TAG = InitialViewModel::class.simpleName
 
 @HiltViewModel
 class InitialViewModel @Inject constructor(
-    initialUseCase: InitialUseCase,
+    getInitialDataUseCase: GetInitialDataUseCase,
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ): ViewModel(){
-    val uiState = initialUseCase.invoke()
+    val uiState = getInitialDataUseCase.invoke()
         .flowOn(ioDispatcher)
         .onEach {
             Timber.d("$TAG.uiState : $it")

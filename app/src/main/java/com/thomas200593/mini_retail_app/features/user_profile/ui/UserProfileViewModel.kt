@@ -37,14 +37,10 @@ class UserProfileViewModel @Inject constructor(
     private val _businessProfile: MutableState<RequestState<BusinessProfile?>> = mutableStateOf(RequestState.Idle)
     val businessProfile = _businessProfile
 
-    private val _businessProfileSummary: MutableState<RequestState<BusinessProfileSummary?>> = mutableStateOf(RequestState.Idle)
-    val businessProfileSummary = _businessProfileSummary
-
     fun onOpen(validSession: SessionState.Valid) = viewModelScope.launch(ioDispatcher){
         Timber.d("Called : fun $TAG.onOpen()")
         getCurrentSessionUserData(validSession)
         getBusinessProfile()
-        getBusinessProfileSummary()
     }
 
     private fun getCurrentSessionUserData(validSession: SessionState.Valid) = viewModelScope.launch(ioDispatcher){
@@ -65,24 +61,6 @@ class UserProfileViewModel @Inject constructor(
         }.collect { businessProfile ->
             _businessProfile.value = RequestState.Success(businessProfile)
         }
-    }
-
-    private fun getBusinessProfileSummary() = viewModelScope.launch(ioDispatcher){
-        Timber.d("Called : fun $TAG.getBusinessProfileSummary()")
-        _businessProfileSummary.value = RequestState.Loading
-        businessProfileRepository
-            .getBusinessProfileSummary()
-            .catch {
-                RequestState.Error(it)
-            }
-            .map {
-                it.takeIf { it != null }?.let { businessSummary ->
-                    RequestState.Success(businessSummary)
-                }?: RequestState.Empty
-            }
-            .collect{ data ->
-                _businessProfileSummary.value = data
-            }
     }
 
     fun handleSignOut() = viewModelScope.launch(ioDispatcher){
