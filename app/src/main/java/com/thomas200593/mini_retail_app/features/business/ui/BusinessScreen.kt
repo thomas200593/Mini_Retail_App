@@ -32,6 +32,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.navOptions
 import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.app.ui.AppState
 import com.thomas200593.mini_retail_app.app.ui.LocalAppState
@@ -43,6 +44,7 @@ import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.Emp
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.ErrorScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.LoadingScreen
 import com.thomas200593.mini_retail_app.features.business.navigation.DestinationBusiness
+import com.thomas200593.mini_retail_app.features.business.navigation.navigateToBusiness
 import timber.log.Timber
 
 private const val TAG = "BusinessScreen"
@@ -55,7 +57,6 @@ fun BusinessScreen(
     Timber.d("Called : fun $TAG()")
     val sessionState by appState.isSessionValid.collectAsStateWithLifecycle()
     val businessMenuPreferences by viewModel.businessMenuPreferences
-    val context = LocalContext.current
 
     when(sessionState){
         SessionState.Loading -> {
@@ -77,14 +78,13 @@ fun BusinessScreen(
     ScreenContent(
         businessMenuPreferences = businessMenuPreferences,
         onNavigateToMenu = { menu ->
-//            appState.navController.navigateToBusiness(
-//                navOptions = navOptions {
-//                    launchSingleTop = true
-//                    restoreState = true
-//                },
-//                businessDestination = menu
-//            )
-            Toast.makeText(context, "Navigate to : $menu", Toast.LENGTH_LONG).show()
+            appState.navController.navigateToBusiness(
+                navOptions = navOptions {
+                    launchSingleTop = true
+                    restoreState = true
+                },
+                destinationBusiness = menu
+            )
         }
     )
 }
