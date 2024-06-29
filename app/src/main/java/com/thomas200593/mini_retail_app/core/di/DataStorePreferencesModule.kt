@@ -19,7 +19,7 @@ private val TAG = DataStorePreferencesModule::class.simpleName
 object DataStorePreferencesModule {
     @Provides
     @Singleton
-    fun provideDataStorePreferences(@ApplicationContext context: Context) =
+    fun providesDataStorePreferences(@ApplicationContext context: Context) =
         create(
             produceFile = {
                 Timber.d("Called : fun $TAG.provideDataStorePreferences()")

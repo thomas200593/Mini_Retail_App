@@ -16,7 +16,7 @@ import javax.inject.Singleton
 object RoomDatabaseModule {
     @Provides
     @Singleton
-    fun provideRoomDatabase(@ApplicationContext context: Context) = Room
+    fun providesRoomDatabase(@ApplicationContext context: Context) = Room
         .databaseBuilder(
             context = context,
             AppLocalDatabaseHelper::class.java,
