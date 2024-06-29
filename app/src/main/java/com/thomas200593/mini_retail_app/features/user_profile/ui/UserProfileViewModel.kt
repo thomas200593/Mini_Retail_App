@@ -23,7 +23,7 @@ private val TAG = UserProfileViewModel::class.simpleName
 @HiltViewModel
 class UserProfileViewModel @Inject constructor(
     private val authRepository: AuthRepository,
-    private val businessProfileSummaryUseCase: GetBusinessProfileSummaryUseCase,
+    private val getBusinessProfileSummary: GetBusinessProfileSummaryUseCase,
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
 ): ViewModel(){
 
@@ -52,7 +52,7 @@ class UserProfileViewModel @Inject constructor(
     private fun getBusinessProfileSummary() = viewModelScope.launch(ioDispatcher){
         Timber.d("Called : fun $TAG.getBusinessProfile()")
         _businessProfileSummary.value = RequestState.Loading
-        businessProfileSummaryUseCase.invoke().collect{ bps ->
+        getBusinessProfileSummary.invoke().collect{ bps ->
             _businessProfileSummary.value = bps
         }
     }

@@ -14,6 +14,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Lock
@@ -111,6 +112,9 @@ fun UserProfileScreen(
         onSignedOut = {
             viewModel.handleSignOut()
             SessionMonitorWorkManager.terminate(applicationContext)
+        },
+        onNavigateToBusinessProfile = {
+
         }
     )
 }
@@ -122,6 +126,7 @@ private fun ScreenContent(
     businessProfileSummaryData: RequestState<BusinessProfileSummary>,
     onNavigateToConfig: () -> Unit,
     onSignedOut: () -> Unit,
+    onNavigateToBusinessProfile: () -> Unit
 ) {
     Column(
         modifier = modifier
@@ -138,6 +143,7 @@ private fun ScreenContent(
         )
         MenuSection(
             businessProfileSummaryData = businessProfileSummaryData,
+            onNavigateToBusinessProfile = onNavigateToBusinessProfile
         )
         SignOutSection(
             onSignedOut = onSignedOut
@@ -274,6 +280,7 @@ private fun ProfileSection(
 @Composable
 private fun MenuSection(
     businessProfileSummaryData: RequestState<BusinessProfileSummary>,
+    onNavigateToBusinessProfile: () -> Unit
 ) {
     when(businessProfileSummaryData){
         RequestState.Idle, RequestState.Loading -> {
@@ -312,11 +319,17 @@ private fun MenuSection(
                         textAlign = TextAlign.Start
                     )
                     HorizontalDivider()
+                    AppIconButton(
+                        onClick = { onNavigateToBusinessProfile() },
+                        icon = Icons.Default.Info,
+                        text = stringResource(id = R.string.str_detail)
+                    )
                 }
             }
         }
         is RequestState.Success -> {
-
+            val data = businessProfileSummaryData.data
+            Text(text = "Data: $data")
         }
     }
 }
@@ -345,7 +358,9 @@ fun PreviewMenuSection(){
             userData = RequestState.Empty,
             onNavigateToConfig = {},
             onSignedOut = {},
-            businessProfileSummaryData = RequestState.Empty
+            businessProfileSummaryData = RequestState.Empty,
+            //TEST
+            onNavigateToBusinessProfile = {}
         )
     }
 }
