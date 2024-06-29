@@ -18,6 +18,7 @@ import com.thomas200593.mini_retail_app.R.drawable.app_icon_export_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_happy_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_import_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_language_48px
+import com.thomas200593.mini_retail_app.R.drawable.app_icon_master_data_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_neutral_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_onboarding_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_onboarding_hide_48px
@@ -58,6 +59,7 @@ object Icons {
     object Data {
         @DrawableRes val backup = +app_icon_export_48px
         @DrawableRes val restore = +app_icon_import_48px
+        @DrawableRes val master_data = +app_icon_master_data_48px
     }
     object DynamicColor {
         @DrawableRes val dynamic_color = +app_icon_dynamic_color_48px

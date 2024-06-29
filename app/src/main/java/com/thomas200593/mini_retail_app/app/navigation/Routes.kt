@@ -43,6 +43,7 @@ object Routes {
      * Business
      */
     const val APP_ROUTE_BUSINESS: String = "r_business"
+    const val APP_ROUTE_BUSINESS_MASTER_DATA: String = "r_business_master_data"
 
     /**
      * Reporting

@@ -1,0 +1,29 @@
+package com.thomas200593.mini_retail_app.features.business.navigation
+
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
+import com.thomas200593.mini_retail_app.R
+import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs
+import com.thomas200593.mini_retail_app.core.ui.common.Icons
+
+enum class BusinessDestination(
+    val route: String,
+    @DrawableRes val iconRes: Int,
+    @StringRes val title: Int,
+    @StringRes val description: Int,
+    val usesAuth: Boolean
+) {
+    BUSINESS_MASTER_DATA(
+        route = ScreenGraphs.BusinessMasterData.route,
+        iconRes = Icons.Data.master_data,
+        title = R.string.str_biz_master_data,
+        description = R.string.str_biz_master_data_desc,
+        usesAuth = true
+    ),
+//    BUSINESS_OPERATIONAL(
+//
+//    ),
+//    BUSINESS_CONFIGURATION(
+//
+//    )
+}

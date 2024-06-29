@@ -3,7 +3,6 @@ package com.thomas200593.mini_retail_app.app.navigation
 sealed class ScreenGraphs(
     val route: String
 ) {
-
     /**
      * Initial
      */
@@ -45,6 +44,7 @@ sealed class ScreenGraphs(
      * Business
      */
     data object Business: ScreenGraphs(route = Routes.APP_ROUTE_BUSINESS)
+    data object BusinessMasterData: ScreenGraphs(route = Routes.APP_ROUTE_BUSINESS_MASTER_DATA)
 
     /**
      * Reporting
