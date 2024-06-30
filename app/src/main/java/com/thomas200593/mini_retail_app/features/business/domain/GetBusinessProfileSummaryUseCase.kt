@@ -3,8 +3,8 @@ package com.thomas200593.mini_retail_app.features.business.domain
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatchers
 import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
-import com.thomas200593.mini_retail_app.features.business.entity.dto.BusinessProfileSummary
 import com.thomas200593.mini_retail_app.features.business.repository.BusinessProfileRepository
+import com.thomas200593.mini_retail_app.features.business.util.BusinessExtFn
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOn
@@ -13,6 +13,7 @@ import javax.inject.Inject
 
 class GetBusinessProfileSummaryUseCase @Inject constructor(
     private val businessProfileRepository: BusinessProfileRepository,
+    private val businessExtFn: BusinessExtFn,
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ) {
     operator fun invoke() = businessProfileRepository
@@ -27,13 +28,7 @@ class GetBusinessProfileSummaryUseCase @Inject constructor(
                 RequestState.Empty
             }else{
                 RequestState.Success(
-                    BusinessProfileSummary(
-                        seqId = it.seqId,
-                        genId = it.genId,
-                        auditTrail = it.auditTrail,
-                        bizName = it.bizIdentity?.bizName,
-                        bizIndustry = it.bizIdentity?.industries
-                    )
+                    businessExtFn.bizProfileToBizProfileSummary(it)
                 )
             }
         }
