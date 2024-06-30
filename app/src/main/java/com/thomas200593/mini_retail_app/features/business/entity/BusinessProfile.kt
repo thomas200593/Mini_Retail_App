@@ -5,11 +5,11 @@ import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
-import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.AuditTrail
-import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.TypeConverterAuditTrail
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.Address
+import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.AuditTrail
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.Contact
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.Link
+import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.TypeConverterAuditTrail
 import kotlinx.serialization.Serializable
 import ulid.ULID
 
