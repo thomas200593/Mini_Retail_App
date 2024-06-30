@@ -16,6 +16,9 @@ SELECT
     bp.seq_id, 
     bp.gen_id, 
     bp.biz_identity, 
+    bp.addresses,
+    bp.contacts,
+    bp.links,
     bp.audit_trail 
 FROM business_profile bp LIMIT 1
     """)
