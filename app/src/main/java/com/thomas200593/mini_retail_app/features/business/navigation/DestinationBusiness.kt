@@ -20,10 +20,11 @@ enum class DestinationBusiness(
         description = R.string.str_biz_master_data_desc,
         usesAuth = true
     ),
-//    BUSINESS_OPERATIONAL(
-//
-//    ),
-//    BUSINESS_CONFIGURATION(
-//
+//    BUSINESS_PROFILE(
+//        route = ScreenGraphs.BusinessProfile.route,
+//        iconRes = Icons.Business.business_profile,
+//        title = R.string.business_profile,
+//        description = R.string.business_profile_desc,
+//        usesAuth = true
 //    )
 }

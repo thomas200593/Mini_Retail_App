@@ -72,4 +72,6 @@
     <string name="str_biz_master_data_desc">Mengatur Data Master</string>
     <string name="str_email_verified">Terverifikasi</string>
     <string name="str_email_not_verified">Tidak terverifikasi</string>
+    <string name="str_business_profile">Profil Bisnis</string>
+    <string name="str_business_profile_desc">Informasi terkait bisnis &amp; perusahaan</string>
 </resources>

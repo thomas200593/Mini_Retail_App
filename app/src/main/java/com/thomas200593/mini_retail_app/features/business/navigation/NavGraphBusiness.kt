@@ -25,8 +25,11 @@ fun NavGraphBuilder.navGraphBusiness(){
             BusinessScreen()
         }
 
+        /**
+         * - Master Data
+         */
         navGraphBusinessMasterData()
-        //TODO : Add Business Configuration (Business Profile is here)
+//        navGraphBusinessConfiguration()
     }
 }
 

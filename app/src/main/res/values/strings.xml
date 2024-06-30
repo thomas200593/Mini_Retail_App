@@ -74,4 +74,6 @@
     <string name="str_biz_master_data_desc">Configure the Master Data</string>
     <string name="str_email_verified">Verified</string>
     <string name="str_email_not_verified">Not Verified</string>
+    <string name="str_business_profile">Business Profile</string>
+    <string name="str_business_profile_desc">Business &amp; company related information></string>
 </resources>

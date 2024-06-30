@@ -6,6 +6,7 @@ import com.thomas200593.mini_retail_app.R.drawable.app_flag_gb_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_flag_id_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_48x48
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_business_48px
+import com.thomas200593.mini_retail_app.R.drawable.app_icon_business_profile_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_country_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_currency_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_dashboard_48px
@@ -46,6 +47,9 @@ object Icons {
     }
     object Auth{
         @DrawableRes val session_expire = +app_icon_session_expired_48px
+    }
+    object Business{
+        @DrawableRes val business_profile = +app_icon_business_profile_48px
     }
     object Content{
         @DrawableRes val empty = +app_icon_empty_24px
