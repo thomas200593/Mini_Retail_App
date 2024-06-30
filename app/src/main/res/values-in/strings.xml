@@ -74,4 +74,8 @@
     <string name="str_email_not_verified">Tidak terverifikasi</string>
     <string name="str_business_profile">Profil Bisnis</string>
     <string name="str_business_profile_desc">Informasi terkait bisnis &amp; perusahaan</string>
+    <string name="str_supplier">Pemasok</string>
+    <string name="str_supplier_desc">Atur master data pemasok</string>
+    <string name="str_customer">Pelanggan</string>
+    <string name="str_customer_desc">Atur master data pelanggan</string>
 </resources>

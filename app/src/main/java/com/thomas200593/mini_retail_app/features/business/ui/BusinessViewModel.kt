@@ -23,7 +23,6 @@ class BusinessViewModel @Inject constructor(
     private val businessRepository: BusinessRepository,
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ): ViewModel() {
-
     private val _businessMenuPreferences: MutableState<RequestState<Set<DestinationBusiness>>> = mutableStateOf(RequestState.Idle)
     val businessMenuPreferences = _businessMenuPreferences
 

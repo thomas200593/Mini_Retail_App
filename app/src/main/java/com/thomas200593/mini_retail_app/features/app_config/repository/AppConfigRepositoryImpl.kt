@@ -30,7 +30,7 @@ internal class AppConfigRepositoryImpl @Inject constructor(
                 emptySet()
             }
             is SessionState.Invalid -> {
-                DestinationAppConfig.entries.filter { !it.usesAuth }.toSet()
+                DestinationAppConfig.entries.filterNot { it.usesAuth }.toSet()
             }
             is SessionState.Valid -> {
                 DestinationAppConfig.entries.toSet()

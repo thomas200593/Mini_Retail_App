@@ -45,7 +45,8 @@ sealed class ScreenGraphs(
      */
     data object Business: ScreenGraphs(route = Routes.APP_ROUTE_BUSINESS)
     data object BusinessMasterData: ScreenGraphs(route = Routes.APP_ROUTE_BUSINESS_MASTER_DATA)
-
+    data object BusinessMasterDataSupplier: ScreenGraphs(route = Routes.APP_ROUTE_BUSINESS_MASTER_DATA_SUPPLIER)
+    data object BusinessMasterDataCustomer: ScreenGraphs(route = Routes.APP_ROUTE_BUSINESS_MASTER_DATA_CUSTOMER)
     /**
      * Reporting
      */

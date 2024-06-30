@@ -76,4 +76,8 @@
     <string name="str_email_not_verified">Not Verified</string>
     <string name="str_business_profile">Business Profile</string>
     <string name="str_business_profile_desc">Business &amp; company related information></string>
+    <string name="str_supplier">Supplier</string>
+    <string name="str_supplier_desc">Manage master data supplier</string>
+    <string name="str_customer">Customer</string>
+    <string name="str_customer_desc">Manage master data customer</string>
 </resources>

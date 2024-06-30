@@ -9,6 +9,7 @@ import com.thomas200593.mini_retail_app.R.drawable.app_icon_business_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_business_profile_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_country_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_currency_48px
+import com.thomas200593.mini_retail_app.R.drawable.app_icon_customer_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_dashboard_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_data_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_dynamic_color_48px
@@ -29,6 +30,7 @@ import com.thomas200593.mini_retail_app.R.drawable.app_icon_sad_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_session_expired_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_settings_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_settings_general_48px
+import com.thomas200593.mini_retail_app.R.drawable.app_icon_supplier_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_text_lg_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_text_md_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_text_size_48px
@@ -59,6 +61,9 @@ object Icons {
     }
     object Currency {
         @DrawableRes val currency = +app_icon_currency_48px
+    }
+    object Customer {
+        @DrawableRes val customer = +app_icon_customer_48px
     }
     object Data {
         @DrawableRes val backup = +app_icon_export_48px
@@ -99,6 +104,9 @@ object Icons {
         @DrawableRes val settings = +app_icon_settings_48px
         @DrawableRes val settings_general = +app_icon_settings_general_48px
         @DrawableRes val settings_data = +app_icon_data_48px
+    }
+    object Supplier{
+        @DrawableRes val supplier = +app_icon_supplier_48px
     }
     object Theme{
         @DrawableRes val theme = +app_icon_theme_48px
