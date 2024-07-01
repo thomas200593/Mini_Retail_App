@@ -203,7 +203,6 @@ private fun ScreenContent(
                                 text = stringResource(id = menu.title),
                                 modifier = Modifier.fillMaxWidth(),
                                 color = MaterialTheme.colorScheme.onTertiaryContainer,
-                                maxLines = 2,
                                 textAlign = TextAlign.Center,
                                 overflow = TextOverflow.Ellipsis
                             )

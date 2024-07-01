@@ -39,6 +39,7 @@ object NavigationGraphs {
      */
     const val G_BUSINESS = "graph_business"
     const val G_BUSINESS_MASTER_DATA = "graph_business_master_data"
+    const val G_BUSINESS_MASTER_DATA_SUPPLIER = "graph_business_master_data_supplier"
 
     /**
      * Reporting

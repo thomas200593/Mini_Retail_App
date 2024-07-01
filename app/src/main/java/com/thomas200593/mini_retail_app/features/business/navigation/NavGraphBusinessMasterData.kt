@@ -19,6 +19,12 @@ fun NavGraphBuilder.navGraphBusinessMasterData() {
         ){
             BusinessMasterDataScreen()
         }
+
+        /**
+         * - Supplier
+         */
+        navGraphBusinessMasterDataSupplier()
+//        navGraphBusinessMasterDataCustomer()
     }
 }
 

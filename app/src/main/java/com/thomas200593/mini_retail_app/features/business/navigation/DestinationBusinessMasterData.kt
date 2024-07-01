@@ -20,11 +20,11 @@ enum class DestinationBusinessMasterData(
         description = R.string.str_supplier_desc,
         usesAuth = true
     ),
-    CUSTOMER(
-        route = ScreenGraphs.BusinessMasterDataCustomer.route,
-        iconRes = Icons.Customer.customer,
-        title = R.string.str_customer,
-        description = R.string.str_customer_desc,
-        usesAuth = true
-    )
+//    CUSTOMER(
+//        route = ScreenGraphs.BusinessMasterDataCustomer.route,
+//        iconRes = Icons.Customer.customer,
+//        title = R.string.str_customer,
+//        description = R.string.str_customer_desc,
+//        usesAuth = true
+//    )
 }
