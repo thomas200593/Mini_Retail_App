@@ -30,6 +30,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.Unspecified
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
@@ -39,21 +40,22 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.credentials.ClearCredentialStateRequest
-import androidx.credentials.CredentialManager
+import androidx.credentials.CredentialManager.Companion.create
 import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
 import androidx.credentials.exceptions.ClearCredentialException
 import androidx.credentials.exceptions.GetCredentialCancellationException
 import androidx.credentials.exceptions.GetCredentialException
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
-import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
+import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential.Companion.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL
+import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential.Companion.createFrom
 import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
 import com.thomas200593.mini_retail_app.BuildConfig
 import com.thomas200593.mini_retail_app.core.ui.common.Icons.Google.google_logo
 import com.thomas200593.mini_retail_app.core.util.JWTHelper
 import com.thomas200593.mini_retail_app.core.util.JWTHelper.GoogleOAuth2.validateToken
 import com.thomas200593.mini_retail_app.features.auth.entity.AuthSessionToken
-import com.thomas200593.mini_retail_app.features.auth.entity.OAuthProvider
+import com.thomas200593.mini_retail_app.features.auth.entity.OAuthProvider.GOOGLE
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -175,7 +177,7 @@ object Button {
                         modifier = Modifier
                             .size(20.dp)
                             .padding(start = 2.dp),
-                        tint = Color.Unspecified
+                        tint = Unspecified
                     )
                     Text(
                         text = btnText,
@@ -202,7 +204,7 @@ object Button {
         ){
             Timber.d("Called : fun $TAG.$TAG_GOOGLE.handleSignIn()")
             coroutineScope.launch {
-                val credentialManager = CredentialManager.create(activityContext)
+                val credentialManager = create(activityContext)
                 val googleIdOptions = GetGoogleIdOption.Builder()
                     .setFilterByAuthorizedAccounts(false)
                     .setNonce(JWTHelper.GoogleOAuth2.generateTokenNonce())
@@ -217,9 +219,9 @@ object Button {
                         .getCredential(context = activityContext, request = credentialRequest)
                     when(val credential = result.credential){
                         is CustomCredential -> {
-                            if(credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL){
-                                val googleIdCredential = GoogleIdTokenCredential.createFrom(credential.data)
-                                val authProvider = OAuthProvider.GOOGLE
+                            if(credential.type == TYPE_GOOGLE_ID_TOKEN_CREDENTIAL){
+                                val googleIdCredential = createFrom(credential.data)
+                                val authProvider = GOOGLE
                                 val idToken = googleIdCredential.idToken
                                 val authSessionToken = AuthSessionToken(authProvider, idToken)
                                 if(validateToken(authSessionToken)){
@@ -248,7 +250,7 @@ object Button {
             onClearError: (Throwable) -> Unit
         ){
             Timber.d("Called : fun $TAG.$TAG_GOOGLE.handleClearCredential()")
-            val credentialManager = CredentialManager.create(context = activityContext)
+            val credentialManager = create(context = activityContext)
             val clearCredentialRequest = ClearCredentialStateRequest()
             try{
                 credentialManager.clearCredentialState(request = clearCredentialRequest)

@@ -5,6 +5,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.util.Locale
+import java.util.Locale.getISOCountries
 
 private val TAG = CountryHelper::class.simpleName
 
@@ -17,7 +18,7 @@ object CountryHelper {
     )
     suspend fun getCountryList() = withContext(Dispatchers.IO){
         Timber.d("Called : $TAG.getCountryList()")
-        val isoCountries = Locale.getISOCountries()
+        val isoCountries = getISOCountries()
         val countries = HashSet<Country>()
         for(isoCountry in isoCountries){
             val displayName = Locale("", isoCountry).displayName

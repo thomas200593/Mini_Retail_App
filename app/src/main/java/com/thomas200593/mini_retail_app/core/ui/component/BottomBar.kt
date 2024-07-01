@@ -3,24 +3,24 @@ package com.thomas200593.mini_retail_app.core.ui.component
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemColors
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.Transparent
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
+import com.thomas200593.mini_retail_app.app.navigation.DestinationTopLevel
 import com.thomas200593.mini_retail_app.core.ui.component.BottomBar.BottomNavigationBarDefaults.navigationContentColor
 import com.thomas200593.mini_retail_app.core.ui.component.BottomBar.BottomNavigationBarDefaults.navigationIndicatorColor
 import com.thomas200593.mini_retail_app.core.ui.component.BottomBar.BottomNavigationBarDefaults.navigationSelectedItemColor
-import com.thomas200593.mini_retail_app.app.navigation.DestinationTopLevel
 import timber.log.Timber
 
 private val TAG = BottomBar::class.simpleName
@@ -97,19 +97,19 @@ object BottomBar {
                 selectedTextColor = navigationSelectedItemColor(),
                 unselectedTextColor = navigationContentColor(),
                 selectedIndicatorColor = navigationIndicatorColor(),
-                disabledIconColor = Color.Transparent,
-                disabledTextColor = Color.Transparent
+                disabledIconColor = Transparent,
+                disabledTextColor = Transparent
             )
         )
     }
 
     private object BottomNavigationBarDefaults{
         @Composable
-        fun navigationContentColor() = MaterialTheme.colorScheme.onSurfaceVariant
+        fun navigationContentColor() = colorScheme.onSurfaceVariant
         @Composable
-        fun navigationSelectedItemColor() = MaterialTheme.colorScheme.onPrimaryContainer
+        fun navigationSelectedItemColor() = colorScheme.onPrimaryContainer
         @Composable
-        fun navigationIndicatorColor() = MaterialTheme.colorScheme.primaryContainer
+        fun navigationIndicatorColor() = colorScheme.primaryContainer
     }
 
     private fun NavDestination?.isDestinationTopLevelInHierarchy(destination: DestinationTopLevel) =

@@ -2,7 +2,8 @@ package com.thomas200593.mini_retail_app.features.app_config.entity
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import com.thomas200593.mini_retail_app.R
+import com.thomas200593.mini_retail_app.R.string.str_onboarding_hide
+import com.thomas200593.mini_retail_app.R.string.str_onboarding_show
 import com.thomas200593.mini_retail_app.core.ui.common.Icons.Onboarding.hide
 import com.thomas200593.mini_retail_app.core.ui.common.Icons.Onboarding.show
 
@@ -13,12 +14,12 @@ enum class OnboardingStatus(
 ) {
     SHOW(
         code = "onboarding_pages_status_show",
-        title = R.string.str_onboarding_show,
+        title = str_onboarding_show,
         iconRes = show
     ),
     HIDE(
         code = "onboarding_pages_status_hide",
-        title = R.string.str_onboarding_hide,
+        title = str_onboarding_hide,
         iconRes = hide
     )
 }

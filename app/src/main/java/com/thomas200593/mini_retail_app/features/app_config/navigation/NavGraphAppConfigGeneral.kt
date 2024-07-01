@@ -6,7 +6,14 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navOptions
 import androidx.navigation.navigation
 import com.thomas200593.mini_retail_app.app.navigation.NavigationGraphs.G_CONFIG_GENERAL
-import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs
+import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs.ConfigGeneral
+import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs.Country
+import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs.Currency
+import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs.DynamicColor
+import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs.FontSize
+import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs.Language
+import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs.Theme
+import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs.Timezone
 import com.thomas200593.mini_retail_app.features.app_config.ui.general_config.AppConfigGeneralScreen
 import com.thomas200593.mini_retail_app.features.app_config.ui.general_config.country.AppConfigGeneralCountryScreen
 import com.thomas200593.mini_retail_app.features.app_config.ui.general_config.currency.AppConfigGeneralCurrencyScreen
@@ -24,52 +31,52 @@ fun NavGraphBuilder.navGraphAppConfigGeneral() {
     Timber.d("Called : fun $TAG_NAV_GRAPH_BUILDER.appConfigGeneralNavGraph()")
     navigation(
         route = G_CONFIG_GENERAL,
-        startDestination = ScreenGraphs.ConfigGeneral.route
+        startDestination = ConfigGeneral.route
     ){
         composable(
-            route = ScreenGraphs.ConfigGeneral.route
+            route = ConfigGeneral.route
         ){
             AppConfigGeneralScreen()
         }
 
         composable(
-            route = ScreenGraphs.Country.route
+            route = Country.route
         ){
             AppConfigGeneralCountryScreen()
         }
 
         composable(
-            route = ScreenGraphs.Language.route
+            route = Language.route
         ){
             AppConfigGeneralLanguageScreen()
         }
 
         composable(
-            route = ScreenGraphs.Timezone.route
+            route = Timezone.route
         ){
             AppConfigGeneralTimezoneScreen()
         }
 
         composable(
-            route = ScreenGraphs.Theme.route
+            route = Theme.route
         ){
             AppConfigGeneralThemeScreen()
         }
 
         composable(
-            route = ScreenGraphs.DynamicColor.route
+            route = DynamicColor.route
         ){
             AppConfigGeneralDynamicColorScreen()
         }
 
         composable(
-            route = ScreenGraphs.FontSize.route
+            route = FontSize.route
         ){
             AppConfigGeneralFontSizeScreen()
         }
 
         composable(
-            route = ScreenGraphs.Currency.route
+            route = Currency.route
         ){
             AppConfigGeneralCurrencyScreen()
         }

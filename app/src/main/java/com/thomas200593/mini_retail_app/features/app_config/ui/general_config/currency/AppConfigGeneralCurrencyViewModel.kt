@@ -6,13 +6,18 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatchers
+import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatchers.Dispatchers.IO
 import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
+import com.thomas200593.mini_retail_app.core.design_system.util.RequestState.Error
+import com.thomas200593.mini_retail_app.core.design_system.util.RequestState.Loading
+import com.thomas200593.mini_retail_app.core.design_system.util.RequestState.Success
 import com.thomas200593.mini_retail_app.features.app_config.entity.Currency
 import com.thomas200593.mini_retail_app.features.app_config.repository.ConfigGeneralRepository
 import com.thomas200593.mini_retail_app.features.app_config.repository.AppConfigRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.SharingStarted.Companion.Eagerly
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
@@ -27,17 +32,17 @@ private val TAG = AppConfigGeneralCurrencyViewModel::class.simpleName
 class AppConfigGeneralCurrencyViewModel @Inject constructor(
     appConfigRepository: AppConfigRepository,
     private val configGeneralRepository: ConfigGeneralRepository,
-    @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
+    @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
 ): ViewModel() {
     private val _currencyPreferences: MutableState<RequestState<List<Currency>>> = mutableStateOf(RequestState.Idle)
     val currencyPreferences = _currencyPreferences
     val configCurrentUiState = appConfigRepository.configCurrentData.flowOn(ioDispatcher)
-        .catch { RequestState.Error(it) }
-        .map { RequestState.Success(it) }
+        .catch { Error(it) }
+        .map { Success(it) }
         .stateIn(
             scope = viewModelScope,
-            SharingStarted.Eagerly,
-            initialValue = RequestState.Loading
+            started = Eagerly,
+            initialValue = Loading
         )
 
     fun onOpen() = viewModelScope.launch(ioDispatcher) {
@@ -47,12 +52,9 @@ class AppConfigGeneralCurrencyViewModel @Inject constructor(
 
     private fun getCurrencyPreferences() = viewModelScope.launch(ioDispatcher) {
         Timber.d("Called : fun $TAG.getCurrencyPreferences()")
-        _currencyPreferences.value = RequestState.Loading
-        _currencyPreferences.value = try{
-            RequestState.Success(configGeneralRepository.getCurrencyPreferences())
-        }catch (e: Throwable){
-            RequestState.Error(e)
-        }
+        _currencyPreferences.value = Loading
+        _currencyPreferences.value = try{ Success(configGeneralRepository.getCurrencyPreferences()) }
+        catch (e: Throwable){ Error(e) }
     }
 
     fun saveSelectedCurrency(currency: Currency) = viewModelScope.launch {

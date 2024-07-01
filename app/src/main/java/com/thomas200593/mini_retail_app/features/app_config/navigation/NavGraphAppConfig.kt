@@ -6,7 +6,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navOptions
 import androidx.navigation.navigation
 import com.thomas200593.mini_retail_app.app.navigation.NavigationGraphs.G_APP_CONFIG
-import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs
+import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs.AppConfig
 import com.thomas200593.mini_retail_app.features.app_config.ui.AppConfigScreen
 import timber.log.Timber
 
@@ -17,10 +17,10 @@ fun NavGraphBuilder.navGraphAppConfig(){
     Timber.d("Called : fun $TAG_NAV_GRAPH_BUILDER.appConfigNavGraph()")
     navigation(
         route = G_APP_CONFIG,
-        startDestination = ScreenGraphs.AppConfig.route
+        startDestination = AppConfig.route
     ){
         composable(
-            route = ScreenGraphs.AppConfig.route
+            route = AppConfig.route
         ){
             AppConfigScreen()
         }

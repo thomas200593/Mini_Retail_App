@@ -4,6 +4,7 @@ import com.thomas200593.mini_retail_app.features.app_config.entity.Currency
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.joda.money.CurrencyUnit
+import org.joda.money.CurrencyUnit.registeredCurrencies
 import timber.log.Timber
 
 private val TAG = CurrencyHelper::class.simpleName
@@ -18,7 +19,7 @@ object CurrencyHelper {
     )
     suspend fun getCurrencies() = withContext(Dispatchers.IO){
         Timber.d("Called : $TAG.getCurrencies()")
-        val currencies = CurrencyUnit.registeredCurrencies()
+        val currencies = registeredCurrencies()
         val sets = HashSet<Currency>()
         for(currency in currencies){
             val code = currency.code

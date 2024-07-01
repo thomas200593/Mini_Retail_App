@@ -2,7 +2,8 @@ package com.thomas200593.mini_retail_app.features.app_config.entity
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import com.thomas200593.mini_retail_app.R
+import com.thomas200593.mini_retail_app.R.string.str_lang_en
+import com.thomas200593.mini_retail_app.R.string.str_lang_in
 import com.thomas200593.mini_retail_app.core.ui.common.Icons.Language.en
 import com.thomas200593.mini_retail_app.core.ui.common.Icons.Language.id
 
@@ -14,11 +15,11 @@ enum class Language(
     EN(
         code = "en",
         iconRes = en,
-        title = R.string.str_lang_en
+        title = str_lang_en
     ),
     ID(
         code = "in",
         iconRes = id,
-        title = R.string.str_lang_in
+        title = str_lang_in
     )
 }

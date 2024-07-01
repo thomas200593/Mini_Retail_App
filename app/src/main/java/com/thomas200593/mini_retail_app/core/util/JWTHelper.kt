@@ -3,16 +3,16 @@ package com.thomas200593.mini_retail_app.core.util
 import com.auth0.android.jwt.DecodeException
 import com.auth0.android.jwt.JWT
 import com.thomas200593.mini_retail_app.BuildConfig
+import com.thomas200593.mini_retail_app.core.design_system.util.Constants
 import com.thomas200593.mini_retail_app.features.auth.entity.AuthSessionToken
-import com.thomas200593.mini_retail_app.features.auth.entity.OAuth2UserMetadata
+import com.thomas200593.mini_retail_app.features.auth.entity.OAuth2UserMetadata.Google
 import com.thomas200593.mini_retail_app.features.auth.entity.OAuthProvider
 import com.thomas200593.mini_retail_app.features.auth.entity.UserData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
-import java.security.MessageDigest
-import java.time.Instant
-import java.util.UUID
+import java.security.MessageDigest.getInstance
+import java.util.UUID.randomUUID
 
 private val TAG = JWTHelper::class.simpleName
 
@@ -61,7 +61,7 @@ object JWTHelper {
                         !email.isNullOrEmpty() &&
                         (aud in listOf(BuildConfig.GOOGLE_AUTH_WEB_ID))&&
                         (iss in listOf("accounts.google.com", "https://accounts.google.com")) &&
-                        (exp != null && (Instant.now().epochSecond <= exp)) &&
+                        (exp != null && (Constants.NOW_EPOCH_SECOND <= exp)) &&
                         (authSessionToken.authProvider.name == OAuthProvider.GOOGLE.name)
                 if (validationResult) {
                     Timber.d("fun $TAG.$TAG_GOOGLE_OAUTH2.validateToken() returned : true")
@@ -80,9 +80,9 @@ object JWTHelper {
         }
 
         suspend fun generateTokenNonce() = withContext(Dispatchers.IO){
-            val rawNonce = UUID.randomUUID().toString()
+            val rawNonce = randomUUID().toString()
             val bytes = rawNonce.toByteArray()
-            val md = MessageDigest.getInstance("SHA-256")
+            val md = getInstance("SHA-256")
             val digest = md.digest(bytes)
             val hashedNonce = digest.fold(""){ str, it -> str + "%02x".format(it) }
             hashedNonce
@@ -98,7 +98,7 @@ object JWTHelper {
                 val exp = jwt.getClaim("exp").asString()
                 UserData(
                     authSessionToken = authSessionToken,
-                    oAuth2UserMetadata = OAuth2UserMetadata.Google(
+                    oAuth2UserMetadata = Google(
                         email = email.orEmpty(),
                         name = name.orEmpty(),
                         emailVerified = emailVerified.orEmpty(),

@@ -13,7 +13,7 @@ import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
+import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner.current
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.FloatingWindow
 import androidx.navigation.NavBackStackEntry
@@ -34,7 +34,7 @@ object AppBar {
     @Composable
     fun ProvideTopAppBarAction(actions: @Composable RowScope.() -> Unit){
         Timber.d("Called : fun $TAG.ProvideTopAppBarAction()")
-        if(LocalViewModelStoreOwner.current == null || LocalViewModelStoreOwner.current !is NavBackStackEntry){ return }
+        if(current == null || current !is NavBackStackEntry){ return }
         val actionViewModel = viewModel(initializer = {TopAppBarViewModel()})
         DisposableEffect(key1 = Unit) {
             actionViewModel.actionState = actions
@@ -47,7 +47,7 @@ object AppBar {
     @Composable
     fun ProvideTopAppBarTitle(title: @Composable () -> Unit){
         Timber.d("Called : fun $TAG.ProvideTopAppBarTitle()")
-        if (LocalViewModelStoreOwner.current == null || LocalViewModelStoreOwner.current !is NavBackStackEntry){ return }
+        if (current == null || current !is NavBackStackEntry){ return }
         val actionViewModel = viewModel(initializer = { TopAppBarViewModel() })
         DisposableEffect(key1 = Unit) {
             actionViewModel.titleState = title

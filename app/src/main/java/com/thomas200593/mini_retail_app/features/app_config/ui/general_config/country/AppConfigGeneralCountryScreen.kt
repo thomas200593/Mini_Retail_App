@@ -38,6 +38,11 @@ import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.app.ui.AppState
 import com.thomas200593.mini_retail_app.app.ui.LocalAppState
 import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
+import com.thomas200593.mini_retail_app.core.design_system.util.RequestState.Empty
+import com.thomas200593.mini_retail_app.core.design_system.util.RequestState.Error
+import com.thomas200593.mini_retail_app.core.design_system.util.RequestState.Idle
+import com.thomas200593.mini_retail_app.core.design_system.util.RequestState.Loading
+import com.thomas200593.mini_retail_app.core.design_system.util.RequestState.Success
 import com.thomas200593.mini_retail_app.core.ui.common.Icons.Currency.currency
 import com.thomas200593.mini_retail_app.core.ui.component.AppBar
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.EmptyScreen
@@ -94,8 +99,7 @@ private fun TopAppBar(onNavigateBack: () -> Unit) {
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ){
             Icon(
-                modifier = Modifier
-                    .sizeIn(maxHeight = ButtonDefaults.IconSize),
+                modifier = Modifier.sizeIn(maxHeight = ButtonDefaults.IconSize),
                 imageVector = ImageVector.vectorResource(id = currency),
                 contentDescription = null
             )
@@ -113,8 +117,7 @@ private fun TopAppBar(onNavigateBack: () -> Unit) {
             horizontalArrangement = Arrangement.Center
         ){
             Icon(
-                modifier = Modifier
-                    .sizeIn(maxHeight = ButtonDefaults.IconSize),
+                modifier = Modifier.sizeIn(maxHeight = ButtonDefaults.IconSize),
                 imageVector = Icons.Default.Info,
                 contentDescription = null
             )
@@ -129,68 +132,62 @@ private fun ScreenContent(
     onSaveSelectedCountry: (Country) -> Unit
 ) {
     when(configCurrent){
-        RequestState.Idle, RequestState.Loading -> {
+        Idle, Loading -> {
             LoadingScreen()
         }
-        is RequestState.Error -> {
+        is Error -> {
             ErrorScreen(
                 title = stringResource(id = R.string.str_error),
                 errorMessage = stringResource(id = R.string.str_error_fetching_preferences),
                 showIcon = true
             )
         }
-        RequestState.Empty -> {
+        Empty -> {
             EmptyScreen(
                 title = stringResource(id = R.string.str_empty_message_title),
                 emptyMessage = stringResource(id = R.string.str_empty_message),
                 showIcon = true
             )
         }
-        is RequestState.Success -> {
+        is Success -> {
             when(countryPreferences){
-                RequestState.Idle -> Unit
-                RequestState.Loading -> {
+                Idle -> Unit
+                Loading -> {
                     LoadingScreen()
                 }
-                is RequestState.Error -> {
+                is Error -> {
                     ErrorScreen(
                         title = stringResource(id = R.string.str_error),
                         errorMessage = stringResource(id = R.string.str_error_fetching_preferences),
                         showIcon = true
                     )
                 }
-                RequestState.Empty -> {
+                Empty -> {
                     EmptyScreen(
                         title = stringResource(id = R.string.str_empty_message_title),
                         emptyMessage = stringResource(id = R.string.str_empty_message),
                         showIcon = true
                     )
                 }
-                is RequestState.Success -> {
+                is Success -> {
                     val currentCountry = configCurrent.data.country
                     val appCountryPreferences = countryPreferences.data
 
                     Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(4.dp),
+                        modifier = Modifier.fillMaxSize().padding(4.dp),
                         verticalArrangement = Arrangement.spacedBy(10.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
                             text = "${stringResource(id = R.string.str_country)} : ${currentCountry.displayName}",
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(4.dp),
+                            modifier = Modifier.fillMaxWidth().padding(4.dp),
                             fontWeight = FontWeight.Bold,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                             textAlign = TextAlign.Center,
                         )
                         LazyColumn(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(8.dp),
+                            modifier = Modifier.fillMaxSize().padding(8.dp),
                             verticalArrangement = Arrangement.spacedBy(10.dp),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
@@ -228,8 +225,7 @@ private fun ScreenContent(
                                     },
                                     thirdRowContent = {
                                         Surface(
-                                            modifier = Modifier
-                                                .fillMaxWidth(),
+                                            modifier = Modifier.fillMaxWidth(),
                                             onClick = { onSaveSelectedCountry(data) }
                                         ) {
                                             Icon(

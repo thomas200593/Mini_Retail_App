@@ -2,11 +2,14 @@ package com.thomas200593.mini_retail_app.features.app_config.repository
 
 import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStorePreferences
 import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
+import com.thomas200593.mini_retail_app.core.data.local.session.SessionState.Invalid
+import com.thomas200593.mini_retail_app.core.data.local.session.SessionState.Loading
+import com.thomas200593.mini_retail_app.core.data.local.session.SessionState.Valid
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatchers
-import com.thomas200593.mini_retail_app.core.util.CountryHelper
-import com.thomas200593.mini_retail_app.core.util.CurrencyHelper
-import com.thomas200593.mini_retail_app.core.util.TimezoneHelper
+import com.thomas200593.mini_retail_app.core.util.CountryHelper.getCountryList
+import com.thomas200593.mini_retail_app.core.util.CurrencyHelper.getCurrencies
+import com.thomas200593.mini_retail_app.core.util.TimezoneHelper.getTimezones
 import com.thomas200593.mini_retail_app.features.app_config.entity.Country
 import com.thomas200593.mini_retail_app.features.app_config.entity.Currency
 import com.thomas200593.mini_retail_app.features.app_config.entity.DynamicColor
@@ -15,6 +18,7 @@ import com.thomas200593.mini_retail_app.features.app_config.entity.Language
 import com.thomas200593.mini_retail_app.features.app_config.entity.Theme
 import com.thomas200593.mini_retail_app.features.app_config.entity.Timezone
 import com.thomas200593.mini_retail_app.features.app_config.navigation.DestinationAppConfigGeneral
+import com.thomas200593.mini_retail_app.features.app_config.navigation.DestinationAppConfigGeneral.entries
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -31,17 +35,9 @@ internal class ConfigGeneralRepositoryImpl @Inject constructor(
     ): Set<DestinationAppConfigGeneral> = withContext(ioDispatcher) {
         Timber.d("Called : fun $TAG.getAppConfigGeneralMenuData()")
         when (sessionState) {
-            SessionState.Loading -> {
-                emptySet()
-            }
-
-            is SessionState.Invalid -> {
-                DestinationAppConfigGeneral.entries.filterNot { it.usesAuth }.toSet()
-            }
-
-            is SessionState.Valid -> {
-                DestinationAppConfigGeneral.entries.toSet()
-            }
+            Loading -> { emptySet() }
+            is Invalid -> { entries.filterNot { it.usesAuth }.toSet() }
+            is Valid -> { entries.toSet() }
         }
     }
 
@@ -77,7 +73,7 @@ internal class ConfigGeneralRepositoryImpl @Inject constructor(
 
     override suspend fun getTimezonePreferences(): List<Timezone> = withContext(ioDispatcher){
         Timber.d("Called : fun $TAG.getTimezonePreferences()")
-        TimezoneHelper.getTimezones()
+        getTimezones()
     }
 
     override suspend fun setTimezonePreferences(timezone: Timezone) {
@@ -87,7 +83,7 @@ internal class ConfigGeneralRepositoryImpl @Inject constructor(
 
     override suspend fun getCurrencyPreferences(): List<Currency> = withContext(ioDispatcher){
         Timber.d("Called : fun $TAG.getCurrencyPreferences()")
-        CurrencyHelper.getCurrencies()
+        getCurrencies()
     }
 
     override suspend fun setCurrencyPreferences(currency: Currency) {
@@ -107,7 +103,7 @@ internal class ConfigGeneralRepositoryImpl @Inject constructor(
 
     override suspend fun getCountryPreferences(): List<Country> = withContext(ioDispatcher){
         Timber.d("Called : fun $TAG.getCountryPreferences()")
-        CountryHelper.getCountryList()
+        getCountryList()
     }
 
     override suspend fun setCountryPreferences(country: Country) {
