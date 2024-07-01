@@ -61,8 +61,8 @@ fun CountryScreen(
     appState: AppState = LocalAppState.current
 ){
     Timber.d("Called : fun $TAG()")
-    val configCurrent by viewModel.configCurrentUiState.collectAsStateWithLifecycle()
-    val countryPreferences by viewModel.countryPreferences
+    val configCurrent by viewModel.configCurrent.collectAsStateWithLifecycle()
+    val countries by viewModel.countries
 
     LaunchedEffect(Unit) {
         viewModel.onOpen()
@@ -72,9 +72,9 @@ fun CountryScreen(
         onNavigateBack = appState::onNavigateUp
     )
     ScreenContent(
-        countryPreferences = countryPreferences,
+        countries = countries,
         configCurrent = configCurrent,
-        onSaveSelectedCountry = viewModel::saveSelectedCountry
+        onSaveSelectedCountry = viewModel::setCountry
     )
 }
 
@@ -127,7 +127,7 @@ private fun TopAppBar(onNavigateBack: () -> Unit) {
 
 @Composable
 private fun ScreenContent(
-    countryPreferences: RequestState<List<Country>>,
+    countries: RequestState<List<Country>>,
     configCurrent: RequestState<ConfigCurrent>,
     onSaveSelectedCountry: (Country) -> Unit
 ) {
@@ -150,7 +150,7 @@ private fun ScreenContent(
             )
         }
         is Success -> {
-            when(countryPreferences){
+            when(countries){
                 Idle -> Unit
                 Loading -> {
                     LoadingScreen()
@@ -170,8 +170,8 @@ private fun ScreenContent(
                     )
                 }
                 is Success -> {
-                    val currentCountry = configCurrent.data.country
-                    val appCountryPreferences = countryPreferences.data
+                    val currentData = configCurrent.data.country
+                    val preferencesList = countries.data
 
                     Column(
                         modifier = Modifier.fillMaxSize().padding(4.dp),
@@ -179,7 +179,7 @@ private fun ScreenContent(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            text = "${stringResource(id = R.string.str_country)} : ${currentCountry.displayName}",
+                            text = "${stringResource(id = R.string.str_country)} : ${currentData.displayName}",
                             modifier = Modifier.fillMaxWidth().padding(4.dp),
                             fontWeight = FontWeight.Bold,
                             maxLines = 1,
@@ -191,8 +191,8 @@ private fun ScreenContent(
                             verticalArrangement = Arrangement.spacedBy(10.dp),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            items(count = appCountryPreferences.count()){ index ->
-                                val data = appCountryPreferences[index]
+                            items(count = preferencesList.count()){ index ->
+                                val data = preferencesList[index]
                                 ThreeRowCardItem(
                                     firstRowContent = {
                                         Text(
@@ -229,9 +229,9 @@ private fun ScreenContent(
                                             onClick = { onSaveSelectedCountry(data) }
                                         ) {
                                             Icon(
-                                                imageVector = if (data == currentCountry) Icons.Default.CheckCircle else Icons.AutoMirrored.Outlined.KeyboardArrowRight,
+                                                imageVector = if (data == currentData) Icons.Default.CheckCircle else Icons.AutoMirrored.Outlined.KeyboardArrowRight,
                                                 contentDescription = null,
-                                                tint = if (data == currentCountry) Color.Green else MaterialTheme.colorScheme.onTertiaryContainer
+                                                tint = if (data == currentData) Color.Green else MaterialTheme.colorScheme.onTertiaryContainer
                                             )
                                         }
                                     }

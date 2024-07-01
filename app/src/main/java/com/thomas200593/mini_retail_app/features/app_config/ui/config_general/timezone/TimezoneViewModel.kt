@@ -49,7 +49,7 @@ class TimezoneViewModel @Inject constructor(
         Timber.d("Called : fun $TAG.getTimezonePreferences()")
         _timezonePreferences.value = RequestState.Loading
         _timezonePreferences.value = try{
-            RequestState.Success(configGeneralRepository.getTimezonePreferences())
+            RequestState.Success(configGeneralRepository.getTimezones())
         }catch (e: Throwable){
             RequestState.Error(e)
         }
@@ -57,6 +57,6 @@ class TimezoneViewModel @Inject constructor(
 
     fun saveSelectedTimezone(timezone: Timezone) = viewModelScope.launch {
         Timber.d("Called : fun $TAG.saveSelectedTimezone()")
-        configGeneralRepository.setTimezonePreferences(timezone)
+        configGeneralRepository.setTimezone(timezone)
     }
 }

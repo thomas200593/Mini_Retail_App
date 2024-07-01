@@ -51,46 +51,7 @@ class DataStorePreferences @Inject constructor(
     private val datastore: DataStore<Preferences>,
     @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
 ){
-    val configCurrentData = datastore.data
-        .map { data ->
-            ConfigCurrent(
-                onboardingStatus = data[dsKeyOnboardingStatus] ?.let { onboardingPagesStatus ->
-                    OnboardingStatus.valueOf(onboardingPagesStatus)
-                } ?: SHOW,
-                theme = data[dsKeyTheme] ?.let { themeString ->
-                    Theme.valueOf(themeString)
-                } ?: SYSTEM,
-                dynamicColor = data[dsKeyDynamicColor] ?.let { dynamicColor ->
-                    DynamicColor.valueOf(dynamicColor)
-                } ?: DISABLED,
-                fontSize = data[dsKeyFontSize] ?.let { fontSize ->
-                    FontSize.valueOf(fontSize)
-                } ?: MEDIUM,
-                language = data[dsKeyLanguage] ?.let { languageString ->
-                    Language.valueOf(languageString)
-                } ?: EN,
-                timezone = data[dsKeyTimezone] ?.let { timezoneOffset ->
-                    Timezone(timezoneOffset)
-                } ?: TIMEZONE_DEFAULT,
-                currency = data[dsKeyCurrency] ?.let { currencyCode ->
-                    Currency(
-                        code = currencyCode,
-                        displayName = CurrencyUnit.of(currencyCode).toCurrency().displayName,
-                        symbol = CurrencyUnit.of(currencyCode).symbol,
-                        defaultFractionDigits = CurrencyUnit.of(currencyCode).toCurrency().defaultFractionDigits,
-                        decimalPlaces = CurrencyUnit.of(currencyCode).decimalPlaces
-                    )
-                } ?: CURRENCY_DEFAULT,
-                country = data[dsKeyCountry] ?.let{ countryIsoCode ->
-                    Country(
-                        isoCode = countryIsoCode,
-                        iso03Country = Locale("", countryIsoCode).isO3Country,
-                        displayName = Locale("", countryIsoCode).displayName
-                    )
-                } ?: COUNTRY_DEFAULT
-            )
-        }
-
+    //Onboarding
     suspend fun hideOnboarding() = withContext(ioDispatcher){
         Timber.d("Called : fun $TAG.hideOnboarding()")
         datastore.edit {
@@ -98,6 +59,7 @@ class DataStorePreferences @Inject constructor(
         }
     }
 
+    //Auth
     val authSessionToken = datastore.data
         .flowOn(ioDispatcher)
         .map { data ->
@@ -124,49 +86,90 @@ class DataStorePreferences @Inject constructor(
         }
     }
 
-    suspend fun setThemePreferences(theme: Theme) = withContext(ioDispatcher){
+    //App Config
+    val configCurrent = datastore.data
+        .map { data ->
+            ConfigCurrent(
+                onboardingStatus = data[dsKeyOnboardingStatus] ?.let { onboardingStatus ->
+                    OnboardingStatus.valueOf(onboardingStatus)
+                } ?: SHOW,
+                theme = data[dsKeyTheme] ?.let { theme ->
+                    Theme.valueOf(theme)
+                } ?: SYSTEM,
+                dynamicColor = data[dsKeyDynamicColor] ?.let { dynamicColor ->
+                    DynamicColor.valueOf(dynamicColor)
+                } ?: DISABLED,
+                fontSize = data[dsKeyFontSize] ?.let { fontSize ->
+                    FontSize.valueOf(fontSize)
+                } ?: MEDIUM,
+                language = data[dsKeyLanguage] ?.let { language ->
+                    Language.valueOf(language)
+                } ?: EN,
+                timezone = data[dsKeyTimezone] ?.let { offset ->
+                    Timezone(offset)
+                } ?: TIMEZONE_DEFAULT,
+                currency = data[dsKeyCurrency] ?.let { currency ->
+                    Currency(
+                        code = currency,
+                        displayName = CurrencyUnit.of(currency).toCurrency().displayName,
+                        symbol = CurrencyUnit.of(currency).symbol,
+                        defaultFractionDigits = CurrencyUnit.of(currency).toCurrency().defaultFractionDigits,
+                        decimalPlaces = CurrencyUnit.of(currency).decimalPlaces
+                    )
+                } ?: CURRENCY_DEFAULT,
+                country = data[dsKeyCountry] ?.let{ country ->
+                    Country(
+                        isoCode = country,
+                        iso03Country = Locale("", country).isO3Country,
+                        displayName = Locale("", country).displayName
+                    )
+                } ?: COUNTRY_DEFAULT
+            )
+        }
+
+    suspend fun setTheme(theme: Theme) = withContext(ioDispatcher){
         Timber.d("Called : fun $TAG.setThemePreferences()")
         datastore.edit {
             it[dsKeyTheme] = theme.name
         }
     }
 
-    suspend fun setDynamicColorPreferences(dynamicColor: DynamicColor) = withContext(ioDispatcher){
+    suspend fun setDynamicColor(dynamicColor: DynamicColor) = withContext(ioDispatcher){
         Timber.d("Called : fun $TAG.setDynamicColorPreferences()")
         datastore.edit {
             it[dsKeyDynamicColor] = dynamicColor.name
         }
     }
 
-    suspend fun setLanguagePreferences(language: Language) = withContext(ioDispatcher){
+    suspend fun setLanguage(language: Language) = withContext(ioDispatcher){
         Timber.d("Called : fun $TAG.setLanguagePreferences()")
         datastore.edit {
             it[dsKeyLanguage] = language.name
         }
     }
 
-    suspend fun setTimezonePreferences(timezone: Timezone) = withContext(ioDispatcher){
+    suspend fun setTimezone(timezone: Timezone) = withContext(ioDispatcher){
         Timber.d("Called : fuh $TAG.setTimezonePreferences()")
         datastore.edit {
             it[dsKeyTimezone] = timezone.timezoneOffset
         }
     }
 
-    suspend fun setCurrencyPreferences(currency: Currency) = withContext(ioDispatcher){
+    suspend fun setCurrency(currency: Currency) = withContext(ioDispatcher){
         Timber.d("Called : fun $TAG.setCurrencyPreferences()")
         datastore.edit {
             it[dsKeyCurrency] = currency.code
         }
     }
 
-    suspend fun setFontSizePreferences(fontSize: FontSize) = withContext(ioDispatcher){
+    suspend fun setFontSize(fontSize: FontSize) = withContext(ioDispatcher){
         Timber.d("Called : fun $TAG.setFontSizePreferences()")
         datastore.edit {
             it[dsKeyFontSize] = fontSize.name
         }
     }
 
-    suspend fun setCountryPreferences(country: Country) = withContext(ioDispatcher){
+    suspend fun setCountry(country: Country) = withContext(ioDispatcher){
         Timber.d("Called : fun $TAG.setCountryPreferences()")
         datastore.edit {
             it[dsKeyCountry] = country.isoCode

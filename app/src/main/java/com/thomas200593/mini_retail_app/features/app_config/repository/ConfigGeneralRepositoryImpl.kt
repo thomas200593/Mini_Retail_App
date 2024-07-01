@@ -8,8 +8,6 @@ import com.thomas200593.mini_retail_app.core.data.local.session.SessionState.Val
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatchers.Dispatchers.IO
 import com.thomas200593.mini_retail_app.core.util.CountryHelper.getCountryList
-import com.thomas200593.mini_retail_app.core.util.CurrencyHelper.getCurrencies
-import com.thomas200593.mini_retail_app.core.util.TimezoneHelper.getTimezones
 import com.thomas200593.mini_retail_app.features.app_config.entity.Country
 import com.thomas200593.mini_retail_app.features.app_config.entity.Currency
 import com.thomas200593.mini_retail_app.features.app_config.entity.DynamicColor
@@ -41,73 +39,73 @@ internal class ConfigGeneralRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getThemePreferences(): Set<Theme> = withContext(ioDispatcher){
+    override suspend fun getThemes(): Set<Theme> = withContext(ioDispatcher){
         Timber.d("Called : fun $TAG.getThemePreferences()")
         Theme.entries.toSet()
     }
 
-    override suspend fun setThemePreferences(theme: Theme) {
+    override suspend fun setTheme(theme: Theme) {
         Timber.d("Called : fun $TAG.setThemePreferences()")
-        dataStore.setThemePreferences(theme)
+        dataStore.setTheme(theme)
     }
 
-    override suspend fun getDynamicMenuPreferences(): Set<DynamicColor> = withContext(ioDispatcher){
+    override suspend fun getDynamicColors(): Set<DynamicColor> = withContext(ioDispatcher){
         Timber.d("Called : fun $TAG.getDynamicMenuPreferences()")
         DynamicColor.entries.toSet()
     }
 
-    override suspend fun setDynamicColorPreferences(dynamicColor: DynamicColor) {
+    override suspend fun setDynamicColor(dynamicColor: DynamicColor) {
         Timber.d("Called : fun $TAG.setDynamicColorPreferences()")
-        dataStore.setDynamicColorPreferences(dynamicColor)
+        dataStore.setDynamicColor(dynamicColor)
     }
 
-    override suspend fun getLanguagePreferences(): Set<Language> = withContext(ioDispatcher){
+    override suspend fun getLanguages(): Set<Language> = withContext(ioDispatcher){
         Timber.d("Called : fun $TAG.getLanguagePreferences()")
         Language.entries.toSet()
     }
 
-    override suspend fun setLanguagePreferences(language: Language) {
+    override suspend fun setLanguage(language: Language) {
         Timber.d("Called : fun $TAG.setLanguagePreferences()")
-        dataStore.setLanguagePreferences(language)
+        dataStore.setLanguage(language)
     }
 
-    override suspend fun getTimezonePreferences(): List<Timezone> = withContext(ioDispatcher){
+    override suspend fun getTimezones(): List<Timezone> = withContext(ioDispatcher){
         Timber.d("Called : fun $TAG.getTimezonePreferences()")
         getTimezones()
     }
 
-    override suspend fun setTimezonePreferences(timezone: Timezone) {
+    override suspend fun setTimezone(timezone: Timezone) {
         Timber.d("Called : fun $TAG.setTimezonePreferences()")
-        dataStore.setTimezonePreferences(timezone)
+        dataStore.setTimezone(timezone)
     }
 
-    override suspend fun getCurrencyPreferences(): List<Currency> = withContext(ioDispatcher){
+    override suspend fun getCurrencies(): List<Currency> = withContext(ioDispatcher){
         Timber.d("Called : fun $TAG.getCurrencyPreferences()")
         getCurrencies()
     }
 
-    override suspend fun setCurrencyPreferences(currency: Currency) {
+    override suspend fun setCurrency(currency: Currency) {
         Timber.d("Called : fun $TAG.setCurrencyPreferences()")
-        dataStore.setCurrencyPreferences(currency)
+        dataStore.setCurrency(currency)
     }
 
-    override suspend fun getFontSizePreferences(): Set<FontSize> = withContext(ioDispatcher){
+    override suspend fun getFontSizes(): Set<FontSize> = withContext(ioDispatcher){
         Timber.d("Called : fun $TAG.getFontSizePreferences()")
         FontSize.entries.toSet()
     }
 
-    override suspend fun setFontSizePreferences(fontSize: FontSize) {
+    override suspend fun setFontSize(fontSize: FontSize) {
         Timber.d("Called : fun $TAG.setFontSizePreferences()")
-        dataStore.setFontSizePreferences(fontSize)
+        dataStore.setFontSize(fontSize)
     }
 
-    override suspend fun getCountryPreferences(): List<Country> = withContext(ioDispatcher){
+    override suspend fun getCountries(): List<Country> = withContext(ioDispatcher){
         Timber.d("Called : fun $TAG.getCountryPreferences()")
         getCountryList()
     }
 
-    override suspend fun setCountryPreferences(country: Country) {
+    override suspend fun setCountry(country: Country) {
         Timber.d("Called : fun $TAG.setCountryPreferences()")
-        dataStore.setCountryPreferences(country)
+        dataStore.setCountry(country)
     }
 }

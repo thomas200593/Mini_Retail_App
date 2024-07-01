@@ -50,7 +50,7 @@ class FontSizeViewModel @Inject constructor(
         Timber.d("Called : fun $TAG.getFontSizePreferences()")
         _fontSizeSizePreferences.value = RequestState.Loading
         _fontSizeSizePreferences.value = try {
-            RequestState.Success(configGeneralRepository.getFontSizePreferences())
+            RequestState.Success(configGeneralRepository.getFontSizes())
         }catch (e: Throwable){
             RequestState.Error(e)
         }
@@ -58,6 +58,6 @@ class FontSizeViewModel @Inject constructor(
 
     fun saveSelectedFontSize(fontSize: FontSize) = viewModelScope.launch{
         Timber.d("Called : fun $TAG.saveSelectedFontSize()")
-        configGeneralRepository.setFontSizePreferences(fontSize)
+        configGeneralRepository.setFontSize(fontSize)
     }
 }

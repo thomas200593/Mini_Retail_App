@@ -49,7 +49,7 @@ class ThemeViewModel @Inject constructor(
         Timber.d("Called : fun $TAG.getThemePreferences()")
         _themePreferences.value = RequestState.Loading
         _themePreferences.value = try{
-            RequestState.Success(configGeneralRepository.getThemePreferences())
+            RequestState.Success(configGeneralRepository.getThemes())
         }catch (e: Throwable){
             RequestState.Error(e)
         }
@@ -57,6 +57,6 @@ class ThemeViewModel @Inject constructor(
 
     fun saveSelectedTheme(theme: Theme) = viewModelScope.launch {
         Timber.d("Called : fun $TAG.saveSelectedTheme()")
-        configGeneralRepository.setThemePreferences(theme)
+        configGeneralRepository.setTheme(theme)
     }
 }

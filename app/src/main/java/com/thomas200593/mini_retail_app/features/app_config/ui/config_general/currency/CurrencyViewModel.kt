@@ -28,13 +28,13 @@ private val TAG = CurrencyViewModel::class.simpleName
 
 @HiltViewModel
 class CurrencyViewModel @Inject constructor(
-    appConfigRepository: AppConfigRepository,
+    repository: AppConfigRepository,
     private val configGeneralRepository: ConfigGeneralRepository,
     @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
 ): ViewModel() {
     private val _currencyPreferences: MutableState<RequestState<List<Currency>>> = mutableStateOf(RequestState.Idle)
     val currencyPreferences = _currencyPreferences
-    val configCurrentUiState = appConfigRepository.configCurrent.flowOn(ioDispatcher)
+    val configCurrentUiState = repository.configCurrent.flowOn(ioDispatcher)
         .catch { Error(it) }
         .map { Success(it) }
         .stateIn(
@@ -51,12 +51,12 @@ class CurrencyViewModel @Inject constructor(
     private fun getCurrencyPreferences() = viewModelScope.launch(ioDispatcher) {
         Timber.d("Called : fun $TAG.getCurrencyPreferences()")
         _currencyPreferences.value = Loading
-        _currencyPreferences.value = try{ Success(configGeneralRepository.getCurrencyPreferences()) }
+        _currencyPreferences.value = try{ Success(configGeneralRepository.getCurrencies()) }
         catch (e: Throwable){ Error(e) }
     }
 
     fun saveSelectedCurrency(currency: Currency) = viewModelScope.launch {
         Timber.d("Called : fun $TAG.saveSelectedCurrency()")
-        configGeneralRepository.setCurrencyPreferences(currency)
+        configGeneralRepository.setCurrency(currency)
     }
 }

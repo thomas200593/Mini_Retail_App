@@ -12,18 +12,25 @@ import com.thomas200593.mini_retail_app.features.app_config.navigation.Destinati
 
 interface ConfigGeneralRepository {
     suspend fun getMenuData(sessionState: SessionState): Set<DestinationConfigGeneral>
-    suspend fun getThemePreferences(): Set<Theme>
-    suspend fun setThemePreferences(theme: Theme)
-    suspend fun getDynamicMenuPreferences(): Set<DynamicColor>
-    suspend fun setDynamicColorPreferences(dynamicColor: DynamicColor)
-    suspend fun getLanguagePreferences(): Set<Language>
-    suspend fun setLanguagePreferences(language: Language)
-    suspend fun getTimezonePreferences(): List<Timezone>
-    suspend fun setTimezonePreferences(timezone: Timezone)
-    suspend fun getCurrencyPreferences(): List<Currency>
-    suspend fun setCurrencyPreferences(currency: Currency)
-    suspend fun getFontSizePreferences(): Set<FontSize>
-    suspend fun setFontSizePreferences(fontSize: FontSize)
-    suspend fun getCountryPreferences(): List<Country>
-    suspend fun setCountryPreferences(country: Country)
+
+    suspend fun getThemes(): Set<Theme>
+    suspend fun setTheme(theme: Theme)
+
+    suspend fun getDynamicColors(): Set<DynamicColor>
+    suspend fun setDynamicColor(dynamicColor: DynamicColor)
+
+    suspend fun getLanguages(): Set<Language>
+    suspend fun setLanguage(language: Language)
+
+    suspend fun getTimezones(): List<Timezone>
+    suspend fun setTimezone(timezone: Timezone)
+
+    suspend fun getCurrencies(): List<Currency>
+    suspend fun setCurrency(currency: Currency)
+
+    suspend fun getFontSizes(): Set<FontSize>
+    suspend fun setFontSize(fontSize: FontSize)
+
+    suspend fun getCountries(): List<Country>
+    suspend fun setCountry(country: Country)
 }

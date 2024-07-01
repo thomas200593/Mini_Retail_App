@@ -52,7 +52,7 @@ class LanguageViewModel @Inject constructor(
         Timber.d("Called : fun $TAG.getLanguagePreferences()")
         _languagePreferences.value = RequestState.Loading
         _languagePreferences.value = try {
-            RequestState.Success(configGeneralRepository.getLanguagePreferences())
+            RequestState.Success(configGeneralRepository.getLanguages())
         }catch (e: Throwable){
             RequestState.Error(e)
         }
@@ -60,7 +60,7 @@ class LanguageViewModel @Inject constructor(
 
     fun saveSelectedLanguage(language: Language) = viewModelScope.launch {
         Timber.d("Called : fun $TAG.saveSelectedLanguage()")
-        configGeneralRepository.setLanguagePreferences(language)
+        configGeneralRepository.setLanguage(language)
         AppCompatDelegate.setApplicationLocales(
             LocaleListCompat.create(
                 Locale(language.code)

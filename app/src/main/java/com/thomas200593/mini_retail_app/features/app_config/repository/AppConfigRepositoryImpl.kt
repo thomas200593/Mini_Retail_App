@@ -23,7 +23,7 @@ internal class AppConfigRepositoryImpl @Inject constructor(
     @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
 ):AppConfigRepository {
 
-    override val configCurrent: Flow<ConfigCurrent> = dataStore.configCurrentData
+    override val configCurrent: Flow<ConfigCurrent> = dataStore.configCurrent
 
     override suspend fun getMenuData(sessionState: SessionState): Set<DestinationAppConfig> =
         withContext(ioDispatcher){

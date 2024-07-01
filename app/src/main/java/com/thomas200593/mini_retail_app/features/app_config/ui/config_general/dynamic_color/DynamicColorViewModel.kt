@@ -50,7 +50,7 @@ class DynamicColorViewModel @Inject constructor(
         Timber.d("Called : fun $TAG.getDynamicColorPreferences()")
         _dynamicColorPreferences.value = RequestState.Loading
         _dynamicColorPreferences.value = try {
-            RequestState.Success(configGeneralRepository.getDynamicMenuPreferences())
+            RequestState.Success(configGeneralRepository.getDynamicColors())
         }catch (e: Throwable){
             RequestState.Error(e)
         }
@@ -58,6 +58,6 @@ class DynamicColorViewModel @Inject constructor(
 
     fun saveSelectedDynamicColor(dynamicColor: DynamicColor) = viewModelScope.launch {
         Timber.d("Called : fun $TAG.saveSelectedDynamicColor()")
-        configGeneralRepository.setDynamicColorPreferences(dynamicColor)
+        configGeneralRepository.setDynamicColor(dynamicColor)
     }
 }

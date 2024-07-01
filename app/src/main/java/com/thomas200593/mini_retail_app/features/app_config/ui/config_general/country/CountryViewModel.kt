@@ -8,6 +8,7 @@ import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatche
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatchers.Dispatchers.IO
 import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
 import com.thomas200593.mini_retail_app.core.design_system.util.RequestState.Error
+import com.thomas200593.mini_retail_app.core.design_system.util.RequestState.Idle
 import com.thomas200593.mini_retail_app.core.design_system.util.RequestState.Loading
 import com.thomas200593.mini_retail_app.core.design_system.util.RequestState.Success
 import com.thomas200593.mini_retail_app.features.app_config.entity.Country
@@ -28,13 +29,13 @@ private val TAG = CountryViewModel::class.simpleName
 
 @HiltViewModel
 class CountryViewModel @Inject constructor(
-    appConfigRepository: AppConfigRepository,
-    private val configGeneralRepository: ConfigGeneralRepository,
+    repository1: AppConfigRepository,
+    private val repository2: ConfigGeneralRepository,
     @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel(){
-    private val _countryPreferences: MutableState<RequestState<List<Country>>> = mutableStateOf(RequestState.Idle)
-    val countryPreferences = _countryPreferences
-    val configCurrentUiState = appConfigRepository.configCurrent.flowOn(ioDispatcher)
+    private val _countries: MutableState<RequestState<List<Country>>> = mutableStateOf(Idle)
+    val countries = _countries
+    val configCurrent = repository1.configCurrent.flowOn(ioDispatcher)
         .catch { Error(it) }
         .map { Success(it) }
         .stateIn(
@@ -45,18 +46,18 @@ class CountryViewModel @Inject constructor(
 
     fun onOpen() = viewModelScope.launch(ioDispatcher){
         Timber.d("Called : fun $TAG.onOpen()")
-        getCountryPreferences()
+        getCountries()
     }
 
-    private fun getCountryPreferences() = viewModelScope.launch(ioDispatcher){
+    private fun getCountries() = viewModelScope.launch(ioDispatcher){
         Timber.d("Called : fun $TAG.getCountryPreferences()")
-        _countryPreferences.value = Loading
-        _countryPreferences.value = try { Success(configGeneralRepository.getCountryPreferences()) }
+        _countries.value = Loading
+        _countries.value = try { Success(repository2.getCountries()) }
         catch (e: Throwable){ Error(e) }
     }
 
-    fun saveSelectedCountry(country: Country) = viewModelScope.launch{
+    fun setCountry(country: Country) = viewModelScope.launch{
         Timber.d("Called : fun $TAG.saveSelectedCountry()")
-        configGeneralRepository.setCountryPreferences(country)
+        repository2.setCountry(country)
     }
 }
