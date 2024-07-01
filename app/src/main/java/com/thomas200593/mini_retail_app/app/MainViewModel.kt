@@ -4,10 +4,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.thomas200593.mini_retail_app.app.MainActivityUiState.Loading
 import com.thomas200593.mini_retail_app.app.MainActivityUiState.Success
+import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatcher
+import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatchers.Dispatchers.IO
 import com.thomas200593.mini_retail_app.features.app_config.repository.AppConfigRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.SharingStarted.Companion.Eagerly
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
@@ -18,15 +22,17 @@ private val TAG = MainViewModel::class.simpleName
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    appConfigRepository: AppConfigRepository
+    appConfigRepository: AppConfigRepository,
+    @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel(){
-    val uiState: StateFlow<MainActivityUiState> = appConfigRepository.configCurrentData.onEach {
-        Timber.d("$TAG.uiState : $it")
-    }.map {
-        Success(it)
-    }.stateIn(
-        scope = viewModelScope,
-        initialValue = Loading,
-        started = SharingStarted.Eagerly
-    )
+    val uiState: StateFlow<MainActivityUiState> = appConfigRepository
+        .configCurrentData.flowOn(ioDispatcher).onEach {
+            Timber.d("$TAG.uiState : $it")
+        }.map {
+            Success(it)
+        }.stateIn(
+            scope = viewModelScope,
+            initialValue = Loading,
+            started = Eagerly
+        )
 }

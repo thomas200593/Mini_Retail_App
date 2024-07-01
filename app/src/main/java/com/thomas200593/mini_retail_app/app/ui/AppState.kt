@@ -11,16 +11,22 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
 import com.thomas200593.mini_retail_app.app.navigation.DestinationTopLevel
+import com.thomas200593.mini_retail_app.app.navigation.DestinationTopLevel.BUSINESS
+import com.thomas200593.mini_retail_app.app.navigation.DestinationTopLevel.DASHBOARD
+import com.thomas200593.mini_retail_app.app.navigation.DestinationTopLevel.REPORTING
+import com.thomas200593.mini_retail_app.app.navigation.DestinationTopLevel.USER_PROFILE
+import com.thomas200593.mini_retail_app.app.navigation.DestinationTopLevel.entries
 import com.thomas200593.mini_retail_app.app.navigation.DestinationWithTopAppBar.destinationWithTopAppBar
 import com.thomas200593.mini_retail_app.core.data.local.session.Session
-import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
+import com.thomas200593.mini_retail_app.core.data.local.session.SessionState.Loading
 import com.thomas200593.mini_retail_app.core.design_system.util.NetworkMonitor
 import com.thomas200593.mini_retail_app.features.business.navigation.navigateToBusiness
 import com.thomas200593.mini_retail_app.features.dashboard.navigation.navigateToDashboard
 import com.thomas200593.mini_retail_app.features.reporting.navigation.navigateToReporting
 import com.thomas200593.mini_retail_app.features.user_profile.navigation.navigateToUserProfile
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.SharingStarted.Companion.Eagerly
+import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import timber.log.Timber
@@ -61,21 +67,21 @@ class AppState(
         .stateIn(
             scope = coroutineScope,
             initialValue = false,
-            started = SharingStarted.WhileSubscribed(1_000)
+            started = WhileSubscribed(1_000)
         )
 
     val isSessionValid = session.currentUserSession
         .stateIn(
             scope = coroutineScope,
-            initialValue = SessionState.Loading,
-            started = SharingStarted.Eagerly
+            initialValue = Loading,
+            started = Eagerly
         )
 
     val destinationCurrent: NavDestination?
         @Composable get() = navController
             .currentBackStackEntryAsState().value?.destination
 
-    val destinationTopLevels: List<DestinationTopLevel> = DestinationTopLevel.entries
+    val destinationTopLevels: List<DestinationTopLevel> = entries
 
     val shouldShowBottomBar: Boolean
         @Composable get() = destinationCurrent?.route in destinationTopLevels.map { it.route }
@@ -93,16 +99,16 @@ class AppState(
             restoreState = true
         }
         when(destinationTopLevel){
-            DestinationTopLevel.DASHBOARD -> {
+            DASHBOARD -> {
                 navController.navigateToDashboard(navOptions = destinationTopLevelNavOptions)
             }
-            DestinationTopLevel.BUSINESS -> {
+            BUSINESS -> {
                 navController.navigateToBusiness(navOptions = destinationTopLevelNavOptions)
             }
-            DestinationTopLevel.REPORTING -> {
+            REPORTING -> {
                 navController.navigateToReporting(navOptions = destinationTopLevelNavOptions)
             }
-            DestinationTopLevel.USER_PROFILE -> {
+            USER_PROFILE -> {
                 navController.navigateToUserProfile(navOptions = destinationTopLevelNavOptions)
             }
         }

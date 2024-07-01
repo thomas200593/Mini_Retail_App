@@ -168,7 +168,7 @@ private fun ScreenContent(
                     )
                 }
                 is RequestState.Success -> {
-                    val currentFontSize = configCurrent.data.currentFontSizeSize
+                    val currentFontSize = configCurrent.data.fontSize
                     val appFontSizePreferences = fontSizeSizePreferences.data
 
                     Column(

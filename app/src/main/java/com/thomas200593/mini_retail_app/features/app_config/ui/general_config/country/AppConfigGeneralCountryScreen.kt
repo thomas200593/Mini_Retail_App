@@ -167,7 +167,7 @@ private fun ScreenContent(
                     )
                 }
                 is RequestState.Success -> {
-                    val currentCountry = configCurrent.data.currentCountry
+                    val currentCountry = configCurrent.data.country
                     val appCountryPreferences = countryPreferences.data
 
                     Column(

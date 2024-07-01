@@ -5,7 +5,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navOptions
 import androidx.navigation.navigation
-import com.thomas200593.mini_retail_app.app.navigation.NavigationGraphs.G_APP_CONFIG_GENERAL
+import com.thomas200593.mini_retail_app.app.navigation.NavigationGraphs.G_CONFIG_GENERAL
 import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs
 import com.thomas200593.mini_retail_app.features.app_config.ui.general_config.AppConfigGeneralScreen
 import com.thomas200593.mini_retail_app.features.app_config.ui.general_config.country.AppConfigGeneralCountryScreen
@@ -23,53 +23,53 @@ private val TAG_NAV_CONTROLLER = NavController::class.simpleName
 fun NavGraphBuilder.navGraphAppConfigGeneral() {
     Timber.d("Called : fun $TAG_NAV_GRAPH_BUILDER.appConfigGeneralNavGraph()")
     navigation(
-        route = G_APP_CONFIG_GENERAL,
-        startDestination = ScreenGraphs.AppConfigGeneral.route
+        route = G_CONFIG_GENERAL,
+        startDestination = ScreenGraphs.ConfigGeneral.route
     ){
         composable(
-            route = ScreenGraphs.AppConfigGeneral.route
+            route = ScreenGraphs.ConfigGeneral.route
         ){
             AppConfigGeneralScreen()
         }
 
         composable(
-            route = ScreenGraphs.AppConfigGeneralCountry.route
+            route = ScreenGraphs.Country.route
         ){
             AppConfigGeneralCountryScreen()
         }
 
         composable(
-            route = ScreenGraphs.AppConfigGeneralLanguage.route
+            route = ScreenGraphs.Language.route
         ){
             AppConfigGeneralLanguageScreen()
         }
 
         composable(
-            route = ScreenGraphs.AppConfigGeneralTimezone.route
+            route = ScreenGraphs.Timezone.route
         ){
             AppConfigGeneralTimezoneScreen()
         }
 
         composable(
-            route = ScreenGraphs.AppConfigGeneralTheme.route
+            route = ScreenGraphs.Theme.route
         ){
             AppConfigGeneralThemeScreen()
         }
 
         composable(
-            route = ScreenGraphs.AppConfigGeneralDynamicColor.route
+            route = ScreenGraphs.DynamicColor.route
         ){
             AppConfigGeneralDynamicColorScreen()
         }
 
         composable(
-            route = ScreenGraphs.AppConfigGeneralFontSize.route
+            route = ScreenGraphs.FontSize.route
         ){
             AppConfigGeneralFontSizeScreen()
         }
 
         composable(
-            route = ScreenGraphs.AppConfigGeneralCurrency.route
+            route = ScreenGraphs.Currency.route
         ){
             AppConfigGeneralCurrencyScreen()
         }
@@ -85,7 +85,7 @@ fun NavController.navigateToAppConfigGeneral(
         restoreState = true
     }
     this.navigate(
-        route = destinationAppConfigGeneral?.route?:G_APP_CONFIG_GENERAL,
+        route = destinationAppConfigGeneral?.route?:G_CONFIG_GENERAL,
         navOptions = navOptions
     )
 }

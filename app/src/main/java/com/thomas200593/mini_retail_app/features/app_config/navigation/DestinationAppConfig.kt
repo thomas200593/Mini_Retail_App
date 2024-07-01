@@ -14,14 +14,14 @@ enum class DestinationAppConfig(
     val usesAuth: Boolean
 ){
     CONFIG_GENERAL(
-        route = ScreenGraphs.AppConfigGeneral.route,
+        route = ScreenGraphs.ConfigGeneral.route,
         iconRes = Icons.Setting.settings_general,
         title = R.string.str_configuration_general,
         description = R.string.str_configuration_general,
         usesAuth = false
     ),
     CONFIG_DATA(
-        route = ScreenGraphs.AppConfigData.route,
+        route = ScreenGraphs.ConfigData.route,
         iconRes = Icons.Setting.settings_data,
         title = R.string.str_configuration_data,
         description = R.string.str_configuration_data,

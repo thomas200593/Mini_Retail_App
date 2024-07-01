@@ -20,12 +20,12 @@ import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
 
-private val TAG = AppConfigGeneralRepositoryImpl::class.simpleName
+private val TAG = ConfigGeneralRepositoryImpl::class.simpleName
 
-internal class AppConfigGeneralRepositoryImpl @Inject constructor(
+internal class ConfigGeneralRepositoryImpl @Inject constructor(
     private val appDataStore: DataStorePreferences,
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
-): AppConfigGeneralRepository {
+): ConfigGeneralRepository {
     override suspend fun getAppConfigGeneralMenuData(
         sessionState: SessionState
     ): Set<DestinationAppConfigGeneral> = withContext(ioDispatcher) {

@@ -14,7 +14,7 @@ enum class DestinationBusiness(
     val usesAuth: Boolean
 ) {
     BUSINESS_MASTER_DATA(
-        route = ScreenGraphs.BusinessMasterData.route,
+        route = ScreenGraphs.MasterData.route,
         iconRes = Icons.Data.master_data,
         title = R.string.str_biz_master_data,
         description = R.string.str_biz_master_data_desc,

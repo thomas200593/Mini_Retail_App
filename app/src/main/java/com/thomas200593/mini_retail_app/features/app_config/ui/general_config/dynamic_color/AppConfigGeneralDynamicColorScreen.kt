@@ -168,7 +168,7 @@ private fun ScreenContent(
                     )
                 }
                 is RequestState.Success -> {
-                    val currentDynamicColor = configCurrent.data.currentDynamicColor
+                    val currentDynamicColor = configCurrent.data.dynamicColor
                     val appDynamicColorPreferences = dynamicColorPreferences.data
 
                     Column(

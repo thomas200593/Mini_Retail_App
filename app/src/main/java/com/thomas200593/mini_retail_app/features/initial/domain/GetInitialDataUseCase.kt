@@ -34,7 +34,7 @@ class GetInitialDataUseCase @Inject constructor(
             RequestState.Success(
                 Initial(
                     isSessionValid = authRepository.validateAuthSessionToken(auth),
-                    onboardingPageStatus = config.onboardingPagesStatus
+                    onboardingPageStatus = config.onboardingStatus
                 )
             )
         }

@@ -164,7 +164,7 @@ private fun ScreenContent(
                     )
                 }
                 is RequestState.Success -> {
-                    val currentTimezone = configCurrent.data.currentTimezone
+                    val currentTimezone = configCurrent.data.timezone
                     val appTimezonePreferences = timezonePreferences.data
 
                     Column(

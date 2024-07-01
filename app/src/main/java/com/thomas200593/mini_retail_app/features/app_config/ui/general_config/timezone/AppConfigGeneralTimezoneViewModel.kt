@@ -8,7 +8,7 @@ import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatche
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatchers
 import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
 import com.thomas200593.mini_retail_app.features.app_config.entity.Timezone
-import com.thomas200593.mini_retail_app.features.app_config.repository.AppConfigGeneralRepository
+import com.thomas200593.mini_retail_app.features.app_config.repository.ConfigGeneralRepository
 import com.thomas200593.mini_retail_app.features.app_config.repository.AppConfigRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -26,7 +26,7 @@ private val TAG = AppConfigGeneralTimezoneViewModel::class.simpleName
 @HiltViewModel
 class AppConfigGeneralTimezoneViewModel @Inject constructor(
     appConfigRepository: AppConfigRepository,
-    private val appConfigGeneralRepository: AppConfigGeneralRepository,
+    private val configGeneralRepository: ConfigGeneralRepository,
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ): ViewModel() {
     private val _timezonePreferences: MutableState<RequestState<List<Timezone>>> = mutableStateOf(RequestState.Idle)
@@ -49,7 +49,7 @@ class AppConfigGeneralTimezoneViewModel @Inject constructor(
         Timber.d("Called : fun $TAG.getTimezonePreferences()")
         _timezonePreferences.value = RequestState.Loading
         _timezonePreferences.value = try{
-            RequestState.Success(appConfigGeneralRepository.getTimezonePreferences())
+            RequestState.Success(configGeneralRepository.getTimezonePreferences())
         }catch (e: Throwable){
             RequestState.Error(e)
         }
@@ -57,6 +57,6 @@ class AppConfigGeneralTimezoneViewModel @Inject constructor(
 
     fun saveSelectedTimezone(timezone: Timezone) = viewModelScope.launch {
         Timber.d("Called : fun $TAG.saveSelectedTimezone()")
-        appConfigGeneralRepository.setTimezonePreferences(timezone)
+        configGeneralRepository.setTimezonePreferences(timezone)
     }
 }

@@ -4,38 +4,38 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 
 object DataStoreKeys {
     object AppConfigKeys {
-        val dsAppConfigOnboardingPagesStatus = stringPreferencesKey(
-            name = "DS_APP_CONFIG_ONBOARDING_PAGES_STATUS"
+        val dsKeyOnboardingStatus = stringPreferencesKey(
+            name = "DS_KEY_ONBOARDING_STATUS"
         )
-        val dsAppConfigTheme = stringPreferencesKey(
-            name = "DS_APP_CONFIG_THEME"
+        val dsKeyTheme = stringPreferencesKey(
+            name = "DS_KEY_THEME"
         )
-        val dsAppConfigDynamicColor = stringPreferencesKey(
-            name = "DS_APP_CONFIG_DYNAMIC_COLOR"
+        val dsKeyDynamicColor = stringPreferencesKey(
+            name = "DS_KEY_DYNAMIC_COLOR"
         )
-        val dsAppConfigFontSize = stringPreferencesKey(
-            name = "DS_APP_CONFIG_FONT_SIZE"
+        val dsKeyFontSize = stringPreferencesKey(
+            name = "DS_KEY_FONT_SIZE"
         )
-        val dsAppConfigLanguage = stringPreferencesKey(
-            name = "DS_APP_CONFIG_LANGUAGE"
+        val dsKeyLanguage = stringPreferencesKey(
+            name = "DS_KEY_LANGUAGE"
         )
-        val dsAppConfigTimezone = stringPreferencesKey(
-            name = "DS_APP_CONFIG_TIMEZONE"
+        val dsKeyTimezone = stringPreferencesKey(
+            name = "DS_KEY_TIMEZONE"
         )
-        val dsAppConfigCurrency = stringPreferencesKey(
-            name = "DS_APP_CONFIG_CURRENCY"
+        val dsKeyCurrency = stringPreferencesKey(
+            name = "DS_KEY_CURRENCY"
         )
-        val dsAppConfigCountry = stringPreferencesKey(
-            name = "DS_APP_CONFIG_COUNTRY"
+        val dsKeyCountry = stringPreferencesKey(
+            name = "DS_KEY_COUNTRY"
         )
     }
 
     object AuthKeys {
-        val dsAuthProvider = stringPreferencesKey(
-            name = "DS_AUTH_PROVIDER"
+        val dsKeyAuthProvider = stringPreferencesKey(
+            name = "DS_KEY_AUTH_PROVIDER"
         )
-        val dsAuthSessionToken = stringPreferencesKey(
-            name = "DS_AUTH_SESSION_TOKEN"
+        val dsKeyAuthSessionToken = stringPreferencesKey(
+            name = "DS_KEY_AUTH_SESSION_TOKEN"
         )
     }
 }

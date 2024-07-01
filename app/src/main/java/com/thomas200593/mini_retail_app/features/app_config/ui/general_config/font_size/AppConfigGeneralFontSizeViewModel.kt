@@ -8,7 +8,7 @@ import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatche
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatchers
 import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
 import com.thomas200593.mini_retail_app.features.app_config.entity.FontSize
-import com.thomas200593.mini_retail_app.features.app_config.repository.AppConfigGeneralRepository
+import com.thomas200593.mini_retail_app.features.app_config.repository.ConfigGeneralRepository
 import com.thomas200593.mini_retail_app.features.app_config.repository.AppConfigRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -26,7 +26,7 @@ private val TAG = AppConfigGeneralFontSizeViewModel::class.simpleName
 @HiltViewModel
 class AppConfigGeneralFontSizeViewModel @Inject constructor(
     appConfigRepository: AppConfigRepository,
-    private val appConfigGeneralRepository: AppConfigGeneralRepository,
+    private val configGeneralRepository: ConfigGeneralRepository,
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ): ViewModel() {
     private val _fontSizeSizePreferences: MutableState<RequestState<Set<FontSize>>> = mutableStateOf(RequestState.Idle)
@@ -50,7 +50,7 @@ class AppConfigGeneralFontSizeViewModel @Inject constructor(
         Timber.d("Called : fun $TAG.getFontSizePreferences()")
         _fontSizeSizePreferences.value = RequestState.Loading
         _fontSizeSizePreferences.value = try {
-            RequestState.Success(appConfigGeneralRepository.getFontSizePreferences())
+            RequestState.Success(configGeneralRepository.getFontSizePreferences())
         }catch (e: Throwable){
             RequestState.Error(e)
         }
@@ -58,6 +58,6 @@ class AppConfigGeneralFontSizeViewModel @Inject constructor(
 
     fun saveSelectedFontSize(fontSize: FontSize) = viewModelScope.launch{
         Timber.d("Called : fun $TAG.saveSelectedFontSize()")
-        appConfigGeneralRepository.setFontSizePreferences(fontSize)
+        configGeneralRepository.setFontSizePreferences(fontSize)
     }
 }

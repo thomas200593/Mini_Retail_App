@@ -1,8 +1,10 @@
 package com.thomas200593.mini_retail_app.core.data.local.session
 
 import com.thomas200593.mini_retail_app.R
+import com.thomas200593.mini_retail_app.core.data.local.session.SessionState.Invalid
+import com.thomas200593.mini_retail_app.core.data.local.session.SessionState.Valid
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatcher
-import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatchers
+import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatchers.Dispatchers.IO
 import com.thomas200593.mini_retail_app.features.auth.repository.AuthRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
@@ -16,13 +18,14 @@ private val TAG = SessionImpl::class.simpleName
 
 class SessionImpl @Inject constructor(
     authRepository: AuthRepository,
-    @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
+    @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
 ): Session {
     override val currentUserSession: Flow<SessionState> = authRepository
-        .authSessionToken.flowOn(ioDispatcher)
+        .authSessionToken
+        .flowOn(ioDispatcher)
         .catch {
             Timber.d("val $TAG.currentUserSession returned : Throwable -> $it")
-            SessionState.Invalid(
+            Invalid(
                 throwable = it,
                 reason = R.string.str_session_error
             )
@@ -32,12 +35,12 @@ class SessionImpl @Inject constructor(
                 val userData = authRepository.mapAuthSessionTokenToUserData(authToken)
                 if(userData != null){
                     Timber.d("val $TAG.currentUserSession returned : SessionState.Valid($userData)")
-                    SessionState.Valid(userData)
+                    Valid(userData)
                 }else{
                     val throwable = null
                     val reason = R.string.str_session_expired
                     Timber.d("val $TAG.currentUserSession returned : SessionState.Invalid(throwable=$throwable, reasonId=$reason)")
-                    SessionState.Invalid(
+                    Invalid(
                         throwable = throwable,
                         reason = reason
                     )
@@ -46,7 +49,7 @@ class SessionImpl @Inject constructor(
                 val throwable = null
                 val reason = R.string.str_session_expired
                 Timber.d("val $TAG.currentUserSession returned : SessionState.Invalid(throwable=$throwable, reasonId=$reason)")
-                SessionState.Invalid(
+                Invalid(
                     throwable = null,
                     reason = R.string.str_session_expired
                 )

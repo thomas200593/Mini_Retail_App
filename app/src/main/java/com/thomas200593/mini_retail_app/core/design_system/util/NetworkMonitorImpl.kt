@@ -9,7 +9,7 @@ import android.net.NetworkRequest.Builder
 import androidx.compose.ui.util.trace
 import androidx.core.content.getSystemService
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatcher
-import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatchers
+import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatchers.Dispatchers.IO
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.channels.awaitClose
@@ -24,7 +24,7 @@ private val TAG = NetworkMonitorImpl::class.simpleName
 
 internal class NetworkMonitorImpl @Inject constructor(
     @ApplicationContext private val context: Context,
-    @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
+    @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
 ) : NetworkMonitor{
     override val isNetworkOnline: Flow<Boolean> = callbackFlow {
         Timber.d("Called : callbackFlow $TAG.isNetworkOnline")

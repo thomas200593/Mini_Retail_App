@@ -1,5 +1,21 @@
 package com.thomas200593.mini_retail_app.app.navigation
 
+import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs.AppConfig
+import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs.Business
+import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs.ConfigData
+import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs.ConfigGeneral
+import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs.Country
+import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs.Currency
+import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs.Customer
+import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs.Dashboard
+import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs.DynamicColor
+import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs.FontSize
+import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs.Language
+import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs.MasterData
+import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs.Reporting
+import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs.Supplier
+import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs.Theme
+import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs.Timezone
 import timber.log.Timber
 
 private val TAG = DestinationWithTopAppBar::class.simpleName
@@ -11,36 +27,36 @@ object DestinationWithTopAppBar{
             /**
              * App Config
              */
-            ScreenGraphs.AppConfig.route,
+            AppConfig.route,
             //Config General
-            ScreenGraphs.AppConfigGeneral.route,
-            ScreenGraphs.AppConfigGeneralTheme.route,
-            ScreenGraphs.AppConfigGeneralCountry.route,
-            ScreenGraphs.AppConfigGeneralDynamicColor.route,
-            ScreenGraphs.AppConfigGeneralLanguage.route,
-            ScreenGraphs.AppConfigGeneralTimezone.route,
-            ScreenGraphs.AppConfigGeneralCurrency.route,
-            ScreenGraphs.AppConfigGeneralFontSize.route,
+            ConfigGeneral.route,
+            Theme.route,
+            Country.route,
+            DynamicColor.route,
+            Language.route,
+            Timezone.route,
+            Currency.route,
+            FontSize.route,
             //Config Data
-            ScreenGraphs.AppConfigData.route,
+            ConfigData.route,
 
             /**
              * Dashboard
              */
-            ScreenGraphs.Dashboard.route,
+            Dashboard.route,
 
             /**
              * Business
              */
-            ScreenGraphs.Business.route,
-            ScreenGraphs.BusinessMasterData.route,
-            ScreenGraphs.BusinessMasterDataSupplier.route,
-            ScreenGraphs.BusinessMasterDataCustomer.route,
+            Business.route,
+            MasterData.route,
+            Supplier.route,
+            Customer.route,
 
             /**
              * Reporting
              */
-            ScreenGraphs.Reporting.route,
+            Reporting.route,
         )
     }
 }

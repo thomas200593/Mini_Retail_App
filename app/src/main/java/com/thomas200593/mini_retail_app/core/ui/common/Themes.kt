@@ -15,11 +15,19 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat.getInsetsController
 import com.thomas200593.mini_retail_app.app.MainActivityUiState
+import com.thomas200593.mini_retail_app.app.MainActivityUiState.Loading
+import com.thomas200593.mini_retail_app.app.MainActivityUiState.Success
 import com.thomas200593.mini_retail_app.core.ui.common.Types.personalizedTypography
-import com.thomas200593.mini_retail_app.features.app_config.entity.DynamicColor
+import com.thomas200593.mini_retail_app.features.app_config.entity.DynamicColor.DISABLED
+import com.thomas200593.mini_retail_app.features.app_config.entity.DynamicColor.ENABLED
 import com.thomas200593.mini_retail_app.features.app_config.entity.FontSize
+import com.thomas200593.mini_retail_app.features.app_config.entity.FontSize.EXTRA_LARGE
+import com.thomas200593.mini_retail_app.features.app_config.entity.FontSize.LARGE
 import com.thomas200593.mini_retail_app.features.app_config.entity.FontSize.MEDIUM
-import com.thomas200593.mini_retail_app.features.app_config.entity.Theme
+import com.thomas200593.mini_retail_app.features.app_config.entity.FontSize.SMALL
+import com.thomas200593.mini_retail_app.features.app_config.entity.Theme.DARK
+import com.thomas200593.mini_retail_app.features.app_config.entity.Theme.LIGHT
+import com.thomas200593.mini_retail_app.features.app_config.entity.Theme.SYSTEM
 import timber.log.Timber
 
 private val TAG = Themes::class.simpleName
@@ -37,11 +45,11 @@ object Themes{
     fun shouldUseDarkTheme(uiState: MainActivityUiState): Boolean {
         Timber.d("Called : fun $TAG.shouldUseDarkTheme()")
         return when(uiState){
-            MainActivityUiState.Loading -> isSystemInDarkTheme()
-            is MainActivityUiState.Success -> when(uiState.configCurrent.currentTheme){
-                Theme.SYSTEM -> isSystemInDarkTheme()
-                Theme.LIGHT -> false
-                Theme.DARK -> true
+            Loading -> isSystemInDarkTheme()
+            is Success -> when(uiState.configCurrent.theme){
+                SYSTEM -> isSystemInDarkTheme()
+                LIGHT -> false
+                DARK -> true
             }
         }
     }
@@ -53,10 +61,10 @@ object Themes{
     fun shouldUseDynamicColor(uiState: MainActivityUiState): Boolean {
         Timber.d("Called : fun $TAG.shouldUseDynamicColor()")
         return when (uiState) {
-            MainActivityUiState.Loading -> false
-            is MainActivityUiState.Success -> when(uiState.configCurrent.currentDynamicColor){
-                DynamicColor.ENABLED -> true
-                DynamicColor.DISABLED -> false
+            Loading -> false
+            is Success -> when(uiState.configCurrent.dynamicColor){
+                ENABLED -> true
+                DISABLED -> false
             }
         }
     }
@@ -65,12 +73,12 @@ object Themes{
     fun calculateInitialFontSize(uiState: MainActivityUiState): FontSize {
         Timber.d("Called : fun $TAG.calculateInitialFontSize()")
         return when(uiState) {
-            MainActivityUiState.Loading -> MEDIUM
-            is MainActivityUiState.Success -> when(uiState.configCurrent.currentFontSizeSize){
+            Loading -> MEDIUM
+            is Success -> when(uiState.configCurrent.fontSize){
                 MEDIUM -> MEDIUM
-                FontSize.SMALL -> FontSize.SMALL
-                FontSize.LARGE -> FontSize.LARGE
-                FontSize.EXTRA_LARGE -> FontSize.EXTRA_LARGE
+                SMALL -> SMALL
+                LARGE -> LARGE
+                EXTRA_LARGE -> EXTRA_LARGE
             }
         }
     }

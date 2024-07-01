@@ -14,14 +14,14 @@ enum class DestinationBusinessMasterData(
     val usesAuth: Boolean
 ){
     SUPPLIER(
-        route = ScreenGraphs.BusinessMasterDataSupplier.route,
+        route = ScreenGraphs.Supplier.route,
         iconRes = Icons.Supplier.supplier,
         title = R.string.str_supplier,
         description = R.string.str_supplier_desc,
         usesAuth = true
     ),
 //    CUSTOMER(
-//        route = ScreenGraphs.BusinessMasterDataCustomer.route,
+//        route = ScreenGraphs.Customer.route,
 //        iconRes = Icons.Customer.customer,
 //        title = R.string.str_customer,
 //        description = R.string.str_customer_desc,

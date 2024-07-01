@@ -8,7 +8,7 @@ import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatche
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatchers
 import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
 import com.thomas200593.mini_retail_app.features.app_config.entity.Currency
-import com.thomas200593.mini_retail_app.features.app_config.repository.AppConfigGeneralRepository
+import com.thomas200593.mini_retail_app.features.app_config.repository.ConfigGeneralRepository
 import com.thomas200593.mini_retail_app.features.app_config.repository.AppConfigRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -26,7 +26,7 @@ private val TAG = AppConfigGeneralCurrencyViewModel::class.simpleName
 @HiltViewModel
 class AppConfigGeneralCurrencyViewModel @Inject constructor(
     appConfigRepository: AppConfigRepository,
-    private val appConfigGeneralRepository: AppConfigGeneralRepository,
+    private val configGeneralRepository: ConfigGeneralRepository,
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ): ViewModel() {
     private val _currencyPreferences: MutableState<RequestState<List<Currency>>> = mutableStateOf(RequestState.Idle)
@@ -49,7 +49,7 @@ class AppConfigGeneralCurrencyViewModel @Inject constructor(
         Timber.d("Called : fun $TAG.getCurrencyPreferences()")
         _currencyPreferences.value = RequestState.Loading
         _currencyPreferences.value = try{
-            RequestState.Success(appConfigGeneralRepository.getCurrencyPreferences())
+            RequestState.Success(configGeneralRepository.getCurrencyPreferences())
         }catch (e: Throwable){
             RequestState.Error(e)
         }
@@ -57,6 +57,6 @@ class AppConfigGeneralCurrencyViewModel @Inject constructor(
 
     fun saveSelectedCurrency(currency: Currency) = viewModelScope.launch {
         Timber.d("Called : fun $TAG.saveSelectedCurrency()")
-        appConfigGeneralRepository.setCurrencyPreferences(currency)
+        configGeneralRepository.setCurrencyPreferences(currency)
     }
 }

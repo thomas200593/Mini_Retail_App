@@ -168,7 +168,7 @@ private fun ScreenContent(
                     )
                 }
                 is RequestState.Success -> {
-                    val currentCurrency = configCurrent.data.currentCurrency
+                    val currentCurrency = configCurrent.data.currency
                     val appCurrencyPreferences = currencyPreferences.data
 
                     Column(

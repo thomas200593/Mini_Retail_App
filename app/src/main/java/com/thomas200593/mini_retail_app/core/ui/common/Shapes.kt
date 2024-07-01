@@ -6,12 +6,12 @@ import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.keyframes
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Arrangement.spacedBy
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -31,7 +31,7 @@ object Shapes {
     fun DotsLoadingAnimation(
         modifier: Modifier = Modifier,
         circleSize: Dp = 16.dp,
-        circleColor: Color = MaterialTheme.colorScheme.onSurface,
+        circleColor: Color = colorScheme.onSurface,
         spaceBetween: Dp = 10.dp,
         travelDistance: Dp = 20.dp
     ) {
@@ -66,7 +66,7 @@ object Shapes {
 
         Row(
             modifier = modifier,
-            horizontalArrangement = Arrangement.spacedBy(spaceBetween)
+            horizontalArrangement = spacedBy(spaceBetween)
         ) {
             circleValues.forEach { value ->
                 Box(modifier = Modifier

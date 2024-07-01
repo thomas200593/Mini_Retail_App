@@ -4,7 +4,7 @@ import androidx.annotation.DrawableRes
 import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.R.drawable.app_flag_gb_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_flag_id_48px
-import com.thomas200593.mini_retail_app.R.drawable.app_icon_48x48
+import com.thomas200593.mini_retail_app.R.drawable.app_icon_48x48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_business_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_business_profile_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_country_48px
@@ -45,7 +45,7 @@ import com.thomas200593.mini_retail_app.R.drawable.app_icon_user_profile_48px
 
 object Icons {
     object App{
-        @DrawableRes val app = +app_icon_48x48
+        @DrawableRes val app = +app_icon_48x48px
     }
     object Auth{
         @DrawableRes val session_expire = +app_icon_session_expired_48px

@@ -8,9 +8,9 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-internal class BusinessMasterDataRepositoryImpl @Inject constructor(
+internal class MasterDataRepositoryImpl @Inject constructor(
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
-): BusinessMasterDataRepository {
+): MasterDataRepository {
     override suspend fun getBusinessMasterDataMenuData(
         sessionState: SessionState
     ): Set<DestinationBusinessMasterData> = withContext(ioDispatcher){

@@ -167,7 +167,7 @@ private fun ScreenContent(
                     )
                 }
                 is RequestState.Success -> {
-                    val currentTheme = configCurrent.data.currentTheme
+                    val currentTheme = configCurrent.data.theme
                     val appThemePreferences = themePreferences.data
 
                     Column(

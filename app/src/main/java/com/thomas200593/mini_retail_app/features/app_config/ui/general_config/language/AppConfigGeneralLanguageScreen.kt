@@ -172,7 +172,7 @@ private fun ScreenContent(
                     )
                 }
                 is RequestState.Success -> {
-                    val currentLanguage = configCurrent.data.currentLanguage
+                    val currentLanguage = configCurrent.data.language
                     val appLanguagePreferences = languagePreferences.data
 
                     Column(
