@@ -20,8 +20,8 @@ object RoomDatabaseModule {
     fun providesRoomDatabase(@ApplicationContext context: Context) = Room
         .databaseBuilder(
             context = context,
-            AppLocalDatabaseHelper::class.java,
-            APP_LOCAL_DATABASE_FILENAME
+            klass = AppLocalDatabaseHelper::class.java,
+            name = APP_LOCAL_DATABASE_FILENAME
         )
         .build()
 }

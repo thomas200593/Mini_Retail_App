@@ -4,12 +4,12 @@ import java.time.Instant.now
 
 object Constants {
     //System
-    const val SYSTEM = "System"
+    const val SYSTEM: String = "System"
     //Current UNIX Epoch Seconds
-    val NOW_EPOCH_SECOND = now().epochSecond
+    val NOW_EPOCH_SECOND: Long = now().epochSecond
     /**
      * System Notification Constants
      */
-    const val MAX_NUM_NOTIFICATIONS = 5
-    const val TARGET_ACTIVITY_NAME = "com.thomas200593.mini_retail_app.app.MainActivity"
+    const val MAX_NUM_NOTIFICATIONS: Int = 5
+    const val TARGET_ACTIVITY_NAME: String = "com.thomas200593.mini_retail_app.app.MainActivity"
 }

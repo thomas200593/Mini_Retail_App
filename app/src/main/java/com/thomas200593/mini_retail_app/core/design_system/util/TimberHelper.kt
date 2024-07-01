@@ -8,7 +8,7 @@ private val TAG = TimberHelper::class.simpleName
 object TimberHelper {
     fun initializeDebugTree(){
         if (Timber.treeCount == 0 && BuildConfig.DEBUG){
-            Timber.plant(Timber.DebugTree())
+            Timber.plant(tree = Timber.DebugTree())
         }
         Timber.d("Called : fun ${TAG}.initializeDebugTree()")
     }
