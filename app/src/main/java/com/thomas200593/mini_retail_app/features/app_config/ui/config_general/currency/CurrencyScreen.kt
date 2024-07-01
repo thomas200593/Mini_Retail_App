@@ -50,18 +50,14 @@ import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.Loa
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.ThreeRowCardItem
 import com.thomas200593.mini_retail_app.features.app_config.entity.ConfigCurrent
 import com.thomas200593.mini_retail_app.features.app_config.entity.Currency
-import timber.log.Timber
-
-private const val TAG = "AppConfigGeneralCurrencyScreen"
 
 @Composable
 fun CurrencyScreen(
     viewModel: CurrencyViewModel = hiltViewModel(),
     appState: AppState = LocalAppState.current
 ) {
-    Timber.d("Called : fun $TAG()")
-    val configCurrent by viewModel.configCurrentUiState.collectAsStateWithLifecycle()
-    val currencyPreferences by viewModel.currencyPreferences
+    val configCurrent by viewModel.configCurrent.collectAsStateWithLifecycle()
+    val currencies by viewModel.currencies
 
     LaunchedEffect(Unit) {
         viewModel.onOpen()
@@ -71,9 +67,9 @@ fun CurrencyScreen(
         onNavigateBack = appState::onNavigateUp
     )
     ScreenContent(
-        currencyPreferences = currencyPreferences,
+        currencies = currencies,
         configCurrent = configCurrent,
-        onSaveSelectedCurrency = viewModel::saveSelectedCurrency
+        onSaveSelectedCurrency = viewModel::setCurrency
     )
 }
 
@@ -128,16 +124,18 @@ private fun TopAppBar(
 
 @Composable
 private fun ScreenContent(
-    currencyPreferences: RequestState<List<Currency>>,
+    currencies: RequestState<List<Currency>>,
     configCurrent: RequestState<ConfigCurrent>,
     onSaveSelectedCurrency: (Currency) -> Unit
 ) {
     when(configCurrent){
-        Idle, Loading -> { LoadingScreen() }
+        Idle, Loading -> {
+            LoadingScreen()
+        }
         is Error -> {
             ErrorScreen(
                 title = stringResource(id = R.string.str_error),
-                errorMessage = "Failed to get Preferences data.",
+                errorMessage = stringResource(id = R.string.str_error_fetching_preferences),
                 showIcon = true
             )
         }
@@ -149,9 +147,11 @@ private fun ScreenContent(
             )
         }
         is Success -> {
-            when(currencyPreferences){
+            when(currencies){
                 Idle -> Unit
-                Loading -> { LoadingScreen() }
+                Loading -> {
+                    LoadingScreen()
+                }
                 is Error -> {
                     ErrorScreen(
                         title = stringResource(id = R.string.str_error),
@@ -167,8 +167,8 @@ private fun ScreenContent(
                     )
                 }
                 is Success -> {
-                    val currentCurrency = configCurrent.data.currency
-                    val appCurrencyPreferences = currencyPreferences.data
+                    val currentData = configCurrent.data.currency
+                    val preferencesList = currencies.data
 
                     Column(
                         modifier = Modifier.fillMaxSize().padding(4.dp),
@@ -176,7 +176,7 @@ private fun ScreenContent(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            text = "${stringResource(id = R.string.str_currency)} : ${currentCurrency.displayName}",
+                            text = "${stringResource(id = R.string.str_currency)} : ${currentData.displayName}",
                             modifier = Modifier.fillMaxWidth().padding(4.dp),
                             fontWeight = FontWeight.Bold,
                             maxLines = 1,
@@ -188,8 +188,8 @@ private fun ScreenContent(
                             verticalArrangement = Arrangement.spacedBy(10.dp),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            items(count = appCurrencyPreferences.count()){ index ->
-                                val data = appCurrencyPreferences[index]
+                            items(count = preferencesList.count()){ index ->
+                                val data = preferencesList[index]
                                 ThreeRowCardItem(
                                     firstRowContent = {
                                         Text(
@@ -225,9 +225,9 @@ private fun ScreenContent(
                                             onClick = { onSaveSelectedCurrency(data) }
                                         ) {
                                             Icon(
-                                                imageVector = if (data == currentCurrency) Icons.Default.CheckCircle else Icons.AutoMirrored.Outlined.KeyboardArrowRight,
+                                                imageVector = if (data == currentData) Icons.Default.CheckCircle else Icons.AutoMirrored.Outlined.KeyboardArrowRight,
                                                 contentDescription = null,
-                                                tint = if (data == currentCurrency) Color.Green else MaterialTheme.colorScheme.onTertiaryContainer
+                                                tint = if (data == currentData) Color.Green else MaterialTheme.colorScheme.onTertiaryContainer
                                             )
                                         }
                                     }

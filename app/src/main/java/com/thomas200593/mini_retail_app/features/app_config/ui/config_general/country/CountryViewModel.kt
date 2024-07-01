@@ -22,10 +22,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
-
-private val TAG = CountryViewModel::class.simpleName
 
 @HiltViewModel
 class CountryViewModel @Inject constructor(
@@ -45,19 +42,16 @@ class CountryViewModel @Inject constructor(
         )
 
     fun onOpen() = viewModelScope.launch(ioDispatcher){
-        Timber.d("Called : fun $TAG.onOpen()")
         getCountries()
     }
 
     private fun getCountries() = viewModelScope.launch(ioDispatcher){
-        Timber.d("Called : fun $TAG.getCountryPreferences()")
         _countries.value = Loading
         _countries.value = try { Success(repository2.getCountries()) }
         catch (e: Throwable){ Error(e) }
     }
 
     fun setCountry(country: Country) = viewModelScope.launch{
-        Timber.d("Called : fun $TAG.saveSelectedCountry()")
         repository2.setCountry(country)
     }
 }

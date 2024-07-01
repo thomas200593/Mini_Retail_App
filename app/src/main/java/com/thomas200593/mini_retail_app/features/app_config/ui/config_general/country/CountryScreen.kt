@@ -51,16 +51,12 @@ import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.Loa
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.ThreeRowCardItem
 import com.thomas200593.mini_retail_app.features.app_config.entity.ConfigCurrent
 import com.thomas200593.mini_retail_app.features.app_config.entity.Country
-import timber.log.Timber
-
-private const val TAG = "AppConfigGeneralCountryScreen"
 
 @Composable
 fun CountryScreen(
     viewModel: CountryViewModel = hiltViewModel(),
     appState: AppState = LocalAppState.current
 ){
-    Timber.d("Called : fun $TAG()")
     val configCurrent by viewModel.configCurrent.collectAsStateWithLifecycle()
     val countries by viewModel.countries
 
