@@ -13,12 +13,12 @@ enum class OnboardingStatus(
     @DrawableRes val iconRes: Int,
 ) {
     SHOW(
-        code = "onboarding_pages_status_show",
+        code = "onboarding_status_show",
         title = str_onboarding_show,
         iconRes = show
     ),
     HIDE(
-        code = "onboarding_pages_status_hide",
+        code = "onboarding_status_hide",
         title = str_onboarding_hide,
         iconRes = hide
     )

@@ -5,6 +5,7 @@ import androidx.annotation.StringRes
 import com.thomas200593.mini_retail_app.R.string.str_backup
 import com.thomas200593.mini_retail_app.R.string.str_backup_desc
 import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs
+import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs.AppConfigDataBackup
 import com.thomas200593.mini_retail_app.core.ui.common.Icons.Data.backup
 
 enum class DestinationAppConfigData(
@@ -15,7 +16,7 @@ enum class DestinationAppConfigData(
     val usesAuth: Boolean
 ){
     BACKUP_DATA(
-        route = ScreenGraphs.AppConfigDataBackup.route,
+        route = AppConfigDataBackup.route,
         iconRes = backup,
         title = str_backup,
         description = str_backup_desc,
