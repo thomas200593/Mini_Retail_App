@@ -72,9 +72,7 @@ internal fun AppScreen(
         snackbarHost = { SnackbarHost(snackBarHostState) },
         topBar = {
             if(appState.shouldShowTopBar){
-                TopAppBar(
-                    navController = appState.navController
-                )
+                TopAppBar(navController = appState.navController)
             }
         },
         bottomBar = {
@@ -89,10 +87,7 @@ internal fun AppScreen(
         },
         content = { padding ->
             Surface(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(padding)
-                    .consumeWindowInsets(padding)
+                modifier = Modifier.fillMaxSize().padding(padding).consumeWindowInsets(padding)
                     .windowInsetsPadding(
                         WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal)
                     ),

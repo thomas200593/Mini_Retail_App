@@ -26,11 +26,9 @@ class MainViewModel @Inject constructor(
     @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel(){
     val uiState: StateFlow<MainActivityUiState> = appConfigRepository
-        .configCurrentData.flowOn(ioDispatcher).onEach {
-            Timber.d("$TAG.uiState : $it")
-        }.map {
-            Success(it)
-        }.stateIn(
+        .configCurrentData.flowOn(ioDispatcher).onEach { Timber.d("$TAG.uiState : $it") }
+        .map { Success(it) }
+        .stateIn(
             scope = viewModelScope,
             initialValue = Loading,
             started = Eagerly

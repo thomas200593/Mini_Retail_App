@@ -55,9 +55,7 @@ class MainActivity: AppCompatActivity() {
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(STARTED){
                 launch {
-                    viewModel.uiState.onEach {
-                        uiState = it
-                    }.collect()
+                    viewModel.uiState.onEach { uiState = it }.collect()
                 }
             }
         }
@@ -76,22 +74,13 @@ class MainActivity: AppCompatActivity() {
 
             DisposableEffect(key1 = darkTheme) {
                 enableEdgeToEdge(
-                    statusBarStyle = auto(
-                        TRANSPARENT,
-                        TRANSPARENT
-                    ){ darkTheme },
-                    navigationBarStyle = auto(
-                        lightScrim,
-                        darkScrim,
-                    ){ darkTheme }
+                    statusBarStyle = auto(TRANSPARENT, TRANSPARENT) { darkTheme },
+                    navigationBarStyle = auto(lightScrim, darkScrim) { darkTheme }
                 )
                 onDispose {}
             }
 
-            val appState = rememberAppState(
-                networkMonitor = networkMonitor,
-                session = session
-            )
+            val appState = rememberAppState(networkMonitor = networkMonitor, session = session)
 
             CompositionLocalProvider(LocalAppState provides appState) {
                 ApplicationTheme(

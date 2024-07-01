@@ -21,18 +21,14 @@ data class Address(
 
 class TypeConverterAddress{
     @TypeConverter
-    fun toJson(address: Address?): String =
-        Json.encodeToString(address)
+    fun toJson(address: Address?): String = Json.encodeToString(address)
 
     @TypeConverter
-    fun toJsonArray(address: List<Address>?): String =
-        Json.encodeToString(address)
+    fun toJsonArray(address: List<Address>?): String = Json.encodeToString(address)
 
     @TypeConverter
-    fun fromJson(json: String): Address? =
-        Json.decodeFromString(json)
+    fun fromJson(json: String): Address? = Json.decodeFromString(json)
 
     @TypeConverter
-    fun fromJsonArray(json: String): List<Address>? =
-        Json.decodeFromString(json)
+    fun fromJsonArray(json: String): List<Address>? = Json.decodeFromString(json)
 }

@@ -20,39 +20,29 @@ class SessionImpl @Inject constructor(
     authRepository: AuthRepository,
     @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
 ): Session {
-    override val currentUserSession: Flow<SessionState> = authRepository
-        .authSessionToken
+    override val currentUserSession: Flow<SessionState> = authRepository.authSessionToken
         .flowOn(ioDispatcher)
         .catch {
             Timber.d("val $TAG.currentUserSession returned : Throwable -> $it")
-            Invalid(
-                throwable = it,
-                reason = R.string.str_session_error
-            )
+            Invalid(throwable = it, reason = R.string.str_session_error)
         }
         .map { authToken ->
             if(authRepository.validateAuthSessionToken(authToken)){
                 val userData = authRepository.mapAuthSessionTokenToUserData(authToken)
                 if(userData != null){
                     Timber.d("val $TAG.currentUserSession returned : SessionState.Valid($userData)")
-                    Valid(userData)
+                    Valid(userData = userData)
                 }else{
                     val throwable = null
                     val reason = R.string.str_session_expired
                     Timber.d("val $TAG.currentUserSession returned : SessionState.Invalid(throwable=$throwable, reasonId=$reason)")
-                    Invalid(
-                        throwable = throwable,
-                        reason = reason
-                    )
+                    Invalid(throwable = throwable, reason = reason)
                 }
             }else{
                 val throwable = null
                 val reason = R.string.str_session_expired
                 Timber.d("val $TAG.currentUserSession returned : SessionState.Invalid(throwable=$throwable, reasonId=$reason)")
-                Invalid(
-                    throwable = null,
-                    reason = R.string.str_session_expired
-                )
+                Invalid(throwable = null, reason = R.string.str_session_expired)
             }
         }
 }

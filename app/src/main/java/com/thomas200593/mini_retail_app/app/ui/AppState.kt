@@ -78,8 +78,7 @@ class AppState(
         )
 
     val destinationCurrent: NavDestination?
-        @Composable get() = navController
-            .currentBackStackEntryAsState().value?.destination
+        @Composable get() = navController.currentBackStackEntryAsState().value?.destination
 
     val destinationTopLevels: List<DestinationTopLevel> = entries
 

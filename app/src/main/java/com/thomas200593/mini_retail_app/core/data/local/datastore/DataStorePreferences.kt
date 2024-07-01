@@ -35,6 +35,7 @@ import com.thomas200593.mini_retail_app.features.app_config.entity.Theme.SYSTEM
 import com.thomas200593.mini_retail_app.features.app_config.entity.Timezone
 import com.thomas200593.mini_retail_app.features.auth.entity.AuthSessionToken
 import com.thomas200593.mini_retail_app.features.auth.entity.OAuthProvider
+import com.thomas200593.mini_retail_app.features.auth.entity.OAuthProvider.GOOGLE
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
@@ -103,7 +104,7 @@ class DataStorePreferences @Inject constructor(
             AuthSessionToken(
                 authProvider = data[dsKeyAuthProvider] ?.let { oAuthProvider ->
                     OAuthProvider.valueOf(oAuthProvider)
-                } ?: OAuthProvider.GOOGLE,
+                } ?: GOOGLE,
                 idToken = data[dsKeyAuthSessionToken]
             )
         }

@@ -17,18 +17,14 @@ data class Link(
 
 class TypeConverterLinks{
     @TypeConverter
-    fun toJson(link: Link?): String =
-        Json.encodeToString(link)
+    fun toJson(link: Link?): String = Json.encodeToString(link)
 
     @TypeConverter
-    fun toJsonArray(link: List<Link>?): String =
-        Json.encodeToString(link)
+    fun toJsonArray(link: List<Link>?): String = Json.encodeToString(link)
 
     @TypeConverter
-    fun fromJson(json: String): Link? =
-        Json.decodeFromString(json)
+    fun fromJson(json: String): Link? = Json.decodeFromString(json)
 
     @TypeConverter
-    fun fromJsonArray(json: String): List<Link>? =
-        Json.decodeFromString(json)
+    fun fromJsonArray(json: String): List<Link>? = Json.decodeFromString(json)
 }
