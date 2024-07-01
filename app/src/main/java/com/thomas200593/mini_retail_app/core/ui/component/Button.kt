@@ -58,9 +58,6 @@ import com.thomas200593.mini_retail_app.features.auth.entity.AuthSessionToken
 import com.thomas200593.mini_retail_app.features.auth.entity.OAuthProvider.GOOGLE
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import timber.log.Timber
-
-private val TAG = Button::class.simpleName
 
 object Button {
     private val TAG_COMMON = Common::class.simpleName
@@ -145,7 +142,6 @@ object Button {
             progressIndicatorColor: Color = MaterialTheme.colorScheme.primary,
             onClick: () -> Unit
         ){
-            Timber.d("Called : fun $TAG.$TAG_GOOGLE.SignInWithGoogle()")
             var btnText by remember { mutableStateOf(primaryText) }
             LaunchedEffect(btnLoadingState) { btnText = if(btnLoadingState) secondaryText else primaryText }
             Surface(
@@ -202,7 +198,6 @@ object Button {
             onError: (Throwable) -> Unit,
             onDialogDismissed: (Throwable) -> Unit
         ){
-            Timber.d("Called : fun $TAG.$TAG_GOOGLE.handleSignIn()")
             coroutineScope.launch {
                 val credentialManager = create(activityContext)
                 val googleIdOptions = GetGoogleIdOption.Builder()
@@ -249,7 +244,6 @@ object Button {
             onClearSuccess: () -> Unit,
             onClearError: (Throwable) -> Unit
         ){
-            Timber.d("Called : fun $TAG.$TAG_GOOGLE.handleClearCredential()")
             val credentialManager = create(context = activityContext)
             val clearCredentialRequest = ClearCredentialStateRequest()
             try{

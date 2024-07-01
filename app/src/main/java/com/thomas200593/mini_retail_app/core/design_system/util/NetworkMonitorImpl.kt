@@ -17,17 +17,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.flow.flowOn
-import timber.log.Timber
 import javax.inject.Inject
-
-private val TAG = NetworkMonitorImpl::class.simpleName
 
 internal class NetworkMonitorImpl @Inject constructor(
     @ApplicationContext private val context: Context,
     @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
 ) : NetworkMonitor{
     override val isNetworkOnline: Flow<Boolean> = callbackFlow {
-        Timber.d("Called : callbackFlow $TAG.isNetworkOnline")
         trace("NetworkMonitor.callbackFlow"){
             val connectivityManager = context.getSystemService<ConnectivityManager>()
             if(connectivityManager == null){

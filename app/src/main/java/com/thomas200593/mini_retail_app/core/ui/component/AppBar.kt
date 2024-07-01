@@ -20,20 +20,15 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.compose.LocalOwnersProvider
 import kotlinx.coroutines.flow.filterNot
-import timber.log.Timber
-
-private val TAG = AppBar::class.simpleName
 
 object AppBar {
     @Composable
     fun TopAppBar(navController: NavController){
-        Timber.d("Called : fun $TAG.TopAppBar()")
         AppBar(navController = navController)
     }
 
     @Composable
     fun ProvideTopAppBarAction(actions: @Composable RowScope.() -> Unit){
-        Timber.d("Called : fun $TAG.ProvideTopAppBarAction()")
         if(current == null || current !is NavBackStackEntry){ return }
         val actionViewModel = viewModel(initializer = {TopAppBarViewModel()})
         DisposableEffect(key1 = Unit) {
@@ -46,7 +41,6 @@ object AppBar {
 
     @Composable
     fun ProvideTopAppBarTitle(title: @Composable () -> Unit){
-        Timber.d("Called : fun $TAG.ProvideTopAppBarTitle()")
         if (current == null || current !is NavBackStackEntry){ return }
         val actionViewModel = viewModel(initializer = { TopAppBarViewModel() })
         DisposableEffect(key1 = Unit) {
@@ -59,7 +53,6 @@ object AppBar {
 
     @Composable
     fun ProvideTopAppBarNavigationIcon(navIcon: @Composable () -> Unit){
-        Timber.d("Called : fun $TAG.ProvideNavigationIcon()")
         val actionViewModel = viewModel(initializer = { TopAppBarViewModel() })
         DisposableEffect(key1 = Unit) {
             actionViewModel.navIconState = navIcon
@@ -71,7 +64,6 @@ object AppBar {
 
     @Composable
     private fun RowScope.TopAppBarAction(navBackStackEntry: NavBackStackEntry?){
-        Timber.d("Called : fun $TAG.RowScope.TopAppBarAction()")
         val stateHolder = rememberSaveableStateHolder()
         navBackStackEntry?.LocalOwnersProvider(stateHolder) {
             val actionViewModel = viewModel(initializer = { TopAppBarViewModel() })
@@ -81,7 +73,6 @@ object AppBar {
 
     @Composable
     private fun TopAppBarTitle(navBackStackEntry: NavBackStackEntry?) {
-        Timber.d("Called : fun $TAG.TopAppBarTitle()")
         val stateHolder = rememberSaveableStateHolder()
         navBackStackEntry?.LocalOwnersProvider(stateHolder) {
             val actionViewModel = viewModel(initializer = { TopAppBarViewModel() })
@@ -91,7 +82,6 @@ object AppBar {
 
     @Composable
     private fun TopAppBarNavIcon(navBackStackEntry: NavBackStackEntry?){
-        Timber.d("Called : fun $TAG.TopAppBarNavIcon()")
         val stateHolder = rememberSaveableStateHolder()
         navBackStackEntry?.LocalOwnersProvider(stateHolder){
             val actionViewModel = viewModel(initializer = { TopAppBarViewModel() })
@@ -105,7 +95,6 @@ object AppBar {
         navController: NavController,
         modifier: Modifier = Modifier
     ){
-        Timber.d("Called : fun $TAG.AppBar()")
         val currentContentBackStackEntry by produceState(
             initialValue = null as NavBackStackEntry?,
             producer = {

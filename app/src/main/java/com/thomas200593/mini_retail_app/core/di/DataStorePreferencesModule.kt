@@ -12,7 +12,6 @@ import dagger.hilt.components.SingletonComponent
 import timber.log.Timber
 import javax.inject.Singleton
 
-private val TAG = DataStorePreferencesModule::class.simpleName
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -22,7 +21,6 @@ object DataStorePreferencesModule {
     fun providesDataStorePreferences(@ApplicationContext context: Context) =
         create(
             produceFile = {
-                Timber.d("Called : fun $TAG.provideDataStorePreferences()")
                 context.preferencesDataStoreFile(APP_LOCAL_DATASTORE_FILENAME)
             }
         )

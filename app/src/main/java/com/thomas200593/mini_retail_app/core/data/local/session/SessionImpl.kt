@@ -11,10 +11,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
-import timber.log.Timber
 import javax.inject.Inject
-
-private val TAG = SessionImpl::class.simpleName
 
 class SessionImpl @Inject constructor(
     repository: AuthRepository,
@@ -23,25 +20,17 @@ class SessionImpl @Inject constructor(
     override val currentUserSession: Flow<SessionState> = repository.authSessionToken
         .flowOn(ioDispatcher)
         .catch {
-            Timber.d("val $TAG.currentUserSession returned : Throwable -> $it")
             Invalid(throwable = it, reason = R.string.str_session_error)
         }
         .map { authToken ->
             if(repository.validateAuthSessionToken(authToken)){
                 val userData = repository.mapAuthSessionTokenToUserData(authToken)
                 if(userData != null){
-                    Timber.d("val $TAG.currentUserSession returned : SessionState.Valid($userData)")
                     Valid(userData = userData)
                 }else{
-                    val throwable = null
-                    val reason = R.string.str_session_expired
-                    Timber.d("val $TAG.currentUserSession returned : SessionState.Invalid(throwable=$throwable, reasonId=$reason)")
-                    Invalid(throwable = throwable, reason = reason)
+                    Invalid(throwable = null, reason = R.string.str_session_expired)
                 }
             }else{
-                val throwable = null
-                val reason = R.string.str_session_expired
-                Timber.d("val $TAG.currentUserSession returned : SessionState.Invalid(throwable=$throwable, reasonId=$reason)")
                 Invalid(throwable = null, reason = R.string.str_session_expired)
             }
         }

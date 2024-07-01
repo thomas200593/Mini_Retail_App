@@ -19,10 +19,7 @@ import com.thomas200593.mini_retail_app.features.app_config.navigation.Destinati
 import com.thomas200593.mini_retail_app.features.app_config.navigation.DestinationConfigGeneral.entries
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 import javax.inject.Inject
-
-private val TAG = ConfigGeneralRepositoryImpl::class.simpleName
 
 internal class ConfigGeneralRepositoryImpl @Inject constructor(
     private val dataStore: DataStorePreferences,
@@ -31,7 +28,6 @@ internal class ConfigGeneralRepositoryImpl @Inject constructor(
     override suspend fun getMenuData(
         sessionState: SessionState
     ): Set<DestinationConfigGeneral> = withContext(ioDispatcher) {
-        Timber.d("Called : fun $TAG.getAppConfigGeneralMenuData()")
         when (sessionState) {
             Loading -> { emptySet() }
             is Invalid -> { entries.filterNot { it.usesAuth }.toSet() }
@@ -40,72 +36,58 @@ internal class ConfigGeneralRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getThemes(): Set<Theme> = withContext(ioDispatcher){
-        Timber.d("Called : fun $TAG.getThemePreferences()")
         Theme.entries.toSet()
     }
 
     override suspend fun setTheme(theme: Theme) {
-        Timber.d("Called : fun $TAG.setThemePreferences()")
         dataStore.setTheme(theme)
     }
 
     override suspend fun getDynamicColors(): Set<DynamicColor> = withContext(ioDispatcher){
-        Timber.d("Called : fun $TAG.getDynamicMenuPreferences()")
         DynamicColor.entries.toSet()
     }
 
     override suspend fun setDynamicColor(dynamicColor: DynamicColor) {
-        Timber.d("Called : fun $TAG.setDynamicColorPreferences()")
         dataStore.setDynamicColor(dynamicColor)
     }
 
     override suspend fun getLanguages(): Set<Language> = withContext(ioDispatcher){
-        Timber.d("Called : fun $TAG.getLanguagePreferences()")
         Language.entries.toSet()
     }
 
     override suspend fun setLanguage(language: Language) {
-        Timber.d("Called : fun $TAG.setLanguagePreferences()")
         dataStore.setLanguage(language)
     }
 
     override suspend fun getTimezones(): List<Timezone> = withContext(ioDispatcher){
-        Timber.d("Called : fun $TAG.getTimezonePreferences()")
         getTimezones()
     }
 
     override suspend fun setTimezone(timezone: Timezone) {
-        Timber.d("Called : fun $TAG.setTimezonePreferences()")
         dataStore.setTimezone(timezone)
     }
 
     override suspend fun getCurrencies(): List<Currency> = withContext(ioDispatcher){
-        Timber.d("Called : fun $TAG.getCurrencyPreferences()")
         getCurrencies()
     }
 
     override suspend fun setCurrency(currency: Currency) {
-        Timber.d("Called : fun $TAG.setCurrencyPreferences()")
         dataStore.setCurrency(currency)
     }
 
     override suspend fun getFontSizes(): Set<FontSize> = withContext(ioDispatcher){
-        Timber.d("Called : fun $TAG.getFontSizePreferences()")
         FontSize.entries.toSet()
     }
 
     override suspend fun setFontSize(fontSize: FontSize) {
-        Timber.d("Called : fun $TAG.setFontSizePreferences()")
         dataStore.setFontSize(fontSize)
     }
 
     override suspend fun getCountries(): List<Country> = withContext(ioDispatcher){
-        Timber.d("Called : fun $TAG.getCountryPreferences()")
         getCountryList()
     }
 
     override suspend fun setCountry(country: Country) {
-        Timber.d("Called : fun $TAG.setCountryPreferences()")
         dataStore.setCountry(country)
     }
 }

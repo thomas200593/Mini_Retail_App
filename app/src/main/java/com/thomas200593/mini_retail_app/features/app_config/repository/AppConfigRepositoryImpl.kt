@@ -13,10 +13,7 @@ import com.thomas200593.mini_retail_app.features.app_config.navigation.Destinati
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 import javax.inject.Inject
-
-private val TAG = AppConfigRepositoryImpl::class.simpleName
 
 internal class AppConfigRepositoryImpl @Inject constructor(
     dataStore: DataStorePreferences,
@@ -27,7 +24,6 @@ internal class AppConfigRepositoryImpl @Inject constructor(
 
     override suspend fun getMenuData(sessionState: SessionState): Set<DestinationAppConfig> =
         withContext(ioDispatcher){
-            Timber.d("Called : fun $TAG.getAppConfigMenuData()")
             when(sessionState){
                 Loading -> { emptySet() }
                 is Invalid -> { entries.filterNot { it.usesAuth }.toSet() }

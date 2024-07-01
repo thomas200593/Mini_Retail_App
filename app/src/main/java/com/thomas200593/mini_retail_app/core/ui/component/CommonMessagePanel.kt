@@ -47,10 +47,7 @@ import com.thomas200593.mini_retail_app.R.string.app_name
 import com.thomas200593.mini_retail_app.core.ui.common.Icons
 import com.thomas200593.mini_retail_app.core.ui.common.Icons.Content.empty
 import com.thomas200593.mini_retail_app.core.ui.common.Shapes
-import timber.log.Timber
 import kotlin.Int.Companion.MAX_VALUE
-
-private val TAG = CommonMessagePanel::class.simpleName
 
 object CommonMessagePanel{
 
@@ -58,7 +55,6 @@ object CommonMessagePanel{
     fun LoadingPanelCircularIndicator(
         modifier: Modifier = Modifier
     ){
-        Timber.d("Called : fun $TAG.LoadingPanelCircularIndicator()")
         Surface(
             modifier = modifier.fillMaxWidth(),
             shape = shapes.medium,
@@ -84,7 +80,6 @@ object CommonMessagePanel{
     fun LoadingScreen(
         modifier: Modifier = Modifier
     ){
-        Timber.d("Called : fun $TAG.LoadingScreen()")
         Surface(
             modifier = modifier
                 .fillMaxSize()
@@ -174,7 +169,6 @@ object CommonMessagePanel{
         title: String? = null,
         errorMessage: String? = null
     ){
-        Timber.d("Called : fun $TAG.ErrorScreen()")
         Surface(
             modifier = modifier
                 .fillMaxSize()
@@ -244,7 +238,6 @@ object CommonMessagePanel{
         title: String?= null,
         errorMessage: String? = null
     ){
-        Timber.d("Called : fun $TAG.ErrorPanel()")
         Surface(
             modifier = modifier
                 .fillMaxWidth(),
@@ -313,7 +306,6 @@ object CommonMessagePanel{
         title: String? = null,
         emptyMessage: String? = null
     ) {
-        Timber.d("Called : fun $TAG.EmptyScreen()")
         Surface(
             modifier = modifier
                 .fillMaxSize()
@@ -383,7 +375,6 @@ object CommonMessagePanel{
         title: String? = null,
         emptyMessage: String? = null
     ){
-        Timber.d("Called : fun $TAG.EmptyPanel()")
         Surface(
             modifier = modifier
                 .fillMaxWidth(),
@@ -458,7 +449,6 @@ object CommonMessagePanel{
         iconWidthRatio: Float = 0.1f,
         textWidthRatio: Float = 0.9f
     ){
-        Timber.d("Called : fun $TAG.TextContentWithIcon()")
         Row(
             modifier = Modifier.fillMaxWidth(1.0f),
             verticalAlignment = Alignment.CenterVertically,

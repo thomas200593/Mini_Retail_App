@@ -41,11 +41,8 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import org.joda.money.CurrencyUnit
-import timber.log.Timber
 import java.util.Locale
 import javax.inject.Inject
-
-private val TAG = DataStorePreferences::class.simpleName
 
 class DataStorePreferences @Inject constructor(
     private val datastore: DataStore<Preferences>,
@@ -53,7 +50,6 @@ class DataStorePreferences @Inject constructor(
 ){
     //Onboarding
     suspend fun hideOnboarding() = withContext(ioDispatcher){
-        Timber.d("Called : fun $TAG.hideOnboarding()")
         datastore.edit {
             it[dsKeyOnboardingStatus] = HIDE.name
         }
@@ -72,14 +68,12 @@ class DataStorePreferences @Inject constructor(
         }
 
     suspend fun clearAuthSessionToken() = withContext((ioDispatcher)){
-        Timber.d("Called : fun $TAG.clearAuthSessionToken()")
         datastore.edit {
             it.remove(dsKeyAuthSessionToken)
         }
     }
 
     suspend fun saveAuthSessionToken(authSessionToken: AuthSessionToken) = withContext(ioDispatcher){
-        Timber.d("Called : fun $TAG.saveAuthSessionToken()")
         datastore.edit {
             it[dsKeyAuthSessionToken] = authSessionToken.idToken!!
             it[dsKeyAuthProvider] = authSessionToken.authProvider?.name!!
@@ -128,49 +122,42 @@ class DataStorePreferences @Inject constructor(
         }
 
     suspend fun setTheme(theme: Theme) = withContext(ioDispatcher){
-        Timber.d("Called : fun $TAG.setThemePreferences()")
         datastore.edit {
             it[dsKeyTheme] = theme.name
         }
     }
 
     suspend fun setDynamicColor(dynamicColor: DynamicColor) = withContext(ioDispatcher){
-        Timber.d("Called : fun $TAG.setDynamicColorPreferences()")
         datastore.edit {
             it[dsKeyDynamicColor] = dynamicColor.name
         }
     }
 
     suspend fun setLanguage(language: Language) = withContext(ioDispatcher){
-        Timber.d("Called : fun $TAG.setLanguagePreferences()")
         datastore.edit {
             it[dsKeyLanguage] = language.name
         }
     }
 
     suspend fun setTimezone(timezone: Timezone) = withContext(ioDispatcher){
-        Timber.d("Called : fuh $TAG.setTimezonePreferences()")
         datastore.edit {
             it[dsKeyTimezone] = timezone.timezoneOffset
         }
     }
 
     suspend fun setCurrency(currency: Currency) = withContext(ioDispatcher){
-        Timber.d("Called : fun $TAG.setCurrencyPreferences()")
         datastore.edit {
             it[dsKeyCurrency] = currency.code
         }
     }
 
     suspend fun setFontSize(fontSize: FontSize) = withContext(ioDispatcher){
-        Timber.d("Called : fun $TAG.setFontSizePreferences()")
         datastore.edit {
             it[dsKeyFontSize] = fontSize.name
         }
     }
 
     suspend fun setCountry(country: Country) = withContext(ioDispatcher){
-        Timber.d("Called : fun $TAG.setCountryPreferences()")
         datastore.edit {
             it[dsKeyCountry] = country.isoCode
         }
