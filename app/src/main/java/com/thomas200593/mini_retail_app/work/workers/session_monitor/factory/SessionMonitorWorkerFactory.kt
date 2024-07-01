@@ -23,11 +23,11 @@ class SessionMonitorWorkerFactory @Inject constructor(
     override fun create(appContext: Context, params: WorkerParameters): ListenableWorker {
         Timber.d("Called : fun $TAG.create()")
         return SessionMonitorWorker(
-            appContext,
-            params,
-            authRepository,
-            validateAuthSessionUseCase,
-            ioDispatcher
+            context = appContext,
+            workerParameters = params,
+            authRepository = authRepository,
+            validateAuthSessionUseCase = validateAuthSessionUseCase,
+            ioDispatcher = ioDispatcher
         )
     }
 }
