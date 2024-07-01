@@ -17,18 +17,18 @@ import javax.inject.Inject
 private val TAG = SessionImpl::class.simpleName
 
 class SessionImpl @Inject constructor(
-    authRepository: AuthRepository,
+    repository: AuthRepository,
     @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
 ): Session {
-    override val currentUserSession: Flow<SessionState> = authRepository.authSessionToken
+    override val currentUserSession: Flow<SessionState> = repository.authSessionToken
         .flowOn(ioDispatcher)
         .catch {
             Timber.d("val $TAG.currentUserSession returned : Throwable -> $it")
             Invalid(throwable = it, reason = R.string.str_session_error)
         }
         .map { authToken ->
-            if(authRepository.validateAuthSessionToken(authToken)){
-                val userData = authRepository.mapAuthSessionTokenToUserData(authToken)
+            if(repository.validateAuthSessionToken(authToken)){
+                val userData = repository.mapAuthSessionTokenToUserData(authToken)
                 if(userData != null){
                     Timber.d("val $TAG.currentUserSession returned : SessionState.Valid($userData)")
                     Valid(userData = userData)

@@ -6,15 +6,14 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navOptions
 import androidx.navigation.navigation
 import com.thomas200593.mini_retail_app.app.navigation.NavigationGraphs.G_CONFIG_DATA
-import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs
 import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs.ConfigData
-import com.thomas200593.mini_retail_app.features.app_config.ui.data_config.AppConfigDataScreen
+import com.thomas200593.mini_retail_app.features.app_config.ui.config_data.ConfigDataScreen
 import timber.log.Timber
 
 private val TAG_NAV_GRAPH_BUILDER = NavGraphBuilder::class.simpleName
 private val TAG_NAV_CONTROLLER = NavController::class.simpleName
 
-fun NavGraphBuilder.navGraphAppConfigData() {
+fun NavGraphBuilder.navGraphConfigData() {
     Timber.d("Called : fun $TAG_NAV_GRAPH_BUILDER.appConfigDataNavGraph()")
     navigation(
         route = G_CONFIG_DATA,
@@ -23,7 +22,7 @@ fun NavGraphBuilder.navGraphAppConfigData() {
         composable(
             route = ConfigData.route
         ){
-            AppConfigDataScreen()
+            ConfigDataScreen()
         }
 
         //More Screen
@@ -31,7 +30,7 @@ fun NavGraphBuilder.navGraphAppConfigData() {
 }
 
 fun NavController.navigateToAppConfigData(
-    destinationAppConfigData: DestinationAppConfigData?
+    destinationConfigData: DestinationConfigData?
 ){
     Timber.d("Called : fun $TAG_NAV_CONTROLLER.navigateToAppConfigData()")
     val navOptions = navOptions {
@@ -39,7 +38,7 @@ fun NavController.navigateToAppConfigData(
         restoreState = true
     }
     this.navigate(
-        route = destinationAppConfigData?.route?: G_CONFIG_DATA,
+        route = destinationConfigData?.route?: G_CONFIG_DATA,
         navOptions = navOptions
     )
 }

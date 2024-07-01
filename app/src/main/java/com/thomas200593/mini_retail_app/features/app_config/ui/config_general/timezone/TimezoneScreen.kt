@@ -1,4 +1,4 @@
-package com.thomas200593.mini_retail_app.features.app_config.ui.general_config.font_size
+package com.thomas200593.mini_retail_app.features.app_config.ui.config_general.timezone
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -37,26 +37,26 @@ import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.app.ui.AppState
 import com.thomas200593.mini_retail_app.app.ui.LocalAppState
 import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
-import com.thomas200593.mini_retail_app.core.ui.common.Icons.Font.font
+import com.thomas200593.mini_retail_app.core.ui.common.Icons.Timezone.timezone
 import com.thomas200593.mini_retail_app.core.ui.component.AppBar
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.EmptyScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.ErrorScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.LoadingScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.ThreeRowCardItem
 import com.thomas200593.mini_retail_app.features.app_config.entity.ConfigCurrent
-import com.thomas200593.mini_retail_app.features.app_config.entity.FontSize
+import com.thomas200593.mini_retail_app.features.app_config.entity.Timezone
 import timber.log.Timber
 
-private const val TAG = "AppConfigGeneralFontSizeScreen"
+private const val TAG = "AppConfigGeneralTimezoneScreen"
 
 @Composable
-fun AppConfigGeneralFontSizeScreen(
-    viewModel: AppConfigGeneralFontSizeViewModel = hiltViewModel(),
+fun TimezoneScreen(
+    viewModel: TimezoneViewModel = hiltViewModel(),
     appState: AppState = LocalAppState.current
 ) {
     Timber.d("Called : fun $TAG()")
     val configCurrent by viewModel.configCurrentUiState.collectAsStateWithLifecycle()
-    val fontSizePreferences by viewModel.fontSizePreferences
+    val timezonePreferences by viewModel.timezonePreferences
 
     LaunchedEffect(Unit) {
         viewModel.onOpen()
@@ -66,9 +66,9 @@ fun AppConfigGeneralFontSizeScreen(
         onNavigateBack = appState::onNavigateUp
     )
     ScreenContent(
-        fontSizeSizePreferences = fontSizePreferences,
+        timezonePreferences = timezonePreferences,
         configCurrent = configCurrent,
-        onSaveSelectedFontSize = viewModel::saveSelectedFontSize
+        onSaveSelectedTimezone = viewModel::saveSelectedTimezone
     )
 }
 
@@ -97,14 +97,10 @@ private fun TopAppBar(
             Icon(
                 modifier = Modifier
                     .sizeIn(maxHeight = ButtonDefaults.IconSize),
-                imageVector = ImageVector.vectorResource(id = font),
+                imageVector = ImageVector.vectorResource(id = timezone),
                 contentDescription = null
             )
-            Text(
-                text = stringResource(id = R.string.str_size_font),
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
+            Text(text = stringResource(id = R.string.str_timezone))
         }
     }
     AppBar.ProvideTopAppBarAction {
@@ -125,9 +121,9 @@ private fun TopAppBar(
 
 @Composable
 private fun ScreenContent(
-    fontSizeSizePreferences: RequestState<Set<FontSize>>,
+    timezonePreferences: RequestState<List<Timezone>>,
     configCurrent: RequestState<ConfigCurrent>,
-    onSaveSelectedFontSize: (FontSize) -> Unit
+    onSaveSelectedTimezone: (Timezone) -> Unit
 ) {
     when(configCurrent){
         RequestState.Idle, RequestState.Loading -> {
@@ -148,7 +144,7 @@ private fun ScreenContent(
             )
         }
         is RequestState.Success -> {
-            when(fontSizeSizePreferences){
+            when(timezonePreferences){
                 RequestState.Idle -> Unit
                 RequestState.Loading -> {
                     LoadingScreen()
@@ -168,8 +164,8 @@ private fun ScreenContent(
                     )
                 }
                 is RequestState.Success -> {
-                    val currentFontSize = configCurrent.data.fontSize
-                    val appFontSizePreferences = fontSizeSizePreferences.data
+                    val currentTimezone = configCurrent.data.timezone
+                    val appTimezonePreferences = timezonePreferences.data
 
                     Column(
                         modifier = Modifier
@@ -179,7 +175,7 @@ private fun ScreenContent(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            text = "${stringResource(id = R.string.str_size_font)} : ${stringResource(id = currentFontSize.title)}",
+                            text = "${stringResource(id = R.string.str_timezone)} : ${currentTimezone.timezoneOffset}",
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(4.dp),
@@ -195,36 +191,34 @@ private fun ScreenContent(
                             verticalArrangement = Arrangement.spacedBy(10.dp),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            items(count = appFontSizePreferences.count()){ index ->
-                                val data = appFontSizePreferences.elementAt(index)
+                            items(count = appTimezonePreferences.count()){ index ->
+                                val data = appTimezonePreferences[index]
                                 ThreeRowCardItem(
                                     firstRowContent = {
                                         Surface(modifier = Modifier.fillMaxWidth()) {
                                             Icon(
-                                                imageVector = ImageVector.vectorResource(data.iconRes),
+                                                imageVector = ImageVector.vectorResource(id = timezone),
                                                 contentDescription = null
                                             )
                                         }
                                     },
                                     secondRowContent = {
                                         Text(
-                                            text = stringResource(id = data.title),
+                                            text = data.timezoneOffset,
                                             modifier = Modifier.fillMaxWidth(),
                                             textAlign = TextAlign.Start,
-                                            fontWeight = FontWeight.Bold,
-                                            maxLines = 1,
-                                            overflow = TextOverflow.Ellipsis
+                                            fontWeight = FontWeight.Bold
                                         )
                                     },
                                     thirdRowContent = {
                                         Surface(
                                             modifier = Modifier.fillMaxWidth(),
-                                            onClick = { onSaveSelectedFontSize(data) }
+                                            onClick = { onSaveSelectedTimezone(data) }
                                         ) {
                                             Icon(
-                                                imageVector = if (data == currentFontSize) Icons.Default.CheckCircle else Icons.AutoMirrored.Outlined.KeyboardArrowRight,
+                                                imageVector = if (data == currentTimezone) Icons.Default.CheckCircle else Icons.AutoMirrored.Outlined.KeyboardArrowRight,
                                                 contentDescription = null,
-                                                tint = if (data == currentFontSize) Color.Green else MaterialTheme.colorScheme.onTertiaryContainer
+                                                tint = if (data == currentTimezone) Color.Green else MaterialTheme.colorScheme.onTertiaryContainer
                                             )
                                         }
                                     }

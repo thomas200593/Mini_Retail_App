@@ -19,13 +19,13 @@ import javax.inject.Inject
 private val TAG = AppConfigRepositoryImpl::class.simpleName
 
 internal class AppConfigRepositoryImpl @Inject constructor(
-    appDataStore: DataStorePreferences,
+    dataStore: DataStorePreferences,
     @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
 ):AppConfigRepository {
 
-    override val configCurrentData: Flow<ConfigCurrent> = appDataStore.configCurrentData
+    override val configCurrent: Flow<ConfigCurrent> = dataStore.configCurrentData
 
-    override suspend fun getAppConfigMenuData(sessionState: SessionState): Set<DestinationAppConfig> =
+    override suspend fun getMenuData(sessionState: SessionState): Set<DestinationAppConfig> =
         withContext(ioDispatcher){
             Timber.d("Called : fun $TAG.getAppConfigMenuData()")
             when(sessionState){

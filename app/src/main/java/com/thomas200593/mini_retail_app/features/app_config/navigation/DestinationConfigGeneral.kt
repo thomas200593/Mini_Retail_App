@@ -30,7 +30,7 @@ import com.thomas200593.mini_retail_app.core.ui.common.Icons.Language.language
 import com.thomas200593.mini_retail_app.core.ui.common.Icons.Theme.theme
 import com.thomas200593.mini_retail_app.core.ui.common.Icons.Timezone.timezone
 
-enum class DestinationAppConfigGeneral(
+enum class DestinationConfigGeneral(
     val route: String,
     @DrawableRes val iconRes: Int,
     @StringRes val title: Int,

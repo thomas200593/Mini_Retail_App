@@ -1,12 +1,10 @@
-package com.thomas200593.mini_retail_app.features.app_config.ui.general_config.language
+package com.thomas200593.mini_retail_app.features.app_config.ui.config_general.dynamic_color
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.lazy.LazyColumn
@@ -39,28 +37,26 @@ import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.app.ui.AppState
 import com.thomas200593.mini_retail_app.app.ui.LocalAppState
 import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
-import com.thomas200593.mini_retail_app.core.ui.common.Icons.Language.language
+import com.thomas200593.mini_retail_app.core.ui.common.Icons.DynamicColor.dynamic_color
 import com.thomas200593.mini_retail_app.core.ui.component.AppBar
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.EmptyScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.ErrorScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.LoadingScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.ThreeRowCardItem
 import com.thomas200593.mini_retail_app.features.app_config.entity.ConfigCurrent
-import com.thomas200593.mini_retail_app.features.app_config.entity.Language
-import kotlinx.coroutines.Job
+import com.thomas200593.mini_retail_app.features.app_config.entity.DynamicColor
 import timber.log.Timber
-import kotlin.reflect.KFunction1
 
-private const val TAG = "AppConfigGeneralLanguageScreen"
+private const val TAG = "AppConfigGeneralDynamicColorScreen"
 
 @Composable
-fun AppConfigGeneralLanguageScreen(
-    viewModel: AppConfigGeneralLanguageViewModel = hiltViewModel(),
+fun DynamicColorScreen(
+    viewModel: DynamicColorViewModel = hiltViewModel(),
     appState: AppState = LocalAppState.current
 ) {
     Timber.d("Called : fun $TAG()")
     val configCurrent by viewModel.configCurrentUiState.collectAsStateWithLifecycle()
-    val languagePreferences by viewModel.languagePreferences
+    val dynamicColorPreferences by viewModel.dynamicColorPreferences
 
     LaunchedEffect(Unit) {
         viewModel.onOpen()
@@ -70,9 +66,9 @@ fun AppConfigGeneralLanguageScreen(
         onNavigateBack = appState::onNavigateUp
     )
     ScreenContent(
-        languagePreferences = languagePreferences,
+        dynamicColorPreferences = dynamicColorPreferences,
         configCurrent = configCurrent,
-        onSaveSelectedLanguage = viewModel::saveSelectedLanguage
+        onSaveSelectedDynamicColor = viewModel::saveSelectedDynamicColor
     )
 }
 
@@ -101,11 +97,11 @@ private fun TopAppBar(
             Icon(
                 modifier = Modifier
                     .sizeIn(maxHeight = ButtonDefaults.IconSize),
-                imageVector = ImageVector.vectorResource(id = language),
+                imageVector = ImageVector.vectorResource(id = dynamic_color),
                 contentDescription = null
             )
             Text(
-                text = stringResource(id = R.string.str_lang),
+                text = stringResource(id = R.string.str_dynamic_color),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
@@ -129,9 +125,9 @@ private fun TopAppBar(
 
 @Composable
 private fun ScreenContent(
-    languagePreferences: RequestState<Set<Language>>,
+    dynamicColorPreferences: RequestState<Set<DynamicColor>>,
     configCurrent: RequestState<ConfigCurrent>,
-    onSaveSelectedLanguage: KFunction1<Language, Job>
+    onSaveSelectedDynamicColor: (DynamicColor) -> Unit
 ) {
     when(configCurrent){
         RequestState.Idle, RequestState.Loading -> {
@@ -152,7 +148,7 @@ private fun ScreenContent(
             )
         }
         is RequestState.Success -> {
-            when(languagePreferences){
+            when(dynamicColorPreferences){
                 RequestState.Idle -> Unit
                 RequestState.Loading -> {
                     LoadingScreen()
@@ -172,8 +168,8 @@ private fun ScreenContent(
                     )
                 }
                 is RequestState.Success -> {
-                    val currentLanguage = configCurrent.data.language
-                    val appLanguagePreferences = languagePreferences.data
+                    val currentDynamicColor = configCurrent.data.dynamicColor
+                    val appDynamicColorPreferences = dynamicColorPreferences.data
 
                     Column(
                         modifier = Modifier
@@ -183,7 +179,7 @@ private fun ScreenContent(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            text = "${stringResource(id = R.string.str_lang)} : ${stringResource(id = currentLanguage.title)}",
+                            text = "${stringResource(id = R.string.str_dynamic_color)} : ${stringResource(id = currentDynamicColor.title)}",
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(4.dp),
@@ -199,13 +195,12 @@ private fun ScreenContent(
                             verticalArrangement = Arrangement.spacedBy(10.dp),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            items(count = appLanguagePreferences.count()){ index ->
-                                val data = appLanguagePreferences.elementAt(index)
+                            items(count = appDynamicColorPreferences.count()){ index ->
+                                val data = appDynamicColorPreferences.elementAt(index)
                                 ThreeRowCardItem(
                                     firstRowContent = {
                                         Surface(modifier = Modifier.fillMaxWidth()) {
-                                            Image(
-                                                modifier = Modifier.height(20.dp),
+                                            Icon(
                                                 imageVector = ImageVector.vectorResource(data.iconRes),
                                                 contentDescription = null
                                             )
@@ -224,12 +219,12 @@ private fun ScreenContent(
                                     thirdRowContent = {
                                         Surface(
                                             modifier = Modifier.fillMaxWidth(),
-                                            onClick = { onSaveSelectedLanguage(data) }
+                                            onClick = { onSaveSelectedDynamicColor(data) }
                                         ) {
                                             Icon(
-                                                imageVector = if (data == currentLanguage) Icons.Default.CheckCircle else Icons.AutoMirrored.Outlined.KeyboardArrowRight,
+                                                imageVector = if (data == currentDynamicColor) Icons.Default.CheckCircle else Icons.AutoMirrored.Outlined.KeyboardArrowRight,
                                                 contentDescription = null,
-                                                tint = if (data == currentLanguage) Color.Green else MaterialTheme.colorScheme.onTertiaryContainer
+                                                tint = if (data == currentDynamicColor) Color.Green else MaterialTheme.colorScheme.onTertiaryContainer
                                             )
                                         }
                                     }

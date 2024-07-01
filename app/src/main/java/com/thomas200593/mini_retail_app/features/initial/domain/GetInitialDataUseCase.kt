@@ -30,7 +30,7 @@ class GetInitialDataUseCase @Inject constructor(
         .catch { throwable ->
             RequestState.Error(throwable)
         }
-        .combine(appConfigRepository.configCurrentData){ auth, config ->
+        .combine(appConfigRepository.configCurrent){ auth, config ->
             RequestState.Success(
                 Initial(
                     isSessionValid = authRepository.validateAuthSessionToken(auth),

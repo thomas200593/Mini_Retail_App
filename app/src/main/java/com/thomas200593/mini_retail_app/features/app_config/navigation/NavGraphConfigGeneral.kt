@@ -14,20 +14,20 @@ import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs.FontSize
 import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs.Language
 import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs.Theme
 import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs.Timezone
-import com.thomas200593.mini_retail_app.features.app_config.ui.general_config.AppConfigGeneralScreen
-import com.thomas200593.mini_retail_app.features.app_config.ui.general_config.country.AppConfigGeneralCountryScreen
-import com.thomas200593.mini_retail_app.features.app_config.ui.general_config.currency.AppConfigGeneralCurrencyScreen
-import com.thomas200593.mini_retail_app.features.app_config.ui.general_config.dynamic_color.AppConfigGeneralDynamicColorScreen
-import com.thomas200593.mini_retail_app.features.app_config.ui.general_config.font_size.AppConfigGeneralFontSizeScreen
-import com.thomas200593.mini_retail_app.features.app_config.ui.general_config.language.AppConfigGeneralLanguageScreen
-import com.thomas200593.mini_retail_app.features.app_config.ui.general_config.theme.AppConfigGeneralThemeScreen
-import com.thomas200593.mini_retail_app.features.app_config.ui.general_config.timezone.AppConfigGeneralTimezoneScreen
+import com.thomas200593.mini_retail_app.features.app_config.ui.config_general.ConfigGeneralScreen
+import com.thomas200593.mini_retail_app.features.app_config.ui.config_general.country.CountryScreen
+import com.thomas200593.mini_retail_app.features.app_config.ui.config_general.currency.CurrencyScreen
+import com.thomas200593.mini_retail_app.features.app_config.ui.config_general.dynamic_color.DynamicColorScreen
+import com.thomas200593.mini_retail_app.features.app_config.ui.config_general.font_size.FontSizeScreen
+import com.thomas200593.mini_retail_app.features.app_config.ui.config_general.language.LanguageScreen
+import com.thomas200593.mini_retail_app.features.app_config.ui.config_general.theme.ThemeScreen
+import com.thomas200593.mini_retail_app.features.app_config.ui.config_general.timezone.TimezoneScreen
 import timber.log.Timber
 
 private val TAG_NAV_GRAPH_BUILDER = NavGraphBuilder::class.simpleName
 private val TAG_NAV_CONTROLLER = NavController::class.simpleName
 
-fun NavGraphBuilder.navGraphAppConfigGeneral() {
+fun NavGraphBuilder.navGraphConfigGeneral() {
     Timber.d("Called : fun $TAG_NAV_GRAPH_BUILDER.appConfigGeneralNavGraph()")
     navigation(
         route = G_CONFIG_GENERAL,
@@ -36,55 +36,55 @@ fun NavGraphBuilder.navGraphAppConfigGeneral() {
         composable(
             route = ConfigGeneral.route
         ){
-            AppConfigGeneralScreen()
+            ConfigGeneralScreen()
         }
 
         composable(
             route = Country.route
         ){
-            AppConfigGeneralCountryScreen()
+            CountryScreen()
         }
 
         composable(
             route = Language.route
         ){
-            AppConfigGeneralLanguageScreen()
+            LanguageScreen()
         }
 
         composable(
             route = Timezone.route
         ){
-            AppConfigGeneralTimezoneScreen()
+            TimezoneScreen()
         }
 
         composable(
             route = Theme.route
         ){
-            AppConfigGeneralThemeScreen()
+            ThemeScreen()
         }
 
         composable(
             route = DynamicColor.route
         ){
-            AppConfigGeneralDynamicColorScreen()
+            DynamicColorScreen()
         }
 
         composable(
             route = FontSize.route
         ){
-            AppConfigGeneralFontSizeScreen()
+            FontSizeScreen()
         }
 
         composable(
             route = Currency.route
         ){
-            AppConfigGeneralCurrencyScreen()
+            CurrencyScreen()
         }
     }
 }
 
-fun NavController.navigateToAppConfigGeneral(
-    destinationAppConfigGeneral: DestinationAppConfigGeneral?
+fun NavController.navigateToConfigGeneral(
+    destinationConfigGeneral: DestinationConfigGeneral?
 ) {
     Timber.d("Called : fun $TAG_NAV_CONTROLLER.navigateToAppConfigGeneral()")
     val navOptions = navOptions {
@@ -92,7 +92,7 @@ fun NavController.navigateToAppConfigGeneral(
         restoreState = true
     }
     this.navigate(
-        route = destinationAppConfigGeneral?.route?:G_CONFIG_GENERAL,
+        route = destinationConfigGeneral?.route?:G_CONFIG_GENERAL,
         navOptions = navOptions
     )
 }

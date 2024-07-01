@@ -1,4 +1,4 @@
-package com.thomas200593.mini_retail_app.features.app_config.ui.general_config.country
+package com.thomas200593.mini_retail_app.features.app_config.ui.config_general.currency
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -14,7 +14,6 @@ import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowRight
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -50,19 +49,19 @@ import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.Err
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.LoadingScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.ThreeRowCardItem
 import com.thomas200593.mini_retail_app.features.app_config.entity.ConfigCurrent
-import com.thomas200593.mini_retail_app.features.app_config.entity.Country
+import com.thomas200593.mini_retail_app.features.app_config.entity.Currency
 import timber.log.Timber
 
-private const val TAG = "AppConfigGeneralCountryScreen"
+private const val TAG = "AppConfigGeneralCurrencyScreen"
 
 @Composable
-fun AppConfigGeneralCountryScreen(
-    viewModel: AppConfigGeneralCountryViewModel = hiltViewModel(),
+fun CurrencyScreen(
+    viewModel: CurrencyViewModel = hiltViewModel(),
     appState: AppState = LocalAppState.current
-){
+) {
     Timber.d("Called : fun $TAG()")
     val configCurrent by viewModel.configCurrentUiState.collectAsStateWithLifecycle()
-    val countryPreferences by viewModel.countryPreferences
+    val currencyPreferences by viewModel.currencyPreferences
 
     LaunchedEffect(Unit) {
         viewModel.onOpen()
@@ -72,14 +71,16 @@ fun AppConfigGeneralCountryScreen(
         onNavigateBack = appState::onNavigateUp
     )
     ScreenContent(
-        countryPreferences = countryPreferences,
+        currencyPreferences = currencyPreferences,
         configCurrent = configCurrent,
-        onSaveSelectedCountry = viewModel::saveSelectedCountry
+        onSaveSelectedCurrency = viewModel::saveSelectedCurrency
     )
 }
 
 @Composable
-private fun TopAppBar(onNavigateBack: () -> Unit) {
+private fun TopAppBar(
+    onNavigateBack: () -> Unit
+) {
     AppBar.ProvideTopAppBarNavigationIcon {
         Surface(
             onClick =  onNavigateBack,
@@ -104,7 +105,7 @@ private fun TopAppBar(onNavigateBack: () -> Unit) {
                 contentDescription = null
             )
             Text(
-                text = stringResource(id = R.string.str_country),
+                text = stringResource(id = R.string.str_currency),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
@@ -127,18 +128,16 @@ private fun TopAppBar(onNavigateBack: () -> Unit) {
 
 @Composable
 private fun ScreenContent(
-    countryPreferences: RequestState<List<Country>>,
+    currencyPreferences: RequestState<List<Currency>>,
     configCurrent: RequestState<ConfigCurrent>,
-    onSaveSelectedCountry: (Country) -> Unit
+    onSaveSelectedCurrency: (Currency) -> Unit
 ) {
     when(configCurrent){
-        Idle, Loading -> {
-            LoadingScreen()
-        }
+        Idle, Loading -> { LoadingScreen() }
         is Error -> {
             ErrorScreen(
                 title = stringResource(id = R.string.str_error),
-                errorMessage = stringResource(id = R.string.str_error_fetching_preferences),
+                errorMessage = "Failed to get Preferences data.",
                 showIcon = true
             )
         }
@@ -150,15 +149,13 @@ private fun ScreenContent(
             )
         }
         is Success -> {
-            when(countryPreferences){
+            when(currencyPreferences){
                 Idle -> Unit
-                Loading -> {
-                    LoadingScreen()
-                }
+                Loading -> { LoadingScreen() }
                 is Error -> {
                     ErrorScreen(
                         title = stringResource(id = R.string.str_error),
-                        errorMessage = stringResource(id = R.string.str_error_fetching_preferences),
+                        errorMessage = "Failed to get Preferences data.",
                         showIcon = true
                     )
                 }
@@ -170,8 +167,8 @@ private fun ScreenContent(
                     )
                 }
                 is Success -> {
-                    val currentCountry = configCurrent.data.country
-                    val appCountryPreferences = countryPreferences.data
+                    val currentCurrency = configCurrent.data.currency
+                    val appCurrencyPreferences = currencyPreferences.data
 
                     Column(
                         modifier = Modifier.fillMaxSize().padding(4.dp),
@@ -179,7 +176,7 @@ private fun ScreenContent(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            text = "${stringResource(id = R.string.str_country)} : ${currentCountry.displayName}",
+                            text = "${stringResource(id = R.string.str_currency)} : ${currentCurrency.displayName}",
                             modifier = Modifier.fillMaxWidth().padding(4.dp),
                             fontWeight = FontWeight.Bold,
                             maxLines = 1,
@@ -187,25 +184,16 @@ private fun ScreenContent(
                             textAlign = TextAlign.Center,
                         )
                         LazyColumn(
-                            modifier = Modifier.fillMaxSize().padding(8.dp),
+                            modifier = Modifier.fillMaxSize().padding(4.dp),
                             verticalArrangement = Arrangement.spacedBy(10.dp),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            items(count = appCountryPreferences.count()){ index ->
-                                val data = appCountryPreferences[index]
+                            items(count = appCurrencyPreferences.count()){ index ->
+                                val data = appCurrencyPreferences[index]
                                 ThreeRowCardItem(
                                     firstRowContent = {
                                         Text(
-                                            text = data.isoCode,
-                                            modifier = Modifier.fillMaxWidth(),
-                                            textAlign = TextAlign.Center,
-                                            fontWeight = FontWeight.Bold,
-                                            maxLines = 1,
-                                            overflow = TextOverflow.Ellipsis
-                                        )
-                                        HorizontalDivider()
-                                        Text(
-                                            text = data.iso03Country,
+                                            text = data.code,
                                             modifier = Modifier.fillMaxWidth(),
                                             textAlign = TextAlign.Center,
                                             fontWeight = FontWeight.Bold,
@@ -222,16 +210,24 @@ private fun ScreenContent(
                                             maxLines = 1,
                                             overflow = TextOverflow.Ellipsis
                                         )
+                                        Text(
+                                            text = data.symbol,
+                                            modifier = Modifier.fillMaxWidth(),
+                                            textAlign = TextAlign.Start,
+                                            fontWeight = FontWeight.Bold,
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis
+                                        )
                                     },
                                     thirdRowContent = {
                                         Surface(
                                             modifier = Modifier.fillMaxWidth(),
-                                            onClick = { onSaveSelectedCountry(data) }
+                                            onClick = { onSaveSelectedCurrency(data) }
                                         ) {
                                             Icon(
-                                                imageVector = if (data == currentCountry) Icons.Default.CheckCircle else Icons.AutoMirrored.Outlined.KeyboardArrowRight,
+                                                imageVector = if (data == currentCurrency) Icons.Default.CheckCircle else Icons.AutoMirrored.Outlined.KeyboardArrowRight,
                                                 contentDescription = null,
-                                                tint = if (data == currentCountry) Color.Green else MaterialTheme.colorScheme.onTertiaryContainer
+                                                tint = if (data == currentCurrency) Color.Green else MaterialTheme.colorScheme.onTertiaryContainer
                                             )
                                         }
                                     }

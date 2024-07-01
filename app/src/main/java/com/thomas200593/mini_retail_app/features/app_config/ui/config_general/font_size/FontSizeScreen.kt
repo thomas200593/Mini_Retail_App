@@ -1,4 +1,4 @@
-package com.thomas200593.mini_retail_app.features.app_config.ui.general_config.currency
+package com.thomas200593.mini_retail_app.features.app_config.ui.config_general.font_size
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -37,31 +37,26 @@ import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.app.ui.AppState
 import com.thomas200593.mini_retail_app.app.ui.LocalAppState
 import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
-import com.thomas200593.mini_retail_app.core.design_system.util.RequestState.Empty
-import com.thomas200593.mini_retail_app.core.design_system.util.RequestState.Error
-import com.thomas200593.mini_retail_app.core.design_system.util.RequestState.Idle
-import com.thomas200593.mini_retail_app.core.design_system.util.RequestState.Loading
-import com.thomas200593.mini_retail_app.core.design_system.util.RequestState.Success
-import com.thomas200593.mini_retail_app.core.ui.common.Icons.Currency.currency
+import com.thomas200593.mini_retail_app.core.ui.common.Icons.Font.font
 import com.thomas200593.mini_retail_app.core.ui.component.AppBar
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.EmptyScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.ErrorScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.LoadingScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.ThreeRowCardItem
 import com.thomas200593.mini_retail_app.features.app_config.entity.ConfigCurrent
-import com.thomas200593.mini_retail_app.features.app_config.entity.Currency
+import com.thomas200593.mini_retail_app.features.app_config.entity.FontSize
 import timber.log.Timber
 
-private const val TAG = "AppConfigGeneralCurrencyScreen"
+private const val TAG = "AppConfigGeneralFontSizeScreen"
 
 @Composable
-fun AppConfigGeneralCurrencyScreen(
-    viewModel: AppConfigGeneralCurrencyViewModel = hiltViewModel(),
+fun FontSizeScreen(
+    viewModel: FontSizeViewModel = hiltViewModel(),
     appState: AppState = LocalAppState.current
 ) {
     Timber.d("Called : fun $TAG()")
     val configCurrent by viewModel.configCurrentUiState.collectAsStateWithLifecycle()
-    val currencyPreferences by viewModel.currencyPreferences
+    val fontSizePreferences by viewModel.fontSizePreferences
 
     LaunchedEffect(Unit) {
         viewModel.onOpen()
@@ -71,9 +66,9 @@ fun AppConfigGeneralCurrencyScreen(
         onNavigateBack = appState::onNavigateUp
     )
     ScreenContent(
-        currencyPreferences = currencyPreferences,
+        fontSizeSizePreferences = fontSizePreferences,
         configCurrent = configCurrent,
-        onSaveSelectedCurrency = viewModel::saveSelectedCurrency
+        onSaveSelectedFontSize = viewModel::saveSelectedFontSize
     )
 }
 
@@ -100,12 +95,13 @@ private fun TopAppBar(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ){
             Icon(
-                modifier = Modifier.sizeIn(maxHeight = ButtonDefaults.IconSize),
-                imageVector = ImageVector.vectorResource(id = currency),
+                modifier = Modifier
+                    .sizeIn(maxHeight = ButtonDefaults.IconSize),
+                imageVector = ImageVector.vectorResource(id = font),
                 contentDescription = null
             )
             Text(
-                text = stringResource(id = R.string.str_currency),
+                text = stringResource(id = R.string.str_size_font),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
@@ -118,7 +114,8 @@ private fun TopAppBar(
             horizontalArrangement = Arrangement.Center
         ){
             Icon(
-                modifier = Modifier.sizeIn(maxHeight = ButtonDefaults.IconSize),
+                modifier = Modifier
+                    .sizeIn(maxHeight = ButtonDefaults.IconSize),
                 imageVector = Icons.Default.Info,
                 contentDescription = null
             )
@@ -128,90 +125,90 @@ private fun TopAppBar(
 
 @Composable
 private fun ScreenContent(
-    currencyPreferences: RequestState<List<Currency>>,
+    fontSizeSizePreferences: RequestState<Set<FontSize>>,
     configCurrent: RequestState<ConfigCurrent>,
-    onSaveSelectedCurrency: (Currency) -> Unit
+    onSaveSelectedFontSize: (FontSize) -> Unit
 ) {
     when(configCurrent){
-        Idle, Loading -> { LoadingScreen() }
-        is Error -> {
+        RequestState.Idle, RequestState.Loading -> {
+            LoadingScreen()
+        }
+        is RequestState.Error -> {
             ErrorScreen(
                 title = stringResource(id = R.string.str_error),
                 errorMessage = "Failed to get Preferences data.",
                 showIcon = true
             )
         }
-        Empty -> {
+        RequestState.Empty -> {
             EmptyScreen(
                 title = stringResource(id = R.string.str_empty_message_title),
                 emptyMessage = stringResource(id = R.string.str_empty_message),
                 showIcon = true
             )
         }
-        is Success -> {
-            when(currencyPreferences){
-                Idle -> Unit
-                Loading -> { LoadingScreen() }
-                is Error -> {
+        is RequestState.Success -> {
+            when(fontSizeSizePreferences){
+                RequestState.Idle -> Unit
+                RequestState.Loading -> {
+                    LoadingScreen()
+                }
+                is RequestState.Error -> {
                     ErrorScreen(
                         title = stringResource(id = R.string.str_error),
                         errorMessage = "Failed to get Preferences data.",
                         showIcon = true
                     )
                 }
-                Empty -> {
+                RequestState.Empty -> {
                     EmptyScreen(
                         title = stringResource(id = R.string.str_empty_message_title),
                         emptyMessage = stringResource(id = R.string.str_empty_message),
                         showIcon = true
                     )
                 }
-                is Success -> {
-                    val currentCurrency = configCurrent.data.currency
-                    val appCurrencyPreferences = currencyPreferences.data
+                is RequestState.Success -> {
+                    val currentFontSize = configCurrent.data.fontSize
+                    val appFontSizePreferences = fontSizeSizePreferences.data
 
                     Column(
-                        modifier = Modifier.fillMaxSize().padding(4.dp),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(4.dp),
                         verticalArrangement = Arrangement.spacedBy(10.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            text = "${stringResource(id = R.string.str_currency)} : ${currentCurrency.displayName}",
-                            modifier = Modifier.fillMaxWidth().padding(4.dp),
+                            text = "${stringResource(id = R.string.str_size_font)} : ${stringResource(id = currentFontSize.title)}",
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(4.dp),
                             fontWeight = FontWeight.Bold,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                             textAlign = TextAlign.Center,
                         )
                         LazyColumn(
-                            modifier = Modifier.fillMaxSize().padding(4.dp),
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(4.dp),
                             verticalArrangement = Arrangement.spacedBy(10.dp),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            items(count = appCurrencyPreferences.count()){ index ->
-                                val data = appCurrencyPreferences[index]
+                            items(count = appFontSizePreferences.count()){ index ->
+                                val data = appFontSizePreferences.elementAt(index)
                                 ThreeRowCardItem(
                                     firstRowContent = {
-                                        Text(
-                                            text = data.code,
-                                            modifier = Modifier.fillMaxWidth(),
-                                            textAlign = TextAlign.Center,
-                                            fontWeight = FontWeight.Bold,
-                                            maxLines = 1,
-                                            overflow = TextOverflow.Ellipsis
-                                        )
+                                        Surface(modifier = Modifier.fillMaxWidth()) {
+                                            Icon(
+                                                imageVector = ImageVector.vectorResource(data.iconRes),
+                                                contentDescription = null
+                                            )
+                                        }
                                     },
                                     secondRowContent = {
                                         Text(
-                                            text = data.displayName,
-                                            modifier = Modifier.fillMaxWidth(),
-                                            textAlign = TextAlign.Start,
-                                            fontWeight = FontWeight.Bold,
-                                            maxLines = 1,
-                                            overflow = TextOverflow.Ellipsis
-                                        )
-                                        Text(
-                                            text = data.symbol,
+                                            text = stringResource(id = data.title),
                                             modifier = Modifier.fillMaxWidth(),
                                             textAlign = TextAlign.Start,
                                             fontWeight = FontWeight.Bold,
@@ -222,12 +219,12 @@ private fun ScreenContent(
                                     thirdRowContent = {
                                         Surface(
                                             modifier = Modifier.fillMaxWidth(),
-                                            onClick = { onSaveSelectedCurrency(data) }
+                                            onClick = { onSaveSelectedFontSize(data) }
                                         ) {
                                             Icon(
-                                                imageVector = if (data == currentCurrency) Icons.Default.CheckCircle else Icons.AutoMirrored.Outlined.KeyboardArrowRight,
+                                                imageVector = if (data == currentFontSize) Icons.Default.CheckCircle else Icons.AutoMirrored.Outlined.KeyboardArrowRight,
                                                 contentDescription = null,
-                                                tint = if (data == currentCurrency) Color.Green else MaterialTheme.colorScheme.onTertiaryContainer
+                                                tint = if (data == currentFontSize) Color.Green else MaterialTheme.colorScheme.onTertiaryContainer
                                             )
                                         }
                                     }

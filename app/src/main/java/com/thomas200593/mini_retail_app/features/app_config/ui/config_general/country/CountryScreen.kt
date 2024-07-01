@@ -1,4 +1,4 @@
-package com.thomas200593.mini_retail_app.features.app_config.ui.general_config.timezone
+package com.thomas200593.mini_retail_app.features.app_config.ui.config_general.country
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -14,6 +14,7 @@ import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowRight
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -37,26 +38,31 @@ import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.app.ui.AppState
 import com.thomas200593.mini_retail_app.app.ui.LocalAppState
 import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
-import com.thomas200593.mini_retail_app.core.ui.common.Icons.Timezone.timezone
+import com.thomas200593.mini_retail_app.core.design_system.util.RequestState.Empty
+import com.thomas200593.mini_retail_app.core.design_system.util.RequestState.Error
+import com.thomas200593.mini_retail_app.core.design_system.util.RequestState.Idle
+import com.thomas200593.mini_retail_app.core.design_system.util.RequestState.Loading
+import com.thomas200593.mini_retail_app.core.design_system.util.RequestState.Success
+import com.thomas200593.mini_retail_app.core.ui.common.Icons.Currency.currency
 import com.thomas200593.mini_retail_app.core.ui.component.AppBar
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.EmptyScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.ErrorScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.LoadingScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.ThreeRowCardItem
 import com.thomas200593.mini_retail_app.features.app_config.entity.ConfigCurrent
-import com.thomas200593.mini_retail_app.features.app_config.entity.Timezone
+import com.thomas200593.mini_retail_app.features.app_config.entity.Country
 import timber.log.Timber
 
-private const val TAG = "AppConfigGeneralTimezoneScreen"
+private const val TAG = "AppConfigGeneralCountryScreen"
 
 @Composable
-fun AppConfigGeneralTimezoneScreen(
-    viewModel: AppConfigGeneralTimezoneViewModel = hiltViewModel(),
+fun CountryScreen(
+    viewModel: CountryViewModel = hiltViewModel(),
     appState: AppState = LocalAppState.current
-) {
+){
     Timber.d("Called : fun $TAG()")
     val configCurrent by viewModel.configCurrentUiState.collectAsStateWithLifecycle()
-    val timezonePreferences by viewModel.timezonePreferences
+    val countryPreferences by viewModel.countryPreferences
 
     LaunchedEffect(Unit) {
         viewModel.onOpen()
@@ -66,16 +72,14 @@ fun AppConfigGeneralTimezoneScreen(
         onNavigateBack = appState::onNavigateUp
     )
     ScreenContent(
-        timezonePreferences = timezonePreferences,
+        countryPreferences = countryPreferences,
         configCurrent = configCurrent,
-        onSaveSelectedTimezone = viewModel::saveSelectedTimezone
+        onSaveSelectedCountry = viewModel::saveSelectedCountry
     )
 }
 
 @Composable
-private fun TopAppBar(
-    onNavigateBack: () -> Unit
-) {
+private fun TopAppBar(onNavigateBack: () -> Unit) {
     AppBar.ProvideTopAppBarNavigationIcon {
         Surface(
             onClick =  onNavigateBack,
@@ -95,12 +99,15 @@ private fun TopAppBar(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ){
             Icon(
-                modifier = Modifier
-                    .sizeIn(maxHeight = ButtonDefaults.IconSize),
-                imageVector = ImageVector.vectorResource(id = timezone),
+                modifier = Modifier.sizeIn(maxHeight = ButtonDefaults.IconSize),
+                imageVector = ImageVector.vectorResource(id = currency),
                 contentDescription = null
             )
-            Text(text = stringResource(id = R.string.str_timezone))
+            Text(
+                text = stringResource(id = R.string.str_country),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
         }
     }
     AppBar.ProvideTopAppBarAction {
@@ -110,8 +117,7 @@ private fun TopAppBar(
             horizontalArrangement = Arrangement.Center
         ){
             Icon(
-                modifier = Modifier
-                    .sizeIn(maxHeight = ButtonDefaults.IconSize),
+                modifier = Modifier.sizeIn(maxHeight = ButtonDefaults.IconSize),
                 imageVector = Icons.Default.Info,
                 contentDescription = null
             )
@@ -121,104 +127,111 @@ private fun TopAppBar(
 
 @Composable
 private fun ScreenContent(
-    timezonePreferences: RequestState<List<Timezone>>,
+    countryPreferences: RequestState<List<Country>>,
     configCurrent: RequestState<ConfigCurrent>,
-    onSaveSelectedTimezone: (Timezone) -> Unit
+    onSaveSelectedCountry: (Country) -> Unit
 ) {
     when(configCurrent){
-        RequestState.Idle, RequestState.Loading -> {
+        Idle, Loading -> {
             LoadingScreen()
         }
-        is RequestState.Error -> {
+        is Error -> {
             ErrorScreen(
                 title = stringResource(id = R.string.str_error),
-                errorMessage = "Failed to get Preferences data.",
+                errorMessage = stringResource(id = R.string.str_error_fetching_preferences),
                 showIcon = true
             )
         }
-        RequestState.Empty -> {
+        Empty -> {
             EmptyScreen(
                 title = stringResource(id = R.string.str_empty_message_title),
                 emptyMessage = stringResource(id = R.string.str_empty_message),
                 showIcon = true
             )
         }
-        is RequestState.Success -> {
-            when(timezonePreferences){
-                RequestState.Idle -> Unit
-                RequestState.Loading -> {
+        is Success -> {
+            when(countryPreferences){
+                Idle -> Unit
+                Loading -> {
                     LoadingScreen()
                 }
-                is RequestState.Error -> {
+                is Error -> {
                     ErrorScreen(
                         title = stringResource(id = R.string.str_error),
-                        errorMessage = "Failed to get Preferences data.",
+                        errorMessage = stringResource(id = R.string.str_error_fetching_preferences),
                         showIcon = true
                     )
                 }
-                RequestState.Empty -> {
+                Empty -> {
                     EmptyScreen(
                         title = stringResource(id = R.string.str_empty_message_title),
                         emptyMessage = stringResource(id = R.string.str_empty_message),
                         showIcon = true
                     )
                 }
-                is RequestState.Success -> {
-                    val currentTimezone = configCurrent.data.timezone
-                    val appTimezonePreferences = timezonePreferences.data
+                is Success -> {
+                    val currentCountry = configCurrent.data.country
+                    val appCountryPreferences = countryPreferences.data
 
                     Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(4.dp),
+                        modifier = Modifier.fillMaxSize().padding(4.dp),
                         verticalArrangement = Arrangement.spacedBy(10.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            text = "${stringResource(id = R.string.str_timezone)} : ${currentTimezone.timezoneOffset}",
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(4.dp),
+                            text = "${stringResource(id = R.string.str_country)} : ${currentCountry.displayName}",
+                            modifier = Modifier.fillMaxWidth().padding(4.dp),
                             fontWeight = FontWeight.Bold,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                             textAlign = TextAlign.Center,
                         )
                         LazyColumn(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(4.dp),
+                            modifier = Modifier.fillMaxSize().padding(8.dp),
                             verticalArrangement = Arrangement.spacedBy(10.dp),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            items(count = appTimezonePreferences.count()){ index ->
-                                val data = appTimezonePreferences[index]
+                            items(count = appCountryPreferences.count()){ index ->
+                                val data = appCountryPreferences[index]
                                 ThreeRowCardItem(
                                     firstRowContent = {
-                                        Surface(modifier = Modifier.fillMaxWidth()) {
-                                            Icon(
-                                                imageVector = ImageVector.vectorResource(id = timezone),
-                                                contentDescription = null
-                                            )
-                                        }
+                                        Text(
+                                            text = data.isoCode,
+                                            modifier = Modifier.fillMaxWidth(),
+                                            textAlign = TextAlign.Center,
+                                            fontWeight = FontWeight.Bold,
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis
+                                        )
+                                        HorizontalDivider()
+                                        Text(
+                                            text = data.iso03Country,
+                                            modifier = Modifier.fillMaxWidth(),
+                                            textAlign = TextAlign.Center,
+                                            fontWeight = FontWeight.Bold,
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis
+                                        )
                                     },
                                     secondRowContent = {
                                         Text(
-                                            text = data.timezoneOffset,
+                                            text = data.displayName,
                                             modifier = Modifier.fillMaxWidth(),
                                             textAlign = TextAlign.Start,
-                                            fontWeight = FontWeight.Bold
+                                            fontWeight = FontWeight.Bold,
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis
                                         )
                                     },
                                     thirdRowContent = {
                                         Surface(
                                             modifier = Modifier.fillMaxWidth(),
-                                            onClick = { onSaveSelectedTimezone(data) }
+                                            onClick = { onSaveSelectedCountry(data) }
                                         ) {
                                             Icon(
-                                                imageVector = if (data == currentTimezone) Icons.Default.CheckCircle else Icons.AutoMirrored.Outlined.KeyboardArrowRight,
+                                                imageVector = if (data == currentCountry) Icons.Default.CheckCircle else Icons.AutoMirrored.Outlined.KeyboardArrowRight,
                                                 contentDescription = null,
-                                                tint = if (data == currentTimezone) Color.Green else MaterialTheme.colorScheme.onTertiaryContainer
+                                                tint = if (data == currentCountry) Color.Green else MaterialTheme.colorScheme.onTertiaryContainer
                                             )
                                         }
                                     }

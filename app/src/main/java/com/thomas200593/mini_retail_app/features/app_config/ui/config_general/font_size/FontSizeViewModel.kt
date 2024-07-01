@@ -1,4 +1,4 @@
-package com.thomas200593.mini_retail_app.features.app_config.ui.general_config.font_size
+package com.thomas200593.mini_retail_app.features.app_config.ui.config_general.font_size
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -21,17 +21,17 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
-private val TAG = AppConfigGeneralFontSizeViewModel::class.simpleName
+private val TAG = FontSizeViewModel::class.simpleName
 
 @HiltViewModel
-class AppConfigGeneralFontSizeViewModel @Inject constructor(
+class FontSizeViewModel @Inject constructor(
     appConfigRepository: AppConfigRepository,
     private val configGeneralRepository: ConfigGeneralRepository,
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ): ViewModel() {
     private val _fontSizeSizePreferences: MutableState<RequestState<Set<FontSize>>> = mutableStateOf(RequestState.Idle)
     val fontSizePreferences = _fontSizeSizePreferences
-    val configCurrentUiState = appConfigRepository.configCurrentData.flowOn(ioDispatcher)
+    val configCurrentUiState = appConfigRepository.configCurrent.flowOn(ioDispatcher)
         .catch { RequestState.Error(it) }
         .map { RequestState.Success(it) }
         .stateIn(

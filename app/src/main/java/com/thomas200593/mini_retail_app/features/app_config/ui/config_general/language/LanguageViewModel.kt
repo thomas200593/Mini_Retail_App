@@ -1,4 +1,4 @@
-package com.thomas200593.mini_retail_app.features.app_config.ui.general_config.language
+package com.thomas200593.mini_retail_app.features.app_config.ui.config_general.language
 
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.runtime.MutableState
@@ -24,17 +24,17 @@ import timber.log.Timber
 import java.util.Locale
 import javax.inject.Inject
 
-private val TAG = AppConfigGeneralLanguageViewModel::class.simpleName
+private val TAG = LanguageViewModel::class.simpleName
 
 @HiltViewModel
-class AppConfigGeneralLanguageViewModel @Inject constructor(
+class LanguageViewModel @Inject constructor(
     appConfigRepository: AppConfigRepository,
     private val configGeneralRepository: ConfigGeneralRepository,
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ): ViewModel(){
     private val _languagePreferences: MutableState<RequestState<Set<Language>>> = mutableStateOf(RequestState.Idle)
     val languagePreferences = _languagePreferences
-    val configCurrentUiState = appConfigRepository.configCurrentData.flowOn(ioDispatcher)
+    val configCurrentUiState = appConfigRepository.configCurrent.flowOn(ioDispatcher)
         .catch { RequestState.Error(it) }
         .map { RequestState.Success(it) }
         .stateIn(

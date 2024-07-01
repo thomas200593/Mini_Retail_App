@@ -1,4 +1,4 @@
-package com.thomas200593.mini_retail_app.features.app_config.ui.general_config.country
+package com.thomas200593.mini_retail_app.features.app_config.ui.config_general.country
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -24,17 +24,17 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
-private val TAG = AppConfigGeneralCountryViewModel::class.simpleName
+private val TAG = CountryViewModel::class.simpleName
 
 @HiltViewModel
-class AppConfigGeneralCountryViewModel @Inject constructor(
+class CountryViewModel @Inject constructor(
     appConfigRepository: AppConfigRepository,
     private val configGeneralRepository: ConfigGeneralRepository,
     @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel(){
     private val _countryPreferences: MutableState<RequestState<List<Country>>> = mutableStateOf(RequestState.Idle)
     val countryPreferences = _countryPreferences
-    val configCurrentUiState = appConfigRepository.configCurrentData.flowOn(ioDispatcher)
+    val configCurrentUiState = appConfigRepository.configCurrent.flowOn(ioDispatcher)
         .catch { Error(it) }
         .map { Success(it) }
         .stateIn(

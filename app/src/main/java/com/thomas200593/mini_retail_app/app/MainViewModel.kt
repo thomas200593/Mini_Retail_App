@@ -22,11 +22,11 @@ private val TAG = MainViewModel::class.simpleName
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    appConfigRepository: AppConfigRepository,
+    repository: AppConfigRepository,
     @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel(){
-    val uiState: StateFlow<MainActivityUiState> = appConfigRepository
-        .configCurrentData.flowOn(ioDispatcher).onEach { Timber.d("$TAG.uiState : $it") }
+    val uiState: StateFlow<MainActivityUiState> = repository
+        .configCurrent.flowOn(ioDispatcher).onEach { Timber.d("$TAG.uiState : $it") }
         .map { Success(configCurrent = it) }
         .stateIn(
             scope = viewModelScope,

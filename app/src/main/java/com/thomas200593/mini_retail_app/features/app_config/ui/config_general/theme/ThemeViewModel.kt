@@ -1,4 +1,4 @@
-package com.thomas200593.mini_retail_app.features.app_config.ui.general_config.theme
+package com.thomas200593.mini_retail_app.features.app_config.ui.config_general.theme
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -21,17 +21,17 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
-private val TAG = AppConfigGeneralThemeViewModel::class.simpleName
+private val TAG = ThemeViewModel::class.simpleName
 
 @HiltViewModel
-class AppConfigGeneralThemeViewModel @Inject constructor(
+class ThemeViewModel @Inject constructor(
     appConfigRepository: AppConfigRepository,
     private val configGeneralRepository: ConfigGeneralRepository,
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ): ViewModel() {
     private val _themePreferences: MutableState<RequestState<Set<Theme>>> = mutableStateOf(RequestState.Idle)
     val themePreferences = _themePreferences
-    val configCurrentUiState = appConfigRepository.configCurrentData.flowOn(ioDispatcher)
+    val configCurrentUiState = appConfigRepository.configCurrent.flowOn(ioDispatcher)
         .catch { RequestState.Error(it) }
         .map { RequestState.Success(it) }
         .stateIn(

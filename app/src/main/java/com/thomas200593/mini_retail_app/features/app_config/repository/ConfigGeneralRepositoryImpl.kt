@@ -6,7 +6,7 @@ import com.thomas200593.mini_retail_app.core.data.local.session.SessionState.Inv
 import com.thomas200593.mini_retail_app.core.data.local.session.SessionState.Loading
 import com.thomas200593.mini_retail_app.core.data.local.session.SessionState.Valid
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatcher
-import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatchers
+import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatchers.Dispatchers.IO
 import com.thomas200593.mini_retail_app.core.util.CountryHelper.getCountryList
 import com.thomas200593.mini_retail_app.core.util.CurrencyHelper.getCurrencies
 import com.thomas200593.mini_retail_app.core.util.TimezoneHelper.getTimezones
@@ -17,8 +17,8 @@ import com.thomas200593.mini_retail_app.features.app_config.entity.FontSize
 import com.thomas200593.mini_retail_app.features.app_config.entity.Language
 import com.thomas200593.mini_retail_app.features.app_config.entity.Theme
 import com.thomas200593.mini_retail_app.features.app_config.entity.Timezone
-import com.thomas200593.mini_retail_app.features.app_config.navigation.DestinationAppConfigGeneral
-import com.thomas200593.mini_retail_app.features.app_config.navigation.DestinationAppConfigGeneral.entries
+import com.thomas200593.mini_retail_app.features.app_config.navigation.DestinationConfigGeneral
+import com.thomas200593.mini_retail_app.features.app_config.navigation.DestinationConfigGeneral.entries
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -27,12 +27,12 @@ import javax.inject.Inject
 private val TAG = ConfigGeneralRepositoryImpl::class.simpleName
 
 internal class ConfigGeneralRepositoryImpl @Inject constructor(
-    private val appDataStore: DataStorePreferences,
-    @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
+    private val dataStore: DataStorePreferences,
+    @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
 ): ConfigGeneralRepository {
-    override suspend fun getAppConfigGeneralMenuData(
+    override suspend fun getMenuData(
         sessionState: SessionState
-    ): Set<DestinationAppConfigGeneral> = withContext(ioDispatcher) {
+    ): Set<DestinationConfigGeneral> = withContext(ioDispatcher) {
         Timber.d("Called : fun $TAG.getAppConfigGeneralMenuData()")
         when (sessionState) {
             Loading -> { emptySet() }
@@ -48,7 +48,7 @@ internal class ConfigGeneralRepositoryImpl @Inject constructor(
 
     override suspend fun setThemePreferences(theme: Theme) {
         Timber.d("Called : fun $TAG.setThemePreferences()")
-        appDataStore.setThemePreferences(theme)
+        dataStore.setThemePreferences(theme)
     }
 
     override suspend fun getDynamicMenuPreferences(): Set<DynamicColor> = withContext(ioDispatcher){
@@ -58,7 +58,7 @@ internal class ConfigGeneralRepositoryImpl @Inject constructor(
 
     override suspend fun setDynamicColorPreferences(dynamicColor: DynamicColor) {
         Timber.d("Called : fun $TAG.setDynamicColorPreferences()")
-        appDataStore.setDynamicColorPreferences(dynamicColor)
+        dataStore.setDynamicColorPreferences(dynamicColor)
     }
 
     override suspend fun getLanguagePreferences(): Set<Language> = withContext(ioDispatcher){
@@ -68,7 +68,7 @@ internal class ConfigGeneralRepositoryImpl @Inject constructor(
 
     override suspend fun setLanguagePreferences(language: Language) {
         Timber.d("Called : fun $TAG.setLanguagePreferences()")
-        appDataStore.setLanguagePreferences(language)
+        dataStore.setLanguagePreferences(language)
     }
 
     override suspend fun getTimezonePreferences(): List<Timezone> = withContext(ioDispatcher){
@@ -78,7 +78,7 @@ internal class ConfigGeneralRepositoryImpl @Inject constructor(
 
     override suspend fun setTimezonePreferences(timezone: Timezone) {
         Timber.d("Called : fun $TAG.setTimezonePreferences()")
-        appDataStore.setTimezonePreferences(timezone)
+        dataStore.setTimezonePreferences(timezone)
     }
 
     override suspend fun getCurrencyPreferences(): List<Currency> = withContext(ioDispatcher){
@@ -88,7 +88,7 @@ internal class ConfigGeneralRepositoryImpl @Inject constructor(
 
     override suspend fun setCurrencyPreferences(currency: Currency) {
         Timber.d("Called : fun $TAG.setCurrencyPreferences()")
-        appDataStore.setCurrencyPreferences(currency)
+        dataStore.setCurrencyPreferences(currency)
     }
 
     override suspend fun getFontSizePreferences(): Set<FontSize> = withContext(ioDispatcher){
@@ -98,7 +98,7 @@ internal class ConfigGeneralRepositoryImpl @Inject constructor(
 
     override suspend fun setFontSizePreferences(fontSize: FontSize) {
         Timber.d("Called : fun $TAG.setFontSizePreferences()")
-        appDataStore.setFontSizePreferences(fontSize)
+        dataStore.setFontSizePreferences(fontSize)
     }
 
     override suspend fun getCountryPreferences(): List<Country> = withContext(ioDispatcher){
@@ -108,6 +108,6 @@ internal class ConfigGeneralRepositoryImpl @Inject constructor(
 
     override suspend fun setCountryPreferences(country: Country) {
         Timber.d("Called : fun $TAG.setCountryPreferences()")
-        appDataStore.setCountryPreferences(country)
+        dataStore.setCountryPreferences(country)
     }
 }

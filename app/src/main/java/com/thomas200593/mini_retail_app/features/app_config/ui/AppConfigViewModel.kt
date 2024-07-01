@@ -35,7 +35,7 @@ class AppConfigViewModel @Inject constructor(
         Timber.d("Called : fun $TAG.getAppConfigMenuPreferences()")
         _appConfigMenuPreferences.value = RequestState.Loading
         _appConfigMenuPreferences.value = try {
-            RequestState.Success(appConfigRepository.getAppConfigMenuData(sessionState))
+            RequestState.Success(appConfigRepository.getMenuData(sessionState))
         }catch (e: Throwable){
             RequestState.Error(e)
         }

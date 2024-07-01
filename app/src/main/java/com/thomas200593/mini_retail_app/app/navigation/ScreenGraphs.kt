@@ -55,7 +55,7 @@ sealed class ScreenGraphs(
     data object Timezone: ScreenGraphs(route = R_TIMEZONE)
     //App Config Data
     data object ConfigData: ScreenGraphs(route = R_CONFIG_DATA)
-    data object AppConfigDataBackup: ScreenGraphs(route = R_DATA_BACKUP)
+    data object DataBackup: ScreenGraphs(route = R_DATA_BACKUP)
 
     /**
      * Dashboard

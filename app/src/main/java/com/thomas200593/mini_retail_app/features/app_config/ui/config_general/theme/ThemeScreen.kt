@@ -1,4 +1,4 @@
-package com.thomas200593.mini_retail_app.features.app_config.ui.general_config.theme
+package com.thomas200593.mini_retail_app.features.app_config.ui.config_general.theme
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -50,8 +50,8 @@ import timber.log.Timber
 private const val TAG = "AppConfigGeneralThemeScreen"
 
 @Composable
-fun AppConfigGeneralThemeScreen(
-    viewModel: AppConfigGeneralThemeViewModel = hiltViewModel(),
+fun ThemeScreen(
+    viewModel: ThemeViewModel = hiltViewModel(),
     appState: AppState = LocalAppState.current
 ) {
     Timber.d("Called : fun $TAG()")

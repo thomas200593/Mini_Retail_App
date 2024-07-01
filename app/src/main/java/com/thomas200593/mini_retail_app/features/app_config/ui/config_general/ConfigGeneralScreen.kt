@@ -1,4 +1,4 @@
-package com.thomas200593.mini_retail_app.features.app_config.ui.general_config
+package com.thomas200593.mini_retail_app.features.app_config.ui.config_general
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -37,15 +37,15 @@ import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.Cli
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.EmptyScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.ErrorScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.LoadingScreen
-import com.thomas200593.mini_retail_app.features.app_config.navigation.DestinationAppConfigGeneral
-import com.thomas200593.mini_retail_app.features.app_config.navigation.navigateToAppConfigGeneral
+import com.thomas200593.mini_retail_app.features.app_config.navigation.DestinationConfigGeneral
+import com.thomas200593.mini_retail_app.features.app_config.navigation.navigateToConfigGeneral
 import timber.log.Timber
 
 private const val TAG = "AppConfigGeneralScreen"
 
 @Composable
-fun AppConfigGeneralScreen(
-    viewModel: AppConfigGeneralViewModel = hiltViewModel(),
+fun ConfigGeneralScreen(
+    viewModel: ConfigGeneralViewModel = hiltViewModel(),
     appState: AppState = LocalAppState.current
 ) {
     Timber.d("Called : fun $TAG()")
@@ -74,7 +74,7 @@ fun AppConfigGeneralScreen(
     ScreenContent(
         appConfigGeneralMenuPreferences = appConfigGeneralMenuPreferences,
         onNavigateToMenu = { menu ->
-            appState.navController.navigateToAppConfigGeneral(menu)
+            appState.navController.navigateToConfigGeneral(menu)
         }
     )
 }
@@ -132,8 +132,8 @@ private fun TopAppBar(
 
 @Composable
 private fun ScreenContent(
-    appConfigGeneralMenuPreferences: RequestState<Set<DestinationAppConfigGeneral>>,
-    onNavigateToMenu: (DestinationAppConfigGeneral) -> Unit
+    appConfigGeneralMenuPreferences: RequestState<Set<DestinationConfigGeneral>>,
+    onNavigateToMenu: (DestinationConfigGeneral) -> Unit
 ) {
     when(appConfigGeneralMenuPreferences){
         RequestState.Idle, RequestState.Loading -> {

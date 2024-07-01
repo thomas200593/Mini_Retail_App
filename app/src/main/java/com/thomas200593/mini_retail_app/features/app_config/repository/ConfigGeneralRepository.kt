@@ -8,10 +8,10 @@ import com.thomas200593.mini_retail_app.features.app_config.entity.FontSize
 import com.thomas200593.mini_retail_app.features.app_config.entity.Language
 import com.thomas200593.mini_retail_app.features.app_config.entity.Theme
 import com.thomas200593.mini_retail_app.features.app_config.entity.Timezone
-import com.thomas200593.mini_retail_app.features.app_config.navigation.DestinationAppConfigGeneral
+import com.thomas200593.mini_retail_app.features.app_config.navigation.DestinationConfigGeneral
 
 interface ConfigGeneralRepository {
-    suspend fun getAppConfigGeneralMenuData(sessionState: SessionState): Set<DestinationAppConfigGeneral>
+    suspend fun getMenuData(sessionState: SessionState): Set<DestinationConfigGeneral>
     suspend fun getThemePreferences(): Set<Theme>
     suspend fun setThemePreferences(theme: Theme)
     suspend fun getDynamicMenuPreferences(): Set<DynamicColor>

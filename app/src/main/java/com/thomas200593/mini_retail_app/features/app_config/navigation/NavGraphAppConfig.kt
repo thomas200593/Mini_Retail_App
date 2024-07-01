@@ -24,8 +24,8 @@ fun NavGraphBuilder.navGraphAppConfig(){
         ){
             AppConfigScreen()
         }
-        navGraphAppConfigGeneral()
-        navGraphAppConfigData()
+        navGraphConfigGeneral()
+        navGraphConfigData()
     }
 }
 
