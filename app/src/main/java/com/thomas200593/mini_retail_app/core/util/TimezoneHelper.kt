@@ -16,7 +16,7 @@ object TimezoneHelper {
     val TIMEZONE_DEFAULT = Timezone(ZULU)
     private const val SECONDS_IN_HOUR = 3_600
     private const val MINUTES_IN_HOUR = 60
-    suspend fun getTimezones() = withContext(Dispatchers.IO){
+    suspend fun getTimezoneList() = withContext(Dispatchers.IO){
         Timber.d("Called : fun $TAG.getTimezones()")
         val timezones = getAvailableZoneIds()
         val uniqueOffset = HashSet<Timezone>()

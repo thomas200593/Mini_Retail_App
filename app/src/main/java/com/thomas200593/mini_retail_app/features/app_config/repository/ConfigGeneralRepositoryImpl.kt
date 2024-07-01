@@ -7,7 +7,9 @@ import com.thomas200593.mini_retail_app.core.data.local.session.SessionState.Loa
 import com.thomas200593.mini_retail_app.core.data.local.session.SessionState.Valid
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatchers.Dispatchers.IO
-import com.thomas200593.mini_retail_app.core.util.CountryHelper.getCountryList
+import com.thomas200593.mini_retail_app.core.util.CountryHelper
+import com.thomas200593.mini_retail_app.core.util.CurrencyHelper
+import com.thomas200593.mini_retail_app.core.util.TimezoneHelper
 import com.thomas200593.mini_retail_app.features.app_config.entity.Country
 import com.thomas200593.mini_retail_app.features.app_config.entity.Currency
 import com.thomas200593.mini_retail_app.features.app_config.entity.DynamicColor
@@ -60,7 +62,7 @@ internal class ConfigGeneralRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getTimezones(): List<Timezone> = withContext(ioDispatcher){
-        getTimezones()
+        TimezoneHelper.getTimezoneList()
     }
 
     override suspend fun setTimezone(timezone: Timezone) {
@@ -68,7 +70,7 @@ internal class ConfigGeneralRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getCurrencies(): List<Currency> = withContext(ioDispatcher){
-        getCurrencies()
+        CurrencyHelper.getCurrencyList()
     }
 
     override suspend fun setCurrency(currency: Currency) {
@@ -84,7 +86,7 @@ internal class ConfigGeneralRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getCountries(): List<Country> = withContext(ioDispatcher){
-        getCountryList()
+        CountryHelper.getCountryList()
     }
 
     override suspend fun setCountry(country: Country) {

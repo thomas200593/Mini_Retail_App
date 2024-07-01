@@ -3,11 +3,8 @@ package com.thomas200593.mini_retail_app.core.util
 import com.thomas200593.mini_retail_app.features.app_config.entity.Country
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 import java.util.Locale
 import java.util.Locale.getISOCountries
-
-private val TAG = CountryHelper::class.simpleName
 
 object CountryHelper {
     private val COUNTRY_US = Locale("", Locale.US.country).country
@@ -17,7 +14,6 @@ object CountryHelper {
         displayName = Locale("", COUNTRY_US).displayName
     )
     suspend fun getCountryList() = withContext(Dispatchers.IO){
-        Timber.d("Called : $TAG.getCountryList()")
         val isoCountries = getISOCountries()
         val countries = HashSet<Country>()
         for(isoCountry in isoCountries){

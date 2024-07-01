@@ -5,9 +5,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.joda.money.CurrencyUnit
 import org.joda.money.CurrencyUnit.registeredCurrencies
-import timber.log.Timber
 
-private val TAG = CurrencyHelper::class.simpleName
 object CurrencyHelper {
     private val USD = CurrencyUnit.USD
     val CURRENCY_DEFAULT = Currency(
@@ -17,8 +15,7 @@ object CurrencyHelper {
         defaultFractionDigits = USD.toCurrency().defaultFractionDigits,
         decimalPlaces = USD.decimalPlaces
     )
-    suspend fun getCurrencies() = withContext(Dispatchers.IO){
-        Timber.d("Called : $TAG.getCurrencies()")
+    suspend fun getCurrencyList() = withContext(Dispatchers.IO){
         val currencies = registeredCurrencies()
         val sets = HashSet<Currency>()
         for(currency in currencies){
