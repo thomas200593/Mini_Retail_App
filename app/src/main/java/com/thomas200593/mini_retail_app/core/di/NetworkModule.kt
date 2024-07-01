@@ -12,6 +12,6 @@ import dagger.hilt.components.SingletonComponent
 abstract class NetworkModule {
     @Binds
     internal abstract fun bindsNetworkMonitor(
-        networkMonitor: NetworkMonitorImpl
+        impl: NetworkMonitorImpl
     ) : NetworkMonitor
 }

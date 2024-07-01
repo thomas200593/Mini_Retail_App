@@ -14,11 +14,11 @@ import dagger.hilt.components.SingletonComponent
 abstract class BusinessProfileModule {
     @Binds
     internal abstract fun bindsBusinessProfileRepository(
-        businessProfileRepository: BusinessProfileRepositoryImpl
+        impl: BusinessProfileRepositoryImpl
     ): BusinessProfileRepository
 
     @Binds
     internal abstract fun bindsBusinessProfileDao(
-        businessProfileDaoImpl: BusinessProfileDaoImpl
+        impl: BusinessProfileDaoImpl
     ): BusinessProfileDao
 }

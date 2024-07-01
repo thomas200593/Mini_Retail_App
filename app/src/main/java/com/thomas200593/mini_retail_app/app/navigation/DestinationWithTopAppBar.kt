@@ -34,6 +34,8 @@ object DestinationWithTopAppBar{
              */
             ScreenGraphs.Business.route,
             ScreenGraphs.BusinessMasterData.route,
+            ScreenGraphs.BusinessMasterDataSupplier.route,
+            ScreenGraphs.BusinessMasterDataCustomer.route,
 
             /**
              * Reporting

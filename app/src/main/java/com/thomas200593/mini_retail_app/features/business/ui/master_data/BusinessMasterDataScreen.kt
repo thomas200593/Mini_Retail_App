@@ -92,7 +92,7 @@ fun BusinessMasterDataScreen(
 }
 
 @Composable
-fun TopAppBar(
+private fun TopAppBar(
     onNavigateBack: () -> Unit
 ) {
     AppBar.ProvideTopAppBarNavigationIcon {

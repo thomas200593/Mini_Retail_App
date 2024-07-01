@@ -12,6 +12,6 @@ import dagger.hilt.components.SingletonComponent
 abstract class BusinessModule {
     @Binds
     internal abstract fun bindsBusinessRepository(
-        businessRepositoryImpl: BusinessRepositoryImpl
+        impl: BusinessRepositoryImpl
     ): BusinessRepository
 }
