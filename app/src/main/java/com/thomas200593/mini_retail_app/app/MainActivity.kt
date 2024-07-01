@@ -55,7 +55,11 @@ class MainActivity: AppCompatActivity() {
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(STARTED){
                 launch {
-                    viewModel.uiState.onEach { uiState = it }.collect()
+                    viewModel.uiState
+                        .onEach {
+                            uiState = it
+                        }
+                        .collect()
                 }
             }
         }
@@ -68,9 +72,9 @@ class MainActivity: AppCompatActivity() {
         setupSplashscreen(splashscreen)
         enableEdgeToEdge()
         setContent {
-            val darkTheme = shouldUseDarkTheme(uiState)
-            val dynamicColor = shouldUseDynamicColor(uiState)
-            val font = calculateInitialFontSize(uiState)
+            val darkTheme = shouldUseDarkTheme(uiState = uiState)
+            val dynamicColor = shouldUseDynamicColor(uiState = uiState)
+            val font = calculateInitialFontSize(uiState = uiState)
 
             DisposableEffect(key1 = darkTheme) {
                 enableEdgeToEdge(
@@ -80,7 +84,10 @@ class MainActivity: AppCompatActivity() {
                 onDispose {}
             }
 
-            val appState = rememberAppState(networkMonitor = networkMonitor, session = session)
+            val appState = rememberAppState(
+                networkMonitor = networkMonitor,
+                session = session
+            )
 
             CompositionLocalProvider(LocalAppState provides appState) {
                 ApplicationTheme(

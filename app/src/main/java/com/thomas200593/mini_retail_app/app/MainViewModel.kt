@@ -27,7 +27,7 @@ class MainViewModel @Inject constructor(
 ) : ViewModel(){
     val uiState: StateFlow<MainActivityUiState> = appConfigRepository
         .configCurrentData.flowOn(ioDispatcher).onEach { Timber.d("$TAG.uiState : $it") }
-        .map { Success(it) }
+        .map { Success(configCurrent = it) }
         .stateIn(
             scope = viewModelScope,
             initialValue = Loading,

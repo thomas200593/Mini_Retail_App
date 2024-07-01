@@ -16,7 +16,7 @@ data class AuditTrail(
 
 class TypeConverterAuditTrail{
     @TypeConverter
-    fun toJson(auditTrail: AuditTrail?): String = Json.encodeToString(auditTrail)
+    fun toJson(auditTrail: AuditTrail?): String = Json.encodeToString(value = auditTrail)
 
     @TypeConverter
     fun fromJson(json: String): AuditTrail? = Json.decodeFromString(json)

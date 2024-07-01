@@ -18,10 +18,10 @@ data class Contact(
 
 class TypeConverterContact{
     @TypeConverter
-    fun toJson(contact: Contact?): String = Json.encodeToString(contact)
+    fun toJson(contact: Contact?): String = Json.encodeToString(value = contact)
 
     @TypeConverter
-    fun toJsonArray(contact: List<Contact>?): String = Json.encodeToString(contact)
+    fun toJsonArray(contact: List<Contact>?): String = Json.encodeToString(value = contact)
 
     @TypeConverter
     fun fromJson(json: String): Contact? = Json.decodeFromString(json)

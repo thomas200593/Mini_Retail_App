@@ -91,7 +91,7 @@ class AppState(
     fun navigateToDestinationTopLevel(destinationTopLevel: DestinationTopLevel){
         Timber.d("Called : fun $TAG.navigateToDestinationTopLevel(destinationTopLevel=$destinationTopLevel)")
         val destinationTopLevelNavOptions = navOptions {
-            popUpTo(navController.graph.findStartDestination().id){
+            popUpTo(id = navController.graph.findStartDestination().id){
                 saveState = true
             }
             launchSingleTop = true
