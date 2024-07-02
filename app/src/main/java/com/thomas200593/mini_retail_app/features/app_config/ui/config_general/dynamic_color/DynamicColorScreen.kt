@@ -45,18 +45,14 @@ import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.Loa
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.ThreeRowCardItem
 import com.thomas200593.mini_retail_app.features.app_config.entity.ConfigCurrent
 import com.thomas200593.mini_retail_app.features.app_config.entity.DynamicColor
-import timber.log.Timber
-
-private const val TAG = "AppConfigGeneralDynamicColorScreen"
 
 @Composable
 fun DynamicColorScreen(
     viewModel: DynamicColorViewModel = hiltViewModel(),
     appState: AppState = LocalAppState.current
 ) {
-    Timber.d("Called : fun $TAG()")
-    val configCurrent by viewModel.configCurrentUiState.collectAsStateWithLifecycle()
-    val dynamicColorPreferences by viewModel.dynamicColorPreferences
+    val configCurrent by viewModel.configCurrent.collectAsStateWithLifecycle()
+    val dynamicColors by viewModel.dynamicColors
 
     LaunchedEffect(Unit) {
         viewModel.onOpen()
@@ -66,9 +62,9 @@ fun DynamicColorScreen(
         onNavigateBack = appState::onNavigateUp
     )
     ScreenContent(
-        dynamicColorPreferences = dynamicColorPreferences,
+        dynamicColors = dynamicColors,
         configCurrent = configCurrent,
-        onSaveSelectedDynamicColor = viewModel::saveSelectedDynamicColor
+        onSaveSelectedDynamicColor = viewModel::setDynamicColor
     )
 }
 
@@ -95,8 +91,7 @@ private fun TopAppBar(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ){
             Icon(
-                modifier = Modifier
-                    .sizeIn(maxHeight = ButtonDefaults.IconSize),
+                modifier = Modifier.sizeIn(maxHeight = ButtonDefaults.IconSize),
                 imageVector = ImageVector.vectorResource(id = dynamic_color),
                 contentDescription = null
             )
@@ -114,8 +109,7 @@ private fun TopAppBar(
             horizontalArrangement = Arrangement.Center
         ){
             Icon(
-                modifier = Modifier
-                    .sizeIn(maxHeight = ButtonDefaults.IconSize),
+                modifier = Modifier.sizeIn(maxHeight = ButtonDefaults.IconSize),
                 imageVector = Icons.Default.Info,
                 contentDescription = null
             )
@@ -125,18 +119,16 @@ private fun TopAppBar(
 
 @Composable
 private fun ScreenContent(
-    dynamicColorPreferences: RequestState<Set<DynamicColor>>,
+    dynamicColors: RequestState<Set<DynamicColor>>,
     configCurrent: RequestState<ConfigCurrent>,
     onSaveSelectedDynamicColor: (DynamicColor) -> Unit
 ) {
     when(configCurrent){
-        RequestState.Idle, RequestState.Loading -> {
-            LoadingScreen()
-        }
+        RequestState.Idle, RequestState.Loading -> { LoadingScreen() }
         is RequestState.Error -> {
             ErrorScreen(
                 title = stringResource(id = R.string.str_error),
-                errorMessage = "Failed to get Preferences data.",
+                errorMessage = stringResource(id = R.string.str_error_fetching_preferences),
                 showIcon = true
             )
         }
@@ -148,11 +140,9 @@ private fun ScreenContent(
             )
         }
         is RequestState.Success -> {
-            when(dynamicColorPreferences){
+            when(dynamicColors){
                 RequestState.Idle -> Unit
-                RequestState.Loading -> {
-                    LoadingScreen()
-                }
+                RequestState.Loading -> { LoadingScreen() }
                 is RequestState.Error -> {
                     ErrorScreen(
                         title = stringResource(id = R.string.str_error),
@@ -168,35 +158,29 @@ private fun ScreenContent(
                     )
                 }
                 is RequestState.Success -> {
-                    val currentDynamicColor = configCurrent.data.dynamicColor
-                    val appDynamicColorPreferences = dynamicColorPreferences.data
+                    val currentData = configCurrent.data.dynamicColor
+                    val preferencesList = dynamicColors.data
 
                     Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(4.dp),
+                        modifier = Modifier.fillMaxSize().padding(4.dp),
                         verticalArrangement = Arrangement.spacedBy(10.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            text = "${stringResource(id = R.string.str_dynamic_color)} : ${stringResource(id = currentDynamicColor.title)}",
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(4.dp),
+                            text = "${stringResource(id = R.string.str_dynamic_color)} : ${stringResource(id = currentData.title)}",
+                            modifier = Modifier.fillMaxWidth().padding(4.dp),
                             fontWeight = FontWeight.Bold,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                             textAlign = TextAlign.Center,
                         )
                         LazyColumn(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(4.dp),
+                            modifier = Modifier.fillMaxSize().padding(4.dp),
                             verticalArrangement = Arrangement.spacedBy(10.dp),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            items(count = appDynamicColorPreferences.count()){ index ->
-                                val data = appDynamicColorPreferences.elementAt(index)
+                            items(count = preferencesList.count()){ index ->
+                                val data = preferencesList.elementAt(index)
                                 ThreeRowCardItem(
                                     firstRowContent = {
                                         Surface(modifier = Modifier.fillMaxWidth()) {
@@ -222,9 +206,9 @@ private fun ScreenContent(
                                             onClick = { onSaveSelectedDynamicColor(data) }
                                         ) {
                                             Icon(
-                                                imageVector = if (data == currentDynamicColor) Icons.Default.CheckCircle else Icons.AutoMirrored.Outlined.KeyboardArrowRight,
+                                                imageVector = if (data == currentData) Icons.Default.CheckCircle else Icons.AutoMirrored.Outlined.KeyboardArrowRight,
                                                 contentDescription = null,
-                                                tint = if (data == currentDynamicColor) Color.Green else MaterialTheme.colorScheme.onTertiaryContainer
+                                                tint = if (data == currentData) Color.Green else MaterialTheme.colorScheme.onTertiaryContainer
                                             )
                                         }
                                     }

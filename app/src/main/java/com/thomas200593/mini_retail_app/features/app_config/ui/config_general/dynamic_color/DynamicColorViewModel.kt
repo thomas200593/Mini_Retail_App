@@ -5,11 +5,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatcher
-import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatchers.Dispatchers.IO
+import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatchers
 import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
 import com.thomas200593.mini_retail_app.features.app_config.entity.DynamicColor
-import com.thomas200593.mini_retail_app.features.app_config.repository.ConfigGeneralRepository
 import com.thomas200593.mini_retail_app.features.app_config.repository.AppConfigRepository
+import com.thomas200593.mini_retail_app.features.app_config.repository.ConfigGeneralRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.SharingStarted
@@ -18,46 +18,36 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
-
-private val TAG = DynamicColorViewModel::class.simpleName
 
 @HiltViewModel
 class DynamicColorViewModel @Inject constructor(
-    appConfigRepository: AppConfigRepository,
-    private val configGeneralRepository: ConfigGeneralRepository,
-    @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
+    appCfgRepository: AppConfigRepository,
+    private val cfgGeneralRepository: ConfigGeneralRepository,
+    @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ): ViewModel() {
-    private val _dynamicColorPreferences: MutableState<RequestState<Set<DynamicColor>>> =
-        mutableStateOf(RequestState.Idle)
-    val dynamicColorPreferences = _dynamicColorPreferences
-    val configCurrentUiState = appConfigRepository.configCurrent.flowOn(ioDispatcher)
+    private val _dynamicColors: MutableState<RequestState<Set<DynamicColor>>> = mutableStateOf(RequestState.Idle)
+    val dynamicColors = _dynamicColors
+    val configCurrent = appCfgRepository.configCurrent.flowOn(ioDispatcher)
         .catch { RequestState.Error(it) }
         .map { RequestState.Success(it) }
         .stateIn(
             scope = viewModelScope,
-            SharingStarted.Eagerly,
+            started = SharingStarted.Eagerly,
             initialValue = RequestState.Loading
         )
 
     fun onOpen() = viewModelScope.launch(ioDispatcher) {
-        Timber.d("Called : fun $TAG.onOpen()")
-        getDynamicColorPreferences()
+        getDynamicColors()
     }
 
-    private fun getDynamicColorPreferences() = viewModelScope.launch(ioDispatcher){
-        Timber.d("Called : fun $TAG.getDynamicColorPreferences()")
-        _dynamicColorPreferences.value = RequestState.Loading
-        _dynamicColorPreferences.value = try {
-            RequestState.Success(configGeneralRepository.getDynamicColors())
-        }catch (e: Throwable){
-            RequestState.Error(e)
-        }
+    private fun getDynamicColors() = viewModelScope.launch(ioDispatcher){
+        _dynamicColors.value = RequestState.Loading
+        _dynamicColors.value = try { RequestState.Success(cfgGeneralRepository.getDynamicColors()) }
+        catch (e: Throwable){ RequestState.Error(e) }
     }
 
-    fun saveSelectedDynamicColor(dynamicColor: DynamicColor) = viewModelScope.launch {
-        Timber.d("Called : fun $TAG.saveSelectedDynamicColor()")
-        configGeneralRepository.setDynamicColor(dynamicColor)
+    fun setDynamicColor(dynamicColor: DynamicColor) = viewModelScope.launch {
+        cfgGeneralRepository.setDynamicColor(dynamicColor)
     }
 }

@@ -8,8 +8,8 @@ import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatche
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatchers
 import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
 import com.thomas200593.mini_retail_app.features.app_config.entity.FontSize
-import com.thomas200593.mini_retail_app.features.app_config.repository.ConfigGeneralRepository
 import com.thomas200593.mini_retail_app.features.app_config.repository.AppConfigRepository
+import com.thomas200593.mini_retail_app.features.app_config.repository.ConfigGeneralRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.SharingStarted
@@ -18,10 +18,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
-
-private val TAG = FontSizeViewModel::class.simpleName
 
 @HiltViewModel
 class FontSizeViewModel @Inject constructor(
@@ -29,35 +26,29 @@ class FontSizeViewModel @Inject constructor(
     private val configGeneralRepository: ConfigGeneralRepository,
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ): ViewModel() {
-    private val _fontSizeSizePreferences: MutableState<RequestState<Set<FontSize>>> = mutableStateOf(RequestState.Idle)
-    val fontSizePreferences = _fontSizeSizePreferences
-    val configCurrentUiState = appConfigRepository.configCurrent.flowOn(ioDispatcher)
+    private val _fontSizes: MutableState<RequestState<Set<FontSize>>> = mutableStateOf(RequestState.Idle)
+    val fontSizes = _fontSizes
+    val configCurrent = appConfigRepository.configCurrent.flowOn(ioDispatcher)
         .catch { RequestState.Error(it) }
         .map { RequestState.Success(it) }
         .stateIn(
             scope = viewModelScope,
-            SharingStarted.Eagerly,
+            started = SharingStarted.Eagerly,
             initialValue = RequestState.Loading
         )
 
     fun onOpen() = viewModelScope.launch(ioDispatcher) {
-        Timber.d("Called : fun $TAG.onOpen()")
-        getFontSizePreferences()
+        getFontSizes()
     }
 
 
-    private fun getFontSizePreferences() = viewModelScope.launch(ioDispatcher) {
-        Timber.d("Called : fun $TAG.getFontSizePreferences()")
-        _fontSizeSizePreferences.value = RequestState.Loading
-        _fontSizeSizePreferences.value = try {
-            RequestState.Success(configGeneralRepository.getFontSizes())
-        }catch (e: Throwable){
-            RequestState.Error(e)
-        }
+    private fun getFontSizes() = viewModelScope.launch(ioDispatcher) {
+        _fontSizes.value = RequestState.Loading
+        _fontSizes.value = try { RequestState.Success(configGeneralRepository.getFontSizes()) }
+        catch (e: Throwable){ RequestState.Error(e) }
     }
 
-    fun saveSelectedFontSize(fontSize: FontSize) = viewModelScope.launch{
-        Timber.d("Called : fun $TAG.saveSelectedFontSize()")
+    fun setFontSize(fontSize: FontSize) = viewModelScope.launch{
         configGeneralRepository.setFontSize(fontSize)
     }
 }

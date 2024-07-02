@@ -12,7 +12,7 @@ import com.thomas200593.mini_retail_app.features.app_config.repository.AppConfig
 import com.thomas200593.mini_retail_app.features.app_config.repository.ConfigGeneralRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.flow.SharingStarted.Companion.Eagerly
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
@@ -33,7 +33,7 @@ class CountryViewModel @Inject constructor(
         .map { RequestState.Success(it) }
         .stateIn(
             scope = viewModelScope,
-            started = Eagerly,
+            started = SharingStarted.Eagerly,
             initialValue = RequestState.Loading
         )
 
