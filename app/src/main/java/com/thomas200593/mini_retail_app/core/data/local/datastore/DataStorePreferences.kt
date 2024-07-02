@@ -3,39 +3,22 @@ package com.thomas200593.mini_retail_app.core.data.local.datastore
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
-import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStoreKeys.AppConfigKeys.dsKeyCountry
-import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStoreKeys.AppConfigKeys.dsKeyCurrency
-import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStoreKeys.AppConfigKeys.dsKeyDynamicColor
-import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStoreKeys.AppConfigKeys.dsKeyFontSize
-import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStoreKeys.AppConfigKeys.dsKeyLanguage
-import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStoreKeys.AppConfigKeys.dsKeyOnboardingStatus
-import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStoreKeys.AppConfigKeys.dsKeyTheme
-import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStoreKeys.AppConfigKeys.dsKeyTimezone
-import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStoreKeys.AuthKeys.dsKeyAuthProvider
-import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStoreKeys.AuthKeys.dsKeyAuthSessionToken
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatcher
-import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatchers.Dispatchers.IO
-import com.thomas200593.mini_retail_app.core.util.CountryHelper.COUNTRY_DEFAULT
-import com.thomas200593.mini_retail_app.core.util.CurrencyHelper.CURRENCY_DEFAULT
-import com.thomas200593.mini_retail_app.core.util.TimezoneHelper.TIMEZONE_DEFAULT
+import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatchers
+import com.thomas200593.mini_retail_app.core.util.CountryHelper
+import com.thomas200593.mini_retail_app.core.util.CurrencyHelper
+import com.thomas200593.mini_retail_app.core.util.TimezoneHelper
 import com.thomas200593.mini_retail_app.features.app_config.entity.ConfigCurrent
 import com.thomas200593.mini_retail_app.features.app_config.entity.Country
 import com.thomas200593.mini_retail_app.features.app_config.entity.Currency
 import com.thomas200593.mini_retail_app.features.app_config.entity.DynamicColor
-import com.thomas200593.mini_retail_app.features.app_config.entity.DynamicColor.DISABLED
 import com.thomas200593.mini_retail_app.features.app_config.entity.FontSize
-import com.thomas200593.mini_retail_app.features.app_config.entity.FontSize.MEDIUM
 import com.thomas200593.mini_retail_app.features.app_config.entity.Language
-import com.thomas200593.mini_retail_app.features.app_config.entity.Language.EN
 import com.thomas200593.mini_retail_app.features.app_config.entity.OnboardingStatus
-import com.thomas200593.mini_retail_app.features.app_config.entity.OnboardingStatus.HIDE
-import com.thomas200593.mini_retail_app.features.app_config.entity.OnboardingStatus.SHOW
 import com.thomas200593.mini_retail_app.features.app_config.entity.Theme
-import com.thomas200593.mini_retail_app.features.app_config.entity.Theme.SYSTEM
 import com.thomas200593.mini_retail_app.features.app_config.entity.Timezone
 import com.thomas200593.mini_retail_app.features.auth.entity.AuthSessionToken
 import com.thomas200593.mini_retail_app.features.auth.entity.OAuthProvider
-import com.thomas200593.mini_retail_app.features.auth.entity.OAuthProvider.GOOGLE
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
@@ -46,12 +29,12 @@ import javax.inject.Inject
 
 class DataStorePreferences @Inject constructor(
     private val datastore: DataStore<Preferences>,
-    @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
+    @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ){
     //Onboarding
     suspend fun hideOnboarding() = withContext(ioDispatcher){
         datastore.edit {
-            it[dsKeyOnboardingStatus] = HIDE.name
+            it[DataStoreKeys.AppConfigKeys.dsKeyOnboardingStatus] = OnboardingStatus.HIDE.name
         }
     }
 
@@ -60,23 +43,23 @@ class DataStorePreferences @Inject constructor(
         .flowOn(ioDispatcher)
         .map { data ->
             AuthSessionToken(
-                authProvider = data[dsKeyAuthProvider] ?.let { oAuthProvider ->
+                authProvider = data[DataStoreKeys.AuthKeys.dsKeyAuthProvider] ?.let { oAuthProvider ->
                     OAuthProvider.valueOf(oAuthProvider)
-                } ?: GOOGLE,
-                idToken = data[dsKeyAuthSessionToken]
+                } ?: OAuthProvider.GOOGLE,
+                idToken = data[DataStoreKeys.AuthKeys.dsKeyAuthSessionToken]
             )
         }
 
     suspend fun clearAuthSessionToken() = withContext((ioDispatcher)){
         datastore.edit {
-            it.remove(dsKeyAuthSessionToken)
+            it.remove(DataStoreKeys.AuthKeys.dsKeyAuthSessionToken)
         }
     }
 
     suspend fun saveAuthSessionToken(authSessionToken: AuthSessionToken) = withContext(ioDispatcher){
         datastore.edit {
-            it[dsKeyAuthSessionToken] = authSessionToken.idToken!!
-            it[dsKeyAuthProvider] = authSessionToken.authProvider?.name!!
+            it[DataStoreKeys.AuthKeys.dsKeyAuthSessionToken] = authSessionToken.idToken!!
+            it[DataStoreKeys.AuthKeys.dsKeyAuthProvider] = authSessionToken.authProvider?.name!!
         }
     }
 
@@ -84,25 +67,25 @@ class DataStorePreferences @Inject constructor(
     val configCurrent = datastore.data
         .map { data ->
             ConfigCurrent(
-                onboardingStatus = data[dsKeyOnboardingStatus] ?.let { onboardingStatus ->
+                onboardingStatus = data[DataStoreKeys.AppConfigKeys.dsKeyOnboardingStatus] ?.let { onboardingStatus ->
                     OnboardingStatus.valueOf(onboardingStatus)
-                } ?: SHOW,
-                theme = data[dsKeyTheme] ?.let { theme ->
+                } ?: OnboardingStatus.SHOW,
+                theme = data[DataStoreKeys.AppConfigKeys.dsKeyTheme] ?.let { theme ->
                     Theme.valueOf(theme)
-                } ?: SYSTEM,
-                dynamicColor = data[dsKeyDynamicColor] ?.let { dynamicColor ->
+                } ?: Theme.SYSTEM,
+                dynamicColor = data[DataStoreKeys.AppConfigKeys.dsKeyDynamicColor] ?.let { dynamicColor ->
                     DynamicColor.valueOf(dynamicColor)
-                } ?: DISABLED,
-                fontSize = data[dsKeyFontSize] ?.let { fontSize ->
+                } ?: DynamicColor.DISABLED,
+                fontSize = data[DataStoreKeys.AppConfigKeys.dsKeyFontSize] ?.let { fontSize ->
                     FontSize.valueOf(fontSize)
-                } ?: MEDIUM,
-                language = data[dsKeyLanguage] ?.let { language ->
+                } ?: FontSize.MEDIUM,
+                language = data[DataStoreKeys.AppConfigKeys.dsKeyLanguage] ?.let { language ->
                     Language.valueOf(language)
-                } ?: EN,
-                timezone = data[dsKeyTimezone] ?.let { offset ->
+                } ?: Language.EN,
+                timezone = data[DataStoreKeys.AppConfigKeys.dsKeyTimezone] ?.let { offset ->
                     Timezone(offset)
-                } ?: TIMEZONE_DEFAULT,
-                currency = data[dsKeyCurrency] ?.let { currency ->
+                } ?: TimezoneHelper.TIMEZONE_DEFAULT,
+                currency = data[DataStoreKeys.AppConfigKeys.dsKeyCurrency] ?.let { currency ->
                     Currency(
                         code = currency,
                         displayName = CurrencyUnit.of(currency).toCurrency().displayName,
@@ -110,56 +93,56 @@ class DataStorePreferences @Inject constructor(
                         defaultFractionDigits = CurrencyUnit.of(currency).toCurrency().defaultFractionDigits,
                         decimalPlaces = CurrencyUnit.of(currency).decimalPlaces
                     )
-                } ?: CURRENCY_DEFAULT,
-                country = data[dsKeyCountry] ?.let{ country ->
+                } ?: CurrencyHelper.CURRENCY_DEFAULT,
+                country = data[DataStoreKeys.AppConfigKeys.dsKeyCountry] ?.let{ country ->
                     Country(
                         isoCode = country,
                         iso03Country = Locale("", country).isO3Country,
                         displayName = Locale("", country).displayName
                     )
-                } ?: COUNTRY_DEFAULT
+                } ?: CountryHelper.COUNTRY_DEFAULT
             )
         }
 
     suspend fun setTheme(theme: Theme) = withContext(ioDispatcher){
         datastore.edit {
-            it[dsKeyTheme] = theme.name
+            it[DataStoreKeys.AppConfigKeys.dsKeyTheme] = theme.name
         }
     }
 
     suspend fun setDynamicColor(dynamicColor: DynamicColor) = withContext(ioDispatcher){
         datastore.edit {
-            it[dsKeyDynamicColor] = dynamicColor.name
+            it[DataStoreKeys.AppConfigKeys.dsKeyDynamicColor] = dynamicColor.name
         }
     }
 
     suspend fun setLanguage(language: Language) = withContext(ioDispatcher){
         datastore.edit {
-            it[dsKeyLanguage] = language.name
+            it[DataStoreKeys.AppConfigKeys.dsKeyLanguage] = language.name
         }
     }
 
     suspend fun setTimezone(timezone: Timezone) = withContext(ioDispatcher){
         datastore.edit {
-            it[dsKeyTimezone] = timezone.timezoneOffset
+            it[DataStoreKeys.AppConfigKeys.dsKeyTimezone] = timezone.timezoneOffset
         }
     }
 
     suspend fun setCurrency(currency: Currency) = withContext(ioDispatcher){
         datastore.edit {
-            it[dsKeyCurrency] = currency.code
+            it[DataStoreKeys.AppConfigKeys.dsKeyCurrency] = currency.code
         }
     }
 
     suspend fun setFontSize(fontSize: FontSize) = withContext(ioDispatcher){
         datastore.edit {
-            it[dsKeyFontSize] = fontSize.name
+            it[DataStoreKeys.AppConfigKeys.dsKeyFontSize] = fontSize.name
         }
     }
 
     suspend fun setCountry(country: Country) = withContext(ioDispatcher){
         datastore.edit {
-            it[dsKeyCountry] = country.isoCode
+            it[DataStoreKeys.AppConfigKeys.dsKeyCountry] = country.isoCode
         }
     }
 }
