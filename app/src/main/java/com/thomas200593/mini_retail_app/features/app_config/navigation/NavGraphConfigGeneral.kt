@@ -5,15 +5,8 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navOptions
 import androidx.navigation.navigation
-import com.thomas200593.mini_retail_app.app.navigation.NavigationGraphs.G_CONFIG_GENERAL
-import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs.ConfigGeneral
-import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs.Country
-import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs.Currency
-import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs.DynamicColor
-import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs.FontSize
-import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs.Language
-import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs.Theme
-import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs.Timezone
+import com.thomas200593.mini_retail_app.app.navigation.NavigationGraphs
+import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs
 import com.thomas200593.mini_retail_app.features.app_config.ui.config_general.ConfigGeneralScreen
 import com.thomas200593.mini_retail_app.features.app_config.ui.config_general.country.CountryScreen
 import com.thomas200593.mini_retail_app.features.app_config.ui.config_general.currency.CurrencyScreen
@@ -25,53 +18,53 @@ import com.thomas200593.mini_retail_app.features.app_config.ui.config_general.ti
 
 fun NavGraphBuilder.navGraphConfigGeneral() {
     navigation(
-        route = G_CONFIG_GENERAL,
-        startDestination = ConfigGeneral.route
+        route = NavigationGraphs.G_CONFIG_GENERAL,
+        startDestination = ScreenGraphs.ConfigGeneral.route
     ){
         composable(
-            route = ConfigGeneral.route
+            route = ScreenGraphs.ConfigGeneral.route
         ){
             ConfigGeneralScreen()
         }
 
         composable(
-            route = Country.route
+            route = ScreenGraphs.Country.route
         ){
             CountryScreen()
         }
 
         composable(
-            route = Language.route
+            route = ScreenGraphs.Language.route
         ){
             LanguageScreen()
         }
 
         composable(
-            route = Timezone.route
+            route = ScreenGraphs.Timezone.route
         ){
             TimezoneScreen()
         }
 
         composable(
-            route = Theme.route
+            route = ScreenGraphs.Theme.route
         ){
             ThemeScreen()
         }
 
         composable(
-            route = DynamicColor.route
+            route = ScreenGraphs.DynamicColor.route
         ){
             DynamicColorScreen()
         }
 
         composable(
-            route = FontSize.route
+            route = ScreenGraphs.FontSize.route
         ){
             FontSizeScreen()
         }
 
         composable(
-            route = Currency.route
+            route = ScreenGraphs.Currency.route
         ){
             CurrencyScreen()
         }
@@ -86,7 +79,7 @@ fun NavController.navigateToConfigGeneral(
         restoreState = true
     }
     this.navigate(
-        route = destinationConfigGeneral?.route?:G_CONFIG_GENERAL,
+        route = destinationConfigGeneral?.route?: NavigationGraphs.G_CONFIG_GENERAL,
         navOptions = navOptions
     )
 }

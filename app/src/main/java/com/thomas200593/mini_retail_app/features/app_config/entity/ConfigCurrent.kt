@@ -1,21 +1,16 @@
 package com.thomas200593.mini_retail_app.features.app_config.entity
 
-import com.thomas200593.mini_retail_app.core.util.CountryHelper.COUNTRY_DEFAULT
-import com.thomas200593.mini_retail_app.core.util.CurrencyHelper.CURRENCY_DEFAULT
-import com.thomas200593.mini_retail_app.core.util.TimezoneHelper.TIMEZONE_DEFAULT
-import com.thomas200593.mini_retail_app.features.app_config.entity.DynamicColor.DISABLED
-import com.thomas200593.mini_retail_app.features.app_config.entity.FontSize.MEDIUM
-import com.thomas200593.mini_retail_app.features.app_config.entity.Language.EN
-import com.thomas200593.mini_retail_app.features.app_config.entity.OnboardingStatus.SHOW
-import com.thomas200593.mini_retail_app.features.app_config.entity.Theme.SYSTEM
+import com.thomas200593.mini_retail_app.core.util.CountryHelper
+import com.thomas200593.mini_retail_app.core.util.CurrencyHelper
+import com.thomas200593.mini_retail_app.core.util.TimezoneHelper
 
 data class ConfigCurrent(
-    val onboardingStatus: OnboardingStatus = SHOW,
-    val theme: Theme = SYSTEM,
-    val dynamicColor: DynamicColor = DISABLED,
-    val fontSize: FontSize = MEDIUM,
-    val country: Country = COUNTRY_DEFAULT,
-    val language: Language = EN,
-    val timezone: Timezone = TIMEZONE_DEFAULT,
-    val currency: Currency = CURRENCY_DEFAULT
+    val onboardingStatus: OnboardingStatus = OnboardingStatus.SHOW,
+    val theme: Theme = Theme.SYSTEM,
+    val dynamicColor: DynamicColor = DynamicColor.DISABLED,
+    val fontSize: FontSize = FontSize.MEDIUM,
+    val country: Country = CountryHelper.COUNTRY_DEFAULT,
+    val language: Language = Language.EN,
+    val timezone: Timezone = TimezoneHelper.TIMEZONE_DEFAULT,
+    val currency: Currency = CurrencyHelper.CURRENCY_DEFAULT
 )

@@ -5,18 +5,17 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navOptions
 import androidx.navigation.navigation
-import com.thomas200593.mini_retail_app.app.navigation.NavigationGraphs.G_CONFIG_DATA
-import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs.ConfigData
+import com.thomas200593.mini_retail_app.app.navigation.NavigationGraphs
+import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs
 import com.thomas200593.mini_retail_app.features.app_config.ui.config_data.ConfigDataScreen
-
 
 fun NavGraphBuilder.navGraphConfigData() {
     navigation(
-        route = G_CONFIG_DATA,
-        startDestination = ConfigData.route
+        route = NavigationGraphs.G_CONFIG_DATA,
+        startDestination = ScreenGraphs.ConfigData.route
     ){
         composable(
-            route = ConfigData.route
+            route = ScreenGraphs.ConfigData.route
         ){
             ConfigDataScreen()
         }
@@ -33,7 +32,7 @@ fun NavController.navigateToAppConfigData(
         restoreState = true
     }
     this.navigate(
-        route = destinationConfigData?.route?: G_CONFIG_DATA,
+        route = destinationConfigData?.route?: NavigationGraphs.G_CONFIG_DATA,
         navOptions = navOptions
     )
 }
