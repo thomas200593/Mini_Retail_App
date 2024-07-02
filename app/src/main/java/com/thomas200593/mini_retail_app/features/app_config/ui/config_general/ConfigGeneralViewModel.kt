@@ -13,31 +13,23 @@ import com.thomas200593.mini_retail_app.features.app_config.repository.ConfigGen
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
-
-private val TAG = ConfigGeneralViewModel::class.simpleName
 
 @HiltViewModel
 class ConfigGeneralViewModel @Inject constructor(
-    private val configGeneralRepository: ConfigGeneralRepository,
+    private val cfgGeneralRepository: ConfigGeneralRepository,
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ): ViewModel() {
-    private val _appConfigGeneralMenuPreferences: MutableState<RequestState<Set<DestinationConfigGeneral>>> = mutableStateOf(RequestState.Idle)
-    val appConfigGeneralMenuPreferences = _appConfigGeneralMenuPreferences
+    private val _menuData: MutableState<RequestState<Set<DestinationConfigGeneral>>> = mutableStateOf(RequestState.Idle)
+    val menuData = _menuData
 
     fun onOpen(sessionState: SessionState) = viewModelScope.launch(ioDispatcher) {
-        Timber.d("Called : fun $TAG.onOpen()")
-        getAppConfigGeneralMenuPreferences(sessionState)
+        getMenuData(sessionState)
     }
 
-    private suspend fun getAppConfigGeneralMenuPreferences(sessionState: SessionState) = viewModelScope.launch(ioDispatcher) {
-        Timber.d("Called : fun $TAG.getAppConfigGeneralMenuPreferences()")
-        _appConfigGeneralMenuPreferences.value = RequestState.Loading
-        _appConfigGeneralMenuPreferences.value = try{
-            RequestState.Success(configGeneralRepository.getMenuData(sessionState))
-        }catch (e: Throwable){
-            RequestState.Error(e)
-        }
+    private suspend fun getMenuData(sessionState: SessionState) = viewModelScope.launch(ioDispatcher) {
+        _menuData.value = RequestState.Loading
+        _menuData.value = try{ RequestState.Success(cfgGeneralRepository.getMenuData(sessionState)) }
+        catch (e: Throwable){ RequestState.Error(e) }
     }
 }

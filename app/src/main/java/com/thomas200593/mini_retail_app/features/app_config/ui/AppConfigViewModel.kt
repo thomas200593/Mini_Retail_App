@@ -13,31 +13,23 @@ import com.thomas200593.mini_retail_app.features.app_config.repository.AppConfig
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
-
-private val TAG = AppConfigViewModel::class.simpleName
 
 @HiltViewModel
 class AppConfigViewModel @Inject constructor(
-    private val appConfigRepository: AppConfigRepository,
+    private val appCfgRepository: AppConfigRepository,
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ): ViewModel(){
-    private val _appConfigMenuPreferences: MutableState<RequestState<Set<DestinationAppConfig>>> = mutableStateOf(RequestState.Idle)
-    val appConfigMenuPreferences = _appConfigMenuPreferences
+    private val _menuData: MutableState<RequestState<Set<DestinationAppConfig>>> = mutableStateOf(RequestState.Idle)
+    val menuData = _menuData
 
     fun onOpen(sessionState: SessionState) = viewModelScope.launch(ioDispatcher) {
-        Timber.d("Called : fun $TAG.onOpen()")
-        getAppConfigMenuPreferences(sessionState)
+        getMenuData(sessionState)
     }
 
-    private suspend fun getAppConfigMenuPreferences(sessionState: SessionState) = viewModelScope.launch(ioDispatcher){
-        Timber.d("Called : fun $TAG.getAppConfigMenuPreferences()")
-        _appConfigMenuPreferences.value = RequestState.Loading
-        _appConfigMenuPreferences.value = try {
-            RequestState.Success(appConfigRepository.getMenuData(sessionState))
-        }catch (e: Throwable){
-            RequestState.Error(e)
-        }
+    private suspend fun getMenuData(sessionState: SessionState) = viewModelScope.launch(ioDispatcher){
+        _menuData.value = RequestState.Loading
+        _menuData.value = try { RequestState.Success(appCfgRepository.getMenuData(sessionState)) }
+        catch (e: Throwable){ RequestState.Error(e) }
     }
 }

@@ -50,7 +50,7 @@ fun AppConfigScreen(
 ) {
     Timber.d("Called : fun $TAG()")
     val sessionState by appState.isSessionValid.collectAsStateWithLifecycle()
-    val appConfigMenuPreferences by viewModel.appConfigMenuPreferences
+    val menuData by viewModel.menuData
 
     when(sessionState){
         SessionState.Loading -> {
@@ -72,7 +72,7 @@ fun AppConfigScreen(
         onNavigateBack = appState::onNavigateUp
     )
     ScreenContent(
-        appConfigMenuPreferences = appConfigMenuPreferences,
+        appConfigMenuPreferences = menuData,
         onNavigateToMenu = { menu ->
             appState.navController.navigateToAppConfig(menu)
         }
@@ -102,8 +102,7 @@ private fun TopAppBar(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ){
             Icon(
-                modifier = Modifier
-                    .sizeIn(maxHeight = ButtonDefaults.IconSize),
+                modifier = Modifier.sizeIn(maxHeight = ButtonDefaults.IconSize),
                 imageVector = ImageVector.vectorResource(id = settings),
                 contentDescription = null
             )
@@ -121,8 +120,7 @@ private fun TopAppBar(
             horizontalArrangement = Arrangement.Center
         ){
             Icon(
-                modifier = Modifier
-                    .sizeIn(maxHeight = ButtonDefaults.IconSize),
+                modifier = Modifier.sizeIn(maxHeight = ButtonDefaults.IconSize),
                 imageVector = Icons.Default.Info,
                 contentDescription = null
             )
@@ -136,9 +134,7 @@ private fun ScreenContent(
     onNavigateToMenu: (DestinationAppConfig) -> Unit
 ) {
     when(appConfigMenuPreferences){
-        RequestState.Idle, RequestState.Loading -> {
-            LoadingScreen()
-        }
+        RequestState.Idle, RequestState.Loading -> { LoadingScreen() }
         is RequestState.Error -> {
             ErrorScreen(
                 title = stringResource(id = R.string.str_error),
@@ -156,9 +152,7 @@ private fun ScreenContent(
         is RequestState.Success -> {
             val menuPreferences = appConfigMenuPreferences.data
             LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(8.dp),
+                modifier = Modifier.fillMaxSize().padding(8.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
