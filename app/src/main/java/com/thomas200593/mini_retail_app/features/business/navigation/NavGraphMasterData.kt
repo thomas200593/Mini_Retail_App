@@ -5,13 +5,13 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.thomas200593.mini_retail_app.app.navigation.NavigationGraphs.G_MASTER_DATA
+import com.thomas200593.mini_retail_app.app.navigation.NavigationGraphs
 import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs
 import com.thomas200593.mini_retail_app.features.business.ui.master_data.BusinessMasterDataScreen
 
-fun NavGraphBuilder.navGraphBusinessMasterData() {
+fun NavGraphBuilder.navGraphMasterData() {
     navigation(
-        route = G_MASTER_DATA,
+        route = NavigationGraphs.G_MASTER_DATA,
         startDestination = ScreenGraphs.MasterData.route
     ){
         composable(
@@ -23,17 +23,17 @@ fun NavGraphBuilder.navGraphBusinessMasterData() {
         /**
          * - Supplier
          */
-        navGraphBusinessMasterDataSupplier()
+        navGraphSupplier()
 //        navGraphBusinessMasterDataCustomer()
     }
 }
 
-fun NavController.navigateToBusinessMasterData(
+fun NavController.navigateToMasterData(
     navOptions: NavOptions?,
-    destinationBusinessMasterData: DestinationBusinessMasterData? = null
+    destinationMasterData: DestinationMasterData? = null
 ){
     this.navigate(
-        route = destinationBusinessMasterData?.route?: G_MASTER_DATA,
+        route = destinationMasterData?.route?: NavigationGraphs.G_MASTER_DATA,
         navOptions
     )
 }

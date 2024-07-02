@@ -43,8 +43,8 @@ import com.thomas200593.mini_retail_app.core.ui.component.AppBar
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.EmptyScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.ErrorScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.LoadingScreen
-import com.thomas200593.mini_retail_app.features.business.navigation.DestinationBusinessMasterData
-import com.thomas200593.mini_retail_app.features.business.navigation.navigateToBusinessMasterData
+import com.thomas200593.mini_retail_app.features.business.navigation.DestinationMasterData
+import com.thomas200593.mini_retail_app.features.business.navigation.navigateToMasterData
 import timber.log.Timber
 
 private const val TAG = "BusinessMasterDataScreen"
@@ -80,12 +80,12 @@ fun BusinessMasterDataScreen(
     ScreenContent(
         businessMasterDataMenuPreferences = businessMasterDataMenuPreferences,
         onNavigateToMenu = { menu ->
-            appState.navController.navigateToBusinessMasterData(
+            appState.navController.navigateToMasterData(
                 navOptions = navOptions {
                     launchSingleTop = true
                     restoreState = true
                 },
-                destinationBusinessMasterData = menu
+                destinationMasterData = menu
             )
         }
     )
@@ -144,8 +144,8 @@ private fun TopAppBar(
 
 @Composable
 private fun ScreenContent(
-    businessMasterDataMenuPreferences: RequestState<Set<DestinationBusinessMasterData>>,
-    onNavigateToMenu: (DestinationBusinessMasterData) -> Unit
+    businessMasterDataMenuPreferences: RequestState<Set<DestinationMasterData>>,
+    onNavigateToMenu: (DestinationMasterData) -> Unit
 ) {
     when(businessMasterDataMenuPreferences){
         RequestState.Idle, RequestState.Loading -> {

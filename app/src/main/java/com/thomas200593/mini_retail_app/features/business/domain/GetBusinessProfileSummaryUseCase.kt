@@ -16,20 +16,10 @@ class GetBusinessProfileSummaryUseCase @Inject constructor(
     private val businessExtFn: BusinessExtFn,
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ) {
-    operator fun invoke() = businessProfileRepository
-        .getBusinessProfile()
-        .flowOn(ioDispatcher)
-        .catch {
-            RequestState.Error(it)
-        }
+    operator fun invoke() = businessProfileRepository.getBusinessProfile().flowOn(ioDispatcher)
+        .catch { RequestState.Error(it) }
         .map {
-            val data = it
-            if(data == null){
-                RequestState.Empty
-            }else{
-                RequestState.Success(
-                    businessExtFn.bizProfileToBizProfileSummary(it)
-                )
-            }
+            if(it != null){ RequestState.Success(businessExtFn.bizProfileToBizProfileSummary(it)) }
+            else{ RequestState.Empty }
         }
 }

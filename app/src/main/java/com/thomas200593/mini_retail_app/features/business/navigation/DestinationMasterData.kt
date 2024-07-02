@@ -6,7 +6,7 @@ import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs
 import com.thomas200593.mini_retail_app.core.ui.common.Icons
 
-enum class DestinationBusinessMasterData(
+enum class DestinationMasterData(
     val route: String,
     @DrawableRes val iconRes: Int,
     @StringRes val title: Int,

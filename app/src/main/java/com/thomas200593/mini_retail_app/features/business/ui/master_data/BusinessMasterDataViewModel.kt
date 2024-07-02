@@ -8,7 +8,7 @@ import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatchers
 import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
-import com.thomas200593.mini_retail_app.features.business.navigation.DestinationBusinessMasterData
+import com.thomas200593.mini_retail_app.features.business.navigation.DestinationMasterData
 import com.thomas200593.mini_retail_app.features.business.repository.MasterDataRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -20,7 +20,7 @@ class BusinessMasterDataViewModel @Inject constructor(
     private val masterDataRepository: MasterDataRepository,
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ): ViewModel() {
-    private val _businessMasterDataMenuPreferences: MutableState<RequestState<Set<DestinationBusinessMasterData>>> = mutableStateOf(RequestState.Idle)
+    private val _businessMasterDataMenuPreferences: MutableState<RequestState<Set<DestinationMasterData>>> = mutableStateOf(RequestState.Idle)
     val businessMasterDataMenuPreferences = _businessMasterDataMenuPreferences
 
     fun onOpen(sessionState: SessionState) = viewModelScope.launch(ioDispatcher){
