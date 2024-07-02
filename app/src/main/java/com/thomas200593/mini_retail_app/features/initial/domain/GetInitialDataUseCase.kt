@@ -15,13 +15,13 @@ import javax.inject.Inject
 
 class GetInitialDataUseCase @Inject constructor(
     private val authRepository: AuthRepository,
-    private val appConfigRepository: AppConfigRepository,
+    private val appCfgRepository: AppConfigRepository,
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ){
     operator fun invoke(): Flow<RequestState.Success<Initial>> = authRepository.authSessionToken
         .flowOn(ioDispatcher)
         .catch { throwable -> RequestState.Error(throwable) }
-        .combine(appConfigRepository.configCurrent){ auth, config ->
+        .combine(appCfgRepository.configCurrent){ auth, config ->
             RequestState.Success(
                 Initial(
                     userData = authRepository.mapAuthSessionTokenToUserData(auth),
