@@ -8,13 +8,12 @@ import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
-import androidx.compose.material3.SnackbarDuration.Short
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.SnackbarResult.ActionPerformed
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -30,15 +29,11 @@ import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.app.navigation.NavigationHost.NavigationHost
 import com.thomas200593.mini_retail_app.core.ui.component.AppBar.TopAppBar
 import com.thomas200593.mini_retail_app.core.ui.component.BottomBar.BottomBar
-import timber.log.Timber
-
-private const val TAG = "AppScreen"
 
 @Composable
 fun AppScreen(
     appState: AppState = LocalAppState.current
 ){
-    Timber.d("Called : fun $TAG()")
     val snackBarHostState = remember { SnackbarHostState() }
     val isNetworkOffline by appState.isNetworkOffline.collectAsStateWithLifecycle()
     val networkNotConnectedMessage = stringResource(id = R.string.str_network_not_connected)
@@ -64,11 +59,10 @@ internal fun AppScreen(
     snackBarHostState: SnackbarHostState,
     appState: AppState = LocalAppState.current
 ){
-    Timber.d("Called : internal fun $TAG()")
     Scaffold(
         modifier = modifier.semantics { testTagsAsResourceId = true },
-        containerColor = colorScheme.background,
-        contentColor = colorScheme.onBackground,
+        containerColor = MaterialTheme.colorScheme.background,
+        contentColor = MaterialTheme.colorScheme.onBackground,
         snackbarHost = { SnackbarHost(snackBarHostState) },
         topBar = {
             if(appState.shouldShowTopBar){
@@ -97,8 +91,8 @@ internal fun AppScreen(
                             snackBarHostState.showSnackbar(
                                 message = message,
                                 actionLabel = action,
-                                duration = duration ?: Short
-                            ) == ActionPerformed
+                                duration = duration ?: SnackbarDuration.Short
+                            ) == SnackbarResult.ActionPerformed
                         }
                     )
                 }

@@ -11,27 +11,18 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
 import com.thomas200593.mini_retail_app.app.navigation.DestinationTopLevel
-import com.thomas200593.mini_retail_app.app.navigation.DestinationTopLevel.BUSINESS
-import com.thomas200593.mini_retail_app.app.navigation.DestinationTopLevel.DASHBOARD
-import com.thomas200593.mini_retail_app.app.navigation.DestinationTopLevel.REPORTING
-import com.thomas200593.mini_retail_app.app.navigation.DestinationTopLevel.USER_PROFILE
-import com.thomas200593.mini_retail_app.app.navigation.DestinationTopLevel.entries
-import com.thomas200593.mini_retail_app.app.navigation.DestinationWithTopAppBar.destinationWithTopAppBar
+import com.thomas200593.mini_retail_app.app.navigation.DestinationWithTopAppBar
 import com.thomas200593.mini_retail_app.core.data.local.session.Session
-import com.thomas200593.mini_retail_app.core.data.local.session.SessionState.Loading
+import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
 import com.thomas200593.mini_retail_app.core.design_system.util.NetworkMonitor
 import com.thomas200593.mini_retail_app.features.business.navigation.navigateToBusiness
 import com.thomas200593.mini_retail_app.features.dashboard.navigation.navigateToDashboard
 import com.thomas200593.mini_retail_app.features.reporting.navigation.navigateToReporting
 import com.thomas200593.mini_retail_app.features.user_profile.navigation.navigateToUserProfile
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.SharingStarted.Companion.Eagerly
-import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import timber.log.Timber
-
-private val TAG = AppState::class.simpleName
 
 @Composable
 fun rememberAppState(
@@ -46,7 +37,6 @@ fun rememberAppState(
         coroutineScope,
         navController
     ) {
-        Timber.d("Called : fun $TAG.rememberAppState()")
         AppState(
             networkMonitor = networkMonitor,
             session = session,
@@ -67,29 +57,28 @@ class AppState(
         .stateIn(
             scope = coroutineScope,
             initialValue = false,
-            started = WhileSubscribed(1_000)
+            started = SharingStarted.WhileSubscribed(1_000)
         )
 
     val isSessionValid = session.currentUserSession
         .stateIn(
             scope = coroutineScope,
-            initialValue = Loading,
-            started = Eagerly
+            initialValue = SessionState.Loading,
+            started = SharingStarted.Eagerly
         )
 
     val destinationCurrent: NavDestination?
         @Composable get() = navController.currentBackStackEntryAsState().value?.destination
 
-    val destinationTopLevels: List<DestinationTopLevel> = entries
+    val destinationTopLevels: List<DestinationTopLevel> = DestinationTopLevel.entries
 
     val shouldShowBottomBar: Boolean
         @Composable get() = destinationCurrent?.route in destinationTopLevels.map { it.route }
 
     val shouldShowTopBar: Boolean
-        @Composable get() = destinationCurrent?.route in destinationWithTopAppBar()
+        @Composable get() = destinationCurrent?.route in DestinationWithTopAppBar.destinationWithTopAppBar()
 
     fun navigateToDestinationTopLevel(destinationTopLevel: DestinationTopLevel){
-        Timber.d("Called : fun $TAG.navigateToDestinationTopLevel(destinationTopLevel=$destinationTopLevel)")
         val destinationTopLevelNavOptions = navOptions {
             popUpTo(id = navController.graph.findStartDestination().id){
                 saveState = true
@@ -98,23 +87,22 @@ class AppState(
             restoreState = true
         }
         when(destinationTopLevel){
-            DASHBOARD -> {
+            DestinationTopLevel.DASHBOARD -> {
                 navController.navigateToDashboard(navOptions = destinationTopLevelNavOptions)
             }
-            BUSINESS -> {
+            DestinationTopLevel.BUSINESS -> {
                 navController.navigateToBusiness(navOptions = destinationTopLevelNavOptions)
             }
-            REPORTING -> {
+            DestinationTopLevel.REPORTING -> {
                 navController.navigateToReporting(navOptions = destinationTopLevelNavOptions)
             }
-            USER_PROFILE -> {
+            DestinationTopLevel.USER_PROFILE -> {
                 navController.navigateToUserProfile(navOptions = destinationTopLevelNavOptions)
             }
         }
     }
 
     fun onNavigateUp() {
-        Timber.d("Called : fun $TAG.onNavigateUp()")
         navController.navigateUp()
     }
 }
