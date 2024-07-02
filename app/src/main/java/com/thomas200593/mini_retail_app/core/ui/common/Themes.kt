@@ -13,24 +13,11 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
-import androidx.core.view.WindowCompat.getInsetsController
+import androidx.core.view.WindowCompat
 import com.thomas200593.mini_retail_app.app.MainActivityUiState
-import com.thomas200593.mini_retail_app.app.MainActivityUiState.Loading
-import com.thomas200593.mini_retail_app.app.MainActivityUiState.Success
-import com.thomas200593.mini_retail_app.core.ui.common.Types.personalizedTypography
-import com.thomas200593.mini_retail_app.features.app_config.entity.DynamicColor.DISABLED
-import com.thomas200593.mini_retail_app.features.app_config.entity.DynamicColor.ENABLED
+import com.thomas200593.mini_retail_app.features.app_config.entity.DynamicColor
 import com.thomas200593.mini_retail_app.features.app_config.entity.FontSize
-import com.thomas200593.mini_retail_app.features.app_config.entity.FontSize.EXTRA_LARGE
-import com.thomas200593.mini_retail_app.features.app_config.entity.FontSize.LARGE
-import com.thomas200593.mini_retail_app.features.app_config.entity.FontSize.MEDIUM
-import com.thomas200593.mini_retail_app.features.app_config.entity.FontSize.SMALL
-import com.thomas200593.mini_retail_app.features.app_config.entity.Theme.DARK
-import com.thomas200593.mini_retail_app.features.app_config.entity.Theme.LIGHT
-import com.thomas200593.mini_retail_app.features.app_config.entity.Theme.SYSTEM
-import timber.log.Timber
-
-private val TAG = Themes::class.simpleName
+import com.thomas200593.mini_retail_app.features.app_config.entity.Theme
 
 object Themes{
     private val lightScheme = Colors.lightScheme
@@ -43,13 +30,12 @@ object Themes{
      */
     @Composable
     fun shouldUseDarkTheme(uiState: MainActivityUiState): Boolean {
-        Timber.d("Called : fun $TAG.shouldUseDarkTheme()")
         return when(uiState){
-            Loading -> isSystemInDarkTheme()
-            is Success -> when(uiState.configCurrent.theme){
-                SYSTEM -> isSystemInDarkTheme()
-                LIGHT -> false
-                DARK -> true
+            MainActivityUiState.Loading -> isSystemInDarkTheme()
+            is MainActivityUiState.Success -> when(uiState.configCurrent.theme){
+                Theme.SYSTEM -> isSystemInDarkTheme()
+                Theme.LIGHT -> false
+                Theme.DARK -> true
             }
         }
     }
@@ -59,26 +45,24 @@ object Themes{
      */
     @Composable
     fun shouldUseDynamicColor(uiState: MainActivityUiState): Boolean {
-        Timber.d("Called : fun $TAG.shouldUseDynamicColor()")
         return when (uiState) {
-            Loading -> false
-            is Success -> when(uiState.configCurrent.dynamicColor){
-                ENABLED -> true
-                DISABLED -> false
+            MainActivityUiState.Loading -> false
+            is MainActivityUiState.Success -> when(uiState.configCurrent.dynamicColor){
+                DynamicColor.ENABLED -> true
+                DynamicColor.DISABLED -> false
             }
         }
     }
 
     @Composable
     fun calculateInitialFontSize(uiState: MainActivityUiState): FontSize {
-        Timber.d("Called : fun $TAG.calculateInitialFontSize()")
         return when(uiState) {
-            Loading -> MEDIUM
-            is Success -> when(uiState.configCurrent.fontSize){
-                MEDIUM -> MEDIUM
-                SMALL -> SMALL
-                LARGE -> LARGE
-                EXTRA_LARGE -> EXTRA_LARGE
+            MainActivityUiState.Loading -> FontSize.MEDIUM
+            is MainActivityUiState.Success -> when(uiState.configCurrent.fontSize){
+                FontSize.MEDIUM -> FontSize.MEDIUM
+                FontSize.SMALL -> FontSize.SMALL
+                FontSize.LARGE -> FontSize.LARGE
+                FontSize.EXTRA_LARGE -> FontSize.EXTRA_LARGE
             }
         }
     }
@@ -88,10 +72,9 @@ object Themes{
         darkTheme: Boolean = isSystemInDarkTheme(),
         // Dynamic color is available on Android 12+
         dynamicColor: Boolean = false,
-        fontSize: FontSize = MEDIUM,
+        fontSize: FontSize = FontSize.MEDIUM,
         content: @Composable () -> Unit
     ) {
-        Timber.d("Called : fun $TAG.ApplicationTheme()")
         val colorScheme = when {
             dynamicColor && SDK_INT >= S -> {
                 val context = LocalContext.current
@@ -105,16 +88,15 @@ object Themes{
             SideEffect {
                 val window = (view.context as Activity).window
                 window.statusBarColor = colorScheme.primary.toArgb()
-                getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
+                WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
             }
         }
 
         MaterialTheme(
             colorScheme = colorScheme,
-            typography = personalizedTypography(fontSize),
+            typography = Types.personalizedTypography(fontSize),
             shapes = shapes,
             content = content
         )
     }
 }
-

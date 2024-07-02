@@ -6,12 +6,12 @@ import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.keyframes
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement.spacedBy
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -22,20 +22,16 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
-import timber.log.Timber
-
-private val TAG = Shapes::class.simpleName
 
 object Shapes {
     @Composable
     fun DotsLoadingAnimation(
         modifier: Modifier = Modifier,
         circleSize: Dp = 16.dp,
-        circleColor: Color = colorScheme.onSurface,
+        circleColor: Color = MaterialTheme.colorScheme.onSurface,
         spaceBetween: Dp = 10.dp,
         travelDistance: Dp = 20.dp
     ) {
-        Timber.d("Called : fun $TAG.DotsLoadingAnimation()")
         val circles = listOf(
             remember { Animatable(initialValue = 0f) },
             remember { Animatable(initialValue = 0f) },
@@ -66,7 +62,7 @@ object Shapes {
 
         Row(
             modifier = modifier,
-            horizontalArrangement = spacedBy(spaceBetween)
+            horizontalArrangement = Arrangement.spacedBy(spaceBetween)
         ) {
             circleValues.forEach { value ->
                 Box(modifier = Modifier
