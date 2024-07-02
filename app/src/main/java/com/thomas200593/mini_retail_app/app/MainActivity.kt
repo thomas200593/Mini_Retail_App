@@ -16,28 +16,19 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.Lifecycle.State.STARTED
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.thomas200593.mini_retail_app.app.MainActivityUiState.Loading
-import com.thomas200593.mini_retail_app.app.MainActivityUiState.Success
 import com.thomas200593.mini_retail_app.app.ui.AppScreen
 import com.thomas200593.mini_retail_app.app.ui.LocalAppState
 import com.thomas200593.mini_retail_app.app.ui.rememberAppState
 import com.thomas200593.mini_retail_app.core.data.local.session.Session
 import com.thomas200593.mini_retail_app.core.design_system.util.NetworkMonitor
-import com.thomas200593.mini_retail_app.core.ui.common.Colors.darkScrim
-import com.thomas200593.mini_retail_app.core.ui.common.Colors.lightScrim
-import com.thomas200593.mini_retail_app.core.ui.common.Themes.ApplicationTheme
-import com.thomas200593.mini_retail_app.core.ui.common.Themes.calculateInitialFontSize
-import com.thomas200593.mini_retail_app.core.ui.common.Themes.shouldUseDarkTheme
-import com.thomas200593.mini_retail_app.core.ui.common.Themes.shouldUseDynamicColor
-import com.thomas200593.mini_retail_app.core.ui.component.Splashscreen.setupSplashscreen
+import com.thomas200593.mini_retail_app.core.ui.common.Colors
+import com.thomas200593.mini_retail_app.core.ui.common.Themes
+import com.thomas200593.mini_retail_app.core.ui.component.Splashscreen
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
-
-private val TAG = MainActivity::class.simpleName
 
 @AndroidEntryPoint
 class MainActivity: AppCompatActivity() {
@@ -48,10 +39,9 @@ class MainActivity: AppCompatActivity() {
     private val viewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        Timber.d("Called : $TAG.onCreate()")
         val splashscreen = installSplashScreen()
         super.onCreate(savedInstanceState)
-        var uiState: MainActivityUiState by mutableStateOf(Loading)
+        var uiState: MainActivityUiState by mutableStateOf(MainActivityUiState.Loading)
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(STARTED){
                 launch {
@@ -65,21 +55,21 @@ class MainActivity: AppCompatActivity() {
         }
         splashscreen.setKeepOnScreenCondition{
             when(uiState){
-                Loading -> true
-                is Success -> false
+                MainActivityUiState.Loading -> true
+                is MainActivityUiState.Success -> false
             }
         }
-        setupSplashscreen(splashscreen)
+        Splashscreen.setupSplashscreen(splashscreen)
         enableEdgeToEdge()
         setContent {
-            val darkTheme = shouldUseDarkTheme(uiState = uiState)
-            val dynamicColor = shouldUseDynamicColor(uiState = uiState)
-            val font = calculateInitialFontSize(uiState = uiState)
+            val darkTheme = Themes.shouldUseDarkTheme(uiState = uiState)
+            val dynamicColor = Themes.shouldUseDynamicColor(uiState = uiState)
+            val font = Themes.calculateInitialFontSize(uiState = uiState)
 
             DisposableEffect(key1 = darkTheme) {
                 enableEdgeToEdge(
                     statusBarStyle = auto(TRANSPARENT, TRANSPARENT) { darkTheme },
-                    navigationBarStyle = auto(lightScrim, darkScrim) { darkTheme }
+                    navigationBarStyle = auto(lightScrim = Colors.lightScrim, darkScrim = Colors.darkScrim) { darkTheme }
                 )
                 onDispose {}
             }
@@ -90,7 +80,7 @@ class MainActivity: AppCompatActivity() {
             )
 
             CompositionLocalProvider(LocalAppState provides appState) {
-                ApplicationTheme(
+                Themes.ApplicationTheme(
                     darkTheme = darkTheme,
                     dynamicColor = dynamicColor,
                     fontSize = font,
