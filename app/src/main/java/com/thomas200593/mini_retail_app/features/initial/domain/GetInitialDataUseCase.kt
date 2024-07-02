@@ -11,11 +11,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.onEach
-import timber.log.Timber
 import javax.inject.Inject
-
-private val TAG = GetInitialDataUseCase::class.simpleName
 
 class GetInitialDataUseCase @Inject constructor(
     private val authRepository: AuthRepository,
@@ -24,16 +20,11 @@ class GetInitialDataUseCase @Inject constructor(
 ){
     operator fun invoke(): Flow<RequestState.Success<Initial>> = authRepository.authSessionToken
         .flowOn(ioDispatcher)
-        .onEach {
-            Timber.d("fun $TAG.invoke() : $it")
-        }
-        .catch { throwable ->
-            RequestState.Error(throwable)
-        }
+        .catch { throwable -> RequestState.Error(throwable) }
         .combine(appConfigRepository.configCurrent){ auth, config ->
             RequestState.Success(
                 Initial(
-                    isSessionValid = authRepository.validateAuthSessionToken(auth),
+                    userData = authRepository.mapAuthSessionTokenToUserData(auth),
                     onboardingPageStatus = config.onboardingStatus
                 )
             )

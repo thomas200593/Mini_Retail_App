@@ -1,114 +1,98 @@
 package com.thomas200593.mini_retail_app.features.initial.ui
 
+import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavOptions
-import com.thomas200593.mini_retail_app.app.navigation.NavigationGraphs.G_INITIAL
+import com.thomas200593.mini_retail_app.app.navigation.NavigationGraphs
 import com.thomas200593.mini_retail_app.app.ui.AppState
 import com.thomas200593.mini_retail_app.app.ui.LocalAppState
 import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.ErrorScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.LoadingScreen
 import com.thomas200593.mini_retail_app.features.app_config.entity.OnboardingStatus
+import com.thomas200593.mini_retail_app.features.auth.entity.OAuth2UserMetadata
+import com.thomas200593.mini_retail_app.features.auth.entity.OAuthProvider
+import com.thomas200593.mini_retail_app.features.auth.entity.UserData
 import com.thomas200593.mini_retail_app.features.auth.navigation.navigateToAuth
 import com.thomas200593.mini_retail_app.features.dashboard.navigation.navigateToDashboard
 import com.thomas200593.mini_retail_app.features.initial.entity.Initial
 import com.thomas200593.mini_retail_app.features.onboarding.navigation.navigateToOnboarding
-import timber.log.Timber
-
-private const val TAG = "InitialScreen"
+import kotlinx.coroutines.launch
 
 @Composable
 fun InitialScreen(
     viewModel: InitialViewModel = hiltViewModel(),
     appState: AppState = LocalAppState.current
 ) {
-    Timber.d("Called : fun $TAG()")
-
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    var showLoadingPage by remember { mutableStateOf(false) }
-    var showErrorPage by remember { mutableStateOf(false) }
-    var throwable: Throwable? by remember { mutableStateOf(null) }
-
-    ScreenContent(
-        appState = appState,
-        uiState = uiState,
-        onLoading = {
-            showLoadingPage = true
-        },
-        onError = { error ->
-            showErrorPage = true
-            throwable = error
-        }
-    )
-
-    if(showErrorPage){
+    val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
+    val initialData by viewModel.initialData.collectAsStateWithLifecycle()
+    val showLoadingScreen by viewModel.showLoadingScreen
+    val showErrorScreen by viewModel.showErrorScreen
+    LaunchedEffect(Unit) { viewModel.onOpen() }
+    if(showLoadingScreen){ LoadingScreen() }
+    if(showErrorScreen.first){
         ErrorScreen(
             showIcon = true,
-            title = throwable?.message,
-            errorMessage = throwable?.cause.toString()
+            title = showErrorScreen.second?.message,
+            errorMessage = showErrorScreen.second?.cause?.toString()
         )
     }
-
-    if(showLoadingPage){
-        LoadingScreen()
-    }
+    ScreenContent(
+        initialData = initialData,
+        onLoadingScreen = { coroutineScope.launch { viewModel.setLoadingScreen(true) } },
+        onErrorScreen = { coroutineScope.launch { viewModel.setErrorScreen(true, it) } },
+        onNavigateToOnboarding = { coroutineScope.launch { appState.navController.navigateToOnboarding() } },
+        onNavigateToDashboard = { userData, navOptions ->
+            when(userData.authSessionToken?.authProvider){
+                OAuthProvider.GOOGLE -> {
+                    Toast.makeText(context, "Welcome back! ${(userData.oAuth2UserMetadata as OAuth2UserMetadata.Google).name}", Toast.LENGTH_SHORT).show()
+                }
+                null -> Unit
+            }
+            coroutineScope.launch { appState.navController.navigateToDashboard(navOptions) }
+        },
+        onNavigateToAuth = { appState.navController.navigateToAuth() }
+    )
 }
 
 @Composable
 private fun ScreenContent(
-    appState: AppState,
-    uiState: RequestState<Initial>,
-    onLoading: () -> Unit,
-    onError: (Throwable) -> Unit
+    initialData: RequestState<Initial>,
+    onLoadingScreen: () -> Unit,
+    onErrorScreen: (Throwable?) -> Unit,
+    onNavigateToOnboarding: () -> Unit,
+    onNavigateToDashboard: (UserData, NavOptions) -> Unit,
+    onNavigateToAuth: () -> Unit
 ) {
-    when(uiState){
-        RequestState.Idle, RequestState.Loading, RequestState.Empty -> onLoading()
-        is RequestState.Error -> onError(uiState.t)
+    when(initialData){
+        RequestState.Idle, RequestState.Loading, RequestState.Empty -> onLoadingScreen()
+        is RequestState.Error -> { onErrorScreen(initialData.t) }
         is RequestState.Success -> {
-            val data = uiState.data
-            val isSessionValid = data.isSessionValid
-            val shouldShowOnboarding = data.onboardingPageStatus
-            when(isSessionValid){
-                true -> {
-                    when(shouldShowOnboarding){
-                        OnboardingStatus.SHOW -> {
-                            LaunchedEffect(key1 = uiState) {
-                                appState.navController.navigateToOnboarding()
-                            }
-                        }
-                        OnboardingStatus.HIDE -> {
-                            LaunchedEffect(key1 = uiState) {
-                                appState.navController.navigateToDashboard(
-                                    navOptions = NavOptions.Builder()
-                                        .setPopUpTo(route = G_INITIAL, inclusive = true, saveState = true)
-                                        .setLaunchSingleTop(true)
-                                        .setRestoreState(true)
-                                        .build()
-                                )
-                            }
+            if(initialData.data.userData != null){
+                when(initialData.data.onboardingPageStatus){
+                    OnboardingStatus.SHOW -> { LaunchedEffect(initialData) { onNavigateToOnboarding() } }
+                    OnboardingStatus.HIDE -> {
+                        LaunchedEffect(initialData) {
+                            val navOptions = NavOptions.Builder()
+                                .setPopUpTo(route = NavigationGraphs.G_INITIAL, inclusive = true, saveState = true)
+                                .setLaunchSingleTop(true)
+                                .setRestoreState(true)
+                                .build()
+                            onNavigateToDashboard(initialData.data.userData, navOptions)
                         }
                     }
                 }
-                false -> {
-                    when(shouldShowOnboarding){
-                        OnboardingStatus.SHOW -> {
-                            LaunchedEffect(key1 = uiState) {
-                                appState.navController.navigateToOnboarding()
-                            }
-                        }
-                        OnboardingStatus.HIDE -> {
-                            LaunchedEffect(key1 = uiState) {
-                                appState.navController.navigateToAuth()
-                            }
-                        }
-                    }
+            }else{
+                when(initialData.data.onboardingPageStatus){
+                    OnboardingStatus.SHOW -> { LaunchedEffect(initialData) { onNavigateToOnboarding() } }
+                    OnboardingStatus.HIDE -> { LaunchedEffect(initialData) { onNavigateToAuth() } }
                 }
             }
         }
