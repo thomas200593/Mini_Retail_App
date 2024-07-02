@@ -45,18 +45,14 @@ import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.Loa
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.ThreeRowCardItem
 import com.thomas200593.mini_retail_app.features.app_config.entity.ConfigCurrent
 import com.thomas200593.mini_retail_app.features.app_config.entity.Timezone
-import timber.log.Timber
-
-private const val TAG = "AppConfigGeneralTimezoneScreen"
 
 @Composable
 fun TimezoneScreen(
     viewModel: TimezoneViewModel = hiltViewModel(),
     appState: AppState = LocalAppState.current
 ) {
-    Timber.d("Called : fun $TAG()")
-    val configCurrent by viewModel.configCurrentUiState.collectAsStateWithLifecycle()
-    val timezonePreferences by viewModel.timezonePreferences
+    val configCurrent by viewModel.configCurrent.collectAsStateWithLifecycle()
+    val timezones by viewModel.timezones
 
     LaunchedEffect(Unit) {
         viewModel.onOpen()
@@ -66,16 +62,14 @@ fun TimezoneScreen(
         onNavigateBack = appState::onNavigateUp
     )
     ScreenContent(
-        timezonePreferences = timezonePreferences,
+        timezones = timezones,
         configCurrent = configCurrent,
-        onSaveSelectedTimezone = viewModel::saveSelectedTimezone
+        onSaveSelectedTimezone = viewModel::setTimezone
     )
 }
 
 @Composable
-private fun TopAppBar(
-    onNavigateBack: () -> Unit
-) {
+private fun TopAppBar(onNavigateBack: () -> Unit) {
     AppBar.ProvideTopAppBarNavigationIcon {
         Surface(
             onClick =  onNavigateBack,
@@ -95,12 +89,15 @@ private fun TopAppBar(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ){
             Icon(
-                modifier = Modifier
-                    .sizeIn(maxHeight = ButtonDefaults.IconSize),
+                modifier = Modifier.sizeIn(maxHeight = ButtonDefaults.IconSize),
                 imageVector = ImageVector.vectorResource(id = timezone),
                 contentDescription = null
             )
-            Text(text = stringResource(id = R.string.str_timezone))
+            Text(
+                text = stringResource(id = R.string.str_timezone),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
         }
     }
     AppBar.ProvideTopAppBarAction {
@@ -110,8 +107,7 @@ private fun TopAppBar(
             horizontalArrangement = Arrangement.Center
         ){
             Icon(
-                modifier = Modifier
-                    .sizeIn(maxHeight = ButtonDefaults.IconSize),
+                modifier = Modifier.sizeIn(maxHeight = ButtonDefaults.IconSize),
                 imageVector = Icons.Default.Info,
                 contentDescription = null
             )
@@ -121,18 +117,16 @@ private fun TopAppBar(
 
 @Composable
 private fun ScreenContent(
-    timezonePreferences: RequestState<List<Timezone>>,
+    timezones: RequestState<List<Timezone>>,
     configCurrent: RequestState<ConfigCurrent>,
     onSaveSelectedTimezone: (Timezone) -> Unit
 ) {
     when(configCurrent){
-        RequestState.Idle, RequestState.Loading -> {
-            LoadingScreen()
-        }
+        RequestState.Idle, RequestState.Loading -> { LoadingScreen() }
         is RequestState.Error -> {
             ErrorScreen(
                 title = stringResource(id = R.string.str_error),
-                errorMessage = "Failed to get Preferences data.",
+                errorMessage = stringResource(id = R.string.str_error_fetching_preferences),
                 showIcon = true
             )
         }
@@ -144,15 +138,13 @@ private fun ScreenContent(
             )
         }
         is RequestState.Success -> {
-            when(timezonePreferences){
+            when(timezones){
                 RequestState.Idle -> Unit
-                RequestState.Loading -> {
-                    LoadingScreen()
-                }
+                RequestState.Loading -> { LoadingScreen() }
                 is RequestState.Error -> {
                     ErrorScreen(
                         title = stringResource(id = R.string.str_error),
-                        errorMessage = "Failed to get Preferences data.",
+                        errorMessage = stringResource(id = R.string.str_error_fetching_preferences),
                         showIcon = true
                     )
                 }
@@ -164,35 +156,29 @@ private fun ScreenContent(
                     )
                 }
                 is RequestState.Success -> {
-                    val currentTimezone = configCurrent.data.timezone
-                    val appTimezonePreferences = timezonePreferences.data
+                    val currentData = configCurrent.data.timezone
+                    val preferencesList = timezones.data
 
                     Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(4.dp),
+                        modifier = Modifier.fillMaxSize().padding(4.dp),
                         verticalArrangement = Arrangement.spacedBy(10.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            text = "${stringResource(id = R.string.str_timezone)} : ${currentTimezone.timezoneOffset}",
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(4.dp),
+                            text = "${stringResource(id = R.string.str_timezone)} : ${currentData.timezoneOffset}",
+                            modifier = Modifier.fillMaxWidth().padding(4.dp),
                             fontWeight = FontWeight.Bold,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                             textAlign = TextAlign.Center,
                         )
                         LazyColumn(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(4.dp),
+                            modifier = Modifier.fillMaxSize().padding(4.dp),
                             verticalArrangement = Arrangement.spacedBy(10.dp),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            items(count = appTimezonePreferences.count()){ index ->
-                                val data = appTimezonePreferences[index]
+                            items(count = preferencesList.count()){ index ->
+                                val data = preferencesList[index]
                                 ThreeRowCardItem(
                                     firstRowContent = {
                                         Surface(modifier = Modifier.fillMaxWidth()) {
@@ -216,9 +202,9 @@ private fun ScreenContent(
                                             onClick = { onSaveSelectedTimezone(data) }
                                         ) {
                                             Icon(
-                                                imageVector = if (data == currentTimezone) Icons.Default.CheckCircle else Icons.AutoMirrored.Outlined.KeyboardArrowRight,
+                                                imageVector = if (data == currentData) Icons.Default.CheckCircle else Icons.AutoMirrored.Outlined.KeyboardArrowRight,
                                                 contentDescription = null,
-                                                tint = if (data == currentTimezone) Color.Green else MaterialTheme.colorScheme.onTertiaryContainer
+                                                tint = if (data == currentData) Color.Green else MaterialTheme.colorScheme.onTertiaryContainer
                                             )
                                         }
                                     }

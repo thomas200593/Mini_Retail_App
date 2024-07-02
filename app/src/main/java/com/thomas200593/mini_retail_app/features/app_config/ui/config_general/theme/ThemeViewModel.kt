@@ -18,45 +18,36 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
-
-private val TAG = ThemeViewModel::class.simpleName
 
 @HiltViewModel
 class ThemeViewModel @Inject constructor(
-    appConfigRepository: AppConfigRepository,
-    private val configGeneralRepository: ConfigGeneralRepository,
+    appCfgRepository: AppConfigRepository,
+    private val cfgGeneralRepository: ConfigGeneralRepository,
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ): ViewModel() {
-    private val _themePreferences: MutableState<RequestState<Set<Theme>>> = mutableStateOf(RequestState.Idle)
-    val themePreferences = _themePreferences
-    val configCurrentUiState = appConfigRepository.configCurrent.flowOn(ioDispatcher)
+    private val _themes: MutableState<RequestState<Set<Theme>>> = mutableStateOf(RequestState.Idle)
+    val themes = _themes
+    val configCurrent = appCfgRepository.configCurrent.flowOn(ioDispatcher)
         .catch { RequestState.Error(it) }
         .map { RequestState.Success(it) }
         .stateIn(
             scope = viewModelScope,
-            SharingStarted.Eagerly,
+            started = SharingStarted.Eagerly,
             initialValue = RequestState.Loading
         )
 
     fun onOpen() = viewModelScope.launch(ioDispatcher) {
-        Timber.d("Called : fun $TAG.onOpen()")
-        getThemePreferences()
+        getThemes()
     }
 
-    private fun getThemePreferences() = viewModelScope.launch(ioDispatcher) {
-        Timber.d("Called : fun $TAG.getThemePreferences()")
-        _themePreferences.value = RequestState.Loading
-        _themePreferences.value = try{
-            RequestState.Success(configGeneralRepository.getThemes())
-        }catch (e: Throwable){
-            RequestState.Error(e)
-        }
+    private fun getThemes() = viewModelScope.launch(ioDispatcher) {
+        _themes.value = RequestState.Loading
+        _themes.value = try{ RequestState.Success(cfgGeneralRepository.getThemes()) }
+        catch (e: Throwable){ RequestState.Error(e) }
     }
 
-    fun saveSelectedTheme(theme: Theme) = viewModelScope.launch {
-        Timber.d("Called : fun $TAG.saveSelectedTheme()")
-        configGeneralRepository.setTheme(theme)
+    fun setTheme(theme: Theme) = viewModelScope.launch {
+        cfgGeneralRepository.setTheme(theme)
     }
 }

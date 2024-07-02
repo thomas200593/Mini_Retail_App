@@ -55,8 +55,8 @@ fun ThemeScreen(
     appState: AppState = LocalAppState.current
 ) {
     Timber.d("Called : fun $TAG()")
-    val configCurrent by viewModel.configCurrentUiState.collectAsStateWithLifecycle()
-    val themePreferences by viewModel.themePreferences
+    val configCurrent by viewModel.configCurrent.collectAsStateWithLifecycle()
+    val themes by viewModel.themes
 
     LaunchedEffect(Unit) {
         viewModel.onOpen()
@@ -66,16 +66,14 @@ fun ThemeScreen(
         onNavigateBack = appState::onNavigateUp
     )
     ScreenContent(
-        themePreferences = themePreferences,
+        themes = themes,
         configCurrent = configCurrent,
-        onSaveSelectedTheme = viewModel::saveSelectedTheme
+        onSaveSelectedTheme = viewModel::setTheme
     )
 }
 
 @Composable
-private fun TopAppBar(
-    onNavigateBack: () -> Unit
-) {
+private fun TopAppBar(onNavigateBack: () -> Unit) {
     AppBar.ProvideTopAppBarNavigationIcon {
         Surface(
             onClick =  onNavigateBack,
@@ -95,8 +93,7 @@ private fun TopAppBar(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ){
             Icon(
-                modifier = Modifier
-                    .sizeIn(maxHeight = ButtonDefaults.IconSize),
+                modifier = Modifier.sizeIn(maxHeight = ButtonDefaults.IconSize),
                 imageVector = ImageVector.vectorResource(id = theme),
                 contentDescription = null
             )
@@ -114,8 +111,7 @@ private fun TopAppBar(
             horizontalArrangement = Arrangement.Center
         ){
             Icon(
-                modifier = Modifier
-                    .sizeIn(maxHeight = ButtonDefaults.IconSize),
+                modifier = Modifier.sizeIn(maxHeight = ButtonDefaults.IconSize),
                 imageVector = Icons.Default.Info,
                 contentDescription = null
             )
@@ -125,18 +121,16 @@ private fun TopAppBar(
 
 @Composable
 private fun ScreenContent(
-    themePreferences: RequestState<Set<Theme>>,
+    themes: RequestState<Set<Theme>>,
     configCurrent: RequestState<ConfigCurrent>,
     onSaveSelectedTheme: (Theme) -> Unit
 ) {
     when(configCurrent){
-        RequestState.Idle, RequestState.Loading -> {
-            LoadingScreen()
-        }
+        RequestState.Idle, RequestState.Loading -> { LoadingScreen() }
         is RequestState.Error -> {
             ErrorScreen(
                 title = stringResource(id = R.string.str_error),
-                errorMessage = "Failed to get Preferences data.",
+                errorMessage = stringResource(id = R.string.str_error_fetching_preferences),
                 showIcon = true
             )
         }
@@ -148,14 +142,12 @@ private fun ScreenContent(
             )
         }
         is RequestState.Success -> {
-            when(themePreferences){
-                RequestState.Idle, RequestState.Loading -> {
-                    LoadingScreen()
-                }
+            when(themes){
+                RequestState.Idle, RequestState.Loading -> { LoadingScreen() }
                 is RequestState.Error -> {
                     ErrorScreen(
                         title = stringResource(id = R.string.str_error),
-                        errorMessage = "Failed to get Preferences data.",
+                        errorMessage = stringResource(id = R.string.str_error_fetching_preferences),
                         showIcon = true
                     )
                 }
@@ -167,35 +159,29 @@ private fun ScreenContent(
                     )
                 }
                 is RequestState.Success -> {
-                    val currentTheme = configCurrent.data.theme
-                    val appThemePreferences = themePreferences.data
+                    val currentData = configCurrent.data.theme
+                    val preferencesList = themes.data
 
                     Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(4.dp),
+                        modifier = Modifier.fillMaxSize().padding(4.dp),
                         verticalArrangement = Arrangement.spacedBy(10.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            text = "${stringResource(id = R.string.str_theme)} : ${stringResource(id = currentTheme.title)}",
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(4.dp),
+                            text = "${stringResource(id = R.string.str_theme)} : ${stringResource(id = currentData.title)}",
+                            modifier = Modifier.fillMaxWidth().padding(4.dp),
                             fontWeight = FontWeight.Bold,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                             textAlign = TextAlign.Center,
                         )
                         LazyColumn(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(4.dp),
+                            modifier = Modifier.fillMaxSize().padding(4.dp),
                             verticalArrangement = Arrangement.spacedBy(10.dp),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            items(count = appThemePreferences.count()){index ->
-                                val data = appThemePreferences.elementAt(index)
+                            items(count = preferencesList.count()){ index ->
+                                val data = preferencesList.elementAt(index)
                                 ThreeRowCardItem(
                                     firstRowContent = {
                                         Surface(modifier = Modifier.fillMaxWidth()) {
@@ -228,9 +214,9 @@ private fun ScreenContent(
                                             onClick = { onSaveSelectedTheme(data) }
                                         ) {
                                             Icon(
-                                                imageVector = if (data == currentTheme) Icons.Default.CheckCircle else Icons.AutoMirrored.Outlined.KeyboardArrowRight,
+                                                imageVector = if (data == currentData) Icons.Default.CheckCircle else Icons.AutoMirrored.Outlined.KeyboardArrowRight,
                                                 contentDescription = null,
-                                                tint = if (data == currentTheme) Color.Green else MaterialTheme.colorScheme.onTertiaryContainer
+                                                tint = if (data == currentData) Color.Green else MaterialTheme.colorScheme.onTertiaryContainer
                                             )
                                         }
                                     }
