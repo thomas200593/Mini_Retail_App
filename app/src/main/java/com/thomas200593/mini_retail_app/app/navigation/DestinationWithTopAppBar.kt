@@ -9,13 +9,13 @@ object DestinationWithTopAppBar{
             ScreenGraphs.AppConfig.route,
             //Config General
             ScreenGraphs.ConfigGeneral.route,
-            ScreenGraphs.Theme.route,
             ScreenGraphs.Country.route,
-            ScreenGraphs.DynamicColor.route,
-            ScreenGraphs.Language.route,
-            ScreenGraphs.Timezone.route,
             ScreenGraphs.Currency.route,
+            ScreenGraphs.DynamicColor.route,
             ScreenGraphs.FontSize.route,
+            ScreenGraphs.Language.route,
+            ScreenGraphs.Theme.route,
+            ScreenGraphs.Timezone.route,
             //Config Data
             ScreenGraphs.ConfigData.route,
 
@@ -28,9 +28,10 @@ object DestinationWithTopAppBar{
              * Business
              */
             ScreenGraphs.Business.route,
+            //Master Data
             ScreenGraphs.MasterData.route,
-            ScreenGraphs.Supplier.route,
             ScreenGraphs.Customer.route,
+            ScreenGraphs.Supplier.route,
 
             /**
              * Reporting

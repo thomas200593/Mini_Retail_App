@@ -52,8 +52,7 @@ class AppState(
     val coroutineScope: CoroutineScope,
     val navController: NavHostController,
 ) {
-    val isNetworkOffline = networkMonitor.isNetworkOnline
-        .map(Boolean::not)
+    val isNetworkOffline = networkMonitor.isNetworkOnline.map(Boolean::not)
         .stateIn(
             scope = coroutineScope,
             initialValue = false,
@@ -76,13 +75,12 @@ class AppState(
         @Composable get() = destinationCurrent?.route in destinationTopLevels.map { it.route }
 
     val shouldShowTopBar: Boolean
-        @Composable get() = destinationCurrent?.route in DestinationWithTopAppBar.destinationWithTopAppBar()
+        @Composable get() = destinationCurrent?.route in
+                DestinationWithTopAppBar.destinationWithTopAppBar()
 
     fun navigateToDestinationTopLevel(destinationTopLevel: DestinationTopLevel){
         val destinationTopLevelNavOptions = navOptions {
-            popUpTo(id = navController.graph.findStartDestination().id){
-                saveState = true
-            }
+            popUpTo(id = navController.graph.findStartDestination().id){ saveState = true }
             launchSingleTop = true
             restoreState = true
         }
@@ -102,7 +100,5 @@ class AppState(
         }
     }
 
-    fun onNavigateUp() {
-        navController.navigateUp()
-    }
+    fun onNavigateUp() { navController.navigateUp() }
 }

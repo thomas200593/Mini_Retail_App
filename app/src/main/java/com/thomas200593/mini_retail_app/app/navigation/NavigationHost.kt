@@ -17,8 +17,6 @@ object NavigationHost{
             navController = navController,
             route = NavigationGraphs.G_ROOT,
             startDestination = NavigationGraphs.G_INITIAL,
-        ){
-            navGraphInitial()
-        }
+        ){ navGraphInitial() }
     }
 }

@@ -17,9 +17,7 @@ class SessionImpl @Inject constructor(
 ): Session {
     override val currentUserSession: Flow<SessionState> = repository.authSessionToken
         .flowOn(ioDispatcher)
-        .catch {
-            SessionState.Invalid(throwable = it, reason = R.string.str_session_error)
-        }
+        .catch { SessionState.Invalid(throwable = it, reason = R.string.str_session_error) }
         .map { authToken ->
             if(repository.validateAuthSessionToken(authToken)){
                 val userData = repository.mapAuthSessionTokenToUserData(authToken)

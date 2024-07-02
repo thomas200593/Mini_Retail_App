@@ -64,28 +64,34 @@ class DataStorePreferences @Inject constructor(
     }
 
     //App Config
-    val configCurrent = datastore.data
-        .map { data ->
-            ConfigCurrent(
-                onboardingStatus = data[DataStoreKeys.AppConfigKeys.dsKeyOnboardingStatus] ?.let { onboardingStatus ->
+    val configCurrent = datastore.data.map { data ->
+        ConfigCurrent(
+            onboardingStatus = data[DataStoreKeys.AppConfigKeys.dsKeyOnboardingStatus]
+                ?.let { onboardingStatus ->
                     OnboardingStatus.valueOf(onboardingStatus)
                 } ?: OnboardingStatus.SHOW,
-                theme = data[DataStoreKeys.AppConfigKeys.dsKeyTheme] ?.let { theme ->
+            theme = data[DataStoreKeys.AppConfigKeys.dsKeyTheme]
+                ?.let { theme ->
                     Theme.valueOf(theme)
                 } ?: Theme.SYSTEM,
-                dynamicColor = data[DataStoreKeys.AppConfigKeys.dsKeyDynamicColor] ?.let { dynamicColor ->
+            dynamicColor = data[DataStoreKeys.AppConfigKeys.dsKeyDynamicColor]
+                ?.let { dynamicColor ->
                     DynamicColor.valueOf(dynamicColor)
                 } ?: DynamicColor.DISABLED,
-                fontSize = data[DataStoreKeys.AppConfigKeys.dsKeyFontSize] ?.let { fontSize ->
+            fontSize = data[DataStoreKeys.AppConfigKeys.dsKeyFontSize]
+                ?.let { fontSize ->
                     FontSize.valueOf(fontSize)
                 } ?: FontSize.MEDIUM,
-                language = data[DataStoreKeys.AppConfigKeys.dsKeyLanguage] ?.let { language ->
+            language = data[DataStoreKeys.AppConfigKeys.dsKeyLanguage]
+                ?.let { language ->
                     Language.valueOf(language)
                 } ?: Language.EN,
-                timezone = data[DataStoreKeys.AppConfigKeys.dsKeyTimezone] ?.let { offset ->
+            timezone = data[DataStoreKeys.AppConfigKeys.dsKeyTimezone]
+                ?.let { offset ->
                     Timezone(offset)
                 } ?: TimezoneHelper.TIMEZONE_DEFAULT,
-                currency = data[DataStoreKeys.AppConfigKeys.dsKeyCurrency] ?.let { currency ->
+            currency = data[DataStoreKeys.AppConfigKeys.dsKeyCurrency]
+                ?.let { currency ->
                     Currency(
                         code = currency,
                         displayName = CurrencyUnit.of(currency).toCurrency().displayName,
@@ -94,15 +100,15 @@ class DataStorePreferences @Inject constructor(
                         decimalPlaces = CurrencyUnit.of(currency).decimalPlaces
                     )
                 } ?: CurrencyHelper.CURRENCY_DEFAULT,
-                country = data[DataStoreKeys.AppConfigKeys.dsKeyCountry] ?.let{ country ->
-                    Country(
-                        isoCode = country,
-                        iso03Country = Locale("", country).isO3Country,
-                        displayName = Locale("", country).displayName
-                    )
-                } ?: CountryHelper.COUNTRY_DEFAULT
-            )
-        }
+            country = data[DataStoreKeys.AppConfigKeys.dsKeyCountry] ?.let{ country ->
+                Country(
+                    isoCode = country,
+                    iso03Country = Locale("", country).isO3Country,
+                    displayName = Locale("", country).displayName
+                )
+            } ?: CountryHelper.COUNTRY_DEFAULT
+        )
+    }
 
     suspend fun setTheme(theme: Theme) = withContext(ioDispatcher){
         datastore.edit {

@@ -19,8 +19,7 @@ class MainViewModel @Inject constructor(
     repository: AppConfigRepository,
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel(){
-    val uiState: StateFlow<MainActivityUiState> = repository
-        .configCurrent.flowOn(ioDispatcher)
+    val uiState: StateFlow<MainActivityUiState> = repository.configCurrent.flowOn(ioDispatcher)
         .map { MainActivityUiState.Success(configCurrent = it) }
         .stateIn(
             scope = viewModelScope,

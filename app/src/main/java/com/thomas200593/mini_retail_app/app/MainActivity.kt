@@ -44,13 +44,7 @@ class MainActivity: AppCompatActivity() {
         var uiState: MainActivityUiState by mutableStateOf(MainActivityUiState.Loading)
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(STARTED){
-                launch {
-                    viewModel.uiState
-                        .onEach {
-                            uiState = it
-                        }
-                        .collect()
-                }
+                launch { viewModel.uiState.onEach { uiState = it }.collect() }
             }
         }
         splashscreen.setKeepOnScreenCondition{
@@ -84,9 +78,7 @@ class MainActivity: AppCompatActivity() {
                     darkTheme = darkTheme,
                     dynamicColor = dynamicColor,
                     fontSize = font,
-                    content = {
-                        AppScreen()
-                    }
+                    content = { AppScreen() }
                 )
             }
         }
