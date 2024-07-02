@@ -16,11 +16,10 @@ import javax.inject.Singleton
 object RoomDatabaseModule {
     @Provides
     @Singleton
-    fun providesRoomDatabase(@ApplicationContext context: Context) = Room
-        .databaseBuilder(
+    fun providesRoomDatabase(@ApplicationContext context: Context) =
+        Room.databaseBuilder(
             context = context,
             klass = AppLocalDatabaseHelper::class.java,
             name = BuildConfig.APP_LOCAL_DATABASE_FILENAME
-        )
-        .build()
+        ).build()
 }

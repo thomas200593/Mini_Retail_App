@@ -42,16 +42,11 @@ class SessionMonitorWorker @AssistedInject constructor(
 
     companion object {
         private val WorkerConstraint
-            get() = Constraints.Builder().build().also {
-                Timber.d("Called : fun getter() WorkerConstraint -> $it")
-            }
+            get() = Constraints.Builder().build()
 
         fun startUpWork() = PeriodicWorkRequestBuilder<SessionMonitorWorker>(
             repeatInterval = 15,
             repeatIntervalTimeUnit = MINUTES
         ).setConstraints(WorkerConstraint).build()
-            .also {
-                Timber.d("Called : fun $TAG.startUpWork()")
-            }
     }
 }

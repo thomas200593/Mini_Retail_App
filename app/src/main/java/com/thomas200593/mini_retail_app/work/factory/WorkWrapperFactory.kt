@@ -20,8 +20,10 @@ class WorkWrapperFactory @Inject constructor(
         workerParameters: WorkerParameters
     ): ListenableWorker {
         Timber.d("Called : fun $TAG.createWorker()")
-        val entries = workerFactory.entries.find { Class.forName(workerClassName).isAssignableFrom(it.key) }
-        val factoryProvider = entries?.value?: throw IllegalArgumentException("Unknown Worker Class: $workerClassName")
+        val entries = workerFactory.entries.find {
+            Class.forName(workerClassName).isAssignableFrom(it.key)
+        }
+        val factoryProvider = entries?.value ?: throw IllegalArgumentException("Unknown Worker Class: $workerClassName")
         return factoryProvider.get().create(appContext, workerParameters)
     }
 }

@@ -15,9 +15,7 @@ object ScreenUtil {
             val activity = context.findActivity() ?: return@DisposableEffect onDispose {}
             val originalOrientation = activity.requestedOrientation
             activity.requestedOrientation = orientation
-            onDispose {
-                activity.requestedOrientation = originalOrientation
-            }
+            onDispose { activity.requestedOrientation = originalOrientation }
         }
     }
 

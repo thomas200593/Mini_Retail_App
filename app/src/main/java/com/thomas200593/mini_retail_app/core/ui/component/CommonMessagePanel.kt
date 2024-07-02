@@ -6,7 +6,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.IntrinsicSize.Max
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,9 +21,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme.colorScheme
-import androidx.compose.material3.MaterialTheme.shapes
-import androidx.compose.material3.MaterialTheme.typography
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -43,9 +41,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.thomas200593.mini_retail_app.BuildConfig
 import com.thomas200593.mini_retail_app.R
-import com.thomas200593.mini_retail_app.R.string.app_name
 import com.thomas200593.mini_retail_app.core.ui.common.Icons
-import com.thomas200593.mini_retail_app.core.ui.common.Icons.Content.empty
 import com.thomas200593.mini_retail_app.core.ui.common.Shapes
 import kotlin.Int.Companion.MAX_VALUE
 
@@ -57,7 +53,7 @@ object CommonMessagePanel{
     ){
         Surface(
             modifier = modifier.fillMaxWidth(),
-            shape = shapes.medium,
+            shape = MaterialTheme.shapes.medium,
             border = BorderStroke(1.dp, Color.DarkGray)
         ) {
             Column(
@@ -69,7 +65,7 @@ object CommonMessagePanel{
                 Text(
                     text = stringResource(id = R.string.str_loading),
                     fontWeight = FontWeight.SemiBold,
-                    color = colorScheme.primary,
+                    color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier
                 )
             }
@@ -80,32 +76,23 @@ object CommonMessagePanel{
     fun LoadingScreen(
         modifier: Modifier = Modifier
     ){
-        Surface(
-            modifier = modifier
-                .fillMaxSize()
-        ) {
+        Surface(modifier = modifier.fillMaxSize()) {
             ConstraintLayout {
                 val topGuideline = createGuidelineFromTop(16.dp)
                 val bottomGuideline = createGuidelineFromBottom(16.dp)
                 val startGuideline = createGuidelineFromStart(16.dp)
                 val endGuideline = createGuidelineFromEnd(16.dp)
-
                 val centralGuideline = createGuidelineFromTop(0.5f)
-
-                val (
-                    logoBox, appNameBox,
-                ) = createRefs()
-
+                val (logoBox, appNameBox ) = createRefs()
                 Surface(
-                    modifier = Modifier
-                        .constrainAs(logoBox) {
-                            top.linkTo(topGuideline)
-                            bottom.linkTo(centralGuideline)
-                            start.linkTo(startGuideline)
-                            end.linkTo(endGuideline)
-                            width = Dimension.fillToConstraints
-                            height = Dimension.fillToConstraints
-                        }
+                    modifier = Modifier.constrainAs(logoBox) {
+                        top.linkTo(topGuideline)
+                        bottom.linkTo(centralGuideline)
+                        start.linkTo(startGuideline)
+                        end.linkTo(endGuideline)
+                        width = Dimension.fillToConstraints
+                        height = Dimension.fillToConstraints
+                    }
                 ) {
                     Column(
                         modifier = Modifier.fillMaxSize(),
@@ -118,30 +105,29 @@ object CommonMessagePanel{
                             contentDescription = null
                         )
                         Text(
-                            text = stringResource(id = app_name),
-                            fontSize = typography.headlineLarge.fontSize,
+                            text = stringResource(id = R.string.app_name),
+                            fontSize = MaterialTheme.typography.headlineLarge.fontSize,
                             fontWeight = FontWeight.Bold,
-                            color = colorScheme.onSurface,
+                            color = MaterialTheme.colorScheme.onSurface,
                         )
                         Text(
                             text = "${BuildConfig.VERSION_NAME} - ${BuildConfig.BUILD_TYPE}",
                             fontWeight = FontWeight.SemiBold,
-                            color = colorScheme.primary,
+                            color = MaterialTheme.colorScheme.primary,
                             modifier = Modifier
                         )
                     }
                 }
 
                 Surface(
-                    modifier = Modifier
-                        .constrainAs(appNameBox){
-                            top.linkTo(centralGuideline)
-                            bottom.linkTo(bottomGuideline)
-                            start.linkTo(startGuideline)
-                            end.linkTo(endGuideline)
-                            width = Dimension.fillToConstraints
-                            height = Dimension.fillToConstraints
-                        }
+                    modifier = Modifier.constrainAs(appNameBox){
+                        top.linkTo(centralGuideline)
+                        bottom.linkTo(bottomGuideline)
+                        start.linkTo(startGuideline)
+                        end.linkTo(endGuideline)
+                        width = Dimension.fillToConstraints
+                        height = Dimension.fillToConstraints
+                    }
                 ) {
                     Column(
                         modifier = Modifier.fillMaxSize(),
@@ -152,7 +138,7 @@ object CommonMessagePanel{
                         Text(
                             text = stringResource(id = R.string.str_loading),
                             fontWeight = FontWeight.SemiBold,
-                            color = colorScheme.primary,
+                            color = MaterialTheme.colorScheme.primary,
                             modifier = Modifier
                         )
                     }
@@ -170,28 +156,21 @@ object CommonMessagePanel{
         errorMessage: String? = null
     ){
         Surface(
-            modifier = modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            shape = shapes.medium,
-            color = colorScheme.errorContainer,
-            contentColor = colorScheme.onErrorContainer
+            modifier = modifier.fillMaxSize().padding(16.dp),
+            shape = MaterialTheme.shapes.medium,
+            color = MaterialTheme.colorScheme.errorContainer,
+            contentColor = MaterialTheme.colorScheme.onErrorContainer
         ) {
             Column(
-                modifier = modifier
-                    .fillMaxSize()
-                    .padding(16.dp)
-                    .verticalScroll(rememberScrollState()),
+                modifier = modifier.fillMaxSize().padding(16.dp).verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Top),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 if(showIcon){
                     Surface(
-                        modifier = modifier
-                            .fillMaxWidth()
-                            .height(60.dp),
-                        color = colorScheme.errorContainer,
-                        contentColor = colorScheme.onErrorContainer
+                        modifier = modifier.fillMaxWidth().height(60.dp),
+                        color = MaterialTheme.colorScheme.errorContainer,
+                        contentColor = MaterialTheme.colorScheme.onErrorContainer
                     ) {
                         Icon(
                             imageVector = if(iconRes == null) { Default.Warning }
@@ -201,7 +180,7 @@ object CommonMessagePanel{
                     }
                     HorizontalDivider(
                         thickness = 2.dp,
-                        color = colorScheme.error
+                        color = MaterialTheme.colorScheme.error
                     )
                 }
                 if(title != null){
@@ -209,12 +188,12 @@ object CommonMessagePanel{
                         modifier = Modifier.fillMaxWidth(),
                         text = title,
                         textAlign = TextAlign.Center,
-                        fontSize = typography.titleLarge.fontSize,
-                        fontWeight = typography.titleLarge.fontWeight
+                        fontSize = MaterialTheme.typography.titleLarge.fontSize,
+                        fontWeight = MaterialTheme.typography.titleLarge.fontWeight
                     )
                     HorizontalDivider(
                         thickness = 2.dp,
-                        color = colorScheme.error
+                        color = MaterialTheme.colorScheme.error
                     )
                 }
                 if(errorMessage != null){
@@ -222,8 +201,8 @@ object CommonMessagePanel{
                         modifier = Modifier.fillMaxWidth(),
                         text = errorMessage,
                         textAlign = TextAlign.Start,
-                        fontSize = typography.bodyLarge.fontSize,
-                        fontWeight = typography.bodyLarge.fontWeight
+                        fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                        fontWeight = MaterialTheme.typography.bodyLarge.fontWeight
                     )
                 }
             }
@@ -239,27 +218,22 @@ object CommonMessagePanel{
         errorMessage: String? = null
     ){
         Surface(
-            modifier = modifier
-                .fillMaxWidth(),
-            shape = shapes.medium,
+            modifier = modifier.fillMaxWidth(),
+            shape = MaterialTheme.shapes.medium,
             border = BorderStroke(1.dp, Color.DarkGray),
-            color = colorScheme.errorContainer,
-            contentColor = colorScheme.onErrorContainer
+            color = MaterialTheme.colorScheme.errorContainer,
+            contentColor = MaterialTheme.colorScheme.onErrorContainer
         ) {
             Column(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
+                modifier = modifier.fillMaxWidth().padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Top),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 if(showIcon){
                     Surface(
-                        modifier = modifier
-                            .fillMaxWidth()
-                            .height(60.dp),
-                        color = colorScheme.errorContainer,
-                        contentColor = colorScheme.onErrorContainer
+                        modifier = modifier.fillMaxWidth().height(60.dp),
+                        color = MaterialTheme.colorScheme.errorContainer,
+                        contentColor = MaterialTheme.colorScheme.onErrorContainer
                     ) {
                         Icon(
                             imageVector = if(iconRes == null) { Default.Warning }
@@ -269,7 +243,7 @@ object CommonMessagePanel{
                     }
                     HorizontalDivider(
                         thickness = 2.dp,
-                        color = colorScheme.error
+                        color = MaterialTheme.colorScheme.error
                     )
                 }
                 if(title != null){
@@ -277,12 +251,12 @@ object CommonMessagePanel{
                         modifier = Modifier.fillMaxWidth(),
                         text = title,
                         textAlign = TextAlign.Center,
-                        fontSize = typography.titleLarge.fontSize,
-                        fontWeight = typography.titleLarge.fontWeight
+                        fontSize = MaterialTheme.typography.titleLarge.fontSize,
+                        fontWeight = MaterialTheme.typography.titleLarge.fontWeight
                     )
                     HorizontalDivider(
                         thickness = 2.dp,
-                        color = colorScheme.error
+                        color = MaterialTheme.colorScheme.error
                     )
                 }
                 if(errorMessage != null){
@@ -290,8 +264,8 @@ object CommonMessagePanel{
                         modifier = Modifier.fillMaxWidth(),
                         text = errorMessage,
                         textAlign = TextAlign.Start,
-                        fontSize = typography.bodyLarge.fontSize,
-                        fontWeight = typography.bodyLarge.fontWeight
+                        fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                        fontWeight = MaterialTheme.typography.bodyLarge.fontWeight
                     )
                 }
             }
@@ -307,38 +281,31 @@ object CommonMessagePanel{
         emptyMessage: String? = null
     ) {
         Surface(
-            modifier = modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            shape = shapes.medium,
-            color = colorScheme.surfaceContainerHighest,
-            contentColor = colorScheme.onSurfaceVariant
+            modifier = modifier.fillMaxSize().padding(16.dp),
+            shape = MaterialTheme.shapes.medium,
+            color = MaterialTheme.colorScheme.surfaceContainerHighest,
+            contentColor = MaterialTheme.colorScheme.onSurfaceVariant
         ){
             Column(
-                modifier = modifier
-                    .fillMaxSize()
-                    .padding(16.dp)
-                    .verticalScroll(rememberScrollState()),
+                modifier = modifier.fillMaxSize().padding(16.dp).verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Top),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 if(showIcon){
                     Surface(
-                        modifier = modifier
-                            .fillMaxWidth()
-                            .height(60.dp),
-                        color = colorScheme.errorContainer,
-                        contentColor = colorScheme.onErrorContainer
+                        modifier = modifier.fillMaxWidth().height(60.dp),
+                        color = MaterialTheme.colorScheme.errorContainer,
+                        contentColor = MaterialTheme.colorScheme.onErrorContainer
                     ) {
                         Icon(
-                            imageVector = if(iconRes == null) { ImageVector.vectorResource(id = empty) }
+                            imageVector = if(iconRes == null) { ImageVector.vectorResource(id = Icons.Content.empty) }
                             else { ImageVector.vectorResource(id = iconRes) },
                             contentDescription = null,
                         )
                     }
                     HorizontalDivider(
                         thickness = 2.dp,
-                        color = colorScheme.surfaceVariant
+                        color = MaterialTheme.colorScheme.surfaceVariant
                     )
                 }
                 if(title != null){
@@ -346,12 +313,12 @@ object CommonMessagePanel{
                         modifier = Modifier.fillMaxWidth(),
                         text = title,
                         textAlign = TextAlign.Center,
-                        fontSize = typography.titleLarge.fontSize,
-                        fontWeight = typography.titleLarge.fontWeight
+                        fontSize = MaterialTheme.typography.titleLarge.fontSize,
+                        fontWeight = MaterialTheme.typography.titleLarge.fontWeight
                     )
                     HorizontalDivider(
                         thickness = 2.dp,
-                        color = colorScheme.surfaceVariant
+                        color = MaterialTheme.colorScheme.surfaceVariant
                     )
                 }
                 if(emptyMessage != null){
@@ -359,8 +326,8 @@ object CommonMessagePanel{
                         modifier = Modifier.fillMaxWidth(),
                         text = emptyMessage,
                         textAlign = TextAlign.Start,
-                        fontSize = typography.bodyLarge.fontSize,
-                        fontWeight = typography.bodyLarge.fontWeight
+                        fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                        fontWeight = MaterialTheme.typography.bodyLarge.fontWeight
                     )
                 }
             }
@@ -376,37 +343,32 @@ object CommonMessagePanel{
         emptyMessage: String? = null
     ){
         Surface(
-            modifier = modifier
-                .fillMaxWidth(),
-            shape = shapes.medium,
+            modifier = modifier.fillMaxWidth(),
+            shape = MaterialTheme.shapes.medium,
             border = BorderStroke(1.dp, Color.DarkGray),
-            color = colorScheme.surfaceContainerHighest,
-            contentColor = colorScheme.onSurface
+            color = MaterialTheme.colorScheme.surfaceContainerHighest,
+            contentColor = MaterialTheme.colorScheme.onSurface
         ) {
             Column(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
+                modifier = modifier.fillMaxWidth().padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Top),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 if(showIcon){
                     Surface(
-                        modifier = modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                        color = colorScheme.surfaceContainerHighest,
-                        contentColor = colorScheme.onSurface
+                        modifier = modifier.fillMaxWidth().padding(16.dp),
+                        color = MaterialTheme.colorScheme.surfaceContainerHighest,
+                        contentColor = MaterialTheme.colorScheme.onSurface
                     ) {
                         Icon(
-                            imageVector = if(iconRes == null){ ImageVector.vectorResource(id = empty) }
+                            imageVector = if(iconRes == null){ ImageVector.vectorResource(id = Icons.Content.empty) }
                             else { ImageVector.vectorResource(id = iconRes) },
                             contentDescription = null
                         )
                     }
                     HorizontalDivider(
                         thickness = 2.dp,
-                        color = colorScheme.surfaceVariant
+                        color = MaterialTheme.colorScheme.surfaceVariant
                     )
                 }
                 if(title != null){
@@ -414,12 +376,12 @@ object CommonMessagePanel{
                         modifier = Modifier.fillMaxWidth(),
                         text = title,
                         textAlign = TextAlign.Center,
-                        fontSize = typography.titleLarge.fontSize,
-                        fontWeight = typography.titleLarge.fontWeight
+                        fontSize = MaterialTheme.typography.titleLarge.fontSize,
+                        fontWeight = MaterialTheme.typography.titleLarge.fontWeight
                     )
                     HorizontalDivider(
                         thickness = 2.dp,
-                        color = colorScheme.surfaceVariant
+                        color = MaterialTheme.colorScheme.surfaceVariant
                     )
                 }
                 if(emptyMessage != null){
@@ -427,8 +389,8 @@ object CommonMessagePanel{
                         modifier = Modifier.fillMaxWidth(),
                         text = emptyMessage,
                         textAlign = TextAlign.Start,
-                        fontSize = typography.bodyLarge.fontSize,
-                        fontWeight = typography.bodyLarge.fontWeight
+                        fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                        fontWeight = MaterialTheme.typography.bodyLarge.fontWeight
                     )
                 }
             }
@@ -439,10 +401,10 @@ object CommonMessagePanel{
     fun TextContentWithIcon(
         icon: ImageVector,
         text: String,
-        iconShape: Shape = shapes.extraSmall,
-        iconTint: Color = colorScheme.onPrimaryContainer,
+        iconShape: Shape = MaterialTheme.shapes.extraSmall,
+        iconTint: Color = MaterialTheme.colorScheme.onPrimaryContainer,
         iconSize: Dp = ButtonDefaults.IconSize,
-        textColor: Color = colorScheme.onSurface,
+        textColor: Color = MaterialTheme.colorScheme.onSurface,
         textMaxLines: Int = 1,
         textOverflow: TextOverflow = TextOverflow.Ellipsis,
         textAlign: TextAlign = TextAlign.Start,
@@ -455,9 +417,7 @@ object CommonMessagePanel{
             horizontalArrangement = Arrangement.Center
         ) {
             Surface(
-                modifier = Modifier
-                    .weight(iconWidthRatio)
-                    .size(iconSize),
+                modifier = Modifier.weight(iconWidthRatio).size(iconSize),
                 shape = iconShape,
             ) {
                 Icon(
@@ -483,7 +443,7 @@ object CommonMessagePanel{
         icon: ImageVector,
         title: String,
         subtitle: String,
-        cardShape: Shape = shapes.medium,
+        cardShape: Shape = MaterialTheme.shapes.medium,
         cardBorder: BorderStroke = BorderStroke(width = 1.dp, color = Color(0xFF747775)),
         iconWidthRatio: Float = 0.2f,
         textWidthRatio: Float = 0.8f,
@@ -496,25 +456,18 @@ object CommonMessagePanel{
         subtitleTextOverflow: TextOverflow = TextOverflow.Ellipsis
     ){
         Surface(
-            modifier = Modifier
-                .fillMaxWidth(1.0f),
+            modifier = Modifier.fillMaxWidth(1.0f),
             onClick = onClick,
             shape = cardShape,
             border = cardBorder
         ) {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth(1.0f)
-                    .padding(8.dp)
-                    .height(intrinsicSize = Max),
+                modifier = Modifier.fillMaxWidth(1.0f).padding(8.dp).height(intrinsicSize = IntrinsicSize.Max),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Surface(modifier = Modifier.weight(iconWidthRatio)) {
-                    Icon(
-                        imageVector = icon,
-                        contentDescription = null
-                    )
+                    Icon(imageVector = icon, contentDescription = null)
                 }
                 Column(
                     modifier = Modifier.weight(textWidthRatio),
@@ -542,23 +495,19 @@ object CommonMessagePanel{
 
     @Composable
     fun ThreeRowCardItem(
-        cardShape: Shape = shapes.medium,
+        cardShape: Shape = MaterialTheme.shapes.medium,
         cardBorder: BorderStroke = BorderStroke(width = 1.dp, color = Color(0xFF747775)),
         firstRowContent: @Composable ColumnScope.() -> Unit,
         secondRowContent: @Composable ColumnScope.() -> Unit,
         thirdRowContent: @Composable ColumnScope.() -> Unit
     ){
         Surface(
-            modifier = Modifier
-                .fillMaxWidth(1.0f),
+            modifier = Modifier.fillMaxWidth(1.0f),
             shape = cardShape,
             border = cardBorder
         ){
             Row(
-                modifier = Modifier
-                    .fillMaxWidth(1.0f)
-                    .padding(8.dp)
-                    .height(intrinsicSize = Max),
+                modifier = Modifier.fillMaxWidth(1.0f).padding(8.dp).height(intrinsicSize = IntrinsicSize.Max),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ){
@@ -567,25 +516,19 @@ object CommonMessagePanel{
                     modifier = Modifier.weight(0.2f),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    firstRowContent()
-                }
+                ) { firstRowContent() }
                 //Second Row
                 Column(
                     modifier = Modifier.weight(0.6f),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    secondRowContent()
-                }
+                ) { secondRowContent() }
                 //Third Row
                 Column(
                     modifier = Modifier.weight(0.2f),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    thirdRowContent()
-                }
+                ) { thirdRowContent() }
             }
         }
     }

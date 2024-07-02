@@ -108,5 +108,7 @@ object BottomBar {
     }
 
     private fun NavDestination?.isDestinationTopLevelInHierarchy(destination: DestinationTopLevel) =
-        this?.hierarchy?.any{ it.route?.contains(other = destination.route, ignoreCase = true) ?:false } ?:false
+        this?.hierarchy?.any{
+            it.route?.contains(other = destination.route, ignoreCase = true) ?:false
+        } ?:false
 }

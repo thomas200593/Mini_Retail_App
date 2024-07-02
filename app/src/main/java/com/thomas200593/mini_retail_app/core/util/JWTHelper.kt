@@ -106,9 +106,8 @@ object JWTHelper {
                         expiredAt = exp.orEmpty()
                     )
                 )
-            }else{
-                null
             }
+            else{ null }
         }
     }
 }

@@ -23,24 +23,18 @@ import kotlinx.coroutines.flow.filterNot
 
 object AppBar {
     @Composable
-    fun TopAppBar(navController: NavController){
-        AppBar(navController = navController)
-    }
+    fun TopAppBar(navController: NavController){ AppBar(navController = navController) }
 
     @Composable
     fun ProvideTopAppBarAction(actions: @Composable RowScope.() -> Unit){
         if(
             LocalViewModelStoreOwner.current == null ||
             LocalViewModelStoreOwner.current !is NavBackStackEntry
-        ){
-            return
-        }
+        ){ return }
         val actionViewModel = viewModel(initializer = { TopAppBarViewModel() })
         DisposableEffect(key1 = Unit) {
             actionViewModel.actionState = actions
-            onDispose {
-                actionViewModel.actionState = null
-            }
+            onDispose { actionViewModel.actionState = null }
         }
     }
 
@@ -49,30 +43,20 @@ object AppBar {
         if (
             LocalViewModelStoreOwner.current == null ||
             LocalViewModelStoreOwner.current !is NavBackStackEntry
-        ){
-            return
-        }
+        ){ return }
         val actionViewModel = viewModel(initializer = { TopAppBarViewModel() })
         DisposableEffect(key1 = Unit) {
             actionViewModel.titleState = title
-            onDispose {
-                actionViewModel.titleState = null
-            }
+            onDispose { actionViewModel.titleState = null }
         }
     }
 
     @Composable
     fun ProvideTopAppBarNavigationIcon(navIcon: @Composable () -> Unit){
-        val actionViewModel = viewModel(
-            initializer = {
-                TopAppBarViewModel()
-            }
-        )
+        val actionViewModel = viewModel(initializer = { TopAppBarViewModel() })
         DisposableEffect(key1 = Unit) {
             actionViewModel.navIconState = navIcon
-            onDispose {
-                actionViewModel.navIconState = null
-            }
+            onDispose { actionViewModel.navIconState = null }
         }
     }
 
@@ -80,14 +64,8 @@ object AppBar {
     private fun RowScope.TopAppBarAction(navBackStackEntry: NavBackStackEntry?){
         val stateHolder = rememberSaveableStateHolder()
         navBackStackEntry?.LocalOwnersProvider(stateHolder) {
-            val actionViewModel = viewModel(
-                initializer = {
-                    TopAppBarViewModel()
-                }
-            )
-            actionViewModel.actionState?.let {
-                it()
-            }
+            val actionViewModel = viewModel(initializer = { TopAppBarViewModel() })
+            actionViewModel.actionState?.let { it() }
         }
     }
 
@@ -95,14 +73,8 @@ object AppBar {
     private fun TopAppBarTitle(navBackStackEntry: NavBackStackEntry?) {
         val stateHolder = rememberSaveableStateHolder()
         navBackStackEntry?.LocalOwnersProvider(stateHolder) {
-            val actionViewModel = viewModel(
-                initializer = {
-                    TopAppBarViewModel()
-                }
-            )
-            actionViewModel.titleState?.let {
-                it()
-            }
+            val actionViewModel = viewModel(initializer = { TopAppBarViewModel() })
+            actionViewModel.titleState?.let { it() }
         }
     }
 
@@ -110,14 +82,8 @@ object AppBar {
     private fun TopAppBarNavIcon(navBackStackEntry: NavBackStackEntry?){
         val stateHolder = rememberSaveableStateHolder()
         navBackStackEntry?.LocalOwnersProvider(stateHolder){
-            val actionViewModel = viewModel(
-                initializer = {
-                    TopAppBarViewModel()
-                }
-            )
-            actionViewModel.navIconState?.let {
-                it()
-            }
+            val actionViewModel = viewModel(initializer = { TopAppBarViewModel() })
+            actionViewModel.navIconState?.let { it() }
         }
     }
 
@@ -129,43 +95,25 @@ object AppBar {
     ){
         val currentContentBackStackEntry by produceState(
             initialValue = null as NavBackStackEntry?,
-            producer = {
-                navController
-                    .currentBackStackEntryFlow
-                    .filterNot {
-                        it.destination is FloatingWindow
-                    }
-                    .collect{
-                        value = it
-                    }
+            producer = { navController.currentBackStackEntryFlow
+                .filterNot { it.destination is FloatingWindow }
+                .collect{ value = it }
             }
         )
         TopAppBar(
             modifier = modifier,
-            navigationIcon = {
-                TopAppBarNavIcon(currentContentBackStackEntry)
-            },
-            title = {
-                TopAppBarTitle(currentContentBackStackEntry)
-            },
-            actions = {
-                TopAppBarAction(currentContentBackStackEntry)
-            }
+            navigationIcon = { TopAppBarNavIcon(currentContentBackStackEntry) },
+            title = { TopAppBarTitle(currentContentBackStackEntry) },
+            actions = { TopAppBarAction(currentContentBackStackEntry) }
         )
     }
 
     private class TopAppBarViewModel: ViewModel(){
-        var navIconState by mutableStateOf(
-            null as (@Composable () -> Unit)?,
-            referentialEqualityPolicy()
-        )
-        var titleState by mutableStateOf(
-            null as (@Composable () -> Unit)?,
-            referentialEqualityPolicy()
-        )
-        var actionState by mutableStateOf(
-            null as (@Composable RowScope.() -> Unit)?,
-            referentialEqualityPolicy()
-        )
+        var navIconState by
+        mutableStateOf(null as (@Composable () -> Unit)?, referentialEqualityPolicy())
+        var titleState by
+        mutableStateOf(null as (@Composable () -> Unit)?, referentialEqualityPolicy())
+        var actionState by
+        mutableStateOf(null as (@Composable RowScope.() -> Unit)?, referentialEqualityPolicy())
     }
 }

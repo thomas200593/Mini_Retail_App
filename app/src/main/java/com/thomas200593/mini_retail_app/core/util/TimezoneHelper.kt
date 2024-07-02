@@ -26,11 +26,13 @@ object TimezoneHelper {
             val offset = timezone.rules.getOffset(Instant.now())
             val hours = offset.totalSeconds / SECONDS_IN_HOUR
             val minutes = (offset.totalSeconds % SECONDS_IN_HOUR) / MINUTES_IN_HOUR
-            val formattedOffset = if(offset.totalSeconds < 0){
-                String.format(getDefault(), "-%02d:%02d", -hours, -minutes)
-            }else{
-                String.format(getDefault(), "+%02d:%02d", hours, minutes)
-            }
+            val formattedOffset =
+                if(offset.totalSeconds < 0){
+                    String.format(getDefault(), "-%02d:%02d", -hours, -minutes)
+                }
+                else{
+                    String.format(getDefault(), "+%02d:%02d", hours, minutes)
+                }
             uniqueOffset.add(Timezone(formattedOffset))
         }
         uniqueOffset.toList().sortedBy { it.timezoneOffset }

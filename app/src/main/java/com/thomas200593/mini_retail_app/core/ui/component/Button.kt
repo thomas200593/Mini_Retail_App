@@ -143,13 +143,14 @@ object Button {
             onClick: () -> Unit
         ){
             var btnText by remember { mutableStateOf(primaryText) }
-            LaunchedEffect(btnLoadingState) { btnText = if(btnLoadingState) secondaryText else primaryText }
+            LaunchedEffect(btnLoadingState) {
+                btnText = if(btnLoadingState) secondaryText else primaryText
+            }
             Surface(
-                modifier = modifier
-                    .clickable(
-                        enabled = !btnLoadingState,
-                        onClick = onClick
-                    ),
+                modifier = modifier.clickable(
+                    enabled = !btnLoadingState,
+                    onClick = onClick
+                ),
                 shape = btnShape,
                 border = BorderStroke(width = btnBorderStrokeWidth, color = btnBorderColor),
                 color = btnColor,
@@ -219,18 +220,14 @@ object Button {
                                 val authProvider = GOOGLE
                                 val idToken = googleIdCredential.idToken
                                 val authSessionToken = AuthSessionToken(authProvider, idToken)
-                                if(validateToken(authSessionToken)){
+                                if(validateToken(authSessionToken)) {
                                     onResultReceived(authSessionToken)
-                                }else{
-                                    onError(Throwable("Token Validation Failed."))
                                 }
-                            }else{
-                                onError(Throwable("Unexpected type of Credential"))
+                                else { onError(Throwable("Token Validation Failed.")) }
                             }
+                            else{ onError(Throwable("Unexpected type of Credential")) }
                         }
-                        else -> {
-                            onError(Throwable("Unexpected type of Credential"))
-                        }
+                        else -> { onError(Throwable("Unexpected type of Credential")) }
                     }
                 }
                 catch (e: GetCredentialException){ onError(e) }
@@ -249,11 +246,9 @@ object Button {
             try{
                 credentialManager.clearCredentialState(request = clearCredentialRequest)
                 onClearSuccess()
-            }catch (t: ClearCredentialException){
-                onClearError(t)
-            }catch (t: Exception){
-                onClearError(t)
             }
+            catch (t: ClearCredentialException){ onClearError(t) }
+            catch (t: Exception){ onClearError(t) }
         }
     }
 }
