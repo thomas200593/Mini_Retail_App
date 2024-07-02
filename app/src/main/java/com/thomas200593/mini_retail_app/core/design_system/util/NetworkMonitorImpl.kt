@@ -5,11 +5,11 @@ import android.net.ConnectivityManager
 import android.net.ConnectivityManager.NetworkCallback
 import android.net.Network
 import android.net.NetworkCapabilities
-import android.net.NetworkRequest.Builder
+import android.net.NetworkRequest
 import androidx.compose.ui.util.trace
 import androidx.core.content.getSystemService
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatcher
-import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatchers.Dispatchers.IO
+import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatchers
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.channels.awaitClose
@@ -21,7 +21,7 @@ import javax.inject.Inject
 
 internal class NetworkMonitorImpl @Inject constructor(
     @ApplicationContext private val context: Context,
-    @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
+    @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ) : NetworkMonitor{
     override val isNetworkOnline: Flow<Boolean> = callbackFlow {
         trace("NetworkMonitor.callbackFlow"){
@@ -31,30 +31,24 @@ internal class NetworkMonitorImpl @Inject constructor(
                 channel.close()
                 return@callbackFlow
             }
-
             val callback = object : NetworkCallback(){
                 private val networks = mutableSetOf<Network>()
-
                 override fun onAvailable(network: Network) {
                     networks += network
                     channel.trySend(true)
                 }
-
                 override fun onLost(network: Network) {
                     networks -= network
                     channel.trySend(networks.isNotEmpty())
                 }
             }
-
             trace("NetworkMonitor.registerNetworkCallback"){
-                val request = Builder()
+                val request = NetworkRequest.Builder()
                     .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
                     .build()
                 connectivityManager.registerNetworkCallback(request, callback)
             }
-
             channel.trySend(connectivityManager.isCurrentlyConnected())
-
             awaitClose {
                 connectivityManager.unregisterNetworkCallback(callback)
             }
