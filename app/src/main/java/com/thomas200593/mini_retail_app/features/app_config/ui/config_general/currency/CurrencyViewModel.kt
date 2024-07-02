@@ -5,12 +5,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatcher
-import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatchers.Dispatchers.IO
+import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatchers
 import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
-import com.thomas200593.mini_retail_app.core.design_system.util.RequestState.Error
-import com.thomas200593.mini_retail_app.core.design_system.util.RequestState.Idle
-import com.thomas200593.mini_retail_app.core.design_system.util.RequestState.Loading
-import com.thomas200593.mini_retail_app.core.design_system.util.RequestState.Success
 import com.thomas200593.mini_retail_app.features.app_config.entity.Currency
 import com.thomas200593.mini_retail_app.features.app_config.repository.AppConfigRepository
 import com.thomas200593.mini_retail_app.features.app_config.repository.ConfigGeneralRepository
@@ -26,19 +22,19 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CurrencyViewModel @Inject constructor(
-    repository1: AppConfigRepository,
-    private val repository2: ConfigGeneralRepository,
-    @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
+    appCfgRepository: AppConfigRepository,
+    private val cfgGeneralRepository: ConfigGeneralRepository,
+    @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ): ViewModel() {
-    private val _currencies: MutableState<RequestState<List<Currency>>> = mutableStateOf(Idle)
+    private val _currencies: MutableState<RequestState<List<Currency>>> = mutableStateOf(RequestState.Idle)
     val currencies = _currencies
-    val configCurrent = repository1.configCurrent.flowOn(ioDispatcher)
-        .catch { Error(it) }
-        .map { Success(it) }
+    val configCurrent = appCfgRepository.configCurrent.flowOn(ioDispatcher)
+        .catch { RequestState.Error(it) }
+        .map { RequestState.Success(it) }
         .stateIn(
             scope = viewModelScope,
             started = Eagerly,
-            initialValue = Loading
+            initialValue = RequestState.Loading
         )
 
     fun onOpen() = viewModelScope.launch(ioDispatcher) {
@@ -46,12 +42,12 @@ class CurrencyViewModel @Inject constructor(
     }
 
     private fun getCurrencies() = viewModelScope.launch(ioDispatcher) {
-        _currencies.value = Loading
-        _currencies.value = try{ Success(repository2.getCurrencies()) }
-        catch (e: Throwable){ Error(e) }
+        _currencies.value = RequestState.Loading
+        _currencies.value = try{ RequestState.Success(cfgGeneralRepository.getCurrencies()) }
+        catch (e: Throwable){ RequestState.Error(e) }
     }
 
     fun setCurrency(currency: Currency) = viewModelScope.launch {
-        repository2.setCurrency(currency)
+        cfgGeneralRepository.setCurrency(currency)
     }
 }

@@ -37,11 +37,6 @@ import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.app.ui.AppState
 import com.thomas200593.mini_retail_app.app.ui.LocalAppState
 import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
-import com.thomas200593.mini_retail_app.core.design_system.util.RequestState.Empty
-import com.thomas200593.mini_retail_app.core.design_system.util.RequestState.Error
-import com.thomas200593.mini_retail_app.core.design_system.util.RequestState.Idle
-import com.thomas200593.mini_retail_app.core.design_system.util.RequestState.Loading
-import com.thomas200593.mini_retail_app.core.design_system.util.RequestState.Success
 import com.thomas200593.mini_retail_app.core.ui.common.Icons.Currency.currency
 import com.thomas200593.mini_retail_app.core.ui.component.AppBar
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.EmptyScreen
@@ -129,62 +124,64 @@ private fun ScreenContent(
     onSaveSelectedCurrency: (Currency) -> Unit
 ) {
     when(configCurrent){
-        Idle, Loading -> {
-            LoadingScreen()
-        }
-        is Error -> {
+        RequestState.Idle, RequestState.Loading -> { LoadingScreen() }
+        is RequestState.Error -> {
             ErrorScreen(
                 title = stringResource(id = R.string.str_error),
                 errorMessage = stringResource(id = R.string.str_error_fetching_preferences),
                 showIcon = true
             )
         }
-        Empty -> {
+        RequestState.Empty -> {
             EmptyScreen(
                 title = stringResource(id = R.string.str_empty_message_title),
                 emptyMessage = stringResource(id = R.string.str_empty_message),
                 showIcon = true
             )
         }
-        is Success -> {
+        is RequestState.Success -> {
             when(currencies){
-                Idle -> Unit
-                Loading -> {
-                    LoadingScreen()
-                }
-                is Error -> {
+                RequestState.Idle -> Unit
+                RequestState.Loading -> { LoadingScreen() }
+                is RequestState.Error -> {
                     ErrorScreen(
                         title = stringResource(id = R.string.str_error),
                         errorMessage = "Failed to get Preferences data.",
                         showIcon = true
                     )
                 }
-                Empty -> {
+                RequestState.Empty -> {
                     EmptyScreen(
                         title = stringResource(id = R.string.str_empty_message_title),
                         emptyMessage = stringResource(id = R.string.str_empty_message),
                         showIcon = true
                     )
                 }
-                is Success -> {
+                is RequestState.Success -> {
                     val currentData = configCurrent.data.currency
                     val preferencesList = currencies.data
 
                     Column(
-                        modifier = Modifier.fillMaxSize().padding(4.dp),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(4.dp),
                         verticalArrangement = Arrangement.spacedBy(10.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
                             text = "${stringResource(id = R.string.str_currency)} : ${currentData.displayName}",
-                            modifier = Modifier.fillMaxWidth().padding(4.dp),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(4.dp),
                             fontWeight = FontWeight.Bold,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                             textAlign = TextAlign.Center,
                         )
                         LazyColumn(
-                            modifier = Modifier.fillMaxSize().padding(4.dp),
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(4.dp),
                             verticalArrangement = Arrangement.spacedBy(10.dp),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
@@ -225,9 +222,13 @@ private fun ScreenContent(
                                             onClick = { onSaveSelectedCurrency(data) }
                                         ) {
                                             Icon(
-                                                imageVector = if (data == currentData) Icons.Default.CheckCircle else Icons.AutoMirrored.Outlined.KeyboardArrowRight,
+                                                imageVector =
+                                                    if (data == currentData) { Icons.Default.CheckCircle }
+                                                    else { Icons.AutoMirrored.Outlined.KeyboardArrowRight },
                                                 contentDescription = null,
-                                                tint = if (data == currentData) Color.Green else MaterialTheme.colorScheme.onTertiaryContainer
+                                                tint =
+                                                    if (data == currentData) { Color.Green }
+                                                    else { MaterialTheme.colorScheme.onTertiaryContainer }
                                             )
                                         }
                                     }

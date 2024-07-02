@@ -7,10 +7,6 @@ import androidx.lifecycle.viewModelScope
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatchers
 import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
-import com.thomas200593.mini_retail_app.core.design_system.util.RequestState.Error
-import com.thomas200593.mini_retail_app.core.design_system.util.RequestState.Idle
-import com.thomas200593.mini_retail_app.core.design_system.util.RequestState.Loading
-import com.thomas200593.mini_retail_app.core.design_system.util.RequestState.Success
 import com.thomas200593.mini_retail_app.features.app_config.entity.Country
 import com.thomas200593.mini_retail_app.features.app_config.repository.AppConfigRepository
 import com.thomas200593.mini_retail_app.features.app_config.repository.ConfigGeneralRepository
@@ -30,15 +26,15 @@ class CountryViewModel @Inject constructor(
     private val cfgGeneralRepository: ConfigGeneralRepository,
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel(){
-    private val _countries: MutableState<RequestState<List<Country>>> = mutableStateOf(Idle)
+    private val _countries: MutableState<RequestState<List<Country>>> = mutableStateOf(RequestState.Idle)
     val countries = _countries
     val configCurrent = appCfgRepository.configCurrent.flowOn(ioDispatcher)
-        .catch { Error(it) }
-        .map { Success(it) }
+        .catch { RequestState.Error(it) }
+        .map { RequestState.Success(it) }
         .stateIn(
             scope = viewModelScope,
             started = Eagerly,
-            initialValue = Loading
+            initialValue = RequestState.Loading
         )
 
     fun onOpen() = viewModelScope.launch(ioDispatcher){
@@ -46,9 +42,9 @@ class CountryViewModel @Inject constructor(
     }
 
     private fun getCountries() = viewModelScope.launch(ioDispatcher){
-        _countries.value = Loading
-        _countries.value = try { Success(cfgGeneralRepository.getCountries()) }
-        catch (e: Throwable){ Error(e) }
+        _countries.value = RequestState.Loading
+        _countries.value = try { RequestState.Success(cfgGeneralRepository.getCountries()) }
+        catch (e: Throwable){ RequestState.Error(e) }
     }
 
     fun setCountry(country: Country) = viewModelScope.launch{
