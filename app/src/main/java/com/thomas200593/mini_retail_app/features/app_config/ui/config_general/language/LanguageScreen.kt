@@ -48,7 +48,6 @@ import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.Thr
 import com.thomas200593.mini_retail_app.features.app_config.entity.ConfigCurrent
 import com.thomas200593.mini_retail_app.features.app_config.entity.Language
 import kotlinx.coroutines.Job
-import timber.log.Timber
 import kotlin.reflect.KFunction1
 
 private const val TAG = "AppConfigGeneralLanguageScreen"
@@ -58,9 +57,8 @@ fun LanguageScreen(
     viewModel: LanguageViewModel = hiltViewModel(),
     appState: AppState = LocalAppState.current
 ) {
-    Timber.d("Called : fun $TAG()")
-    val configCurrent by viewModel.configCurrentUiState.collectAsStateWithLifecycle()
-    val languagePreferences by viewModel.languagePreferences
+    val configCurrent by viewModel.configCurrent.collectAsStateWithLifecycle()
+    val languages by viewModel.languages
 
     LaunchedEffect(Unit) {
         viewModel.onOpen()
@@ -70,16 +68,14 @@ fun LanguageScreen(
         onNavigateBack = appState::onNavigateUp
     )
     ScreenContent(
-        languagePreferences = languagePreferences,
+        languages = languages,
         configCurrent = configCurrent,
-        onSaveSelectedLanguage = viewModel::saveSelectedLanguage
+        onSaveSelectedLanguage = viewModel::setLanguage
     )
 }
 
 @Composable
-private fun TopAppBar(
-    onNavigateBack: () -> Unit
-) {
+private fun TopAppBar(onNavigateBack: () -> Unit) {
     AppBar.ProvideTopAppBarNavigationIcon {
         Surface(
             onClick =  onNavigateBack,
@@ -99,8 +95,7 @@ private fun TopAppBar(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ){
             Icon(
-                modifier = Modifier
-                    .sizeIn(maxHeight = ButtonDefaults.IconSize),
+                modifier = Modifier.sizeIn(maxHeight = ButtonDefaults.IconSize),
                 imageVector = ImageVector.vectorResource(id = language),
                 contentDescription = null
             )
@@ -118,8 +113,7 @@ private fun TopAppBar(
             horizontalArrangement = Arrangement.Center
         ){
             Icon(
-                modifier = Modifier
-                    .sizeIn(maxHeight = ButtonDefaults.IconSize),
+                modifier = Modifier.sizeIn(maxHeight = ButtonDefaults.IconSize),
                 imageVector = Icons.Default.Info,
                 contentDescription = null
             )
@@ -129,18 +123,16 @@ private fun TopAppBar(
 
 @Composable
 private fun ScreenContent(
-    languagePreferences: RequestState<Set<Language>>,
+    languages: RequestState<Set<Language>>,
     configCurrent: RequestState<ConfigCurrent>,
     onSaveSelectedLanguage: KFunction1<Language, Job>
 ) {
     when(configCurrent){
-        RequestState.Idle, RequestState.Loading -> {
-            LoadingScreen()
-        }
+        RequestState.Idle, RequestState.Loading -> { LoadingScreen() }
         is RequestState.Error -> {
             ErrorScreen(
                 title = stringResource(id = R.string.str_error),
-                errorMessage = "Failed to get Preferences data.",
+                errorMessage = stringResource(id = R.string.str_error_fetching_preferences),
                 showIcon = true
             )
         }
@@ -152,15 +144,13 @@ private fun ScreenContent(
             )
         }
         is RequestState.Success -> {
-            when(languagePreferences){
+            when(languages){
                 RequestState.Idle -> Unit
-                RequestState.Loading -> {
-                    LoadingScreen()
-                }
+                RequestState.Loading -> { LoadingScreen() }
                 is RequestState.Error -> {
                     ErrorScreen(
                         title = stringResource(id = R.string.str_error),
-                        errorMessage = "Failed to get Preferences data.",
+                        errorMessage = stringResource(id = R.string.str_error_fetching_preferences),
                         showIcon = true
                     )
                 }
@@ -172,35 +162,29 @@ private fun ScreenContent(
                     )
                 }
                 is RequestState.Success -> {
-                    val currentLanguage = configCurrent.data.language
-                    val appLanguagePreferences = languagePreferences.data
+                    val currentData = configCurrent.data.language
+                    val preferencesList = languages.data
 
                     Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(4.dp),
+                        modifier = Modifier.fillMaxSize().padding(4.dp),
                         verticalArrangement = Arrangement.spacedBy(10.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            text = "${stringResource(id = R.string.str_lang)} : ${stringResource(id = currentLanguage.title)}",
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(4.dp),
+                            text = "${stringResource(id = R.string.str_lang)} : ${stringResource(id = currentData.title)}",
+                            modifier = Modifier.fillMaxWidth().padding(4.dp),
                             fontWeight = FontWeight.Bold,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                             textAlign = TextAlign.Center,
                         )
                         LazyColumn(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(4.dp),
+                            modifier = Modifier.fillMaxSize().padding(4.dp),
                             verticalArrangement = Arrangement.spacedBy(10.dp),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            items(count = appLanguagePreferences.count()){ index ->
-                                val data = appLanguagePreferences.elementAt(index)
+                            items(count = preferencesList.count()){ index ->
+                                val data = preferencesList.elementAt(index)
                                 ThreeRowCardItem(
                                     firstRowContent = {
                                         Surface(modifier = Modifier.fillMaxWidth()) {
@@ -227,9 +211,9 @@ private fun ScreenContent(
                                             onClick = { onSaveSelectedLanguage(data) }
                                         ) {
                                             Icon(
-                                                imageVector = if (data == currentLanguage) Icons.Default.CheckCircle else Icons.AutoMirrored.Outlined.KeyboardArrowRight,
+                                                imageVector = if (data == currentData) Icons.Default.CheckCircle else Icons.AutoMirrored.Outlined.KeyboardArrowRight,
                                                 contentDescription = null,
-                                                tint = if (data == currentLanguage) Color.Green else MaterialTheme.colorScheme.onTertiaryContainer
+                                                tint = if (data == currentData) Color.Green else MaterialTheme.colorScheme.onTertiaryContainer
                                             )
                                         }
                                     }

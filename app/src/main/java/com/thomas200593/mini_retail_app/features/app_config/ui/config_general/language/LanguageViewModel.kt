@@ -10,8 +10,8 @@ import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatche
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatchers
 import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
 import com.thomas200593.mini_retail_app.features.app_config.entity.Language
-import com.thomas200593.mini_retail_app.features.app_config.repository.ConfigGeneralRepository
 import com.thomas200593.mini_retail_app.features.app_config.repository.AppConfigRepository
+import com.thomas200593.mini_retail_app.features.app_config.repository.ConfigGeneralRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.SharingStarted
@@ -20,51 +20,40 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import java.util.Locale
 import javax.inject.Inject
 
-private val TAG = LanguageViewModel::class.simpleName
-
 @HiltViewModel
 class LanguageViewModel @Inject constructor(
-    appConfigRepository: AppConfigRepository,
-    private val configGeneralRepository: ConfigGeneralRepository,
+    appCfgRepository: AppConfigRepository,
+    private val cfgGeneralRepository: ConfigGeneralRepository,
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ): ViewModel(){
-    private val _languagePreferences: MutableState<RequestState<Set<Language>>> = mutableStateOf(RequestState.Idle)
-    val languagePreferences = _languagePreferences
-    val configCurrentUiState = appConfigRepository.configCurrent.flowOn(ioDispatcher)
+    private val _languages: MutableState<RequestState<Set<Language>>> = mutableStateOf(RequestState.Idle)
+    val languages = _languages
+    val configCurrent = appCfgRepository.configCurrent.flowOn(ioDispatcher)
         .catch { RequestState.Error(it) }
         .map { RequestState.Success(it) }
         .stateIn(
             scope = viewModelScope,
-            SharingStarted.Eagerly,
+            started = SharingStarted.Eagerly,
             initialValue = RequestState.Loading
         )
 
     fun onOpen() = viewModelScope.launch(ioDispatcher) {
-        Timber.d("Called : fun $TAG.onOpen()")
-        getLanguagePreferences()
+        getLanguages()
     }
 
-    private fun getLanguagePreferences() = viewModelScope.launch(ioDispatcher) {
-        Timber.d("Called : fun $TAG.getLanguagePreferences()")
-        _languagePreferences.value = RequestState.Loading
-        _languagePreferences.value = try {
-            RequestState.Success(configGeneralRepository.getLanguages())
-        }catch (e: Throwable){
-            RequestState.Error(e)
-        }
+    private fun getLanguages() = viewModelScope.launch(ioDispatcher) {
+        _languages.value = RequestState.Loading
+        _languages.value = try { RequestState.Success(cfgGeneralRepository.getLanguages()) }
+        catch (e: Throwable){ RequestState.Error(e) }
     }
 
-    fun saveSelectedLanguage(language: Language) = viewModelScope.launch {
-        Timber.d("Called : fun $TAG.saveSelectedLanguage()")
-        configGeneralRepository.setLanguage(language)
+    fun setLanguage(language: Language) = viewModelScope.launch {
+        cfgGeneralRepository.setLanguage(language)
         AppCompatDelegate.setApplicationLocales(
-            LocaleListCompat.create(
-                Locale(language.code)
-            )
+            LocaleListCompat.create(Locale(language.code))
         )
     }
 }
