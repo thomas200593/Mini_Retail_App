@@ -1,3 +1,4 @@
+
 package com.thomas200593.mini_retail_app.features.app_config.ui.config_data
 
 import androidx.compose.material3.Text

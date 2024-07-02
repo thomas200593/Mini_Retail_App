@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatcher
-import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatchers.Dispatchers.IO
+import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatchers
 import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
 import com.thomas200593.mini_retail_app.core.design_system.util.RequestState.Error
 import com.thomas200593.mini_retail_app.core.design_system.util.RequestState.Idle
@@ -26,13 +26,13 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CountryViewModel @Inject constructor(
-    repository1: AppConfigRepository,
-    private val repository2: ConfigGeneralRepository,
-    @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
+    appCfgRepository: AppConfigRepository,
+    private val cfgGeneralRepository: ConfigGeneralRepository,
+    @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel(){
     private val _countries: MutableState<RequestState<List<Country>>> = mutableStateOf(Idle)
     val countries = _countries
-    val configCurrent = repository1.configCurrent.flowOn(ioDispatcher)
+    val configCurrent = appCfgRepository.configCurrent.flowOn(ioDispatcher)
         .catch { Error(it) }
         .map { Success(it) }
         .stateIn(
@@ -47,11 +47,11 @@ class CountryViewModel @Inject constructor(
 
     private fun getCountries() = viewModelScope.launch(ioDispatcher){
         _countries.value = Loading
-        _countries.value = try { Success(repository2.getCountries()) }
+        _countries.value = try { Success(cfgGeneralRepository.getCountries()) }
         catch (e: Throwable){ Error(e) }
     }
 
     fun setCountry(country: Country) = viewModelScope.launch{
-        repository2.setCountry(country)
+        cfgGeneralRepository.setCountry(country)
     }
 }
