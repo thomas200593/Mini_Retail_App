@@ -9,15 +9,15 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ValidateAuthSessionUseCase @Inject constructor(
-    private val authRepository: AuthRepository,
+    private val repository: AuthRepository,
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ) {
     suspend operator fun invoke(authSessionToken: AuthSessionToken): Boolean = withContext(ioDispatcher){
-        if(authRepository.validateAuthSessionToken(authSessionToken)){
-            authRepository.saveAuthSessionToken(authSessionToken)
+        if(repository.validateAuthSessionToken(authSessionToken)){
+            repository.saveAuthSessionToken(authSessionToken)
             true
         }else{
-            authRepository.clearAuthSessionToken()
+            repository.clearAuthSessionToken()
             false
         }
     }

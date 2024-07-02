@@ -16,16 +16,12 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import timber.log.Timber
 import javax.inject.Inject
-
-private val TAG = AuthViewModel::class.simpleName
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
-    private val authRepository: AuthRepository,
-    private val validateAuthSessionUseCase: ValidateAuthSessionUseCase,
+    private val repository: AuthRepository,
+    private val authUseCase: ValidateAuthSessionUseCase,
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
@@ -36,15 +32,13 @@ class AuthViewModel @Inject constructor(
     val stateSIWGButton = _stateSIWGButton
 
     fun onOpen() = viewModelScope.launch(ioDispatcher) {
-        Timber.d("Called : fun $TAG.onOpen()")
         clearAuthSessionToken()
     }
 
     fun verifyAndSaveAuthSession(authSessionToken: AuthSessionToken) = viewModelScope.launch(ioDispatcher) {
-        Timber.d("Called : fun $TAG.verifyAndSaveAuthSession()")
         updateAuthSIWGButtonState(true)
         _authSessionTokenState.value = Loading
-        if(validateAuthSessionUseCase.invoke(authSessionToken)){
+        if(authUseCase.invoke(authSessionToken)){
             _authSessionTokenState.value = RequestState.Success(authSessionToken)
         }else{
             clearAuthSessionToken()
@@ -52,18 +46,11 @@ class AuthViewModel @Inject constructor(
     }
 
     fun updateAuthSIWGButtonState(authState: Boolean) = viewModelScope.launch(ioDispatcher) {
-        Timber.d("Called : fun $TAG.updateAuthSIWGButtonState()")
         _stateSIWGButton.value = authState
     }
 
     fun clearAuthSessionToken() = viewModelScope.launch(ioDispatcher) {
-        Timber.d("Called : fun $TAG.clearAuthSessionToken()")
         updateAuthSIWGButtonState(false)
-        authRepository.clearAuthSessionToken()
-    }
-
-    suspend fun mapAuthSessionTokenToUserData(authSessionToken: AuthSessionToken) = withContext(ioDispatcher){
-        Timber.d("Called : fun $TAG.mapAuthSessionTokenToUserData()")
-        authRepository.mapAuthSessionTokenToUserData(authSessionToken)
+        repository.clearAuthSessionToken()
     }
 }
