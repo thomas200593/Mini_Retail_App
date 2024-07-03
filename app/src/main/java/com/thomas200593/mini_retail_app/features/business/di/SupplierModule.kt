@@ -13,7 +13,7 @@ import dagger.hilt.components.SingletonComponent
 @InstallIn(SingletonComponent::class)
 abstract class SupplierModule {
     @Binds
-    abstract fun bindsMasterDataSupplierRepository(
+    abstract fun bindsSupplierRepository(
         impl: SupplierRepositoryImpl
     ): SupplierRepository
 

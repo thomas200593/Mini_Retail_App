@@ -13,31 +13,25 @@ import com.thomas200593.mini_retail_app.features.business.repository.BusinessRep
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 private val TAG = BusinessViewModel::class.simpleName
 
 @HiltViewModel
 class BusinessViewModel @Inject constructor(
-    private val businessRepository: BusinessRepository,
+    private val repository: BusinessRepository,
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ): ViewModel() {
-    private val _businessMenuPreferences: MutableState<RequestState<Set<DestinationBusiness>>> = mutableStateOf(RequestState.Idle)
-    val businessMenuPreferences = _businessMenuPreferences
+    private val _menuData: MutableState<RequestState<Set<DestinationBusiness>>> = mutableStateOf(RequestState.Idle)
+    val menuData = _menuData
 
     fun onOpen(sessionState: SessionState) = viewModelScope.launch(ioDispatcher){
-        Timber.d("Called : fun $TAG.onOpen()")
-        getBusinessMenuPreferences(sessionState)
+        getMenuData(sessionState)
     }
 
-    private suspend fun getBusinessMenuPreferences(sessionState: SessionState) = viewModelScope.launch(ioDispatcher){
-        Timber.d("Called : fun $TAG.getBusinessMenuPreferences()")
-        _businessMenuPreferences.value = RequestState.Loading
-        _businessMenuPreferences.value = try{
-            RequestState.Success(businessRepository.getBusinessMenuData(sessionState))
-        }catch (e: Throwable){
-            RequestState.Error(e)
-        }
+    private suspend fun getMenuData(sessionState: SessionState) = viewModelScope.launch(ioDispatcher){
+        _menuData.value = RequestState.Loading
+        _menuData.value = try{ RequestState.Success(repository.getMenuData(sessionState)) }
+        catch (e: Throwable){ RequestState.Error(e) }
     }
 }

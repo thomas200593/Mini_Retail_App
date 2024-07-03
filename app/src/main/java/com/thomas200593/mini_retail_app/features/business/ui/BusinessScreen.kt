@@ -43,38 +43,24 @@ import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.Err
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.LoadingScreen
 import com.thomas200593.mini_retail_app.features.business.navigation.DestinationBusiness
 import com.thomas200593.mini_retail_app.features.business.navigation.navigateToBusiness
-import timber.log.Timber
-
-private const val TAG = "BusinessScreen"
 
 @Composable
 fun BusinessScreen(
     viewModel: BusinessViewModel = hiltViewModel(),
     appState: AppState = LocalAppState.current
 ){
-    Timber.d("Called : fun $TAG()")
     val sessionState by appState.isSessionValid.collectAsStateWithLifecycle()
-    val businessMenuPreferences by viewModel.businessMenuPreferences
+    val menuData by viewModel.menuData
 
     when(sessionState){
-        SessionState.Loading -> {
-            LoadingScreen()
-        }
-        is SessionState.Invalid -> {
-            LaunchedEffect(Unit) {
-                viewModel.onOpen(sessionState)
-            }
-        }
-        is SessionState.Valid -> {
-            LaunchedEffect(Unit) {
-                viewModel.onOpen(sessionState)
-            }
-        }
+        SessionState.Loading -> { LoadingScreen() }
+        is SessionState.Invalid -> { LaunchedEffect(Unit) { viewModel.onOpen(sessionState) } }
+        is SessionState.Valid -> { LaunchedEffect(Unit) { viewModel.onOpen(sessionState) } }
     }
 
     TopAppBar()
     ScreenContent(
-        businessMenuPreferences = businessMenuPreferences,
+        menuData = menuData,
         onNavigateToMenu = { menu ->
             appState.navController.navigateToBusiness(
                 navOptions = navOptions {
@@ -96,8 +82,7 @@ private fun TopAppBar() {
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ){
             Icon(
-                modifier = Modifier
-                    .sizeIn(maxHeight = ButtonDefaults.IconSize),
+                modifier = Modifier.sizeIn(maxHeight = ButtonDefaults.IconSize),
                 imageVector = ImageVector.vectorResource(id = Icons.TopLevelDestinations.business),
                 contentDescription = null
             )
@@ -115,8 +100,7 @@ private fun TopAppBar() {
             horizontalArrangement = Arrangement.Center
         ){
             Icon(
-                modifier = Modifier
-                    .sizeIn(maxHeight = ButtonDefaults.IconSize),
+                modifier = Modifier.sizeIn(maxHeight = ButtonDefaults.IconSize),
                 imageVector = androidx.compose.material.icons.Icons.Default.Info,
                 contentDescription = null
             )
@@ -126,13 +110,11 @@ private fun TopAppBar() {
 
 @Composable
 private fun ScreenContent(
-    businessMenuPreferences: RequestState<Set<DestinationBusiness>>,
+    menuData: RequestState<Set<DestinationBusiness>>,
     onNavigateToMenu: (DestinationBusiness) -> Unit
 ) {
-    when(businessMenuPreferences){
-        RequestState.Idle, RequestState.Loading -> {
-            LoadingScreen()
-        }
+    when(menuData){
+        RequestState.Idle, RequestState.Loading -> { LoadingScreen() }
         is RequestState.Error -> {
             ErrorScreen(
                 title = stringResource(id = R.string.str_error),
@@ -148,26 +130,21 @@ private fun ScreenContent(
             )
         }
         is RequestState.Success -> {
-            val menuPreferences = businessMenuPreferences.data
+            val preferencesList = menuData.data
             LazyVerticalGrid(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(8.dp),
+                modifier = Modifier.fillMaxSize().padding(8.dp),
                 columns = GridCells.Fixed(3)
             ) {
-                items(count = menuPreferences.count()){ index ->
-                    val menu = menuPreferences.elementAt(index)
+                items(count = preferencesList.count()){ index ->
+                    val menu = preferencesList.elementAt(index)
                     Surface(
-                        modifier = Modifier.fillMaxWidth()
-                            .padding(4.dp),
+                        modifier = Modifier.fillMaxWidth().padding(4.dp),
                         onClick = { onNavigateToMenu(menu) },
                         shape = MaterialTheme.shapes.medium,
                         border = BorderStroke(1.dp, Color.DarkGray),
                     ) {
                         Column(
-                            Modifier
-                                .fillMaxSize()
-                                .padding(8.dp),
+                            Modifier.fillMaxSize().padding(8.dp),
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterVertically)
                         ) {

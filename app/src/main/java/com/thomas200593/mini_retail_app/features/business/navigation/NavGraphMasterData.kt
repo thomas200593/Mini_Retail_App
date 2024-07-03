@@ -7,7 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.thomas200593.mini_retail_app.app.navigation.NavigationGraphs
 import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs
-import com.thomas200593.mini_retail_app.features.business.ui.master_data.BusinessMasterDataScreen
+import com.thomas200593.mini_retail_app.features.business.ui.master_data.MasterDataScreen
 
 fun NavGraphBuilder.navGraphMasterData() {
     navigation(
@@ -17,7 +17,7 @@ fun NavGraphBuilder.navGraphMasterData() {
         composable(
             route = ScreenGraphs.MasterData.route
         ){
-            BusinessMasterDataScreen()
+            MasterDataScreen()
         }
 
         /**

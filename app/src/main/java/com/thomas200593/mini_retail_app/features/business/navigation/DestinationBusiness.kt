@@ -13,7 +13,7 @@ enum class DestinationBusiness(
     @StringRes val description: Int,
     val usesAuth: Boolean
 ) {
-    BUSINESS_MASTER_DATA(
+    MASTER_DATA(
         route = ScreenGraphs.MasterData.route,
         iconRes = Icons.Data.master_data,
         title = R.string.str_biz_master_data,

@@ -12,14 +12,14 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class GetBusinessProfileSummaryUseCase @Inject constructor(
-    private val businessProfileRepository: BusinessProfileRepository,
-    private val businessExtFn: BusinessExtFn,
+    private val repository: BusinessProfileRepository,
+    private val bizExtFn: BusinessExtFn,
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ) {
-    operator fun invoke() = businessProfileRepository.getBusinessProfile().flowOn(ioDispatcher)
+    operator fun invoke() = repository.getBusinessProfile().flowOn(ioDispatcher)
         .catch { RequestState.Error(it) }
         .map {
-            if(it != null){ RequestState.Success(businessExtFn.bizProfileToBizProfileSummary(it)) }
+            if(it != null){ RequestState.Success(bizExtFn.bizProfileToBizProfileSummary(it)) }
             else{ RequestState.Empty }
         }
 }

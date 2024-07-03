@@ -16,7 +16,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class BusinessMasterDataViewModel @Inject constructor(
+class MasterDataViewModel @Inject constructor(
     private val masterDataRepository: MasterDataRepository,
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ): ViewModel() {
@@ -30,7 +30,7 @@ class BusinessMasterDataViewModel @Inject constructor(
     private suspend fun getBusinessMasterDataMenuPreferences(sessionState: SessionState) = viewModelScope.launch(ioDispatcher){
         _businessMasterDataMenuPreferences.value = RequestState.Loading
         _businessMasterDataMenuPreferences.value = try {
-            RequestState.Success(masterDataRepository.getBusinessMasterDataMenuData(sessionState))
+            RequestState.Success(masterDataRepository.getMenuData(sessionState))
         }catch (e: Throwable){
             RequestState.Error(e)
         }

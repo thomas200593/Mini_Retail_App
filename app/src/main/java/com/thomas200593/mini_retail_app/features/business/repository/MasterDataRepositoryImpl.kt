@@ -11,19 +11,12 @@ import javax.inject.Inject
 internal class MasterDataRepositoryImpl @Inject constructor(
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ): MasterDataRepository {
-    override suspend fun getBusinessMasterDataMenuData(
-        sessionState: SessionState
-    ): Set<DestinationMasterData> = withContext(ioDispatcher){
-        when(sessionState){
-            SessionState.Loading -> {
-                emptySet()
-            }
-            is SessionState.Invalid -> {
-                DestinationMasterData.entries.filterNot { it.usesAuth }.toSet()
-            }
-            is SessionState.Valid -> {
-                DestinationMasterData.entries.toSet()
+    override suspend fun getMenuData(sessionState: SessionState): Set<DestinationMasterData> =
+        withContext(ioDispatcher){
+            when(sessionState){
+                SessionState.Loading -> { emptySet() }
+                is SessionState.Invalid -> { DestinationMasterData.entries.filterNot { it.usesAuth }.toSet() }
+                is SessionState.Valid -> { DestinationMasterData.entries.toSet() }
             }
         }
-    }
 }

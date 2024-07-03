@@ -6,12 +6,13 @@ import com.thomas200593.mini_retail_app.features.business.dao.BusinessProfileDao
 import com.thomas200593.mini_retail_app.features.business.entity.BusinessProfile
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
 class BusinessProfileRepositoryImpl @Inject constructor(
-    private val businessProfileDao: BusinessProfileDao,
+    private val dao: BusinessProfileDao,
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ): BusinessProfileRepository {
     override fun getBusinessProfile(): Flow<BusinessProfile?> =
-        businessProfileDao.getBusinessProfile()
+        dao.getBusinessProfile().flowOn(ioDispatcher)
 }

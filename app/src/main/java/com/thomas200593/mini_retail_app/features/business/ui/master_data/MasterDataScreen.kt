@@ -45,16 +45,12 @@ import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.Err
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.LoadingScreen
 import com.thomas200593.mini_retail_app.features.business.navigation.DestinationMasterData
 import com.thomas200593.mini_retail_app.features.business.navigation.navigateToMasterData
-import timber.log.Timber
-
-private const val TAG = "BusinessMasterDataScreen"
 
 @Composable
-fun BusinessMasterDataScreen(
-    viewModel: BusinessMasterDataViewModel = hiltViewModel(),
+fun MasterDataScreen(
+    viewModel: MasterDataViewModel = hiltViewModel(),
     appState: AppState = LocalAppState.current
 ){
-    Timber.d("Called : fun $TAG()")
     val sessionState by appState.isSessionValid.collectAsStateWithLifecycle()
     val businessMasterDataMenuPreferences by viewModel.businessMasterDataMenuPreferences
 

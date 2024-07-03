@@ -30,8 +30,8 @@ import com.thomas200593.mini_retail_app.core.ui.common.Icons.Data.master_data
 import com.thomas200593.mini_retail_app.core.ui.component.AppBar
 
 @Composable
-fun BusinessMasterDataSupplierListScreen(
-    viewModel: BusinessMasterDataSupplierListViewModel = hiltViewModel(),
+fun SupplierListScreen(
+    viewModel: SupplierListViewModel = hiltViewModel(),
     appState: AppState = LocalAppState.current
 ){
     val sessionState by appState.isSessionValid.collectAsStateWithLifecycle()
