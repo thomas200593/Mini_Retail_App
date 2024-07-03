@@ -13,6 +13,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,8 +27,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.app.ui.AppState
 import com.thomas200593.mini_retail_app.app.ui.LocalAppState
+import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
 import com.thomas200593.mini_retail_app.core.ui.common.Icons.Data.master_data
 import com.thomas200593.mini_retail_app.core.ui.component.AppBar
+import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.LoadingScreen
 
 @Composable
 fun SupplierListScreen(
@@ -35,6 +38,16 @@ fun SupplierListScreen(
     appState: AppState = LocalAppState.current
 ){
     val sessionState by appState.isSessionValid.collectAsStateWithLifecycle()
+
+    when(sessionState){
+        SessionState.Loading -> { LoadingScreen() }
+        is SessionState.Invalid -> {
+            LaunchedEffect(Unit){  }
+        }
+        is SessionState.Valid -> {
+
+        }
+    }
 
     TopAppBar(
         onNavigateBack = appState::onNavigateUp
