@@ -88,6 +88,7 @@ fun AuthScreen(
         }
     }
 
+    //TODO revert to Column Row
     ScreenContent(
         onNavigateToAppConfigScreen = {
             appState.navController.navigateToAppConfig(destinationAppConfig = null)
