@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.material.icons.Icons.Default
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -101,7 +102,7 @@ private fun TopAppBar() {
         ){
             Icon(
                 modifier = Modifier.sizeIn(maxHeight = ButtonDefaults.IconSize),
-                imageVector = androidx.compose.material.icons.Icons.Default.Info,
+                imageVector = Default.Info,
                 contentDescription = null
             )
         }

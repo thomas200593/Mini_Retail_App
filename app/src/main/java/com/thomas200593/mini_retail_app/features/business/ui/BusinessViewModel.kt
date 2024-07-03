@@ -15,8 +15,6 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-private val TAG = BusinessViewModel::class.simpleName
-
 @HiltViewModel
 class BusinessViewModel @Inject constructor(
     private val repository: BusinessRepository,
