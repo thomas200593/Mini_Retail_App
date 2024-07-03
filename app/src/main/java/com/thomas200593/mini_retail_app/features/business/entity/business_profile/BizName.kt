@@ -1,4 +1,4 @@
-package com.thomas200593.mini_retail_app.features.business.entity
+package com.thomas200593.mini_retail_app.features.business.entity.business_profile
 
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.AuditTrail
 import kotlinx.serialization.Serializable

@@ -1,8 +1,8 @@
-package com.thomas200593.mini_retail_app.features.business.entity.dto
+package com.thomas200593.mini_retail_app.features.business.entity.business_profile.dto
 
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.AuditTrail
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.Industries
-import com.thomas200593.mini_retail_app.features.business.entity.BizName
+import com.thomas200593.mini_retail_app.features.business.entity.business_profile.BizName
 import kotlinx.serialization.Serializable
 
 @Serializable

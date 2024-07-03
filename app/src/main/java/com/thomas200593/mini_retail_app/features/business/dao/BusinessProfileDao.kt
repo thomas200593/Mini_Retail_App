@@ -5,7 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.thomas200593.mini_retail_app.core.data.local.database.AppLocalDatabaseHelper
-import com.thomas200593.mini_retail_app.features.business.entity.BusinessProfile
+import com.thomas200593.mini_retail_app.features.business.entity.business_profile.BusinessProfile
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
