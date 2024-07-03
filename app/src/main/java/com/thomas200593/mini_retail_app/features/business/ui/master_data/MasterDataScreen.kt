@@ -52,29 +52,19 @@ fun MasterDataScreen(
     appState: AppState = LocalAppState.current
 ){
     val sessionState by appState.isSessionValid.collectAsStateWithLifecycle()
-    val businessMasterDataMenuPreferences by viewModel.businessMasterDataMenuPreferences
+    val menuData by viewModel.menuData
 
     when(sessionState){
-        SessionState.Loading -> {
-            LoadingScreen()
-        }
-        is SessionState.Invalid -> {
-            LaunchedEffect(Unit) {
-                viewModel.onOpen(sessionState)
-            }
-        }
-        is SessionState.Valid -> {
-            LaunchedEffect(Unit) {
-                viewModel.onOpen(sessionState)
-            }
-        }
+        SessionState.Loading -> { LoadingScreen() }
+        is SessionState.Invalid -> { LaunchedEffect(Unit) { viewModel.onOpen(sessionState) } }
+        is SessionState.Valid -> { LaunchedEffect(Unit) { viewModel.onOpen(sessionState) } }
     }
 
     TopAppBar(
         onNavigateBack = appState::onNavigateUp
     )
     ScreenContent(
-        businessMasterDataMenuPreferences = businessMasterDataMenuPreferences,
+        menuData = menuData,
         onNavigateToMenu = { menu ->
             appState.navController.navigateToMasterData(
                 navOptions = navOptions {
@@ -110,8 +100,7 @@ private fun TopAppBar(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ){
             Icon(
-                modifier = Modifier
-                    .sizeIn(maxHeight = ButtonDefaults.IconSize),
+                modifier = Modifier.sizeIn(maxHeight = ButtonDefaults.IconSize),
                 imageVector = ImageVector.vectorResource(id = master_data),
                 contentDescription = null
             )
@@ -129,8 +118,7 @@ private fun TopAppBar(
             horizontalArrangement = Arrangement.Center
         ){
             Icon(
-                modifier = Modifier
-                    .sizeIn(maxHeight = ButtonDefaults.IconSize),
+                modifier = Modifier.sizeIn(maxHeight = ButtonDefaults.IconSize),
                 imageVector = Icons.Default.Info,
                 contentDescription = null
             )
@@ -140,13 +128,11 @@ private fun TopAppBar(
 
 @Composable
 private fun ScreenContent(
-    businessMasterDataMenuPreferences: RequestState<Set<DestinationMasterData>>,
+    menuData: RequestState<Set<DestinationMasterData>>,
     onNavigateToMenu: (DestinationMasterData) -> Unit
 ) {
-    when(businessMasterDataMenuPreferences){
-        RequestState.Idle, RequestState.Loading -> {
-            LoadingScreen()
-        }
+    when(menuData){
+        RequestState.Idle, RequestState.Loading -> { LoadingScreen() }
         is RequestState.Error -> {
             ErrorScreen(
                 title = stringResource(id = R.string.str_error),
@@ -162,26 +148,21 @@ private fun ScreenContent(
             )
         }
         is RequestState.Success -> {
-            val menuPreferences = businessMasterDataMenuPreferences.data
+            val preferencesList = menuData.data
             LazyVerticalGrid(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(8.dp),
+                modifier = Modifier.fillMaxSize().padding(8.dp),
                 columns = GridCells.Fixed(3)
             ) {
-                items(count = menuPreferences.count()){ index ->
-                    val menu = menuPreferences.elementAt(index)
+                items(count = preferencesList.count()){ index ->
+                    val menu = preferencesList.elementAt(index)
                     Surface(
-                        modifier = Modifier.fillMaxWidth()
-                            .padding(4.dp),
+                        modifier = Modifier.fillMaxWidth().padding(4.dp),
                         onClick = { onNavigateToMenu(menu) },
                         shape = MaterialTheme.shapes.medium,
                         border = BorderStroke(1.dp, Color.DarkGray),
                     ) {
                         Column(
-                            Modifier
-                                .fillMaxSize()
-                                .padding(8.dp),
+                            Modifier.fillMaxSize().padding(8.dp),
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterVertically)
                         ) {

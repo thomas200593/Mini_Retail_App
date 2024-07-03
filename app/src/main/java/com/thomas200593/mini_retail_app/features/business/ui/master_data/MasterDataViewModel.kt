@@ -17,22 +17,19 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MasterDataViewModel @Inject constructor(
-    private val masterDataRepository: MasterDataRepository,
+    private val repository: MasterDataRepository,
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ): ViewModel() {
-    private val _businessMasterDataMenuPreferences: MutableState<RequestState<Set<DestinationMasterData>>> = mutableStateOf(RequestState.Idle)
-    val businessMasterDataMenuPreferences = _businessMasterDataMenuPreferences
+    private val _menuData: MutableState<RequestState<Set<DestinationMasterData>>> = mutableStateOf(RequestState.Idle)
+    val menuData = _menuData
 
     fun onOpen(sessionState: SessionState) = viewModelScope.launch(ioDispatcher){
-        getBusinessMasterDataMenuPreferences(sessionState)
+        getMenuData(sessionState)
     }
 
-    private suspend fun getBusinessMasterDataMenuPreferences(sessionState: SessionState) = viewModelScope.launch(ioDispatcher){
-        _businessMasterDataMenuPreferences.value = RequestState.Loading
-        _businessMasterDataMenuPreferences.value = try {
-            RequestState.Success(masterDataRepository.getMenuData(sessionState))
-        }catch (e: Throwable){
-            RequestState.Error(e)
-        }
+    private suspend fun getMenuData(sessionState: SessionState) = viewModelScope.launch(ioDispatcher){
+        _menuData.value = RequestState.Loading
+        _menuData.value = try { RequestState.Success(repository.getMenuData(sessionState)) }
+        catch (e: Throwable){ RequestState.Error(e) }
     }
 }
