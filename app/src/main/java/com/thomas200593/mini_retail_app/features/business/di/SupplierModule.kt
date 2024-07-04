@@ -31,16 +31,11 @@ abstract class SupplierModule {
 
 @Module
 @InstallIn(SingletonComponent::class)
-class SupplierPagingModule{
+object SupplierPagerModule{
     @Provides
     @Singleton
-    fun provideSupplierPager(
-        dbHelper: AppLocalDatabaseHelper
-    ): Pager<Int, Supplier> =
-        Pager(
-            config = PagingConfig(pageSize = 30),
-            pagingSourceFactory = {
-                dbHelper.getSupplierDao().pagingSource()
-            }
-        )
+    fun providesSupplierPager(db: AppLocalDatabaseHelper): Pager<Int, Supplier> = Pager(
+        config = PagingConfig(pageSize = 20),
+        pagingSourceFactory = { db.getSupplierDao().pagingSource() }
+    )
 }

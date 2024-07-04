@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.AuditTrail
+import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.Contact
 import com.thomas200593.mini_retail_app.core.design_system.base_class.BaseEntity
 import com.thomas200593.mini_retail_app.features.business.entity.business_profile.BizIdentity
 import kotlinx.serialization.Serializable
@@ -24,5 +25,8 @@ data class Supplier(
     override val auditTrail: AuditTrail = AuditTrail(),
 
     @ColumnInfo(name = "spr_biz_identity")
-    val sprBizIdentity: BizIdentity? = null
+    val sprBizIdentity: BizIdentity? = null,
+
+    @ColumnInfo(name = "spr_biz_contacts")
+    val sprBizContacts: List<Contact>? = null
 ): BaseEntity

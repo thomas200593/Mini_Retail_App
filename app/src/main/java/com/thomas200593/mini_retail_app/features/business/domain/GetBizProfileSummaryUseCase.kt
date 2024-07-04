@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class GetBusinessProfileSummaryUseCase @Inject constructor(
+class GetBizProfileSummaryUseCase @Inject constructor(
     private val repository: BusinessProfileRepository,
     private val bizExtFn: BusinessExtFn,
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher

@@ -10,7 +10,7 @@ import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatche
 import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
 import com.thomas200593.mini_retail_app.features.auth.entity.UserData
 import com.thomas200593.mini_retail_app.features.auth.repository.AuthRepository
-import com.thomas200593.mini_retail_app.features.business.domain.GetBusinessProfileSummaryUseCase
+import com.thomas200593.mini_retail_app.features.business.domain.GetBizProfileSummaryUseCase
 import com.thomas200593.mini_retail_app.features.business.entity.business_profile.dto.BusinessProfileSummary
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -23,7 +23,7 @@ private val TAG = UserProfileViewModel::class.simpleName
 @HiltViewModel
 class UserProfileViewModel @Inject constructor(
     private val authRepository: AuthRepository,
-    private val getBusinessProfileSummary: GetBusinessProfileSummaryUseCase,
+    private val useCase: GetBizProfileSummaryUseCase,
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
 ): ViewModel(){
 
@@ -52,7 +52,7 @@ class UserProfileViewModel @Inject constructor(
     private fun getBusinessProfileSummary() = viewModelScope.launch(ioDispatcher){
         Timber.d("Called : fun $TAG.getBusinessProfile()")
         _businessProfileSummary.value = RequestState.Loading
-        getBusinessProfileSummary.invoke().collect{ bps ->
+        useCase.invoke().collect{ bps ->
             _businessProfileSummary.value = bps
         }
     }
