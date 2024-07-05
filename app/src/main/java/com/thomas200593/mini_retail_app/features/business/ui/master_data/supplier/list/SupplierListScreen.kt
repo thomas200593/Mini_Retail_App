@@ -195,7 +195,7 @@ private fun ScreenContent(
         ) {
             items(
                 count = supplierList.itemCount,
-                key = supplierList.itemKey{ it.seqId }
+                key = supplierList.itemKey{ it.genId }
             ){ index ->
                 supplierList[index]?.let { supplier ->
                     Surface(
