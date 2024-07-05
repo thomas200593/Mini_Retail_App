@@ -37,6 +37,7 @@ import com.thomas200593.mini_retail_app.app.ui.AppState
 import com.thomas200593.mini_retail_app.app.ui.LocalAppState
 import com.thomas200593.mini_retail_app.core.ui.common.Icons.Data.master_data
 import com.thomas200593.mini_retail_app.core.ui.component.AppBar
+import com.thomas200593.mini_retail_app.core.ui.component.Searching.SearchToolBar
 import com.thomas200593.mini_retail_app.features.business.entity.supplier.Supplier
 
 @Composable
@@ -45,6 +46,7 @@ fun SupplierListScreen(
     appState: AppState = LocalAppState.current
 ){
     val sessionState by appState.isSessionValid.collectAsStateWithLifecycle()
+    val searchQuery by viewModel.searchQuery.collectAsStateWithLifecycle()
     val supplierList = viewModel.supplierPagingDataFlow.collectAsLazyPagingItems()
 
     TopAppBar(
@@ -52,6 +54,8 @@ fun SupplierListScreen(
     )
     ScreenContent(
         supplierList = supplierList,
+        searchQuery = searchQuery,
+        onSearchQueryChanged = viewModel::performSearch,
         testGen = viewModel::testGen
     )
 }
@@ -79,8 +83,7 @@ private fun TopAppBar(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ){
             Icon(
-                modifier = Modifier
-                    .sizeIn(maxHeight = ButtonDefaults.IconSize),
+                modifier = Modifier.sizeIn(maxHeight = ButtonDefaults.IconSize),
                 imageVector = ImageVector.vectorResource(id = master_data),
                 contentDescription = null
             )
@@ -98,8 +101,7 @@ private fun TopAppBar(
             horizontalArrangement = Arrangement.Center
         ){
             Icon(
-                modifier = Modifier
-                    .sizeIn(maxHeight = ButtonDefaults.IconSize),
+                modifier = Modifier.sizeIn(maxHeight = ButtonDefaults.IconSize),
                 imageVector = Icons.Default.Info,
                 contentDescription = null
             )
@@ -110,36 +112,57 @@ private fun TopAppBar(
 @Composable
 private fun ScreenContent(
     supplierList: LazyPagingItems<Supplier>,
+    searchQuery: String,
+    onSearchQueryChanged: (String) -> Unit,
     testGen: () -> Unit
 ) {
-    // -> onLoad(): Display the paged list
-    // if the search query changed apply filter
-    // apply additional filter?
-    // reset filter
-    // onItemClick, go to detail
     Column(
         modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
+            .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Top)
     ) {
-        Row {
-            Button(onClick = { testGen() }) {
-                Text(text = "Test Gen")
-            }
+        // Search TextField with debounce
+        Button(onClick = { testGen() }) {
+            Text(text = "Test Gen (10)")
         }
+        SearchToolBar(
+            searchQuery = searchQuery,
+            placeholder = { Text(text = "Search Supplier...") },
+            onSearchQueryChanged = onSearchQueryChanged,
+            onSearchTriggered = onSearchQueryChanged
+        )
         LazyColumn(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.Top),
         ) {
             items(
                 count = supplierList.itemCount,
                 key = supplierList.itemKey{ it.seqId }
             ){ index ->
                 supplierList[index]?.let { supplier ->
-                    Text(text = "Supplier Id: ${supplier.genId}")
-                    HorizontalDivider(thickness = 3.dp, color = MaterialTheme.colorScheme.error)
+                    Surface(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp),
+                        shape = MaterialTheme.shapes.medium,
+                        color = MaterialTheme.colorScheme.surfaceContainerHighest,
+                        contentColor = MaterialTheme.colorScheme.onSurfaceVariant
+                    ){
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(8.dp),
+                            verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(text = "Supplier ID: ${supplier.genId}")
+                            Text(text = "Supplier Name: ${supplier.sprLegalName}")
+                        }
+                    }
                 }
             }
         }

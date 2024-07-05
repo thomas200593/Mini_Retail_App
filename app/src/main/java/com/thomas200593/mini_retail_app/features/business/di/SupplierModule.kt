@@ -28,14 +28,3 @@ abstract class SupplierModule {
         impl: SupplierDaoImpl
     ): SupplierDao
 }
-
-@Module
-@InstallIn(SingletonComponent::class)
-object SupplierPagerModule{
-    @Provides
-    @Singleton
-    fun providesSupplierPager(db: AppLocalDatabaseHelper): Pager<Int, Supplier> = Pager(
-        config = PagingConfig(pageSize = 20),
-        pagingSourceFactory = { db.getSupplierDao().pagingSource() }
-    )
-}

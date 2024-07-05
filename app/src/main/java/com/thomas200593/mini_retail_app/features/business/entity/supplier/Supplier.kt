@@ -24,8 +24,8 @@ data class Supplier(
     @ColumnInfo(name = "audit_trail")
     override val auditTrail: AuditTrail = AuditTrail(),
 
-    @ColumnInfo(name = "spr_biz_identity")
-    val sprBizIdentity: BizIdentity? = null,
+    @ColumnInfo(name = "spr_legal_name")
+    val sprLegalName: String? = String(),
 
     @ColumnInfo(name = "spr_biz_contacts")
     val sprBizContacts: List<Contact>? = null
