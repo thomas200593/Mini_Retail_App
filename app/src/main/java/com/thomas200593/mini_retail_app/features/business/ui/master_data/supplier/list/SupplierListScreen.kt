@@ -174,7 +174,12 @@ private fun ScreenContent(
                             visible = !visible
                         }
                     ),
-                    imageVector = if(visible){Icons.Outlined.KeyboardArrowUp}else{Icons.Outlined.KeyboardArrowDown},
+                    imageVector = if(visible){
+                        Icons.Outlined.KeyboardArrowUp
+                    }
+                    else{
+                        Icons.Outlined.KeyboardArrowDown
+                    },
                     contentDescription = null
                 )
             }
