@@ -1,6 +1,8 @@
 package com.thomas200593.mini_retail_app.features.business.ui.master_data.supplier.list
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,15 +13,21 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.Info
-import androidx.compose.material3.Button
+import androidx.compose.material.icons.outlined.KeyboardArrowDown
+import androidx.compose.material.icons.outlined.KeyboardArrowUp
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -39,30 +47,35 @@ import com.thomas200593.mini_retail_app.core.ui.common.Icons.Data.master_data
 import com.thomas200593.mini_retail_app.core.ui.component.AppBar
 import com.thomas200593.mini_retail_app.core.ui.component.Searching.SearchToolBar
 import com.thomas200593.mini_retail_app.features.business.entity.supplier.Supplier
+import com.thomas200593.mini_retail_app.features.business.entity.supplier.dto.SupplierDataOrdering
 
 @Composable
 fun SupplierListScreen(
     viewModel: SupplierListViewModel = hiltViewModel(),
     appState: AppState = LocalAppState.current
 ){
-    val sessionState by appState.isSessionValid.collectAsStateWithLifecycle()
-    val searchQuery by viewModel.searchQuery.collectAsStateWithLifecycle()
+    val orderBy by viewModel.orderBy.collectAsStateWithLifecycle()
+    val searchQuery by viewModel.query.collectAsStateWithLifecycle()
     val supplierList = viewModel.supplierPagingDataFlow.collectAsLazyPagingItems()
 
     TopAppBar(
-        onNavigateBack = appState::onNavigateUp
+        onNavigateBack = appState::onNavigateUp,
+        //TODO: REMOVE LATER
+        testGen = viewModel::testGen
     )
     ScreenContent(
         supplierList = supplierList,
-        searchQuery = searchQuery,
         onSearchQueryChanged = viewModel::performSearch,
-        testGen = viewModel::testGen
+        onDataOrderingChanged = viewModel::updateOrderBy,
+        orderBy = orderBy,
+        searchQuery = searchQuery
     )
 }
 
 @Composable
 private fun TopAppBar(
-    onNavigateBack: () -> Unit
+    onNavigateBack: () -> Unit,
+    testGen: () -> Unit
 ) {
     AppBar.ProvideTopAppBarNavigationIcon {
         Surface(
@@ -101,7 +114,11 @@ private fun TopAppBar(
             horizontalArrangement = Arrangement.Center
         ){
             Icon(
-                modifier = Modifier.sizeIn(maxHeight = ButtonDefaults.IconSize),
+                modifier = Modifier
+                    .sizeIn(maxHeight = ButtonDefaults.IconSize)
+                    .clickable(
+                        onClick = { testGen() }
+                    ),
                 imageVector = Icons.Default.Info,
                 contentDescription = null
             )
@@ -114,28 +131,65 @@ private fun ScreenContent(
     supplierList: LazyPagingItems<Supplier>,
     searchQuery: String,
     onSearchQueryChanged: (String) -> Unit,
-    testGen: () -> Unit
+    onDataOrderingChanged: (SupplierDataOrdering) -> Unit,
+    orderBy: SupplierDataOrdering
 ) {
     Column(
         modifier = Modifier
             .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Top)
+        verticalArrangement = Arrangement.Top
     ) {
         // Search TextField with debounce
-        Button(onClick = { testGen() }) {
-            Text(text = "Test Gen (10)")
+        var visible by remember { mutableStateOf(false) }
+        var expanded by remember { mutableStateOf(false) }
+        Row(
+            modifier = Modifier.fillMaxWidth(1.0f)
+        ){
+            Row(modifier = Modifier.weight(0.9f)) {
+                Box {
+                    TextButton(onClick = { expanded = true }) {
+                        Text(text = orderBy.label)
+                    }
+                    DropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false }
+                    ) {
+                        SupplierDataOrdering.entries.forEach { order ->
+                            DropdownMenuItem(
+                                onClick = {
+                                    onDataOrderingChanged(order)
+                                    expanded = false
+                                },
+                                text = { Text(order.label) }
+                            )
+                        }
+                    }
+                }
+            }
+            Row(modifier = Modifier.weight(0.1f)) {
+                Icon(
+                    modifier = Modifier.clickable(
+                        onClick = {
+                            visible = !visible
+                        }
+                    ),
+                    imageVector = if(visible){Icons.Outlined.KeyboardArrowUp}else{Icons.Outlined.KeyboardArrowDown},
+                    contentDescription = null
+                )
+            }
         }
-        SearchToolBar(
-            searchQuery = searchQuery,
-            placeholder = { Text(text = "Search Supplier...") },
-            onSearchQueryChanged = onSearchQueryChanged,
-            onSearchTriggered = onSearchQueryChanged
-        )
+        if(visible){
+            SearchToolBar(
+                modifier = Modifier.fillMaxWidth(),
+                searchQuery = searchQuery,
+                placeholder = { Text(text = "Search Supplier...") },
+                onSearchQueryChanged = onSearchQueryChanged,
+                onSearchTriggered = onSearchQueryChanged
+            )
+        }
         LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(8.dp),
+            modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.Top),
         ) {

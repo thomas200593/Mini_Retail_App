@@ -89,7 +89,7 @@ object Searching{
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
+                .padding(8.dp)
                 .focusRequester(focusRequester = focusRequester)
                 .onKeyEvent {
                     if (it.key == Key.Enter) {

@@ -17,12 +17,14 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import ulid.ULID
 import javax.inject.Inject
+import kotlin.random.Random
 
 @HiltViewModel
 class SupplierListViewModel @Inject constructor(
@@ -30,23 +32,31 @@ class SupplierListViewModel @Inject constructor(
     private val repository: SupplierRepository,
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ): ViewModel() {
-    val searchQuery: MutableStateFlow<String> = MutableStateFlow(String())
-    private val order: MutableStateFlow<SupplierDataOrdering> = MutableStateFlow(SupplierDataOrdering.GEN_ID_ASC)
+    //Searching Query
+    val query: MutableStateFlow<String> =
+        MutableStateFlow(String())
+
+    //Data Order By
+    val orderBy: MutableStateFlow<SupplierDataOrdering> =
+        MutableStateFlow(SupplierDataOrdering.GEN_ID_ASC)
+
     private val debounceDuration = 500L
 
     @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
-    val supplierPagingDataFlow : Flow<PagingData<Supplier>> = searchQuery
-            .debounce(debounceDuration)
-            .flatMapLatest { query -> useCase(query, order.value) }
-            .cachedIn(scope = viewModelScope)
+    val supplierPagingDataFlow : Flow<PagingData<Supplier>> =
+        combine(orderBy, query.debounce(debounceDuration))
+        { orderBy, query -> query to orderBy }
+            .flatMapLatest { (query, orderBy) -> useCase(query, orderBy) }
+            .cachedIn(viewModelScope)
             .flowOn(ioDispatcher)
 
     fun performSearch(query: String) = viewModelScope.launch(ioDispatcher){
-        searchQuery.value = query
+        this@SupplierListViewModel.query.value = query
     }
 
-    fun updateDataOrdering(orderBy: SupplierDataOrdering) = viewModelScope.launch(ioDispatcher){
-        order.value = orderBy
+    //TODO NOT WORKING
+    fun updateOrderBy(orderBy: SupplierDataOrdering) = viewModelScope.launch(ioDispatcher){
+        this@SupplierListViewModel.orderBy.value = orderBy
     }
 
     fun testGen() = viewModelScope.launch(ioDispatcher) {
@@ -54,7 +64,7 @@ class SupplierListViewModel @Inject constructor(
             val supplier = Supplier(
                 seqId = 0,
                 genId = ULID.randomULID(),
-                sprLegalName = "Supplier ${Math.random()}",
+                sprLegalName = "Supplier ${Random.nextInt(0,100)}",
                 auditTrail = AuditTrail()
             )
             repository.testGen(supplier)

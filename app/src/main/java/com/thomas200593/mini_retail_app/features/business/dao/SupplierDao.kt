@@ -12,28 +12,44 @@ import javax.inject.Inject
 @Dao
 interface SupplierDao{
     @Query("""
-SELECT * FROM 
-supplier
-WHERE 1 = 1
-ORDER BY
-    CASE WHEN :directionAsc = 1 THEN :orderBy END ASC,
-    CASE WHEN :directionAsc = 0 THEN :orderBy END DESC
+SELECT * FROM SUPPLIER ORDER BY gen_id ASC
     """)
-    fun getAllSuppliers(orderBy: String, directionAsc: Int): PagingSource<Int, Supplier>
+    fun getAllSuppliersByGenIdAsc(): PagingSource<Int, Supplier>
 
     @Query("""
-SELECT * FROM
-supplier
-WHERE 1 = 1
-AND (
-    (gen_id LIKE :searchQuery) OR
-    (spr_legal_name LIKE :searchQuery)
-)
-ORDER BY 
-    CASE WHEN :directionAsc = 1 THEN :orderBy END ASC,
-    CASE WHEN :directionAsc = 0 THEN :orderBy END DESC
+SELECT * FROM SUPPLIER ORDER BY gen_id DESC
     """)
-    fun searchSuppliers(searchQuery: String, orderBy: String, directionAsc: Int): PagingSource<Int, Supplier>
+    fun getAllSuppliersByGenIdDesc(): PagingSource<Int, Supplier>
+
+    @Query("""
+SELECT * FROM SUPPLIER ORDER BY spr_legal_name ASC
+    """)
+    fun getAllSupplierByLegalNameAsc(): PagingSource<Int, Supplier>
+
+    @Query("""
+SELECT * FROM SUPPLIER ORDER BY spr_legal_name DESC
+    """)
+    fun getAllSupplierByLegalNameDesc(): PagingSource<Int, Supplier>
+
+    @Query("""
+SELECT * FROM SUPPLIER WHERE spr_legal_name LIKE :query ORDER BY spr_legal_name ASC
+    """)
+    fun searchSupplierByLegalNameAsc(query: String): PagingSource<Int, Supplier>
+
+    @Query("""
+SELECT * FROM supplier WHERE spr_legal_name LIKE :query ORDER BY spr_legal_name DESC
+    """)
+    fun searchSupplierByLegalNameDesc(query: String): PagingSource<Int, Supplier>
+
+    @Query("""
+SELECT * FROM supplier WHERE spr_legal_name LIKE :query ORDER BY gen_id ASC
+    """)
+    fun searchSupplierByGenIdAsc(query: String): PagingSource<Int, Supplier>
+
+    @Query("""
+SELECT * FROM supplier WHERE spr_legal_name LIKE :query ORDER BY gen_id DESC
+    """)
+    fun searchSupplierByGenIdDesc(query: String): PagingSource<Int, Supplier>
 
     @Insert(entity = Supplier::class, onConflict = OnConflictStrategy.IGNORE)
     fun testGen(supplier: Supplier)
@@ -42,22 +58,29 @@ ORDER BY
 class SupplierDaoImpl @Inject constructor(
     private val dbHelper: AppLocalDatabaseHelper
 ): SupplierDao{
-    override fun getAllSuppliers(orderBy: String, directionAsc: Int): PagingSource<Int, Supplier> =
-        dbHelper.getSupplierDao().getAllSuppliers(
-            orderBy = orderBy,
-            directionAsc = directionAsc
-        )
+    override fun getAllSuppliersByGenIdAsc(): PagingSource<Int, Supplier> =
+        dbHelper.getSupplierDao().getAllSuppliersByGenIdAsc()
 
-    override fun searchSuppliers(
-        searchQuery: String,
-        orderBy: String,
-        directionAsc: Int
-    ): PagingSource<Int, Supplier> =
-        dbHelper.getSupplierDao().searchSuppliers(
-            searchQuery = searchQuery,
-            orderBy = orderBy,
-            directionAsc = directionAsc
-        )
+    override fun getAllSuppliersByGenIdDesc(): PagingSource<Int, Supplier> =
+        dbHelper.getSupplierDao().getAllSuppliersByGenIdDesc()
+
+    override fun getAllSupplierByLegalNameAsc(): PagingSource<Int, Supplier> =
+        dbHelper.getSupplierDao().getAllSupplierByLegalNameAsc()
+
+    override fun getAllSupplierByLegalNameDesc(): PagingSource<Int, Supplier> =
+        dbHelper.getSupplierDao().getAllSupplierByLegalNameDesc()
+
+    override fun searchSupplierByGenIdAsc(query: String): PagingSource<Int, Supplier> =
+        dbHelper.getSupplierDao().searchSupplierByGenIdAsc("%$query%")
+
+    override fun searchSupplierByGenIdDesc(query: String): PagingSource<Int, Supplier> =
+        dbHelper.getSupplierDao().searchSupplierByGenIdDesc("%$query%")
+
+    override fun searchSupplierByLegalNameAsc(query: String): PagingSource<Int, Supplier> =
+        dbHelper.getSupplierDao().searchSupplierByLegalNameAsc("%$query%")
+
+    override fun searchSupplierByLegalNameDesc(query: String): PagingSource<Int, Supplier> =
+        dbHelper.getSupplierDao().searchSupplierByLegalNameDesc("%$query%")
 
     override fun testGen(supplier: Supplier) =
         dbHelper.getSupplierDao().testGen(supplier = supplier)

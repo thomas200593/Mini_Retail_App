@@ -16,18 +16,12 @@ class GetSupplierListUseCase @Inject constructor(
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ) {
     operator fun invoke(
-        searchQuery: String?,
-        dataOrdering: SupplierDataOrdering
+        query: String?,
+        orderBy: SupplierDataOrdering
     ): Flow<PagingData<Supplier>> =
-        if(searchQuery.isNullOrEmpty()){
-            val orderBy = dataOrdering.key
-            val directionAsc = dataOrdering.directionAsc
-            repository.getAllSuppliers(orderBy = orderBy, directionAsc = directionAsc)
-                .flowOn(ioDispatcher)
+        if(query.isNullOrEmpty() || query.isBlank()){
+            repository.getAllSuppliers(orderBy = orderBy).flowOn(ioDispatcher)
         }else{
-            val orderBy = dataOrdering.key
-            val directionAsc = dataOrdering.directionAsc
-            repository.searchSuppliers(searchQuery = searchQuery, orderBy = orderBy, directionAsc = directionAsc)
-                .flowOn(ioDispatcher)
+            repository.searchSuppliers(query = query, orderBy = orderBy).flowOn(ioDispatcher)
         }
 }

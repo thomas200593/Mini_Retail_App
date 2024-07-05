@@ -7,6 +7,7 @@ import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatche
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatchers
 import com.thomas200593.mini_retail_app.features.business.dao.SupplierDao
 import com.thomas200593.mini_retail_app.features.business.entity.supplier.Supplier
+import com.thomas200593.mini_retail_app.features.business.entity.supplier.dto.SupplierDataOrdering
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
@@ -16,12 +17,12 @@ class SupplierRepositoryImpl @Inject constructor(
     private val dao: SupplierDao,
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ): SupplierRepository {
-    override fun getAllSuppliers(orderBy: String, directionAsc: Int): Flow<PagingData<Supplier>> {
-        val pagingSourceFactory = {
-            dao.getAllSuppliers(
-                orderBy = orderBy,
-                directionAsc = directionAsc
-            )
+    override fun getAllSuppliers(orderBy: SupplierDataOrdering): Flow<PagingData<Supplier>> {
+        val pagingSourceFactory = when(orderBy){
+            SupplierDataOrdering.GEN_ID_ASC -> {{dao.getAllSuppliersByGenIdAsc()}}
+            SupplierDataOrdering.GEN_ID_DESC -> {{dao.getAllSuppliersByGenIdDesc()}}
+            SupplierDataOrdering.LEGAL_NAME_ASC -> {{dao.getAllSupplierByLegalNameAsc()}}
+            SupplierDataOrdering.LEGAL_NAME_DESC -> {{dao.getAllSupplierByLegalNameDesc()}}
         }
         return Pager(
             config = PagingConfig(pageSize = 20, enablePlaceholders = false),
@@ -30,16 +31,14 @@ class SupplierRepositoryImpl @Inject constructor(
     }
 
     override fun searchSuppliers(
-        searchQuery: String?,
-        orderBy: String,
-        directionAsc: Int
+        query: String,
+        orderBy: SupplierDataOrdering
     ): Flow<PagingData<Supplier>> {
-        val pagingSourceFactory = {
-            dao.searchSuppliers(
-                searchQuery = "%$searchQuery%",
-                orderBy = orderBy,
-                directionAsc = directionAsc
-            )
+        val pagingSourceFactory = when(orderBy){
+            SupplierDataOrdering.GEN_ID_ASC -> {{dao.searchSupplierByGenIdAsc(query)}}
+            SupplierDataOrdering.GEN_ID_DESC -> {{dao.searchSupplierByGenIdDesc(query)}}
+            SupplierDataOrdering.LEGAL_NAME_ASC -> {{dao.searchSupplierByLegalNameAsc(query)}}
+            SupplierDataOrdering.LEGAL_NAME_DESC -> {{dao.searchSupplierByLegalNameDesc(query)}}
         }
         return Pager(
             config = PagingConfig(pageSize = 20, enablePlaceholders = false),
