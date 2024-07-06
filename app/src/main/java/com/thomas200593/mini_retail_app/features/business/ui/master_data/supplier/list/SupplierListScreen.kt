@@ -1,5 +1,7 @@
 package com.thomas200593.mini_retail_app.features.business.ui.master_data.supplier.list
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -30,9 +32,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -42,6 +48,7 @@ import androidx.paging.compose.itemKey
 import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.app.ui.AppState
 import com.thomas200593.mini_retail_app.app.ui.LocalAppState
+import com.thomas200593.mini_retail_app.core.ui.common.Icons.App.app
 import com.thomas200593.mini_retail_app.core.ui.common.Icons.Data.master_data
 import com.thomas200593.mini_retail_app.core.ui.component.AppBar
 import com.thomas200593.mini_retail_app.core.ui.component.Searching.SearchToolBar
@@ -68,7 +75,10 @@ fun SupplierListScreen(
         onSearchQueryChanged = viewModel::performSearch,
         onSortByChanged = viewModel::updateSortBy,
         sortBy = sortBy,
-        searchQuery = searchQuery
+        searchQuery = searchQuery,
+        //TODO
+        onClick = { _: Supplier -> },
+        onThumbnailClick = { _: Supplier -> }
     )
 }
 
@@ -134,7 +144,9 @@ private fun ScreenContent(
     searchQuery: String,
     onSearchQueryChanged: (String) -> Unit,
     onSortByChanged: (SortSupplier) -> Unit,
-    sortBy: SortSupplier
+    sortBy: SortSupplier,
+    onClick: (Supplier) -> Unit,
+    onThumbnailClick: (Supplier) -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -204,26 +216,102 @@ private fun ScreenContent(
                 key = pagedListData.itemKey{ it.genId }
             ){ index ->
                 pagedListData[index]?.let { supplier ->
-                    Surface(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(8.dp),
-                        shape = MaterialTheme.shapes.medium,
-                        color = MaterialTheme.colorScheme.surfaceContainerHighest,
-                        contentColor = MaterialTheme.colorScheme.onSurfaceVariant
-                    ){
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(8.dp),
-                            verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Text(text = "Supplier ID: ${supplier.genId}")
-                            Text(text = "Supplier Name: ${supplier.sprLegalName}")
-                        }
-                    }
+                    SupplierListItem(
+                        onClick = onClick,
+                        onThumbnailClick = onThumbnailClick,
+                        supplier = supplier
+                    )
                 }
+            }
+        }
+    }
+}
+
+@Composable
+private fun SupplierListItem(
+    modifier: Modifier = Modifier,
+    supplier: Supplier,
+    onThumbnailClick: (Supplier) -> Unit,
+    onClick: (Supplier) -> Unit
+){
+    Surface(
+        onClick = { onClick(supplier) },
+        modifier = modifier,
+        shape = MaterialTheme.shapes.medium,
+        color = MaterialTheme.colorScheme.primaryContainer,
+        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+        border = BorderStroke(width = 2.dp, color = Color.DarkGray)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(1.0f)
+                .padding(4.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(
+                modifier = Modifier
+                    .weight(0.2f)
+                    .padding(4.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Surface(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    shape = MaterialTheme.shapes.medium,
+                    color = MaterialTheme.colorScheme.primaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                    border = BorderStroke(1.dp, Color.DarkGray),
+                    onClick = { onThumbnailClick(supplier) }
+                ) {
+                    //TODO : Render from user data which have Images (1) with flag (isPrimaryImage -> True)
+                    Image(
+                        imageVector = ImageVector.vectorResource(id = app),
+                        contentDescription = null
+                    )
+                }
+            }
+            Column(
+                modifier = Modifier
+                    .weight(0.8f)
+                    .padding(4.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.Top)
+            ) {
+                Text(
+                    text = supplier.genId,
+                    style = MaterialTheme.typography.labelSmall,
+                    fontWeight = FontWeight.SemiBold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    color = MaterialTheme.colorScheme.onTertiaryContainer,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Start
+                )
+                supplier.sprLegalName.orEmpty().let {
+                    Text(
+                        text = it,
+                        style = MaterialTheme.typography.labelLarge,
+                        fontWeight = FontWeight.Bold,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Start
+                    )
+                }
+                Text(
+                    text = "Updated: ${supplier.auditTrail.modifiedAt}",
+                    style = MaterialTheme.typography.labelSmall,
+                    fontWeight = FontWeight.W400,
+                    fontStyle = FontStyle.Italic,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    color = MaterialTheme.colorScheme.onSecondaryContainer,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Start
+                )
             }
         }
     }
