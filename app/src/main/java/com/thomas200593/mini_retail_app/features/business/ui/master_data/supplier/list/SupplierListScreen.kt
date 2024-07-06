@@ -36,7 +36,6 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
@@ -54,8 +53,8 @@ fun SupplierListScreen(
     viewModel: SupplierListViewModel = hiltViewModel(),
     appState: AppState = LocalAppState.current
 ){
-    val orderBy by viewModel.orderBy.collectAsStateWithLifecycle()
-    val query by viewModel.query.collectAsStateWithLifecycle()
+    val searchQuery = viewModel.searchQuery
+    val dataOrderBy = viewModel.dataOrderBy
     val supplierList = viewModel.supplierPagingDataFlow.collectAsLazyPagingItems()
 
     TopAppBar(
@@ -67,8 +66,8 @@ fun SupplierListScreen(
         supplierList = supplierList,
         onSearchQueryChanged = viewModel::performSearch,
         onDataOrderingChanged = viewModel::updateOrderBy,
-        orderBy = orderBy,
-        query = query
+        orderBy = dataOrderBy,
+        query = searchQuery
     )
 }
 
@@ -117,7 +116,9 @@ private fun TopAppBar(
                 modifier = Modifier
                     .sizeIn(maxHeight = ButtonDefaults.IconSize)
                     .clickable(
-                        onClick = { testGen() }
+                        onClick = {
+                            testGen()
+                        }
                     ),
                 imageVector = Icons.Default.Info,
                 contentDescription = null
