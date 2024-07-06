@@ -57,7 +57,6 @@ fun SupplierListScreen(
     val sortBy = viewModel.sortBy
     val pagedListData = viewModel.pagedDataFlow.collectAsLazyPagingItems()
 
-
     //TODO search by ID not work
     TopAppBar(
         onNavigateBack = appState::onNavigateUp,
