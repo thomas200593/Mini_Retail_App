@@ -32,26 +32,26 @@ class SupplierListViewModel @Inject constructor(
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ): ViewModel() {
 
-    var searchQuery by mutableStateOf(String())
+    var query by mutableStateOf(String())
         private set
 
-    var dataOrderBy by mutableStateOf(SupplierDataOrdering.GEN_ID_ASC)
+    var orderBy by mutableStateOf(SupplierDataOrdering.GEN_ID_ASC)
         private set
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val supplierPagingDataFlow =
-        snapshotFlow { dataOrderBy }
-            .combine(snapshotFlow { searchQuery }){ orderBy, query -> query to orderBy }
+        snapshotFlow { orderBy }
+            .combine(snapshotFlow { query }){ orderBy, query -> query to orderBy }
             .flatMapLatest { (query, orderBy) -> useCase(query, orderBy) }
             .cachedIn(scope = viewModelScope)
             .flowOn(ioDispatcher)
 
     fun performSearch(query: String) = viewModelScope.launch(ioDispatcher) {
-        this@SupplierListViewModel.searchQuery = query
+        this@SupplierListViewModel.query = query
     }
 
     fun updateOrderBy(orderBy: SupplierDataOrdering) = viewModelScope.launch(ioDispatcher) {
-        this@SupplierListViewModel.dataOrderBy = orderBy
+        this@SupplierListViewModel.orderBy = orderBy
     }
 
     fun testGen() = viewModelScope.launch(ioDispatcher) {

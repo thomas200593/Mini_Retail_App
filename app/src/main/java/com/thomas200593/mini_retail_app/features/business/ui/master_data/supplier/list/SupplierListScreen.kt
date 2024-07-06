@@ -53,10 +53,12 @@ fun SupplierListScreen(
     viewModel: SupplierListViewModel = hiltViewModel(),
     appState: AppState = LocalAppState.current
 ){
-    val searchQuery = viewModel.searchQuery
-    val dataOrderBy = viewModel.dataOrderBy
+    val query = viewModel.query
+    val orderBy = viewModel.orderBy
     val supplierList = viewModel.supplierPagingDataFlow.collectAsLazyPagingItems()
 
+
+    //TODO search by ID not work
     TopAppBar(
         onNavigateBack = appState::onNavigateUp,
         //TODO: REMOVE LATER
@@ -66,8 +68,8 @@ fun SupplierListScreen(
         supplierList = supplierList,
         onSearchQueryChanged = viewModel::performSearch,
         onDataOrderingChanged = viewModel::updateOrderBy,
-        orderBy = dataOrderBy,
-        query = searchQuery
+        orderBy = orderBy,
+        query = query
     )
 }
 

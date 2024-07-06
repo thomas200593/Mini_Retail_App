@@ -19,10 +19,10 @@ class SupplierRepositoryImpl @Inject constructor(
 ): SupplierRepository {
     override fun getAllSuppliers(orderBy: SupplierDataOrdering): Flow<PagingData<Supplier>> {
         val pagingSourceFactory = when(orderBy){
-            SupplierDataOrdering.GEN_ID_ASC -> {{dao.getAllSuppliersByGenIdAsc()}}
-            SupplierDataOrdering.GEN_ID_DESC -> {{dao.getAllSuppliersByGenIdDesc()}}
-            SupplierDataOrdering.LEGAL_NAME_ASC -> {{dao.getAllSupplierByLegalNameAsc()}}
-            SupplierDataOrdering.LEGAL_NAME_DESC -> {{dao.getAllSupplierByLegalNameDesc()}}
+            SupplierDataOrdering.GEN_ID_ASC -> {{dao.getAllSortGenIdAsc()}}
+            SupplierDataOrdering.GEN_ID_DESC -> {{dao.getAllSortGenIdDesc()}}
+            SupplierDataOrdering.LEGAL_NAME_ASC -> {{dao.getAllSortLegalNameAsc()}}
+            SupplierDataOrdering.LEGAL_NAME_DESC -> {{dao.getAllSortLegalNameDesc()}}
         }
         return Pager(
             config = PagingConfig(pageSize = 20, enablePlaceholders = false),
@@ -35,10 +35,10 @@ class SupplierRepositoryImpl @Inject constructor(
         orderBy: SupplierDataOrdering
     ): Flow<PagingData<Supplier>> {
         val pagingSourceFactory = when(orderBy){
-            SupplierDataOrdering.GEN_ID_ASC -> {{dao.searchSupplierByGenIdAsc(query)}}
-            SupplierDataOrdering.GEN_ID_DESC -> {{dao.searchSupplierByGenIdDesc(query)}}
-            SupplierDataOrdering.LEGAL_NAME_ASC -> {{dao.searchSupplierByLegalNameAsc(query)}}
-            SupplierDataOrdering.LEGAL_NAME_DESC -> {{dao.searchSupplierByLegalNameDesc(query)}}
+            SupplierDataOrdering.GEN_ID_ASC -> {{dao.searchSortGenIdAsc(query)}}
+            SupplierDataOrdering.GEN_ID_DESC -> {{dao.searchSortGenIdDesc(query)}}
+            SupplierDataOrdering.LEGAL_NAME_ASC -> {{dao.searchSortLegalNameAsc(query)}}
+            SupplierDataOrdering.LEGAL_NAME_DESC -> {{dao.searchSortLegalNameDesc(query)}}
         }
         return Pager(
             config = PagingConfig(pageSize = 20, enablePlaceholders = false),

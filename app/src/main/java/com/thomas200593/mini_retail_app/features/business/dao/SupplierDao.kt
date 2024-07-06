@@ -12,44 +12,76 @@ import javax.inject.Inject
 @Dao
 interface SupplierDao{
     @Query("""
-SELECT * FROM SUPPLIER ORDER BY gen_id ASC
+SELECT * FROM supplier
+WHERE 1 = 1
+ORDER BY gen_id ASC
     """)
-    fun getAllSuppliersByGenIdAsc(): PagingSource<Int, Supplier>
+    fun getAllSortGenIdAsc(): PagingSource<Int, Supplier>
 
     @Query("""
-SELECT * FROM SUPPLIER ORDER BY gen_id DESC
+SELECT * FROM supplier 
+WHERE 1 = 1
+ORDER BY gen_id DESC
     """)
-    fun getAllSuppliersByGenIdDesc(): PagingSource<Int, Supplier>
+    fun getAllSortGenIdDesc(): PagingSource<Int, Supplier>
 
     @Query("""
-SELECT * FROM SUPPLIER ORDER BY spr_legal_name ASC
+SELECT * FROM supplier
+WHERE 1 = 1
+ORDER BY spr_legal_name ASC
     """)
-    fun getAllSupplierByLegalNameAsc(): PagingSource<Int, Supplier>
+    fun getAllSortLegalNameAsc(): PagingSource<Int, Supplier>
 
     @Query("""
-SELECT * FROM SUPPLIER ORDER BY spr_legal_name DESC
+SELECT * FROM supplier 
+WHERE 1 = 1
+ORDER BY spr_legal_name DESC
     """)
-    fun getAllSupplierByLegalNameDesc(): PagingSource<Int, Supplier>
+    fun getAllSortLegalNameDesc(): PagingSource<Int, Supplier>
 
     @Query("""
-SELECT * FROM SUPPLIER WHERE spr_legal_name LIKE :query ORDER BY spr_legal_name ASC
+SELECT * FROM supplier 
+WHERE 1 = 1 AND
+(
+    (gen_id LIKE :query) OR
+    (spr_legal_name LIKE :query)
+) 
+ORDER BY gen_id ASC
     """)
-    fun searchSupplierByLegalNameAsc(query: String): PagingSource<Int, Supplier>
+    fun searchSortGenIdAsc(query: String): PagingSource<Int, Supplier>
 
     @Query("""
-SELECT * FROM supplier WHERE spr_legal_name LIKE :query ORDER BY spr_legal_name DESC
+SELECT * FROM supplier 
+WHERE 1 = 1 AND
+(
+    (gen_id LIKE :query) OR
+    (spr_legal_name LIKE :query)
+) 
+ORDER BY gen_id DESC
     """)
-    fun searchSupplierByLegalNameDesc(query: String): PagingSource<Int, Supplier>
+    fun searchSortGenIdDesc(query: String): PagingSource<Int, Supplier>
 
     @Query("""
-SELECT * FROM supplier WHERE spr_legal_name LIKE :query ORDER BY gen_id ASC
+SELECT * FROM supplier 
+WHERE 1 = 1 AND
+(
+    (gen_id LIKE :query) OR
+    (spr_legal_name LIKE :query)
+) 
+ORDER BY spr_legal_name ASC
     """)
-    fun searchSupplierByGenIdAsc(query: String): PagingSource<Int, Supplier>
+    fun searchSortLegalNameAsc(query: String): PagingSource<Int, Supplier>
 
     @Query("""
-SELECT * FROM supplier WHERE spr_legal_name LIKE :query ORDER BY gen_id DESC
+SELECT * FROM supplier 
+WHERE 1 = 1 AND 
+(
+    (gen_id LIKE :query ) OR
+    (spr_legal_name LIKE :query)
+)
+ORDER BY spr_legal_name DESC
     """)
-    fun searchSupplierByGenIdDesc(query: String): PagingSource<Int, Supplier>
+    fun searchSortLegalNameDesc(query: String): PagingSource<Int, Supplier>
 
     @Insert(entity = Supplier::class, onConflict = OnConflictStrategy.IGNORE)
     fun testGen(supplier: Supplier)
@@ -58,29 +90,29 @@ SELECT * FROM supplier WHERE spr_legal_name LIKE :query ORDER BY gen_id DESC
 class SupplierDaoImpl @Inject constructor(
     private val dbHelper: AppLocalDatabaseHelper
 ): SupplierDao{
-    override fun getAllSuppliersByGenIdAsc(): PagingSource<Int, Supplier> =
-        dbHelper.getSupplierDao().getAllSuppliersByGenIdAsc()
+    override fun getAllSortGenIdAsc(): PagingSource<Int, Supplier> =
+        dbHelper.getSupplierDao().getAllSortGenIdAsc()
 
-    override fun getAllSuppliersByGenIdDesc(): PagingSource<Int, Supplier> =
-        dbHelper.getSupplierDao().getAllSuppliersByGenIdDesc()
+    override fun getAllSortGenIdDesc(): PagingSource<Int, Supplier> =
+        dbHelper.getSupplierDao().getAllSortGenIdDesc()
 
-    override fun getAllSupplierByLegalNameAsc(): PagingSource<Int, Supplier> =
-        dbHelper.getSupplierDao().getAllSupplierByLegalNameAsc()
+    override fun getAllSortLegalNameAsc(): PagingSource<Int, Supplier> =
+        dbHelper.getSupplierDao().getAllSortLegalNameAsc()
 
-    override fun getAllSupplierByLegalNameDesc(): PagingSource<Int, Supplier> =
-        dbHelper.getSupplierDao().getAllSupplierByLegalNameDesc()
+    override fun getAllSortLegalNameDesc(): PagingSource<Int, Supplier> =
+        dbHelper.getSupplierDao().getAllSortLegalNameDesc()
 
-    override fun searchSupplierByGenIdAsc(query: String): PagingSource<Int, Supplier> =
-        dbHelper.getSupplierDao().searchSupplierByGenIdAsc("%$query%")
+    override fun searchSortGenIdAsc(query: String): PagingSource<Int, Supplier> =
+        dbHelper.getSupplierDao().searchSortGenIdAsc("%$query%")
 
-    override fun searchSupplierByGenIdDesc(query: String): PagingSource<Int, Supplier> =
-        dbHelper.getSupplierDao().searchSupplierByGenIdDesc("%$query%")
+    override fun searchSortGenIdDesc(query: String): PagingSource<Int, Supplier> =
+        dbHelper.getSupplierDao().searchSortGenIdDesc("%$query%")
 
-    override fun searchSupplierByLegalNameAsc(query: String): PagingSource<Int, Supplier> =
-        dbHelper.getSupplierDao().searchSupplierByLegalNameAsc("%$query%")
+    override fun searchSortLegalNameAsc(query: String): PagingSource<Int, Supplier> =
+        dbHelper.getSupplierDao().searchSortLegalNameAsc("%$query%")
 
-    override fun searchSupplierByLegalNameDesc(query: String): PagingSource<Int, Supplier> =
-        dbHelper.getSupplierDao().searchSupplierByLegalNameDesc("%$query%")
+    override fun searchSortLegalNameDesc(query: String): PagingSource<Int, Supplier> =
+        dbHelper.getSupplierDao().searchSortLegalNameDesc("%$query%")
 
     override fun testGen(supplier: Supplier) =
         dbHelper.getSupplierDao().testGen(supplier = supplier)
