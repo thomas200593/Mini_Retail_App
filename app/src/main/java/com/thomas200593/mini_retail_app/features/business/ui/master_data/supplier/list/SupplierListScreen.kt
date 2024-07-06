@@ -46,16 +46,16 @@ import com.thomas200593.mini_retail_app.core.ui.common.Icons.Data.master_data
 import com.thomas200593.mini_retail_app.core.ui.component.AppBar
 import com.thomas200593.mini_retail_app.core.ui.component.Searching.SearchToolBar
 import com.thomas200593.mini_retail_app.features.business.entity.supplier.Supplier
-import com.thomas200593.mini_retail_app.features.business.entity.supplier.dto.SupplierDataOrdering
+import com.thomas200593.mini_retail_app.features.business.entity.supplier.dto.SortSupplier
 
 @Composable
 fun SupplierListScreen(
     viewModel: SupplierListViewModel = hiltViewModel(),
     appState: AppState = LocalAppState.current
 ){
-    val query = viewModel.query
-    val orderBy = viewModel.orderBy
-    val supplierList = viewModel.supplierPagingDataFlow.collectAsLazyPagingItems()
+    val searchQuery = viewModel.searchQuery
+    val sortBy = viewModel.sortBy
+    val pagedListData = viewModel.pagedDataFlow.collectAsLazyPagingItems()
 
 
     //TODO search by ID not work
@@ -65,11 +65,11 @@ fun SupplierListScreen(
         testGen = viewModel::testGen
     )
     ScreenContent(
-        supplierList = supplierList,
+        pagedListData = pagedListData,
         onSearchQueryChanged = viewModel::performSearch,
-        onDataOrderingChanged = viewModel::updateOrderBy,
-        orderBy = orderBy,
-        query = query
+        onSortByChanged = viewModel::updateSortBy,
+        sortBy = sortBy,
+        searchQuery = searchQuery
     )
 }
 
@@ -131,11 +131,11 @@ private fun TopAppBar(
 
 @Composable
 private fun ScreenContent(
-    supplierList: LazyPagingItems<Supplier>,
-    query: String,
+    pagedListData: LazyPagingItems<Supplier>,
+    searchQuery: String,
     onSearchQueryChanged: (String) -> Unit,
-    onDataOrderingChanged: (SupplierDataOrdering) -> Unit,
-    orderBy: SupplierDataOrdering
+    onSortByChanged: (SortSupplier) -> Unit,
+    sortBy: SortSupplier
 ) {
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -151,19 +151,19 @@ private fun ScreenContent(
             Row(modifier = Modifier.weight(0.9f)) {
                 Box {
                     TextButton(onClick = { expanded = true }) {
-                        Text(text = orderBy.label)
+                        Text(text = sortBy.title)
                     }
                     DropdownMenu(
                         expanded = expanded,
                         onDismissRequest = { expanded = false }
                     ) {
-                        SupplierDataOrdering.entries.forEach { order ->
+                        SortSupplier.entries.forEach { dropdownItem ->
                             DropdownMenuItem(
                                 onClick = {
-                                    onDataOrderingChanged(order)
+                                    onSortByChanged(dropdownItem)
                                     expanded = false
                                 },
-                                text = { Text(order.label) }
+                                text = { Text(dropdownItem.title) }
                             )
                         }
                     }
@@ -189,7 +189,7 @@ private fun ScreenContent(
         if(visible){
             SearchToolBar(
                 modifier = Modifier.fillMaxWidth(),
-                searchQuery = query,
+                searchQuery = searchQuery,
                 placeholder = { Text(text = "Search Supplier...") },
                 onSearchQueryChanged = onSearchQueryChanged,
                 onSearchTriggered = onSearchQueryChanged
@@ -201,10 +201,10 @@ private fun ScreenContent(
             verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.Top),
         ) {
             items(
-                count = supplierList.itemCount,
-                key = supplierList.itemKey{ it.genId }
+                count = pagedListData.itemCount,
+                key = pagedListData.itemKey{ it.genId }
             ){ index ->
-                supplierList[index]?.let { supplier ->
+                pagedListData[index]?.let { supplier ->
                     Surface(
                         modifier = Modifier
                             .fillMaxWidth()

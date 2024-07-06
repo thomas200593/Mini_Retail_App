@@ -12,7 +12,7 @@ import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatche
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatchers
 import com.thomas200593.mini_retail_app.features.business.domain.GetSupplierListUseCase
 import com.thomas200593.mini_retail_app.features.business.entity.supplier.Supplier
-import com.thomas200593.mini_retail_app.features.business.entity.supplier.dto.SupplierDataOrdering
+import com.thomas200593.mini_retail_app.features.business.entity.supplier.dto.SortSupplier
 import com.thomas200593.mini_retail_app.features.business.repository.SupplierRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -32,26 +32,26 @@ class SupplierListViewModel @Inject constructor(
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ): ViewModel() {
 
-    var query by mutableStateOf(String())
+    var searchQuery by mutableStateOf(String())
         private set
 
-    var orderBy by mutableStateOf(SupplierDataOrdering.GEN_ID_ASC)
+    var sortBy by mutableStateOf(SortSupplier.GEN_ID_ASC)
         private set
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val supplierPagingDataFlow =
-        snapshotFlow { orderBy }
-            .combine(snapshotFlow { query }){ orderBy, query -> query to orderBy }
-            .flatMapLatest { (query, orderBy) -> useCase(query, orderBy) }
+    val pagedDataFlow =
+        snapshotFlow { sortBy }
+            .combine(snapshotFlow { searchQuery }){ sortBy, searchQuery -> searchQuery to sortBy }
+            .flatMapLatest { (searchQuery, sortBy) -> useCase(searchQuery = searchQuery, sortBy = sortBy) }
             .cachedIn(scope = viewModelScope)
             .flowOn(ioDispatcher)
 
-    fun performSearch(query: String) = viewModelScope.launch(ioDispatcher) {
-        this@SupplierListViewModel.query = query
+    fun performSearch(searchQuery: String) = viewModelScope.launch(ioDispatcher) {
+        this@SupplierListViewModel.searchQuery = searchQuery
     }
 
-    fun updateOrderBy(orderBy: SupplierDataOrdering) = viewModelScope.launch(ioDispatcher) {
-        this@SupplierListViewModel.orderBy = orderBy
+    fun updateSortBy(sortBy: SortSupplier) = viewModelScope.launch(ioDispatcher) {
+        this@SupplierListViewModel.sortBy = sortBy
     }
 
     fun testGen() = viewModelScope.launch(ioDispatcher) {

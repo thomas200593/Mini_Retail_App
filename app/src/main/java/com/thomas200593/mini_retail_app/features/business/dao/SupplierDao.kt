@@ -43,45 +43,45 @@ ORDER BY spr_legal_name DESC
 SELECT * FROM supplier 
 WHERE 1 = 1 AND
 (
-    (gen_id LIKE :query) OR
-    (spr_legal_name LIKE :query)
+    (gen_id LIKE :searchQuery) OR
+    (spr_legal_name LIKE :searchQuery)
 ) 
 ORDER BY gen_id ASC
     """)
-    fun searchSortGenIdAsc(query: String): PagingSource<Int, Supplier>
+    fun searchSortGenIdAsc(searchQuery: String): PagingSource<Int, Supplier>
 
     @Query("""
 SELECT * FROM supplier 
 WHERE 1 = 1 AND
 (
-    (gen_id LIKE :query) OR
-    (spr_legal_name LIKE :query)
+    (gen_id LIKE :searchQuery) OR
+    (spr_legal_name LIKE :searchQuery)
 ) 
 ORDER BY gen_id DESC
     """)
-    fun searchSortGenIdDesc(query: String): PagingSource<Int, Supplier>
+    fun searchSortGenIdDesc(searchQuery: String): PagingSource<Int, Supplier>
 
     @Query("""
 SELECT * FROM supplier 
 WHERE 1 = 1 AND
 (
-    (gen_id LIKE :query) OR
-    (spr_legal_name LIKE :query)
+    (gen_id LIKE :searchQuery) OR
+    (spr_legal_name LIKE :searchQuery)
 ) 
 ORDER BY spr_legal_name ASC
     """)
-    fun searchSortLegalNameAsc(query: String): PagingSource<Int, Supplier>
+    fun searchSortLegalNameAsc(searchQuery: String): PagingSource<Int, Supplier>
 
     @Query("""
 SELECT * FROM supplier 
 WHERE 1 = 1 AND 
 (
-    (gen_id LIKE :query ) OR
-    (spr_legal_name LIKE :query)
+    (gen_id LIKE :searchQuery ) OR
+    (spr_legal_name LIKE :searchQuery)
 )
 ORDER BY spr_legal_name DESC
     """)
-    fun searchSortLegalNameDesc(query: String): PagingSource<Int, Supplier>
+    fun searchSortLegalNameDesc(searchQuery: String): PagingSource<Int, Supplier>
 
     @Insert(entity = Supplier::class, onConflict = OnConflictStrategy.IGNORE)
     fun testGen(supplier: Supplier)
@@ -102,17 +102,17 @@ class SupplierDaoImpl @Inject constructor(
     override fun getAllSortLegalNameDesc(): PagingSource<Int, Supplier> =
         dbHelper.getSupplierDao().getAllSortLegalNameDesc()
 
-    override fun searchSortGenIdAsc(query: String): PagingSource<Int, Supplier> =
-        dbHelper.getSupplierDao().searchSortGenIdAsc("%$query%")
+    override fun searchSortGenIdAsc(searchQuery: String): PagingSource<Int, Supplier> =
+        dbHelper.getSupplierDao().searchSortGenIdAsc("%$searchQuery%")
 
-    override fun searchSortGenIdDesc(query: String): PagingSource<Int, Supplier> =
-        dbHelper.getSupplierDao().searchSortGenIdDesc("%$query%")
+    override fun searchSortGenIdDesc(searchQuery: String): PagingSource<Int, Supplier> =
+        dbHelper.getSupplierDao().searchSortGenIdDesc("%$searchQuery%")
 
-    override fun searchSortLegalNameAsc(query: String): PagingSource<Int, Supplier> =
-        dbHelper.getSupplierDao().searchSortLegalNameAsc("%$query%")
+    override fun searchSortLegalNameAsc(searchQuery: String): PagingSource<Int, Supplier> =
+        dbHelper.getSupplierDao().searchSortLegalNameAsc("%$searchQuery%")
 
-    override fun searchSortLegalNameDesc(query: String): PagingSource<Int, Supplier> =
-        dbHelper.getSupplierDao().searchSortLegalNameDesc("%$query%")
+    override fun searchSortLegalNameDesc(searchQuery: String): PagingSource<Int, Supplier> =
+        dbHelper.getSupplierDao().searchSortLegalNameDesc("%$searchQuery%")
 
     override fun testGen(supplier: Supplier) =
         dbHelper.getSupplierDao().testGen(supplier = supplier)

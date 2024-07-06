@@ -1,18 +1,18 @@
 package com.thomas200593.mini_retail_app.features.business.entity.supplier.dto
 
-enum class SupplierDataOrdering(
-    val label: String
+enum class SortSupplier(
+    val title: String
 ) {
     GEN_ID_ASC(
-        label = "ID (A-Z)"
+        title = "ID (A-Z)"
     ),
     GEN_ID_DESC(
-        label = "ID (Z-A)"
+        title = "ID (Z-A)"
     ),
     LEGAL_NAME_ASC(
-        label = "Legal Name (A-Z)"
+        title = "Name (A-Z)"
     ),
     LEGAL_NAME_DESC(
-        label = "Legal Name (Z-A)"
+        title = "Name (Z-A)"
     )
 }

@@ -4,7 +4,7 @@ import androidx.paging.PagingData
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatchers
 import com.thomas200593.mini_retail_app.features.business.entity.supplier.Supplier
-import com.thomas200593.mini_retail_app.features.business.entity.supplier.dto.SupplierDataOrdering
+import com.thomas200593.mini_retail_app.features.business.entity.supplier.dto.SortSupplier
 import com.thomas200593.mini_retail_app.features.business.repository.SupplierRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
@@ -16,12 +16,12 @@ class GetSupplierListUseCase @Inject constructor(
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ) {
     operator fun invoke(
-        query: String?,
-        orderBy: SupplierDataOrdering
+        searchQuery: String?,
+        sortBy: SortSupplier
     ): Flow<PagingData<Supplier>> =
-        if(query.isNullOrEmpty() || query.isBlank()){
-            repository.getAllSuppliers(orderBy = orderBy).flowOn(ioDispatcher)
+        if(searchQuery.isNullOrEmpty() || searchQuery.isBlank()){
+            repository.getAllSuppliers(sortBy = sortBy).flowOn(ioDispatcher)
         }else{
-            repository.searchSuppliers(query = query, orderBy = orderBy).flowOn(ioDispatcher)
+            repository.searchSuppliers(searchQuery = searchQuery, sortBy = sortBy).flowOn(ioDispatcher)
         }
 }
