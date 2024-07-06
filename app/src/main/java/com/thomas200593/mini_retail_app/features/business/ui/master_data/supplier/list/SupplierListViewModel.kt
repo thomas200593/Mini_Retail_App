@@ -32,6 +32,7 @@ class SupplierListViewModel @Inject constructor(
     private val repository: SupplierRepository,
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ): ViewModel() {
+
     //Searching Query
     val query: MutableStateFlow<String> =
         MutableStateFlow(String())
@@ -60,14 +61,12 @@ class SupplierListViewModel @Inject constructor(
     }
 
     fun testGen() = viewModelScope.launch(ioDispatcher) {
-        repeat(10){
-            val supplier = Supplier(
-                seqId = 0,
-                genId = ULID.randomULID(),
-                sprLegalName = "Supplier ${Random.nextInt(0,100)}",
-                auditTrail = AuditTrail()
-            )
-            repository.testGen(supplier)
-        }
+        val supplier = Supplier(
+            seqId = 0,
+            genId = ULID.randomULID(),
+            sprLegalName = "Supplier ${Random.nextInt(0,100)}",
+            auditTrail = AuditTrail()
+        )
+        repository.testGen(supplier)
     }
 }

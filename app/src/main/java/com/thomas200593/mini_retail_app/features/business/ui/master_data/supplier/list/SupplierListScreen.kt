@@ -55,7 +55,7 @@ fun SupplierListScreen(
     appState: AppState = LocalAppState.current
 ){
     val orderBy by viewModel.orderBy.collectAsStateWithLifecycle()
-    val searchQuery by viewModel.query.collectAsStateWithLifecycle()
+    val query by viewModel.query.collectAsStateWithLifecycle()
     val supplierList = viewModel.supplierPagingDataFlow.collectAsLazyPagingItems()
 
     TopAppBar(
@@ -68,7 +68,7 @@ fun SupplierListScreen(
         onSearchQueryChanged = viewModel::performSearch,
         onDataOrderingChanged = viewModel::updateOrderBy,
         orderBy = orderBy,
-        searchQuery = searchQuery
+        query = query
     )
 }
 
@@ -129,7 +129,7 @@ private fun TopAppBar(
 @Composable
 private fun ScreenContent(
     supplierList: LazyPagingItems<Supplier>,
-    searchQuery: String,
+    query: String,
     onSearchQueryChanged: (String) -> Unit,
     onDataOrderingChanged: (SupplierDataOrdering) -> Unit,
     orderBy: SupplierDataOrdering
@@ -186,7 +186,7 @@ private fun ScreenContent(
         if(visible){
             SearchToolBar(
                 modifier = Modifier.fillMaxWidth(),
-                searchQuery = searchQuery,
+                searchQuery = query,
                 placeholder = { Text(text = "Search Supplier...") },
                 onSearchQueryChanged = onSearchQueryChanged,
                 onSearchTriggered = onSearchQueryChanged
