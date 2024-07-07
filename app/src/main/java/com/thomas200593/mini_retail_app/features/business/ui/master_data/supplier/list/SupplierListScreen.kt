@@ -14,17 +14,24 @@ import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.outlined.KeyboardArrowDown
 import androidx.compose.material.icons.outlined.KeyboardArrowUp
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -138,6 +145,7 @@ private fun TopAppBar(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ScreenContent(
     pagedListData: LazyPagingItems<Supplier>,
@@ -159,12 +167,43 @@ private fun ScreenContent(
         Row(
             modifier = Modifier.fillMaxWidth(1.0f)
         ){
-            Row(modifier = Modifier.weight(0.9f)) {
-                Box {
-                    TextButton(onClick = { expanded = true }) {
-                        Text(text = sortBy.title)
-                    }
-                    DropdownMenu(
+            Row(modifier = Modifier.weight(0.5f), horizontalArrangement = Arrangement.Start, verticalAlignment = Alignment.CenterVertically) {
+//                Box {
+//                    TextButton(onClick = { expanded = true }) {
+//                        Text(text = sortBy.title)
+//                    }
+//                    DropdownMenu(
+//                        expanded = expanded,
+//                        onDismissRequest = { expanded = false }
+//                    ) {
+//                        SortSupplier.entries.forEach { dropdownItem ->
+//                            DropdownMenuItem(
+//                                onClick = {
+//                                    onSortByChanged(dropdownItem)
+//                                    expanded = false
+//                                },
+//                                text = { Text(dropdownItem.title) }
+//                            )
+//                        }
+//                    }
+//                }
+                ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = {expanded = !expanded}) {
+                    TextField(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .menuAnchor(),
+                        readOnly = true,
+                        value = sortBy.title,
+                        onValueChange = {},
+                        leadingIcon = {
+                            Icon(imageVector = Icons.AutoMirrored.Default.List, contentDescription = null)
+                        },
+                        trailingIcon = {
+                            ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
+                        },
+                        colors = ExposedDropdownMenuDefaults.textFieldColors()
+                    )
+                    ExposedDropdownMenu(
                         expanded = expanded,
                         onDismissRequest = { expanded = false }
                     ) {
@@ -174,29 +213,39 @@ private fun ScreenContent(
                                     onSortByChanged(dropdownItem)
                                     expanded = false
                                 },
-                                text = { Text(dropdownItem.title) }
+                                text =  {
+                                    Text(text = dropdownItem.title)
+                                },
+                                contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
                             )
                         }
                     }
                 }
             }
-            Row(modifier = Modifier.weight(0.1f)) {
-                Icon(
-                    modifier = Modifier.clickable(
-                        onClick = {
-                            visible = !visible
+            Row(
+                modifier = Modifier.weight(0.5f),
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Surface {
+                    Icon(
+                        modifier = Modifier.clickable(
+                            onClick = {
+                                visible = !visible
+                            }
+                        ),
+                        imageVector = if(visible){
+                            Icons.Outlined.KeyboardArrowUp
                         }
-                    ),
-                    imageVector = if(visible){
-                        Icons.Outlined.KeyboardArrowUp
-                    }
-                    else{
-                        Icons.Outlined.KeyboardArrowDown
-                    },
-                    contentDescription = null
-                )
+                        else{
+                            Icons.Outlined.KeyboardArrowDown
+                        },
+                        contentDescription = null
+                    )
+                }
             }
         }
+        HorizontalDivider(thickness = 2.dp)
         if(visible){
             SearchToolBar(
                 modifier = Modifier.fillMaxWidth(),
@@ -205,9 +254,12 @@ private fun ScreenContent(
                 onSearchQueryChanged = onSearchQueryChanged,
                 onSearchTriggered = onSearchQueryChanged
             )
+            HorizontalDivider(thickness = 2.dp)
         }
         LazyColumn(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(4.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.Top),
         ) {
@@ -234,43 +286,33 @@ private fun SupplierListItem(
     onThumbnailClick: (Supplier) -> Unit,
     onClick: (Supplier) -> Unit
 ){
+    val commonModifier = Modifier
+        .fillMaxWidth()
+        .padding(4.dp)
     Surface(
         onClick = { onClick(supplier) },
         modifier = modifier,
         shape = MaterialTheme.shapes.medium,
-        color = MaterialTheme.colorScheme.primaryContainer,
-        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
         border = BorderStroke(width = 2.dp, color = Color.DarkGray)
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth(1.0f)
-                .padding(4.dp),
+            modifier = commonModifier,
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Column(
+            Surface(
+                onClick = { onThumbnailClick(supplier) },
                 modifier = Modifier
                     .weight(0.2f)
                     .padding(4.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+                shape = MaterialTheme.shapes.medium,
+                border = BorderStroke(1.dp, Color.DarkGray)
             ) {
-                Surface(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    shape = MaterialTheme.shapes.medium,
-                    color = MaterialTheme.colorScheme.primaryContainer,
-                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                    border = BorderStroke(1.dp, Color.DarkGray),
-                    onClick = { onThumbnailClick(supplier) }
-                ) {
-                    //TODO : Render from user data which have Images (1) with flag (isPrimaryImage -> True)
-                    Image(
-                        imageVector = ImageVector.vectorResource(id = app),
-                        contentDescription = null
-                    )
-                }
+                Image(
+                    imageVector = ImageVector.vectorResource(id = app),
+                    contentDescription = null,
+                    modifier = commonModifier
+                )
             }
             Column(
                 modifier = Modifier
@@ -285,18 +327,16 @@ private fun SupplierListItem(
                     fontWeight = FontWeight.SemiBold,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    color = MaterialTheme.colorScheme.onTertiaryContainer,
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Start
                 )
-                supplier.sprLegalName.orEmpty().let {
+                supplier.sprLegalName?.let {
                     Text(
                         text = it,
                         style = MaterialTheme.typography.labelLarge,
                         fontWeight = FontWeight.Bold,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
-                        color = MaterialTheme.colorScheme.onSecondaryContainer,
                         modifier = Modifier.fillMaxWidth(),
                         textAlign = TextAlign.Start
                     )
@@ -308,7 +348,6 @@ private fun SupplierListItem(
                     fontStyle = FontStyle.Italic,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    color = MaterialTheme.colorScheme.onSecondaryContainer,
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Start
                 )
