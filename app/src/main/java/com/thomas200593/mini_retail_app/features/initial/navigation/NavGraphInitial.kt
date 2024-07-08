@@ -9,6 +9,7 @@ import com.thomas200593.mini_retail_app.features.initial.ui.InitialScreen
 import com.thomas200593.mini_retail_app.features.onboarding.navigation.navGraphOnboarding
 import com.thomas200593.mini_retail_app.app.navigation.NavigationGraphs.G_INITIAL
 import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs
+import com.thomas200593.mini_retail_app.features.initial.ui.initialization.InitializationScreen
 import timber.log.Timber
 
 private val TAG_NAV_GRAPH_BUILDER = NavGraphBuilder::class.simpleName
@@ -25,6 +26,11 @@ fun NavGraphBuilder.navGraphInitial() {
         ){
             InitialScreen()
         }
+        composable(
+            route = ScreenGraphs.Initialization.route
+        ){
+            InitializationScreen()
+        }
         navGraphOnboarding()
         navGraphAuth()
     }
@@ -34,6 +40,18 @@ fun NavController.navigateToInitial(){
     Timber.d("Called : fun $TAG_NAV_CONTROLLER.navigateToInitial()")
     this.navigate(
         route = G_INITIAL
+    ){
+        launchSingleTop = true
+        restoreState = true
+        popUpTo(G_INITIAL){
+            inclusive = true
+        }
+    }
+}
+
+fun NavController.navigateToInitialization(){
+    this.navigate(
+        route = ScreenGraphs.Initialization.route
     ){
         launchSingleTop = true
         restoreState = true

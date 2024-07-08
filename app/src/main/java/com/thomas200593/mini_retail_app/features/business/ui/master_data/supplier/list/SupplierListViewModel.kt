@@ -4,6 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
@@ -29,13 +30,19 @@ import kotlin.random.Random
 class SupplierListViewModel @Inject constructor(
     useCase: GetSupplierListUseCase,
     private val repository: SupplierRepository,
-    @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
+    @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
+    private val savedStateHandle: SavedStateHandle
 ): ViewModel() {
 
-    var searchQuery by mutableStateOf(String())
+    companion object{
+        private const val KEY_SEARCH_QUERY = "searchQuery"
+        private const val KEY_SORT_BY = "sortBy"
+    }
+
+    var searchQuery by mutableStateOf(savedStateHandle.get<String>(KEY_SEARCH_QUERY) ?: String())
         private set
 
-    var sortBy by mutableStateOf(SortSupplier.GEN_ID_ASC)
+    var sortBy by mutableStateOf(savedStateHandle.get<SortSupplier>(KEY_SORT_BY) ?: SortSupplier.GEN_ID_ASC)
         private set
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -48,10 +55,12 @@ class SupplierListViewModel @Inject constructor(
 
     fun performSearch(searchQuery: String) = viewModelScope.launch(ioDispatcher) {
         this@SupplierListViewModel.searchQuery = searchQuery
+        savedStateHandle[KEY_SEARCH_QUERY] = searchQuery
     }
 
     fun updateSortBy(sortBy: SortSupplier) = viewModelScope.launch(ioDispatcher) {
         this@SupplierListViewModel.sortBy = sortBy
+        savedStateHandle[KEY_SORT_BY] = sortBy
     }
 
     fun testGen() = viewModelScope.launch(ioDispatcher) {

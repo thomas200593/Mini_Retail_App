@@ -19,6 +19,7 @@ import com.thomas200593.mini_retail_app.features.app_config.entity.Theme
 import com.thomas200593.mini_retail_app.features.app_config.entity.Timezone
 import com.thomas200593.mini_retail_app.features.auth.entity.AuthSessionToken
 import com.thomas200593.mini_retail_app.features.auth.entity.OAuthProvider
+import com.thomas200593.mini_retail_app.features.initial.entity.FirstTimeStatus
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
@@ -61,6 +62,14 @@ class DataStorePreferences @Inject constructor(
             it[DataStoreKeys.AuthKeys.dsKeyAuthSessionToken] = authSessionToken.idToken!!
             it[DataStoreKeys.AuthKeys.dsKeyAuthProvider] = authSessionToken.authProvider?.name!!
         }
+    }
+
+    //First Time Status
+    val firstTimeStatus = datastore.data.map { data ->
+        data[DataStoreKeys.AppConfigKeys.dsKeyFirstTimeStatus]
+            ?.let { firstTimeStatus ->
+                FirstTimeStatus.valueOf(firstTimeStatus)
+            } ?: FirstTimeStatus.YES
     }
 
     //App Config
@@ -108,6 +117,12 @@ class DataStorePreferences @Inject constructor(
                 )
             } ?: CountryHelper.COUNTRY_DEFAULT
         )
+    }
+
+    suspend fun setFirstTimeStatus(firstTimeStatus: FirstTimeStatus) = withContext(ioDispatcher){
+        datastore.edit {
+            it[DataStoreKeys.AppConfigKeys.dsKeyFirstTimeStatus] = firstTimeStatus.name
+        }
     }
 
     suspend fun setTheme(theme: Theme) = withContext(ioDispatcher){

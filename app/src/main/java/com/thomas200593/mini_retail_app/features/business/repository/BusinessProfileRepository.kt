@@ -5,4 +5,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface BusinessProfileRepository{
     fun getBusinessProfile(): Flow<BusinessProfile?>
+    suspend fun setInitialBizProfile(businessProfile: BusinessProfile): Long
 }

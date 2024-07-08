@@ -6,6 +6,7 @@ object Routes {
      * Initial
      */
     const val R_INITIAL: String = "r_initial"
+    const val R_INITIALIZATION: String = "r_initialization"
 
     /**
      * Onboarding

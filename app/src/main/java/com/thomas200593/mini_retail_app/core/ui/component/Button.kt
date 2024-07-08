@@ -67,6 +67,7 @@ object Button {
 
         @Composable
         fun AppIconButton(
+            modifier: Modifier = Modifier,
             onClick: () -> Unit,
             icon: ImageVector,
             text: String = String(),
@@ -80,7 +81,7 @@ object Button {
             Button(
                 onClick = onClick,
                 shape = shape,
-                modifier = Modifier
+                modifier = modifier
                     .fillMaxWidth()
                     .padding(padding),
                 colors = ButtonColors(

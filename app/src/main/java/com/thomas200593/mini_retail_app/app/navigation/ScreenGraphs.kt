@@ -3,10 +3,12 @@ package com.thomas200593.mini_retail_app.app.navigation
 sealed class ScreenGraphs(
     val route: String
 ) {
+
     /**
      * Initial
      */
     data object Initial: ScreenGraphs(route = Routes.R_INITIAL)
+    data object Initialization: ScreenGraphs(route = Routes.R_INITIALIZATION)
 
     /**
      * Onboarding

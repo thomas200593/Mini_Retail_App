@@ -4,6 +4,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 
 object DataStoreKeys {
     object AppConfigKeys {
+        val dsKeyFirstTimeStatus = stringPreferencesKey(name = "DS_KEY_FIRST_TIME_STATUS")
         val dsKeyOnboardingStatus = stringPreferencesKey(name = "DS_KEY_ONBOARDING_STATUS")
         val dsKeyTheme = stringPreferencesKey(name = "DS_KEY_THEME")
         val dsKeyDynamicColor = stringPreferencesKey(name = "DS_KEY_DYNAMIC_COLOR")

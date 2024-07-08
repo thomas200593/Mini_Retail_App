@@ -80,4 +80,7 @@
     <string name="str_supplier_desc">Manage master data supplier</string>
     <string name="str_customer">Customer</string>
     <string name="str_customer_desc">Manage master data customer</string>
+    <string name="str_init_setup_yes">Sure</string>
+    <string name="str_init_setup_no">No, just use default configuration</string>
+    <string name="str_init_welcome_message">We\'re excited to have you here. Could you please provide us with a bit of information about your business profile?</string>
 </resources>

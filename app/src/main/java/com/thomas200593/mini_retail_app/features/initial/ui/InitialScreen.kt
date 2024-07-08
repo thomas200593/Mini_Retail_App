@@ -21,7 +21,9 @@ import com.thomas200593.mini_retail_app.features.auth.entity.OAuthProvider
 import com.thomas200593.mini_retail_app.features.auth.entity.UserData
 import com.thomas200593.mini_retail_app.features.auth.navigation.navigateToAuth
 import com.thomas200593.mini_retail_app.features.dashboard.navigation.navigateToDashboard
+import com.thomas200593.mini_retail_app.features.initial.entity.FirstTimeStatus
 import com.thomas200593.mini_retail_app.features.initial.entity.Initial
+import com.thomas200593.mini_retail_app.features.initial.navigation.navigateToInitialization
 import com.thomas200593.mini_retail_app.features.onboarding.navigation.navigateToOnboarding
 import kotlinx.coroutines.launch
 
@@ -48,12 +50,12 @@ fun InitialScreen(
         initialData = initialData,
         onLoadingScreen = { coroutineScope.launch { viewModel.setLoadingScreen(true) } },
         onErrorScreen = { coroutineScope.launch { viewModel.setErrorScreen(true, it) } },
+        onNavigateToInitialization = {coroutineScope.launch { appState.navController.navigateToInitialization() }},
         onNavigateToOnboarding = { coroutineScope.launch { appState.navController.navigateToOnboarding() } },
-        onNavigateToDashboard = { userData, navOptions ->
+        onNavigateToDashboard = { userData ->
+            val navOptions = NavOptions.Builder().setPopUpTo(route = NavigationGraphs.G_INITIAL, inclusive = true, saveState = true).setLaunchSingleTop(true).setRestoreState(true).build()
             when(userData.authSessionToken?.authProvider){
-                OAuthProvider.GOOGLE -> {
-                    Toast.makeText(context, "Welcome back! ${(userData.oAuth2UserMetadata as OAuth2UserMetadata.Google).name}", Toast.LENGTH_SHORT).show()
-                }
+                OAuthProvider.GOOGLE -> { Toast.makeText(context, "Welcome back! ${(userData.oAuth2UserMetadata as OAuth2UserMetadata.Google).name}", Toast.LENGTH_SHORT).show() }
                 null -> Unit
             }
             coroutineScope.launch { appState.navController.navigateToDashboard(navOptions) }
@@ -67,32 +69,27 @@ private fun ScreenContent(
     initialData: RequestState<Initial>,
     onLoadingScreen: () -> Unit,
     onErrorScreen: (Throwable?) -> Unit,
+    onNavigateToInitialization: () -> Unit,
     onNavigateToOnboarding: () -> Unit,
-    onNavigateToDashboard: (UserData, NavOptions) -> Unit,
+    onNavigateToDashboard: (UserData) -> Unit,
     onNavigateToAuth: () -> Unit
 ) {
     when(initialData){
         RequestState.Idle, RequestState.Loading, RequestState.Empty -> onLoadingScreen()
         is RequestState.Error -> { onErrorScreen(initialData.t) }
         is RequestState.Success -> {
-            if(initialData.data.userData != null){
-                when(initialData.data.onboardingPageStatus){
-                    OnboardingStatus.SHOW -> { LaunchedEffect(initialData) { onNavigateToOnboarding() } }
-                    OnboardingStatus.HIDE -> {
-                        LaunchedEffect(initialData) {
-                            val navOptions = NavOptions.Builder()
-                                .setPopUpTo(route = NavigationGraphs.G_INITIAL, inclusive = true, saveState = true)
-                                .setLaunchSingleTop(true)
-                                .setRestoreState(true)
-                                .build()
-                            onNavigateToDashboard(initialData.data.userData, navOptions)
+            when(initialData.data.isFirstTime){
+                FirstTimeStatus.YES -> { onNavigateToInitialization.invoke() }
+                FirstTimeStatus.NO -> {
+                    when(initialData.data.configCurrent.onboardingStatus){
+                        OnboardingStatus.SHOW -> { onNavigateToOnboarding.invoke() }
+                        OnboardingStatus.HIDE -> {
+                            when(initialData.data.session == null){
+                                true -> { onNavigateToAuth.invoke() }
+                                false -> { onNavigateToDashboard.invoke(initialData.data.session) }
+                            }
                         }
                     }
-                }
-            }else{
-                when(initialData.data.onboardingPageStatus){
-                    OnboardingStatus.SHOW -> { LaunchedEffect(initialData) { onNavigateToOnboarding() } }
-                    OnboardingStatus.HIDE -> { LaunchedEffect(initialData) { onNavigateToAuth() } }
                 }
             }
         }

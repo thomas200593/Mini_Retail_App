@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Upsert
 import com.thomas200593.mini_retail_app.core.data.local.database.AppLocalDatabaseHelper
 import com.thomas200593.mini_retail_app.features.business.entity.business_profile.BusinessProfile
 import kotlinx.coroutines.flow.Flow
@@ -26,6 +27,9 @@ FROM business_profile bp LIMIT 1
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun testGenerate(businessProfile: BusinessProfile)
+
+    @Upsert(BusinessProfile::class)
+    fun setInitialBizProfile(businessProfile: BusinessProfile): Long
 }
 
 class BusinessProfileDaoImpl @Inject constructor(
@@ -36,4 +40,7 @@ class BusinessProfileDaoImpl @Inject constructor(
 
     override suspend fun testGenerate(businessProfile: BusinessProfile) =
         dbHelper.getBusinessProfileDao().testGenerate(businessProfile)
+
+    override fun setInitialBizProfile(businessProfile: BusinessProfile): Long =
+        dbHelper.getBusinessProfileDao().setInitialBizProfile(businessProfile)
 }

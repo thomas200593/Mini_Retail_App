@@ -15,4 +15,6 @@ class BusinessProfileRepositoryImpl @Inject constructor(
 ): BusinessProfileRepository {
     override fun getBusinessProfile(): Flow<BusinessProfile?> =
         dao.getBusinessProfile().flowOn(ioDispatcher)
+    override suspend fun setInitialBizProfile(businessProfile: BusinessProfile): Long =
+        dao.setInitialBizProfile(businessProfile)
 }

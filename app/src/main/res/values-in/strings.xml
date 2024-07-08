@@ -78,4 +78,7 @@
     <string name="str_supplier_desc">Atur master data pemasok</string>
     <string name="str_customer">Pelanggan</string>
     <string name="str_customer_desc">Atur master data pelanggan</string>
+    <string name="str_init_setup_yes">Tentu</string>
+    <string name="str_init_setup_no">Tidak, gunakan pengaturan awal saja</string>
+    <string name="str_init_welcome_message">Senang sekali menyambut Anda di sini. Bisakah Anda memberikan sedikit informasi tentang profil bisnis Anda?</string>
 </resources>
