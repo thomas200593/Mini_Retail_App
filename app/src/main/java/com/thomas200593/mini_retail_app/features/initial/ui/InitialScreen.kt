@@ -50,8 +50,8 @@ fun InitialScreen(
         initialData = initialData,
         onLoadingScreen = { coroutineScope.launch { viewModel.setLoadingScreen(true) } },
         onErrorScreen = { coroutineScope.launch { viewModel.setErrorScreen(true, it) } },
-        onNavigateToInitialization = {coroutineScope.launch { appState.navController.navigateToInitialization() }},
         onNavigateToOnboarding = { coroutineScope.launch { appState.navController.navigateToOnboarding() } },
+        onNavigateToInitialization = { coroutineScope.launch { appState.navController.navigateToInitialization() } },
         onNavigateToDashboard = { userData ->
             val navOptions = NavOptions.Builder().setPopUpTo(route = NavigationGraphs.G_INITIAL, inclusive = true, saveState = true).setLaunchSingleTop(true).setRestoreState(true).build()
             when(userData.authSessionToken?.authProvider){
@@ -60,7 +60,7 @@ fun InitialScreen(
             }
             coroutineScope.launch { appState.navController.navigateToDashboard(navOptions) }
         },
-        onNavigateToAuth = { appState.navController.navigateToAuth() }
+        onNavigateToAuth = { coroutineScope.launch { appState.navController.navigateToAuth() } }
     )
 }
 
@@ -69,8 +69,8 @@ private fun ScreenContent(
     initialData: RequestState<Initial>,
     onLoadingScreen: () -> Unit,
     onErrorScreen: (Throwable?) -> Unit,
-    onNavigateToInitialization: () -> Unit,
     onNavigateToOnboarding: () -> Unit,
+    onNavigateToInitialization: () -> Unit,
     onNavigateToDashboard: (UserData) -> Unit,
     onNavigateToAuth: () -> Unit
 ) {
@@ -79,7 +79,12 @@ private fun ScreenContent(
         is RequestState.Error -> { onErrorScreen(initialData.t) }
         is RequestState.Success -> {
             when(initialData.data.isFirstTime){
-                FirstTimeStatus.YES -> { onNavigateToInitialization.invoke() }
+                FirstTimeStatus.YES -> {
+                    when(initialData.data.configCurrent.onboardingStatus){
+                        OnboardingStatus.SHOW -> { onNavigateToOnboarding.invoke() }
+                        OnboardingStatus.HIDE -> { onNavigateToInitialization.invoke() }
+                    }
+                }
                 FirstTimeStatus.NO -> {
                     when(initialData.data.configCurrent.onboardingStatus){
                         OnboardingStatus.SHOW -> { onNavigateToOnboarding.invoke() }
