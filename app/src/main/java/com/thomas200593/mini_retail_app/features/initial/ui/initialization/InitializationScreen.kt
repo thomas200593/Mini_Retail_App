@@ -134,30 +134,7 @@ private fun ScreenContent(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(30.dp, Alignment.Top)
             ) {
-                when(languages){
-                    RequestState.Idle, RequestState.Loading -> { LoadingPanelCircularIndicator() }
-                    RequestState.Empty -> {
-                        EmptyPanel(
-                            showIcon = true,
-                            title = stringResource(id = R.string.str_empty_message_title),
-                            emptyMessage = stringResource(id = R.string.str_empty_message)
-                        )
-                    }
-                    is RequestState.Error -> {
-                        ErrorPanel(
-                            showIcon = true,
-                            title = stringResource(id = R.string.str_error),
-                            errorMessage = stringResource(id = R.string.str_error_fetching_preferences)
-                        )
-                    }
-                    is RequestState.Success -> {
-                        LanguageChangeSection(
-                            languages = languages.data,
-                            configCurrent = configCurrent.data,
-                            onSetLanguage = onSetLanguage
-                        )
-                    }
-                }
+                LanguageSection(languages = languages, configCurrent = configCurrent.data, onSetLanguage = onSetLanguage)
 
                 //Header
                 if(showWelcomeMessage){
@@ -170,6 +147,7 @@ private fun ScreenContent(
                 //Manual Form
                 if(showInputManualForm){
                     Text(text = "Manual Input Form")
+                    //TODO LATER
                 }
 
                 //Default Input
@@ -181,6 +159,38 @@ private fun ScreenContent(
                     is RequestState.Success -> { onSuccessGenerateDefaultBizProfile(initialDefaultSetupUiState.data) }
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun LanguageSection(
+    languages: RequestState<Set<Language>>,
+    configCurrent: ConfigCurrent,
+    onSetLanguage: (Language) -> Unit
+) {
+    when(languages){
+        RequestState.Idle, RequestState.Loading -> { LoadingPanelCircularIndicator() }
+        RequestState.Empty -> {
+            EmptyPanel(
+                showIcon = true,
+                title = stringResource(id = R.string.str_empty_message_title),
+                emptyMessage = stringResource(id = R.string.str_empty_message)
+            )
+        }
+        is RequestState.Error -> {
+            ErrorPanel(
+                showIcon = true,
+                title = stringResource(id = R.string.str_error),
+                errorMessage = stringResource(id = R.string.str_error_fetching_preferences)
+            )
+        }
+        is RequestState.Success -> {
+            LanguageChangeSection(
+                languages = languages.data,
+                configCurrent = configCurrent,
+                onSetLanguage = onSetLanguage
+            )
         }
     }
 }
@@ -250,7 +260,7 @@ fun LanguageChangeSection(
 }
 
 @Composable
-fun WelcomeHeader(
+private fun WelcomeHeader(
     onInitSetupManual: () -> Unit,
     onInitSetupDefault: (BusinessProfileSummary) -> Unit
 ) {
@@ -286,9 +296,7 @@ fun WelcomeHeader(
         )
     }
     Surface(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
+        modifier = Modifier.fillMaxWidth().padding(16.dp),
         shape = MaterialTheme.shapes.medium,
         color = MaterialTheme.colorScheme.primaryContainer,
         contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
@@ -299,9 +307,7 @@ fun WelcomeHeader(
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
+                modifier = Modifier.fillMaxWidth().padding(16.dp),
                 text = stringResource(R.string.str_init_welcome_message),
                 style = MaterialTheme.typography.labelLarge,
                 textAlign = TextAlign.Justify
@@ -337,7 +343,7 @@ fun WelcomeHeader(
 
 @Composable
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES, locale = "in")
-fun Preview(){
+private fun Preview(){
     Themes.ApplicationTheme {
         Column(modifier = Modifier.fillMaxSize()) {
             ScreenContent(
@@ -346,8 +352,8 @@ fun Preview(){
                 onSetLanguage = {},
                 onInitSetupManual = {},
                 onInitSetupDefault = {},
-                showWelcomeMessage = true,
-                showInputManualForm = false,
+                showWelcomeMessage = false,
+                showInputManualForm = true,
                 initialDefaultSetupUiState = RequestState.Idle,
                 onErrorGenerateDefaultBizProfile = {},
                 onLoadingGenerateDefaultBizProfile = {},
