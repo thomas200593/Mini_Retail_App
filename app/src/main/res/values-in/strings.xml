@@ -81,4 +81,5 @@
     <string name="str_init_setup_yes">Tentu</string>
     <string name="str_init_setup_no">Tidak, gunakan pengaturan awal saja</string>
     <string name="str_init_welcome_message">Senang sekali menyambut Anda di sini. Bisakah Anda memberikan sedikit informasi tentang profil bisnis Anda?</string>
+    <string name="str_email_format_invalid">Format e-mail tidak valid</string>
 </resources>

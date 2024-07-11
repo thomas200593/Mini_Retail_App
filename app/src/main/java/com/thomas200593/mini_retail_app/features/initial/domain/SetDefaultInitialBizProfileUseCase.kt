@@ -10,7 +10,7 @@ class SetDefaultInitialBizProfileUseCase @Inject constructor(
     private val bizExtFn: BusinessExtFn
 ){
     suspend operator fun invoke(bizProfileSummary: BusinessProfileSummary): BusinessProfileSummary?{
-        if(businessProfileRepository.setInitialBizProfile(bizExtFn.bizProfileSummaryToBusinessProfile(bizProfileSummary)) > 0){
+        if(businessProfileRepository.setBusinessProfile(bizExtFn.bizProfileSummaryToBusinessProfile(bizProfileSummary)) > 0){
             return bizProfileSummary
         }
         return null

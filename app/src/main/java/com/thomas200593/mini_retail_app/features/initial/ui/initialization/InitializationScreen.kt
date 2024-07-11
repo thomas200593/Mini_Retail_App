@@ -15,6 +15,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -53,6 +54,7 @@ import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.Err
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.ErrorScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.LoadingPanelCircularIndicator
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.LoadingScreen
+import com.thomas200593.mini_retail_app.core.ui.component.Form.Component.TextInput
 import com.thomas200593.mini_retail_app.features.app_config.entity.ConfigCurrent
 import com.thomas200593.mini_retail_app.features.app_config.entity.Language
 import com.thomas200593.mini_retail_app.features.business.entity.business_profile.BizName
@@ -69,7 +71,6 @@ fun InitializationScreen(
     val coroutineScope = rememberCoroutineScope()
     val showWelcomeMessage = viewModel.showWelcomeMessage
     val showInputManualForm = viewModel.showInputManualForm
-
     val configCurrent by viewModel.configCurrent.collectAsStateWithLifecycle()
     val languages by viewModel.languages
     val initialDefaultSetupUiState by viewModel.initialDefaultSetupUiState
@@ -144,10 +145,8 @@ private fun ScreenContent(
                     )
                 }
 
-                //Manual Form
                 if(showInputManualForm){
-                    Text(text = "Manual Input Form")
-                    //TODO LATER
+                    InputManualForm()
                 }
 
                 //Default Input
@@ -296,7 +295,9 @@ private fun WelcomeHeader(
         )
     }
     Surface(
-        modifier = Modifier.fillMaxWidth().padding(16.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
         shape = MaterialTheme.shapes.medium,
         color = MaterialTheme.colorScheme.primaryContainer,
         contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
@@ -307,7 +308,9 @@ private fun WelcomeHeader(
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                modifier = Modifier.fillMaxWidth().padding(16.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
                 text = stringResource(R.string.str_init_welcome_message),
                 style = MaterialTheme.typography.labelLarge,
                 textAlign = TextAlign.Justify
@@ -338,6 +341,71 @@ private fun WelcomeHeader(
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.titleMedium
         )
+    }
+}
+
+
+
+@Composable
+private fun InputManualForm() {
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        shape = MaterialTheme.shapes.medium,
+        color = MaterialTheme.colorScheme.surfaceContainerHighest
+    ){
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically)
+        ) {
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = stringResource(id = R.string.str_business_profile),
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.onSurface,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = stringResource(id = R.string.str_business_profile_desc),
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurface,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+            HorizontalDivider(
+                thickness = 2.dp,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            TextInput(
+                value = "",
+                onValueChange = {},
+                label = "Legal Name",
+            )
+            Row(
+                modifier = Modifier.fillMaxWidth(1.0f),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ){
+                AppIconButton(
+                    modifier = Modifier.weight(0.5f),
+                    onClick = {},
+                    icon = ImageVector.vectorResource(id = Icons.Emotion.neutral),
+                    text = "Cancel"
+                )
+                AppIconButton(
+                    modifier = Modifier.weight(0.5f),
+                    onClick = {},
+                    icon = ImageVector.vectorResource(id = Icons.Emotion.neutral),
+                    text = "OK"
+                )
+            }
+        }
     }
 }
 

@@ -83,4 +83,5 @@
     <string name="str_init_setup_yes">Sure</string>
     <string name="str_init_setup_no">No, just use default configuration</string>
     <string name="str_init_welcome_message">We\'re excited to have you here. Could you please provide us with a bit of information about your business profile?</string>
+    <string name="str_email_format_invalid">Invalid e-mail format</string>
 </resources>

@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
@@ -97,12 +98,12 @@ object Button {
                     horizontalArrangement = Arrangement.Center
                 ) {
                     Icon(
-                        modifier = Modifier.weight(0.1f),
+                        modifier = Modifier.sizeIn(maxWidth = ButtonDefaults.IconSize),
                         imageVector = icon,
                         contentDescription = null
                     )
                     Text(
-                        modifier = Modifier.weight(0.9f),
+                        modifier = Modifier.fillMaxWidth(),
                         text = text,
                         textAlign = TextAlign.Center,
                         fontWeight = FontWeight.Bold,
