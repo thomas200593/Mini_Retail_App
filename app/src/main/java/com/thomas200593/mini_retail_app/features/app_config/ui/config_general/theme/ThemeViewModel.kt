@@ -28,9 +28,8 @@ class ThemeViewModel @Inject constructor(
 ): ViewModel() {
     private val _themes: MutableState<RequestState<Set<Theme>>> = mutableStateOf(RequestState.Idle)
     val themes = _themes
-    val configCurrent = appCfgRepository.configCurrent.flowOn(ioDispatcher)
-        .catch { RequestState.Error(it) }
-        .map { RequestState.Success(it) }
+    val configCurrent = appCfgRepository.configCurrent
+        .flowOn(ioDispatcher).catch { RequestState.Error(it) }.map { RequestState.Success(it) }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.Eagerly,

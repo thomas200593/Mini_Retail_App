@@ -54,9 +54,7 @@ fun TimezoneScreen(
     val configCurrent by viewModel.configCurrent.collectAsStateWithLifecycle()
     val timezones by viewModel.timezones
 
-    LaunchedEffect(Unit) {
-        viewModel.onOpen()
-    }
+    LaunchedEffect(Unit) { viewModel.onOpen() }
 
     TopAppBar(
         onNavigateBack = appState::onNavigateUp

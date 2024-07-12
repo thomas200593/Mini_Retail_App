@@ -28,9 +28,8 @@ class CountryViewModel @Inject constructor(
 ) : ViewModel(){
     private val _countries: MutableState<RequestState<List<Country>>> = mutableStateOf(RequestState.Idle)
     val countries = _countries
-    val configCurrent = appCfgRepository.configCurrent.flowOn(ioDispatcher)
-        .catch { RequestState.Error(it) }
-        .map { RequestState.Success(it) }
+    val configCurrent = appCfgRepository.configCurrent
+        .flowOn(ioDispatcher).catch { RequestState.Error(it) }.map { RequestState.Success(it) }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.Eagerly,

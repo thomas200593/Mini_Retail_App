@@ -6,9 +6,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavOptions
+import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.app.navigation.NavigationGraphs
 import com.thomas200593.mini_retail_app.app.ui.AppState
 import com.thomas200593.mini_retail_app.app.ui.LocalAppState
@@ -34,22 +36,12 @@ fun InitialScreen(
 ) {
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
-    val initialData by viewModel.initialData.collectAsStateWithLifecycle()
-    val showLoadingScreen by viewModel.showLoadingScreen
-    val showErrorScreen by viewModel.showErrorScreen
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
     LaunchedEffect(Unit) { viewModel.onOpen() }
-    if(showLoadingScreen){ LoadingScreen() }
-    if(showErrorScreen.first){
-        ErrorScreen(
-            showIcon = true,
-            title = showErrorScreen.second?.message,
-            errorMessage = showErrorScreen.second?.cause?.toString()
-        )
-    }
+
     ScreenContent(
-        initialData = initialData,
-        onLoadingScreen = { coroutineScope.launch { viewModel.setLoadingScreen(true) } },
-        onErrorScreen = { coroutineScope.launch { viewModel.setErrorScreen(true, it) } },
+        uiState = uiState,
         onNavigateToOnboarding = { coroutineScope.launch { appState.navController.navigateToOnboarding() } },
         onNavigateToInitialization = { coroutineScope.launch { appState.navController.navigateToInitialization() } },
         onNavigateToDashboard = { userData ->
@@ -66,32 +58,36 @@ fun InitialScreen(
 
 @Composable
 private fun ScreenContent(
-    initialData: RequestState<Initial>,
-    onLoadingScreen: () -> Unit,
-    onErrorScreen: (Throwable?) -> Unit,
+    uiState: RequestState<Initial>,
     onNavigateToOnboarding: () -> Unit,
     onNavigateToInitialization: () -> Unit,
     onNavigateToDashboard: (UserData) -> Unit,
     onNavigateToAuth: () -> Unit
 ) {
-    when(initialData){
-        RequestState.Idle, RequestState.Loading, RequestState.Empty -> onLoadingScreen()
-        is RequestState.Error -> { onErrorScreen(initialData.t) }
+    when(uiState){
+        RequestState.Idle, RequestState.Loading, RequestState.Empty -> { LoadingScreen() }
+        is RequestState.Error -> {
+            ErrorScreen(
+                title = stringResource(id = R.string.str_error),
+                errorMessage = stringResource(id = R.string.str_error_fetching_preferences),
+                showIcon = true
+            )
+        }
         is RequestState.Success -> {
-            when(initialData.data.isFirstTime){
+            when(uiState.data.isFirstTime){
                 FirstTimeStatus.YES -> {
-                    when(initialData.data.configCurrent.onboardingStatus){
+                    when(uiState.data.configCurrent.onboardingStatus){
                         OnboardingStatus.SHOW -> { onNavigateToOnboarding.invoke() }
                         OnboardingStatus.HIDE -> { onNavigateToInitialization.invoke() }
                     }
                 }
                 FirstTimeStatus.NO -> {
-                    when(initialData.data.configCurrent.onboardingStatus){
+                    when(uiState.data.configCurrent.onboardingStatus){
                         OnboardingStatus.SHOW -> { onNavigateToOnboarding.invoke() }
                         OnboardingStatus.HIDE -> {
-                            when(initialData.data.session == null){
+                            when(uiState.data.session == null){
                                 true -> { onNavigateToAuth.invoke() }
-                                false -> { onNavigateToDashboard.invoke(initialData.data.session) }
+                                false -> { onNavigateToDashboard.invoke(uiState.data.session) }
                             }
                         }
                     }

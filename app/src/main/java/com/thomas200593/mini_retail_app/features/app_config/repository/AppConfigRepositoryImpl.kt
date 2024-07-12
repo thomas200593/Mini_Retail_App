@@ -24,9 +24,7 @@ internal class AppConfigRepositoryImpl @Inject constructor(
     override suspend fun getMenuData(sessionState: SessionState): Set<DestinationAppConfig> =
         withContext(ioDispatcher){
             when(sessionState){
-                SessionState.Loading -> {
-                    emptySet()
-                }
+                SessionState.Loading -> { emptySet() }
                 is SessionState.Invalid -> {
                     DestinationAppConfig.entries.filterNot { it.usesAuth }.toSet()
                 }

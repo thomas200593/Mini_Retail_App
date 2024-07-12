@@ -28,9 +28,8 @@ class FontSizeViewModel @Inject constructor(
 ): ViewModel() {
     private val _fontSizes: MutableState<RequestState<Set<FontSize>>> = mutableStateOf(RequestState.Idle)
     val fontSizes = _fontSizes
-    val configCurrent = appConfigRepository.configCurrent.flowOn(ioDispatcher)
-        .catch { RequestState.Error(it) }
-        .map { RequestState.Success(it) }
+    val configCurrent = appConfigRepository.configCurrent
+        .flowOn(ioDispatcher).catch { RequestState.Error(it) }.map { RequestState.Success(it) }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.Eagerly,

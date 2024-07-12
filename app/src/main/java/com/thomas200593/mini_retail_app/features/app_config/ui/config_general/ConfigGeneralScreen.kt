@@ -53,19 +53,9 @@ fun ConfigGeneralScreen(
     val menuData by viewModel.menuData
 
     when(sessionState){
-        SessionState.Loading -> {
-            LoadingScreen()
-        }
-        is SessionState.Invalid -> {
-            LaunchedEffect(Unit) {
-                viewModel.onOpen(sessionState)
-            }
-        }
-        is SessionState.Valid -> {
-            LaunchedEffect(Unit) {
-                viewModel.onOpen(sessionState)
-            }
-        }
+        SessionState.Loading -> { LoadingScreen() }
+        is SessionState.Invalid -> { LaunchedEffect(Unit) { viewModel.onOpen(sessionState) } }
+        is SessionState.Valid -> { LaunchedEffect(Unit) { viewModel.onOpen(sessionState) } }
     }
 
     TopAppBar(
@@ -73,9 +63,7 @@ fun ConfigGeneralScreen(
     )
     ScreenContent(
         appConfigGeneralMenuPreferences = menuData,
-        onNavigateToMenu = { menu ->
-            appState.navController.navigateToConfigGeneral(menu)
-        }
+        onNavigateToMenu = { menu -> appState.navController.navigateToConfigGeneral(menu) }
     )
 }
 

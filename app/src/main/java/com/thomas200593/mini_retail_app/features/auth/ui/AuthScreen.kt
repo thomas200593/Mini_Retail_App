@@ -134,22 +134,16 @@ private fun ScreenContent(
 ){
     Surface(modifier = modifier) {
         ConstraintLayout(modifier = modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
-            //Constraints References
             val (
                 btnConf, iconApp, txtAppTitle, txtAppVersion,
                 txtAppWelcomeMessage, btnAuth, txtTermsAndConditions
-            ) =
-                createRefs()
+            ) = createRefs()
 
-            //Guidelines
             val startGuideline = createGuidelineFromStart(16.dp)
             val endGuideline = createGuidelineFromEnd(16.dp)
             val topGuideline = createGuidelineFromTop(16.dp)
-
-            //Layout Central Partition
             val centralGuideline = createGuidelineFromTop(.4f)
 
-            //AppConfig Button
             Surface(
                 onClick = { onNavigateToAppConfigScreen() },
                 modifier = Modifier.constrainAs(btnConf) {
@@ -174,9 +168,7 @@ private fun ScreenContent(
                     )
                 }
             }
-            //.AppConfig Button
 
-            //App Icon
             Box(
                 modifier = Modifier.fillMaxWidth(.6f).height(150.dp).constrainAs(iconApp) {
                     start.linkTo(startGuideline)
@@ -193,9 +185,7 @@ private fun ScreenContent(
                     modifier = Modifier
                 )
             }
-            //.App Icon
 
-            //App Name
             Text(
                 text = stringResource(id = R.string.app_name),
                 fontSize = MaterialTheme.typography.headlineLarge.fontSize,
@@ -206,9 +196,7 @@ private fun ScreenContent(
                     centerHorizontallyTo(parent)
                 }
             )
-            //.App Name
 
-            //App Version
             Text(
                 text = "${BuildConfig.VERSION_NAME} - ${BuildConfig.BUILD_TYPE}",
                 fontWeight = FontWeight.SemiBold,
@@ -218,9 +206,7 @@ private fun ScreenContent(
                     centerHorizontallyTo(parent)
                 }
             )
-            //.App Version
 
-            //App Welcome Message
             Surface(
                 modifier = Modifier.fillMaxWidth(0.9f).constrainAs(txtAppWelcomeMessage) {
                     start.linkTo(startGuideline)
@@ -239,9 +225,7 @@ private fun ScreenContent(
                     color = MaterialTheme.colorScheme.onSecondaryContainer
                 )
             }
-            //.App Welcome Message
 
-            //Auth Button
             Surface(
                 modifier = Modifier.fillMaxWidth(0.9f).constrainAs(btnAuth) {
                     start.linkTo(startGuideline)
@@ -255,9 +239,7 @@ private fun ScreenContent(
                     btnLoadingState = stateSIWGButton
                 )
             }
-            //.Auth Button
 
-            //Terms and Conditions
             Surface(
                 modifier = Modifier.fillMaxWidth(0.9f).constrainAs(txtTermsAndConditions) {
                     top.linkTo(btnAuth.bottom, 16.dp)
@@ -266,8 +248,7 @@ private fun ScreenContent(
                 }
             ){
                 Text(
-                    //TODO: Translate this.
-                    text = "Terms and Conditions",
+                    text = stringResource(id = R.string.str_tnc),
                     modifier = Modifier.padding(12.dp),
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.onTertiaryContainer,
@@ -276,7 +257,6 @@ private fun ScreenContent(
                     textAlign = TextAlign.Center
                 )
             }
-            //.Terms and Conditions
         }
     }
 }

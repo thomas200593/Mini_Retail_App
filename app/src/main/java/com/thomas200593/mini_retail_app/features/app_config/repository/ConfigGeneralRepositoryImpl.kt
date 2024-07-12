@@ -27,13 +27,9 @@ internal class ConfigGeneralRepositoryImpl @Inject constructor(
         sessionState: SessionState
     ): Set<DestinationConfigGeneral> = withContext(ioDispatcher) {
         when (sessionState) {
-            SessionState.Loading -> {
-                emptySet()
-            }
+            SessionState.Loading -> { emptySet() }
             is SessionState.Invalid -> {
-                DestinationConfigGeneral.entries.filterNot {
-                    it.usesAuth
-                }.toSet()
+                DestinationConfigGeneral.entries.filterNot { it.usesAuth }.toSet()
             }
             is SessionState.Valid -> {
                DestinationConfigGeneral.entries.toSet()

@@ -38,7 +38,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.thomas200593.mini_retail_app.BuildConfig
 import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.app.ui.AppState
@@ -48,17 +47,14 @@ import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
 import com.thomas200593.mini_retail_app.core.ui.common.Icons
 import com.thomas200593.mini_retail_app.core.ui.common.Themes
 import com.thomas200593.mini_retail_app.core.ui.component.Button.Common.AppIconButton
-import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.EmptyPanel
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.EmptyScreen
-import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.ErrorPanel
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.ErrorScreen
-import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.LoadingPanelCircularIndicator
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.LoadingScreen
-import com.thomas200593.mini_retail_app.core.ui.component.Form.Component.TextInput
 import com.thomas200593.mini_retail_app.features.app_config.entity.ConfigCurrent
 import com.thomas200593.mini_retail_app.features.app_config.entity.Language
 import com.thomas200593.mini_retail_app.features.business.entity.business_profile.BizName
 import com.thomas200593.mini_retail_app.features.business.entity.business_profile.dto.BusinessProfileSummary
+import com.thomas200593.mini_retail_app.features.initial.entity.Initialization
 import com.thomas200593.mini_retail_app.features.initial.navigation.navigateToInitial
 import kotlinx.coroutines.launch
 import ulid.ULID
@@ -68,57 +64,41 @@ fun InitializationScreen(
     viewModel: InitializationViewModel = hiltViewModel(),
     appState: AppState = LocalAppState.current
 ){
+    val uiState by viewModel.uiState
     val coroutineScope = rememberCoroutineScope()
     val showWelcomeMessage = viewModel.showWelcomeMessage
     val showInputManualForm = viewModel.showInputManualForm
-    val configCurrent by viewModel.configCurrent.collectAsStateWithLifecycle()
-    val languages by viewModel.languages
-    val initialDefaultSetupUiState by viewModel.initialDefaultSetupUiState
 
     LaunchedEffect(Unit) { viewModel.onOpen() }
 
     ScreenContent(
-        languages = languages,
-        configCurrent = configCurrent,
-        onSetLanguage = viewModel::setLanguage,
-        onInitSetupManual = viewModel::initSetupManual,
-        onInitSetupDefault = viewModel::initSetupDefault,
+        uiState = uiState,
         showWelcomeMessage = showWelcomeMessage,
         showInputManualForm = showInputManualForm,
-        initialDefaultSetupUiState = initialDefaultSetupUiState,
-        onLoadingGenerateDefaultBizProfile = {  },
-        onErrorGenerateDefaultBizProfile = {  },
-        onSuccessGenerateDefaultBizProfile = {
-            coroutineScope.launch {
-                appState.navController.navigateToInitial()
-            }
-        }
+        onLanguageChanged = viewModel::setLanguage,
+        onDefaultInit = {
+            viewModel.setBizProfileDefault(it)
+            coroutineScope.launch { appState.navController.navigateToInitial() }
+        },
+        onManualInit = viewModel::onBeginManualInit,
+        onSubmitManualInit = viewModel::onSubmitManualInit,
+        onCancelManualInit = viewModel::onCancelManualInit
     )
 }
 
 @Composable
-private fun ScreenContent(
-    languages: RequestState<Set<Language>>,
-    configCurrent: RequestState<ConfigCurrent>,
-    onSetLanguage: (Language) -> Unit,
-    onInitSetupManual: () -> Unit,
-    onInitSetupDefault: (BusinessProfileSummary) -> Unit,
+fun ScreenContent(
+    uiState: RequestState<Initialization>,
     showWelcomeMessage: Boolean,
     showInputManualForm: Boolean,
-    initialDefaultSetupUiState: RequestState<BusinessProfileSummary>,
-    onLoadingGenerateDefaultBizProfile: () -> Unit,
-    onErrorGenerateDefaultBizProfile: (Throwable?) -> Unit,
-    onSuccessGenerateDefaultBizProfile: (BusinessProfileSummary) -> Unit
+    onLanguageChanged: (Language) -> Unit,
+    onDefaultInit: (BusinessProfileSummary) -> Unit,
+    onManualInit: () -> Unit,
+    onSubmitManualInit: () -> Unit,
+    onCancelManualInit: () -> Unit
 ) {
-    when(configCurrent){
+    when(uiState){
         RequestState.Idle, RequestState.Loading -> { LoadingScreen() }
-        is RequestState.Error -> {
-            ErrorScreen(
-                title = stringResource(id = R.string.str_error),
-                errorMessage = stringResource(id = R.string.str_error_fetching_preferences),
-                showIcon = true
-            )
-        }
         RequestState.Empty -> {
             EmptyScreen(
                 title = stringResource(id = R.string.str_empty_message_title),
@@ -126,69 +106,59 @@ private fun ScreenContent(
                 showIcon = true
             )
         }
+        is RequestState.Error -> {
+            ErrorScreen(
+                title = stringResource(id = R.string.str_error),
+                errorMessage = stringResource(id = R.string.str_error_fetching_preferences),
+                showIcon = true
+            )
+        }
         is RequestState.Success -> {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(8.dp)
-                    .verticalScroll(rememberScrollState()),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(30.dp, Alignment.Top)
-            ) {
-                LanguageSection(languages = languages, configCurrent = configCurrent.data, onSetLanguage = onSetLanguage)
-
-                //Header
-                if(showWelcomeMessage){
-                    WelcomeHeader(
-                        onInitSetupManual = onInitSetupManual,
-                        onInitSetupDefault = onInitSetupDefault
-                    )
-                }
-
-                if(showInputManualForm){
-                    InputManualForm()
-                }
-
-                //Default Input
-                when(initialDefaultSetupUiState){
-                    RequestState.Idle -> Unit
-                    RequestState.Loading -> { onLoadingGenerateDefaultBizProfile() }
-                    is RequestState.Error -> { onErrorGenerateDefaultBizProfile(initialDefaultSetupUiState.t) }
-                    RequestState.Empty -> { onErrorGenerateDefaultBizProfile(Throwable("Could not generate default use case data. (Duplicate?)")) }
-                    is RequestState.Success -> { onSuccessGenerateDefaultBizProfile(initialDefaultSetupUiState.data) }
-                }
-            }
+            SuccessScreen(
+                uiState = uiState,
+                showWelcomeMessage = showWelcomeMessage,
+                showInputManualForm = showInputManualForm,
+                onLanguageChanged = onLanguageChanged,
+                onDefaultInit = onDefaultInit,
+                onManualInit = onManualInit,
+                onSubmitManualInit = onSubmitManualInit,
+                onCancelManualInit = onCancelManualInit
+            )
         }
     }
 }
 
 @Composable
-private fun LanguageSection(
-    languages: RequestState<Set<Language>>,
-    configCurrent: ConfigCurrent,
-    onSetLanguage: (Language) -> Unit
+private fun SuccessScreen(
+    uiState: RequestState.Success<Initialization>,
+    showWelcomeMessage: Boolean,
+    showInputManualForm: Boolean,
+    onLanguageChanged: (Language) -> Unit,
+    onDefaultInit: (BusinessProfileSummary) -> Unit,
+    onManualInit: () -> Unit,
+    onSubmitManualInit: () -> Unit,
+    onCancelManualInit: () -> Unit
 ) {
-    when(languages){
-        RequestState.Idle, RequestState.Loading -> { LoadingPanelCircularIndicator() }
-        RequestState.Empty -> {
-            EmptyPanel(
-                showIcon = true,
-                title = stringResource(id = R.string.str_empty_message_title),
-                emptyMessage = stringResource(id = R.string.str_empty_message)
+    Column(
+        modifier = Modifier.fillMaxSize().padding(8.dp).verticalScroll(rememberScrollState()),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(30.dp, Alignment.Top)
+    ) {
+        LanguageSection(
+            languages = uiState.data.languages,
+            configCurrent = uiState.data.configCurrent,
+            onSetLanguage = onLanguageChanged
+        )
+        if(showWelcomeMessage) {
+            WelcomeHeader(
+                onManualInit = onManualInit,
+                onDefaultInit = onDefaultInit
             )
         }
-        is RequestState.Error -> {
-            ErrorPanel(
-                showIcon = true,
-                title = stringResource(id = R.string.str_error),
-                errorMessage = stringResource(id = R.string.str_error_fetching_preferences)
-            )
-        }
-        is RequestState.Success -> {
-            LanguageChangeSection(
-                languages = languages.data,
-                configCurrent = configCurrent,
-                onSetLanguage = onSetLanguage
+        if(showInputManualForm){
+            InputManualForm(
+                onSubmitInit = onSubmitManualInit,
+                onCancelInit = onCancelManualInit
             )
         }
     }
@@ -196,7 +166,7 @@ private fun LanguageSection(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LanguageChangeSection(
+private fun LanguageSection(
     languages: Set<Language>,
     configCurrent: ConfigCurrent,
     onSetLanguage: (Language) -> Unit
@@ -212,9 +182,9 @@ fun LanguageChangeSection(
             expanded = expanded,
             onExpandedChange = { expanded = !expanded }
         ) {
-            TextButton(modifier = Modifier
-                .fillMaxWidth()
-                .menuAnchor(), onClick = { expanded = true }) {
+            TextButton(
+                modifier = Modifier.fillMaxWidth().menuAnchor(), onClick = { expanded = true }
+            ) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -260,8 +230,8 @@ fun LanguageChangeSection(
 
 @Composable
 private fun WelcomeHeader(
-    onInitSetupManual: () -> Unit,
-    onInitSetupDefault: (BusinessProfileSummary) -> Unit
+    onManualInit: () -> Unit,
+    onDefaultInit: (BusinessProfileSummary) -> Unit
 ) {
     Column(
         modifier = Modifier,
@@ -272,9 +242,7 @@ private fun WelcomeHeader(
             modifier = Modifier.size(150.dp),
             color = Color.Transparent,
             shape = MaterialTheme.shapes.medium
-        ) {
-            Image(imageVector = ImageVector.vectorResource(id = Icons.App.app), contentDescription = null)
-        }
+        ) { Image(imageVector = ImageVector.vectorResource(id = Icons.App.app), contentDescription = null) }
         Text(
             modifier = Modifier.fillMaxWidth(),
             text = stringResource(id = R.string.app_name),
@@ -295,9 +263,7 @@ private fun WelcomeHeader(
         )
     }
     Surface(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
+        modifier = Modifier.fillMaxWidth().padding(16.dp),
         shape = MaterialTheme.shapes.medium,
         color = MaterialTheme.colorScheme.primaryContainer,
         contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
@@ -308,16 +274,14 @@ private fun WelcomeHeader(
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
+                modifier = Modifier.fillMaxWidth().padding(16.dp),
                 text = stringResource(R.string.str_init_welcome_message),
                 style = MaterialTheme.typography.labelLarge,
                 textAlign = TextAlign.Justify
             )
             AppIconButton(
                 modifier = Modifier.fillMaxWidth(),
-                onClick = { onInitSetupManual.invoke() },
+                onClick = { onManualInit.invoke() },
                 icon = ImageVector.vectorResource(id = Icons.Emotion.happy),
                 text = stringResource(R.string.str_init_setup_yes)
             )
@@ -325,11 +289,14 @@ private fun WelcomeHeader(
     }
     TextButton(
         onClick = {
-            onInitSetupDefault.invoke(
+            onDefaultInit.invoke(
                 BusinessProfileSummary(
                     seqId = 0,
                     genId = ULID.randomULID(),
-                    bizName = BizName(),
+                    bizName = BizName(
+                        legalName = "My-Company Corp",
+                        commonName = "My Company"
+                    ),
                     bizIndustry = null,
                     auditTrail = AuditTrail()
                 )
@@ -344,10 +311,11 @@ private fun WelcomeHeader(
     }
 }
 
-
-
 @Composable
-private fun InputManualForm() {
+private fun InputManualForm(
+    onSubmitInit: () -> Unit,
+    onCancelInit: () -> Unit
+) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = MaterialTheme.shapes.medium,
@@ -382,11 +350,11 @@ private fun InputManualForm() {
                 thickness = 2.dp,
                 color = MaterialTheme.colorScheme.onSurface
             )
-            TextInput(
-                value = "",
-                onValueChange = {},
-                label = "Legal Name",
-            )
+//            TextInput(
+//                value = "",
+//                onValueChange = {},
+//                label = "Legal Name",
+//            )
             Row(
                 modifier = Modifier.fillMaxWidth(1.0f),
                 horizontalArrangement = Arrangement.Center,
@@ -394,13 +362,13 @@ private fun InputManualForm() {
             ){
                 AppIconButton(
                     modifier = Modifier.weight(0.5f),
-                    onClick = {},
+                    onClick = onCancelInit,
                     icon = ImageVector.vectorResource(id = Icons.Emotion.neutral),
                     text = "Cancel"
                 )
                 AppIconButton(
                     modifier = Modifier.weight(0.5f),
-                    onClick = {},
+                    onClick = onSubmitInit,
                     icon = ImageVector.vectorResource(id = Icons.Emotion.neutral),
                     text = "OK"
                 )
@@ -414,19 +382,7 @@ private fun InputManualForm() {
 private fun Preview(){
     Themes.ApplicationTheme {
         Column(modifier = Modifier.fillMaxSize()) {
-            ScreenContent(
-                languages = RequestState.Success(Language.entries.toSet()),
-                configCurrent = RequestState.Success(ConfigCurrent()),
-                onSetLanguage = {},
-                onInitSetupManual = {},
-                onInitSetupDefault = {},
-                showWelcomeMessage = false,
-                showInputManualForm = true,
-                initialDefaultSetupUiState = RequestState.Idle,
-                onErrorGenerateDefaultBizProfile = {},
-                onLoadingGenerateDefaultBizProfile = {},
-                onSuccessGenerateDefaultBizProfile = {}
-            )
+
         }
     }
 }

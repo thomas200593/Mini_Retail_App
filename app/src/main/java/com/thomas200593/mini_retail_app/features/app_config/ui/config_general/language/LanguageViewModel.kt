@@ -31,9 +31,8 @@ class LanguageViewModel @Inject constructor(
 ): ViewModel(){
     private val _languages: MutableState<RequestState<Set<Language>>> = mutableStateOf(RequestState.Idle)
     val languages = _languages
-    val configCurrent = appCfgRepository.configCurrent.flowOn(ioDispatcher)
-        .catch { RequestState.Error(it) }
-        .map { RequestState.Success(it) }
+    val configCurrent = appCfgRepository.configCurrent
+        .flowOn(ioDispatcher).catch { RequestState.Error(it) }.map { RequestState.Success(it) }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.Eagerly,

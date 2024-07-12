@@ -28,9 +28,8 @@ class CurrencyViewModel @Inject constructor(
 ): ViewModel() {
     private val _currencies: MutableState<RequestState<List<Currency>>> = mutableStateOf(RequestState.Idle)
     val currencies = _currencies
-    val configCurrent = appCfgRepository.configCurrent.flowOn(ioDispatcher)
-        .catch { RequestState.Error(it) }
-        .map { RequestState.Success(it) }
+    val configCurrent = appCfgRepository.configCurrent
+        .flowOn(ioDispatcher).catch { RequestState.Error(it) }.map { RequestState.Success(it) }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.Eagerly,

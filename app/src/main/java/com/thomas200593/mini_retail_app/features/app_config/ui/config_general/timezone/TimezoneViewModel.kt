@@ -28,9 +28,8 @@ class TimezoneViewModel @Inject constructor(
 ): ViewModel() {
     private val _timezones: MutableState<RequestState<List<Timezone>>> = mutableStateOf(RequestState.Idle)
     val timezones = _timezones
-    val configCurrent = appCfgRepository.configCurrent.flowOn(ioDispatcher)
-        .catch { RequestState.Error(it) }
-        .map { RequestState.Success(it) }
+    val configCurrent = appCfgRepository.configCurrent
+        .flowOn(ioDispatcher).catch { RequestState.Error(it) }.map { RequestState.Success(it) }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.Eagerly,
