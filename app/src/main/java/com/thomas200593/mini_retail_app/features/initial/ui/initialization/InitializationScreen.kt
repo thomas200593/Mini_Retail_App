@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -50,12 +51,15 @@ import com.thomas200593.mini_retail_app.core.ui.component.Button.Common.AppIconB
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.EmptyScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.ErrorScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.LoadingScreen
+import com.thomas200593.mini_retail_app.core.ui.component.Form.Component.TextInput
 import com.thomas200593.mini_retail_app.features.app_config.entity.ConfigCurrent
 import com.thomas200593.mini_retail_app.features.app_config.entity.Language
 import com.thomas200593.mini_retail_app.features.business.entity.business_profile.BizName
 import com.thomas200593.mini_retail_app.features.business.entity.business_profile.dto.BusinessProfileSummary
 import com.thomas200593.mini_retail_app.features.initial.entity.Initialization
 import com.thomas200593.mini_retail_app.features.initial.navigation.navigateToInitial
+import com.thomas200593.mini_retail_app.features.initial.ui.initialization.InitializationViewModel.Companion.Status
+import com.thomas200593.mini_retail_app.features.initial.ui.initialization.InitializationViewModel.InitBizProfileManual.FormEvent
 import kotlinx.coroutines.launch
 import ulid.ULID
 
@@ -68,11 +72,27 @@ fun InitializationScreen(
     val coroutineScope = rememberCoroutineScope()
     val showWelcomeMessage = viewModel.showWelcomeMessage
     val showInputManualForm = viewModel.showInputManualForm
+    val formUseCase = viewModel.initBizProfileManual
+    val initBizProfileProgress = viewModel.initBizProfileProgress
 
     LaunchedEffect(Unit) { viewModel.onOpen() }
 
+    when(Status.valueOf(initBizProfileProgress)){
+        Status.IDLE -> Unit
+        Status.LOADING -> {
+            //Loading Dialog
+        }
+        Status.SUCCESS -> {
+            //Success Dialog; go to Login
+        }
+        Status.FAILED -> {
+            //Failed Dialog, skip go to Login
+        }
+    }
+
     ScreenContent(
         uiState = uiState,
+        formUseCase = formUseCase,
         showWelcomeMessage = showWelcomeMessage,
         showInputManualForm = showInputManualForm,
         onLanguageChanged = viewModel::setLanguage,
@@ -81,7 +101,7 @@ fun InitializationScreen(
             coroutineScope.launch { appState.navController.navigateToInitial() }
         },
         onManualInit = viewModel::onBeginManualInit,
-        onSubmitManualInit = viewModel::onSubmitManualInit,
+        onSubmitManualInit = { viewModel.initBizProfileManual.onEvent(FormEvent.Submit) },
         onCancelManualInit = viewModel::onCancelManualInit
     )
 }
@@ -89,13 +109,14 @@ fun InitializationScreen(
 @Composable
 fun ScreenContent(
     uiState: RequestState<Initialization>,
+    formUseCase: InitializationViewModel.InitBizProfileManual,
     showWelcomeMessage: Boolean,
     showInputManualForm: Boolean,
     onLanguageChanged: (Language) -> Unit,
     onDefaultInit: (BusinessProfileSummary) -> Unit,
     onManualInit: () -> Unit,
     onSubmitManualInit: () -> Unit,
-    onCancelManualInit: () -> Unit
+    onCancelManualInit: () -> Unit,
 ) {
     when(uiState){
         RequestState.Idle, RequestState.Loading -> { LoadingScreen() }
@@ -116,6 +137,7 @@ fun ScreenContent(
         is RequestState.Success -> {
             SuccessScreen(
                 uiState = uiState,
+                formUseCase = formUseCase,
                 showWelcomeMessage = showWelcomeMessage,
                 showInputManualForm = showInputManualForm,
                 onLanguageChanged = onLanguageChanged,
@@ -131,6 +153,7 @@ fun ScreenContent(
 @Composable
 private fun SuccessScreen(
     uiState: RequestState.Success<Initialization>,
+    formUseCase: InitializationViewModel.InitBizProfileManual,
     showWelcomeMessage: Boolean,
     showInputManualForm: Boolean,
     onLanguageChanged: (Language) -> Unit,
@@ -140,7 +163,10 @@ private fun SuccessScreen(
     onCancelManualInit: () -> Unit
 ) {
     Column(
-        modifier = Modifier.fillMaxSize().padding(8.dp).verticalScroll(rememberScrollState()),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(8.dp)
+            .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(30.dp, Alignment.Top)
     ) {
@@ -158,7 +184,8 @@ private fun SuccessScreen(
         if(showInputManualForm){
             InputManualForm(
                 onSubmitInit = onSubmitManualInit,
-                onCancelInit = onCancelManualInit
+                onCancelInit = onCancelManualInit,
+                formUseCase = formUseCase
             )
         }
     }
@@ -183,7 +210,9 @@ private fun LanguageSection(
             onExpandedChange = { expanded = !expanded }
         ) {
             TextButton(
-                modifier = Modifier.fillMaxWidth().menuAnchor(), onClick = { expanded = true }
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .menuAnchor(), onClick = { expanded = true }
             ) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -263,7 +292,9 @@ private fun WelcomeHeader(
         )
     }
     Surface(
-        modifier = Modifier.fillMaxWidth().padding(16.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
         shape = MaterialTheme.shapes.medium,
         color = MaterialTheme.colorScheme.primaryContainer,
         contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
@@ -274,7 +305,9 @@ private fun WelcomeHeader(
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                modifier = Modifier.fillMaxWidth().padding(16.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
                 text = stringResource(R.string.str_init_welcome_message),
                 style = MaterialTheme.typography.labelLarge,
                 textAlign = TextAlign.Justify
@@ -314,7 +347,8 @@ private fun WelcomeHeader(
 @Composable
 private fun InputManualForm(
     onSubmitInit: () -> Unit,
-    onCancelInit: () -> Unit
+    onCancelInit: () -> Unit,
+    formUseCase: InitializationViewModel.InitBizProfileManual
 ) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
@@ -350,27 +384,42 @@ private fun InputManualForm(
                 thickness = 2.dp,
                 color = MaterialTheme.colorScheme.onSurface
             )
-//            TextInput(
-//                value = "",
-//                onValueChange = {},
-//                label = "Legal Name",
-//            )
+            TextInput(
+                value = formUseCase.formState.legalName,
+                onValueChange = { formUseCase.onEvent(FormEvent.LegalNameChanged(it)) },
+                label = "Company Legal Name",
+                placeholder = "Your Company Legal Name",
+                singleLine = true,
+                isError = formUseCase.formState.legalNameError != null,
+                errorMessage = formUseCase.formState.legalNameError
+            )
+            TextInput(
+                value = formUseCase.formState.commonName,
+                onValueChange = { formUseCase.onEvent(FormEvent.CommonNameChanged(it)) },
+                label = "Company Common Name",
+                placeholder = "Your Company Common Name",
+                singleLine = true,
+                isError = formUseCase.formState.commonNameError != null,
+                errorMessage = formUseCase.formState.commonNameError
+            )
             Row(
                 modifier = Modifier.fillMaxWidth(1.0f),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
-            ){
+            ) {
+                if(formUseCase.formState.submitButtonEnabled){
+                    AppIconButton(
+                        modifier = Modifier.weight(if(formUseCase.formState.submitButtonEnabled){0.5f}else{0.0f}),
+                        onClick = onSubmitInit,
+                        icon = ImageVector.vectorResource(id = Icons.Emotion.neutral),
+                        text = stringResource(id = R.string.str_save)
+                    )
+                }
                 AppIconButton(
-                    modifier = Modifier.weight(0.5f),
+                    modifier = Modifier.weight(if(formUseCase.formState.submitButtonEnabled){0.5f}else{1.0f}),
                     onClick = onCancelInit,
                     icon = ImageVector.vectorResource(id = Icons.Emotion.neutral),
-                    text = "Cancel"
-                )
-                AppIconButton(
-                    modifier = Modifier.weight(0.5f),
-                    onClick = onSubmitInit,
-                    icon = ImageVector.vectorResource(id = Icons.Emotion.neutral),
-                    text = "OK"
+                    text = stringResource(id = R.string.str_cancel)
                 )
             }
         }

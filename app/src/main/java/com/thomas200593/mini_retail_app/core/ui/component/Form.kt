@@ -1,7 +1,6 @@
 package com.thomas200593.mini_retail_app.core.ui.component
 
 import android.content.Context
-import android.util.Patterns
 import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
@@ -27,7 +26,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -38,7 +36,6 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.thomas200593.mini_retail_app.R
-import java.util.regex.Pattern
 
 object Form{
     object Component{
@@ -51,41 +48,126 @@ object Form{
                 ): UiText()
 
                 @Composable
-                fun asString(): String =
-                    when(this){
-                        is DynamicString -> value
-                        is StringResource -> stringResource(id = resId, *args)
-                    }
+                fun asString(): String = when(this){
+                    is DynamicString -> value
+                    is StringResource -> stringResource(id = resId, *args)
+                }
 
-                fun asString(context: Context): String =
-                    when(this){
-                        is DynamicString -> value
-                        is StringResource -> context.getString(resId, *args)
-                    }
+                fun asString(context: Context): String = when(this){
+                    is DynamicString -> value
+                    is StringResource -> context.getString(resId, *args)
+                }
             }
             data class ValidationResult(
                 val isSuccess: Boolean,
                 val errorMessage: UiText? = null
             )
             interface BaseValidation<String, ValidationResult>{
-                suspend fun execute(input: String): ValidationResult
+                fun execute(
+                    input: String,
+                    minLength: Int? = null,
+                    maxLength: Int? = null,
+                    required: Boolean? = false,
+                    regex: Regex? = null
+                ): ValidationResult
             }
             object InputFieldValidation{
-                class EmailValidation: BaseValidation<String, ValidationResult>{
-                    override suspend fun execute(input: String): ValidationResult {
-                        if(
-                            (input.isNotBlank()) &&
-                            (input.isNotEmpty()) &&
-                            (Patterns.EMAIL_ADDRESS.matcher(input).matches())
-                        ){
-                            return ValidationResult(
-                                isSuccess = true,
-                                errorMessage = null
-                            )
+                class RegularTextValidation: BaseValidation<String, ValidationResult>{
+                    override fun execute(
+                        input: String,
+                        minLength: Int?,
+                        maxLength: Int?,
+                        required: Boolean?,
+                        regex: Regex?
+                    ): ValidationResult {
+                        required?.let {
+                            if (it && input.isEmpty()) {
+                                return ValidationResult(
+                                    isSuccess = false,
+                                    errorMessage = UiText.StringResource(R.string.str_field_required)
+                                )
+                            }
+                        }
+                        minLength?.let {
+                            if (input.length < it) {
+                                return ValidationResult(
+                                    isSuccess = false,
+                                    errorMessage = UiText.DynamicString("Min: $minLength char")
+                                )
+                            }
+                        }
+                        maxLength?.let {
+                            if (input.length > it) {
+                                return ValidationResult(
+                                    isSuccess = false,
+                                    errorMessage = UiText.DynamicString("Max: $maxLength char")
+                                )
+                            }
+                        }
+                        regex?.let {
+                            if (!input.matches(it)) {
+                                return ValidationResult(
+                                    isSuccess = false,
+                                    errorMessage = UiText.DynamicString("Invalid format")
+                                )
+                            }
                         }
                         return ValidationResult(
-                            isSuccess = false,
-                            errorMessage = UiText.StringResource(R.string.str_email_format_invalid)
+                            isSuccess = true,
+                            errorMessage = null
+                        )
+                    }
+                }
+                class NumberTextValidation: BaseValidation<String, ValidationResult>{
+                    override fun execute(
+                        input: String,
+                        minLength: Int?,
+                        maxLength: Int?,
+                        required: Boolean?,
+                        regex: Regex?
+                    ): ValidationResult {
+                        required?.let {
+                            if (it && input.isEmpty()) {
+                                return ValidationResult(
+                                    isSuccess = false,
+                                    errorMessage = UiText.StringResource(R.string.str_field_required)
+                                )
+                            }
+                        }
+                        val numberRegex = "^[0-9]+(\\.[0-9]+)?\$".toRegex()
+                        if (!input.matches(numberRegex)) {
+                            return ValidationResult(
+                                isSuccess = false,
+                                errorMessage = UiText.StringResource(R.string.str_field_invalid_number)
+                            )
+                        }
+                        minLength?.let {
+                            if (input.length < it) {
+                                return ValidationResult(
+                                    isSuccess = false,
+                                    errorMessage = UiText.DynamicString("Min: $minLength char")
+                                )
+                            }
+                        }
+                        maxLength?.let {
+                            if (input.length > it) {
+                                return ValidationResult(
+                                    isSuccess = false,
+                                    errorMessage = UiText.DynamicString("Max: $maxLength char")
+                                )
+                            }
+                        }
+                        regex?.let {
+                            if (!input.matches(it)) {
+                                return ValidationResult(
+                                    isSuccess = false,
+                                    errorMessage = UiText.DynamicString("Invalid format")
+                                )
+                            }
+                        }
+                        return ValidationResult(
+                            isSuccess = true,
+                            errorMessage = null
                         )
                     }
                 }
@@ -98,6 +180,7 @@ object Form{
             keyboardType: KeyboardType = KeyboardType.Text,
             imeAction: ImeAction = ImeAction.Done,
             label: String? = String(),
+            placeholder: String? = String(),
             value: String,
             onValueChange: (String) -> Unit,
             singleLine: (Boolean) = true,
@@ -173,15 +256,12 @@ object Form{
                                 shape = RoundedCornerShape(8.dp)
                             )
                             .focusRequester(focusRequester)) {
-                            if (leadingIcon != null) {
-                                leadingIcon()
-                            } else {
-                                Spacer(modifier = Modifier.padding(8.dp))
-                            }
+                            if (leadingIcon != null) { leadingIcon() }
+                            else { Spacer(modifier = Modifier.padding(8.dp)) }
                             Box(modifier = Modifier.weight(1.0f).padding(vertical = 16.dp)) {
                                 if (value.isEmpty() || value.isBlank()) {
                                     Text(
-                                        text = label.orEmpty(),
+                                        text = placeholder.orEmpty(),
                                         style = MaterialTheme.typography.bodySmall,
                                         color = MaterialTheme.colorScheme.inversePrimary,
                                     )
@@ -198,7 +278,8 @@ object Form{
                         text = if (isError) { errorMessage!!.asString(context) } else { String() },
                         color = MaterialTheme.colorScheme.error,
                         style = MaterialTheme.typography.bodySmall,
-                        modifier = modifier
+                        textAlign = TextAlign.Start,
+                        modifier = modifier.fillMaxWidth()
                     )
                 }
             }

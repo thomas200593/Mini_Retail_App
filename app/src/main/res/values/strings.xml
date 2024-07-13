@@ -75,7 +75,7 @@
     <string name="str_email_verified">Verified</string>
     <string name="str_email_not_verified">Not Verified</string>
     <string name="str_business_profile">Business Profile</string>
-    <string name="str_business_profile_desc">Business &amp; company related information></string>
+    <string name="str_business_profile_desc">Business &amp; company related information</string>
     <string name="str_supplier">Supplier</string>
     <string name="str_supplier_desc">Manage master data supplier</string>
     <string name="str_customer">Customer</string>
@@ -85,4 +85,8 @@
     <string name="str_init_welcome_message">We\'re excited to have you here. Could you please provide us with a bit of information about your business profile?</string>
     <string name="str_email_format_invalid">Invalid e-mail format</string>
     <string name="str_tnc">Terms and Conditions</string>
+    <string name="str_field_required">This field is required</string>
+    <string name="str_field_invalid_number">This field must be a number</string>
+    <string name="str_cancel">Cancel</string>
+    <string name="str_save">Save</string>
 </resources>

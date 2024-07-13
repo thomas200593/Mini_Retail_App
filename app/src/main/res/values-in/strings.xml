@@ -83,4 +83,8 @@
     <string name="str_init_welcome_message">Senang sekali menyambut Anda di sini. Bisakah Anda memberikan sedikit informasi tentang profil bisnis Anda?</string>
     <string name="str_email_format_invalid">Format e-mail tidak valid</string>
     <string name="str_tnc">Syarat dan Ketentuan</string>
+    <string name="str_field_required">Isian ini diperlukan</string>
+    <string name="str_field_invalid_number">Isian ini harus berupa angka</string>
+    <string name="str_cancel">Batal</string>
+    <string name="str_save">Simpan</string>
 </resources>
