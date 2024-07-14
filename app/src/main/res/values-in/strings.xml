@@ -92,4 +92,6 @@
     <string name="str_biz_profile_init_loading">Mohon menunggu sementara kami menyiapkan profilmu</string>
     <string name="str_biz_profile_init_success">Profilmu sukses diinisialisasi</string>
     <string name="str_biz_profile_init_failed">Profilmu gagal diinisialisasi. Silakan coba kembali nanti</string>
+    <string name="str_company_legal_name">Nama resmi perusahaan</string>
+    <string name="str_company_common_name">Nama umum perusahaan</string>
 </resources>

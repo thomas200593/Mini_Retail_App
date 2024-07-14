@@ -94,4 +94,6 @@
     <string name="str_biz_profile_init_loading">Please wait while we initialize your profile</string>
     <string name="str_biz_profile_init_success">Your profile has been successfully initialized</string>
     <string name="str_biz_profile_init_failed">Failed to initialize your profile. Please try again later</string>
+    <string name="str_company_legal_name">Company legal name</string>
+    <string name="str_company_common_name">Company common name</string>
 </resources>

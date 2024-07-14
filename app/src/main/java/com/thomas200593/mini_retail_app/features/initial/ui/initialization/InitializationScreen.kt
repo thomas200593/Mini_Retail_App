@@ -431,8 +431,8 @@ private fun InputManualForm(
             TextInput(
                 value = formUseCase.formState.legalName,
                 onValueChange = { formUseCase.onEvent(FormEvent.LegalNameChanged(it)) },
-                label = "Company Legal Name",
-                placeholder = "Your Company Legal Name",
+                label = stringResource(R.string.str_company_legal_name),
+                placeholder = stringResource(R.string.str_company_legal_name),
                 singleLine = true,
                 isError = formUseCase.formState.legalNameError != null,
                 errorMessage = formUseCase.formState.legalNameError
@@ -440,8 +440,8 @@ private fun InputManualForm(
             TextInput(
                 value = formUseCase.formState.commonName,
                 onValueChange = { formUseCase.onEvent(FormEvent.CommonNameChanged(it)) },
-                label = "Company Common Name",
-                placeholder = "Your Company Common Name",
+                label = stringResource(R.string.str_company_common_name),
+                placeholder = stringResource(R.string.str_company_common_name),
                 singleLine = true,
                 isError = formUseCase.formState.commonNameError != null,
                 errorMessage = formUseCase.formState.commonNameError
