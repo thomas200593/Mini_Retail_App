@@ -65,23 +65,15 @@ fun OnboardingScreen(
         viewModel.onOpen()
     }
     LaunchedEffect(isOnboardingFinished) {
-        if(isOnboardingFinished){
-            appState.navController.navigateToInitial()
-        }
+        if(isOnboardingFinished){ appState.navController.navigateToInitial() }
     }
 
     ScreenContent(
         onboardingPages = onboardingPages,
         currentPage = currentPage,
-        onTabSelected = { index ->
-            viewModel.onSelectedPage(index)
-        },
-        onNextClicked = {
-            viewModel.onNextButtonClicked()
-        },
-        onFinishedOnboarding = {
-            viewModel.hideOnboarding()
-        }
+        onTabSelected = { index -> viewModel.onSelectedPage(index) },
+        onNextClicked = { viewModel.onNextButtonClicked() },
+        onFinishedOnboarding = { viewModel.hideOnboarding() }
     )
 }
 
@@ -95,9 +87,7 @@ private fun ScreenContent(
 ) {
     when(onboardingPages){
         RequestState.Idle -> Unit
-        RequestState.Loading -> {
-            LoadingScreen()
-        }
+        RequestState.Loading -> { LoadingScreen() }
         is RequestState.Error -> {
             ErrorScreen(
                 title = stringResource(id = R.string.str_error),
@@ -116,34 +106,25 @@ private fun ScreenContent(
             val onboardingPagesData = onboardingPages.data
 
             Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .testTag(Onboarding.Tags.TAG_ONBOARD_SCREEN)
+                modifier = Modifier.fillMaxSize().testTag(Onboarding.Tags.TAG_ONBOARD_SCREEN)
             ) {
                 OnboardingImageView(
-                    modifier = Modifier
-                        .weight(1.0f)
-                        .fillMaxWidth(),
+                    modifier = Modifier.weight(1.0f).fillMaxWidth(),
                     currentPage = onboardingPagesData[currentPage]
                 )
                 OnboardingDetails(
-                    modifier = Modifier
-                        .weight(1.0f)
-                        .padding(16.dp),
+                    modifier = Modifier.weight(1.0f).padding(16.dp),
                     currentPage = onboardingPagesData[currentPage]
                 )
                 OnboardNavButton(
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .padding(top = 16.dp),
+                    modifier = Modifier.align(Alignment.CenterHorizontally).padding(top = 16.dp),
                     currentPage = currentPage,
                     onboardingPagesSize = onboardingPagesData.size,
                     onNextClicked = onNextClicked,
                     onFinishedOnboarding = onFinishedOnboarding
                 )
                 TabSelector(
-                    modifier = Modifier
-                        .padding(top = 16.dp),
+                    modifier = Modifier.padding(top = 16.dp),
                     onboardingPagesData = onboardingPagesData,
                     currentPage = currentPage,
                     onTabSelected = onTabSelected
@@ -169,20 +150,13 @@ fun OnboardingImageView(
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.FillWidth
         )
-        Box(modifier = Modifier
-            .fillMaxSize()
-            .align(Alignment.BottomCenter)
-            .graphicsLayer {
-                // Apply alpha to create the fading effect
-                alpha = 0.6f
-            }
+        Box(modifier = Modifier.fillMaxSize().align(Alignment.BottomCenter).graphicsLayer { alpha = 0.6f }
             .background(
                 Brush.verticalGradient(
-                    colorStops = arrayOf(
-                        Pair(0.8f, Color.Transparent), Pair(1f, Color.White)
-                    )
+                    colorStops = arrayOf(Pair(0.8f, Color.Transparent), Pair(1f, Color.White))
                 )
-            ))
+            )
+        )
     }
 }
 
@@ -191,9 +165,7 @@ fun OnboardingDetails(
     modifier: Modifier,
     currentPage: Onboarding.OnboardingPage
 ) {
-    Column(
-        modifier = modifier
-    ) {
+    Column(modifier = modifier) {
         Text(
             text = currentPage.title,
             style = MaterialTheme.typography.displaySmall,
@@ -221,19 +193,13 @@ fun OnboardNavButton(
     Button(
         modifier = modifier.testTag(TAG_ONBOARD_SCREEN_NAV_BUTTON),
         onClick = {
-            if (currentPage < onboardingPagesSize - 1) {
-                onNextClicked()
-            } else {
-                onFinishedOnboarding()
-            }
+            if (currentPage < onboardingPagesSize - 1) { onNextClicked() }
+            else { onFinishedOnboarding() }
         },
         content = {
             Text(
-                text = if (currentPage < onboardingPagesSize - 1) {
-                    stringResource(id = R.string.str_onboarding_next)
-                } else {
-                    stringResource(id = R.string.str_onboarding_get_started)
-                }
+                text = if (currentPage < onboardingPagesSize - 1) { stringResource(id = R.string.str_onboarding_next) }
+                else { stringResource(id = R.string.str_onboarding_get_started) }
             )
         }
     )
@@ -249,9 +215,7 @@ fun TabSelector(
     TabRow(
         selectedTabIndex = currentPage,
         modifier = modifier
-            .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.primary)
-            .testTag(TAG_ONBOARD_TAG_ROW)
+            .fillMaxWidth().background(MaterialTheme.colorScheme.primary).testTag(TAG_ONBOARD_TAG_ROW)
     ) {
         onboardingPagesData.forEachIndexed { index, _ ->
             Tab(

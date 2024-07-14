@@ -31,30 +31,19 @@ class OnboardingViewModel @Inject constructor(
     private val _isOnboardingFinished: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val isOnboardingFinished: StateFlow<Boolean> = _isOnboardingFinished
 
-    fun onOpen() = viewModelScope.launch(ioDispatcher) {
-        getOnboardingPages()
-    }
+    fun onOpen() = viewModelScope.launch(ioDispatcher) { getOnboardingPages() }
 
     private fun getOnboardingPages() = viewModelScope.launch(ioDispatcher) {
         _onboardingPages.value = RequestState.Loading
-        _onboardingPages.value = try{
-            RequestState.Success(onboardingRepository.getOnboardingPages())
-        }catch (e: Throwable){
-            RequestState.Error(e)
-        }
+        _onboardingPages.value = try{ RequestState.Success(onboardingRepository.getOnboardingPages()) }
+        catch (e: Throwable){ RequestState.Error(e) }
     }
 
     fun hideOnboarding() = viewModelScope.launch(ioDispatcher) {
-        onboardingRepository.hideOnboarding().also {
-            _isOnboardingFinished.value = true
-        }
+        onboardingRepository.hideOnboarding().also { _isOnboardingFinished.value = true }
     }
 
-    fun onNextButtonClicked() = viewModelScope.launch(ioDispatcher){
-        _currentPage.value += 1
-    }
+    fun onNextButtonClicked() = viewModelScope.launch(ioDispatcher){ _currentPage.value += 1 }
 
-    fun onSelectedPage(index: Int) = viewModelScope.launch(ioDispatcher){
-        _currentPage.value = index
-    }
+    fun onSelectedPage(index: Int) = viewModelScope.launch(ioDispatcher){ _currentPage.value = index }
 }
