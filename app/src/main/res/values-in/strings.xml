@@ -87,4 +87,6 @@
     <string name="str_field_invalid_number">Isian ini harus berupa angka</string>
     <string name="str_cancel">Batal</string>
     <string name="str_save">Simpan</string>
+    <string name="str_ok">OK</string>
+    <string name="str_success">Sukses</string>
 </resources>

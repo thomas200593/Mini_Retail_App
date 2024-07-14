@@ -89,4 +89,6 @@
     <string name="str_field_invalid_number">This field must be a number</string>
     <string name="str_cancel">Cancel</string>
     <string name="str_save">Save</string>
+    <string name="str_ok">OK</string>
+    <string name="str_success">Success</string>
 </resources>

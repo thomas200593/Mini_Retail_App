@@ -1,6 +1,5 @@
 package com.thomas200593.mini_retail_app.features.initial.ui.initialization
 
-import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,7 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -36,9 +34,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.thomas200593.mini_retail_app.BuildConfig
 import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.app.ui.AppState
@@ -46,11 +44,12 @@ import com.thomas200593.mini_retail_app.app.ui.LocalAppState
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.AuditTrail
 import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
 import com.thomas200593.mini_retail_app.core.ui.common.Icons
-import com.thomas200593.mini_retail_app.core.ui.common.Themes
 import com.thomas200593.mini_retail_app.core.ui.component.Button.Common.AppIconButton
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.EmptyScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.ErrorScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.LoadingScreen
+import com.thomas200593.mini_retail_app.core.ui.component.Dialog
+import com.thomas200593.mini_retail_app.core.ui.component.Dialog.AppAlertDialog
 import com.thomas200593.mini_retail_app.core.ui.component.Form.Component.TextInput
 import com.thomas200593.mini_retail_app.features.app_config.entity.ConfigCurrent
 import com.thomas200593.mini_retail_app.features.app_config.entity.Language
@@ -68,27 +67,75 @@ fun InitializationScreen(
     viewModel: InitializationViewModel = hiltViewModel(),
     appState: AppState = LocalAppState.current
 ){
-    val uiState by viewModel.uiState
     val coroutineScope = rememberCoroutineScope()
+    val uiState by viewModel.uiState
     val showWelcomeMessage = viewModel.showWelcomeMessage
     val showInputManualForm = viewModel.showInputManualForm
     val formUseCase = viewModel.initBizProfileManual
-    val initBizProfileProgress = viewModel.initBizProfileProgress
+    val initBizProfileProgress by viewModel.initBizProfileProgress.collectAsStateWithLifecycle()
+
+    val showLoadingDialog = remember { mutableStateOf(false) }
+    val showSuccessDialog = remember { mutableStateOf(false) }
+    val showErrorDialog = remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) { viewModel.onOpen() }
 
-    when(Status.valueOf(initBizProfileProgress)){
-        Status.IDLE -> Unit
-        Status.LOADING -> {
-            //Loading Dialog
-        }
-        Status.SUCCESS -> {
-            //Success Dialog; go to Login
-        }
-        Status.FAILED -> {
-            //Failed Dialog, skip go to Login
+    LaunchedEffect(initBizProfileProgress) {
+        when(initBizProfileProgress){
+            Status.IDLE.name -> { showLoadingDialog.value = false; showSuccessDialog.value = false; showErrorDialog.value = false }
+            Status.LOADING.name -> { showLoadingDialog.value = true; showSuccessDialog.value = false; showErrorDialog.value = false }
+            Status.SUCCESS.name -> { showLoadingDialog.value = false; showSuccessDialog.value = true; showErrorDialog.value= false }
+            Status.FAILED.name -> { showLoadingDialog.value = false; showSuccessDialog.value = false; showErrorDialog.value = true }
         }
     }
+
+    AppAlertDialog(
+        showDialog = showLoadingDialog,
+        dialogContext = Dialog.AlertDialogContext.INFORMATION,
+        showIcon = true,
+        showTitle = true,
+        title = { Text(stringResource(id = R.string.str_loading)) },
+        showBody = true,
+        body = { Text("Please wait while we initialize your profile.") }
+    )
+
+    AppAlertDialog(
+        showDialog = showSuccessDialog,
+        dialogContext = Dialog.AlertDialogContext.SUCCESS,
+        showIcon = true,
+        showTitle = true,
+        title = { Text(stringResource(id = R.string.str_success)) },
+        showBody = true,
+        body = { Text("Your profile has been successfully initialized.") },
+        useConfirmButton = true,
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    showSuccessDialog.value = false
+                    coroutineScope.launch { appState.navController.navigateToInitial() }
+                }
+            ) { Text(stringResource(id = R.string.str_ok)) }
+        }
+    )
+
+    AppAlertDialog(
+        showDialog = showErrorDialog,
+        dialogContext = Dialog.AlertDialogContext.ERROR,
+        showIcon = true,
+        showTitle = true,
+        title = { Text(stringResource(id = R.string.str_error)) },
+        showBody = true,
+        body = { Text("Failed to initialize your profile. Please try again later.") },
+        useDismissButton = true,
+        dismissButton = {
+            TextButton(
+                onClick = {
+                    showSuccessDialog.value = false
+                    coroutineScope.launch { appState.navController.navigateToInitial() }
+                }
+            ) { Text(stringResource(id = R.string.str_ok)) }
+        }
+    )
 
     ScreenContent(
         uiState = uiState,
@@ -96,10 +143,7 @@ fun InitializationScreen(
         showWelcomeMessage = showWelcomeMessage,
         showInputManualForm = showInputManualForm,
         onLanguageChanged = viewModel::setLanguage,
-        onDefaultInit = {
-            viewModel.setBizProfileDefault(it)
-            coroutineScope.launch { appState.navController.navigateToInitial() }
-        },
+        onDefaultInit = viewModel::setBizProfileDefault,
         onManualInit = viewModel::onBeginManualInit,
         onSubmitManualInit = { viewModel.initBizProfileManual.onEvent(FormEvent.Submit) },
         onCancelManualInit = viewModel::onCancelManualInit
@@ -422,16 +466,6 @@ private fun InputManualForm(
                     text = stringResource(id = R.string.str_cancel)
                 )
             }
-        }
-    }
-}
-
-@Composable
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES, locale = "in")
-private fun Preview(){
-    Themes.ApplicationTheme {
-        Column(modifier = Modifier.fillMaxSize()) {
-
         }
     }
 }

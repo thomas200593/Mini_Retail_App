@@ -25,6 +25,8 @@ import com.thomas200593.mini_retail_app.features.initial.domain.SetDefaultInitia
 import com.thomas200593.mini_retail_app.features.initial.entity.Initialization
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import ulid.ULID
@@ -53,8 +55,8 @@ class InitializationViewModel @Inject constructor(
     var showInputManualForm by mutableStateOf(savedStateHandle[KEY_SHOW_INPUT_MANUAL_FORM] ?: false)
         private set
 
-    var initBizProfileProgress by mutableStateOf(savedStateHandle[KEY_INIT_BUSINESS_PROFILE_PROGRESS] ?: Status.IDLE.name)
-        private set
+    private val _initBizProfileProgress: MutableStateFlow<String> = MutableStateFlow(savedStateHandle[KEY_INIT_BUSINESS_PROFILE_PROGRESS] ?: Status.IDLE.name)
+    val initBizProfileProgress: StateFlow<String> get() = _initBizProfileProgress
 
     private val _uiState: MutableState<RequestState<Initialization>> = mutableStateOf(RequestState.Idle)
     val uiState = _uiState
@@ -88,10 +90,10 @@ class InitializationViewModel @Inject constructor(
     }
 
     fun setBizProfileDefault(businessProfileSummary: BusinessProfileSummary) = viewModelScope.launch(ioDispatcher) {
-        initBizProfileProgress = Status.LOADING.name
+        _initBizProfileProgress.value = Status.LOADING.name
         savedStateHandle[KEY_INIT_BUSINESS_PROFILE_PROGRESS] = Status.LOADING.name
 
-        initBizProfileProgress = try{
+        _initBizProfileProgress.value = try{
             val result = setDefaultUseCase.invoke(businessProfileSummary)
             if(result !=null){
                 savedStateHandle[KEY_INIT_BUSINESS_PROFILE_PROGRESS] = Status.SUCCESS.name
@@ -107,7 +109,22 @@ class InitializationViewModel @Inject constructor(
     }
 
     fun onSubmitManualInit(businessProfileSummary: BusinessProfileSummary) = viewModelScope.launch(ioDispatcher) {
-        setDefaultUseCase.invoke(businessProfileSummary)
+        _initBizProfileProgress.value = Status.LOADING.name
+        savedStateHandle[KEY_INIT_BUSINESS_PROFILE_PROGRESS] = Status.LOADING.name
+
+        _initBizProfileProgress.value = try{
+            val result = setDefaultUseCase.invoke(businessProfileSummary)
+            if(result != null){
+                savedStateHandle[KEY_INIT_BUSINESS_PROFILE_PROGRESS] = Status.SUCCESS.name
+                Status.SUCCESS.name
+            }else{
+                savedStateHandle[KEY_INIT_BUSINESS_PROFILE_PROGRESS] = Status.FAILED.name
+                Status.FAILED.name
+            }
+        }catch (e: Throwable){
+            savedStateHandle[KEY_INIT_BUSINESS_PROFILE_PROGRESS] = Status.FAILED.name
+            Status.FAILED.name
+        }
     }
 
     class InitBizProfileManual(private val vm: InitializationViewModel) {
