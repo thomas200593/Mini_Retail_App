@@ -91,4 +91,7 @@
     <string name="str_save">Save</string>
     <string name="str_ok">OK</string>
     <string name="str_success">Success</string>
+    <string name="str_biz_profile_init_loading">Please wait while we initialize your profile</string>
+    <string name="str_biz_profile_init_success">Your profile has been successfully initialized</string>
+    <string name="str_biz_profile_init_failed">Failed to initialize your profile. Please try again later</string>
 </resources>

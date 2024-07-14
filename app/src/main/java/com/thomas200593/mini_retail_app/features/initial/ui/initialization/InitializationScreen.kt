@@ -96,7 +96,7 @@ fun InitializationScreen(
         showTitle = true,
         title = { Text(stringResource(id = R.string.str_loading)) },
         showBody = true,
-        body = { Text("Please wait while we initialize your profile.") }
+        body = { Text(stringResource(R.string.str_biz_profile_init_loading)) }
     )
 
     AppAlertDialog(
@@ -106,7 +106,7 @@ fun InitializationScreen(
         showTitle = true,
         title = { Text(stringResource(id = R.string.str_success)) },
         showBody = true,
-        body = { Text("Your profile has been successfully initialized.") },
+        body = { Text(stringResource(R.string.str_biz_profile_init_success)) },
         useConfirmButton = true,
         confirmButton = {
             TextButton(
@@ -125,7 +125,7 @@ fun InitializationScreen(
         showTitle = true,
         title = { Text(stringResource(id = R.string.str_error)) },
         showBody = true,
-        body = { Text("Failed to initialize your profile. Please try again later.") },
+        body = { Text(stringResource(R.string.str_biz_profile_init_failed)) },
         useDismissButton = true,
         dismissButton = {
             TextButton(

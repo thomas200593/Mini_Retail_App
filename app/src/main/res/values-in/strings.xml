@@ -89,4 +89,7 @@
     <string name="str_save">Simpan</string>
     <string name="str_ok">OK</string>
     <string name="str_success">Sukses</string>
+    <string name="str_biz_profile_init_loading">Mohon menunggu sementara kami menyiapkan profilmu</string>
+    <string name="str_biz_profile_init_success">Profilmu sukses diinisialisasi</string>
+    <string name="str_biz_profile_init_failed">Profilmu gagal diinisialisasi. Silakan coba kembali nanti</string>
 </resources>
