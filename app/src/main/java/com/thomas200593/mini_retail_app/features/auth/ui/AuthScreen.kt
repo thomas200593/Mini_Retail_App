@@ -133,7 +133,9 @@ private fun ScreenContent(
     stateSIWGButton: Boolean
 ){
     Surface(modifier = modifier) {
-        ConstraintLayout(modifier = modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
+        ConstraintLayout(modifier = modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())) {
             val (
                 btnConf, iconApp, txtAppTitle, txtAppVersion,
                 txtAppWelcomeMessage, btnAuth, txtTermsAndConditions
@@ -170,12 +172,15 @@ private fun ScreenContent(
             }
 
             Box(
-                modifier = Modifier.fillMaxWidth(.6f).height(150.dp).constrainAs(iconApp) {
-                    start.linkTo(startGuideline)
-                    end.linkTo(endGuideline)
-                    bottom.linkTo(centralGuideline)
-                    top.linkTo(btnConf.bottom)
-                },
+                modifier = Modifier
+                    .fillMaxWidth(.6f)
+                    .height(150.dp)
+                    .constrainAs(iconApp) {
+                        start.linkTo(startGuideline)
+                        end.linkTo(endGuideline)
+                        bottom.linkTo(centralGuideline)
+                        top.linkTo(btnConf.bottom)
+                    },
                 contentAlignment = Alignment.Center
             ){
                 Image(
@@ -208,30 +213,33 @@ private fun ScreenContent(
             )
 
             Surface(
-                modifier = Modifier.fillMaxWidth(0.9f).constrainAs(txtAppWelcomeMessage) {
-                    start.linkTo(startGuideline)
-                    end.linkTo(endGuideline)
-                    top.linkTo(txtAppVersion.bottom, 30.dp)
-                    bottom.linkTo(btnAuth.top)
-                },
+                modifier = Modifier
+                    .fillMaxWidth(0.9f)
+                    .constrainAs(txtAppWelcomeMessage) {
+                        start.linkTo(startGuideline)
+                        end.linkTo(endGuideline)
+                        top.linkTo(txtAppVersion.bottom, 30.dp)
+                        bottom.linkTo(btnAuth.top)
+                    },
                 shape = MaterialTheme.shapes.small,
                 color = MaterialTheme.colorScheme.secondaryContainer,
                 shadowElevation = 5.dp
             ) {
                 Text(
-                    //TODO: Translate this.
-                    text = "Welcome to Application! To continue, please sign in into Your Account.",
+                    text = stringResource(R.string.str_auth_welcome_message),
                     modifier = Modifier.padding(12.dp),
                     color = MaterialTheme.colorScheme.onSecondaryContainer
                 )
             }
 
             Surface(
-                modifier = Modifier.fillMaxWidth(0.9f).constrainAs(btnAuth) {
-                    start.linkTo(startGuideline)
-                    end.linkTo(endGuideline)
-                    top.linkTo(txtAppWelcomeMessage.bottom, 36.dp)
-                },
+                modifier = Modifier
+                    .fillMaxWidth(0.9f)
+                    .constrainAs(btnAuth) {
+                        start.linkTo(startGuideline)
+                        end.linkTo(endGuideline)
+                        top.linkTo(txtAppWelcomeMessage.bottom, 36.dp)
+                    },
                 shape = MaterialTheme.shapes.medium,
             ) {
                 SignInWithGoogle(
@@ -241,11 +249,13 @@ private fun ScreenContent(
             }
 
             Surface(
-                modifier = Modifier.fillMaxWidth(0.9f).constrainAs(txtTermsAndConditions) {
-                    top.linkTo(btnAuth.bottom, 16.dp)
-                    start.linkTo(startGuideline)
-                    end.linkTo(endGuideline)
-                }
+                modifier = Modifier
+                    .fillMaxWidth(0.9f)
+                    .constrainAs(txtTermsAndConditions) {
+                        top.linkTo(btnAuth.bottom, 16.dp)
+                        start.linkTo(startGuideline)
+                        end.linkTo(endGuideline)
+                    }
             ){
                 Text(
                     text = stringResource(id = R.string.str_tnc),

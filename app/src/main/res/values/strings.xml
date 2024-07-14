@@ -96,4 +96,5 @@
     <string name="str_biz_profile_init_failed">Failed to initialize your profile. Please try again later</string>
     <string name="str_company_legal_name">Company legal name</string>
     <string name="str_company_common_name">Company common name</string>
+    <string name="str_auth_welcome_message">Welcome to Application! To continue, please sign in into Your Account.</string>
 </resources>

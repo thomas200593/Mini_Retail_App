@@ -357,21 +357,3 @@ private fun SignOutSection(
         contentColor = MaterialTheme.colorScheme.onErrorContainer
     )
 }
-
-@Preview(
-    showBackground = true,
-    showSystemUi = true,
-)
-@Composable
-fun PreviewMenuSection(){
-    Themes.ApplicationTheme {
-        ScreenContent(
-            userData = RequestState.Empty,
-            onNavigateToConfig = {},
-            onSignedOut = {},
-            businessProfileSummaryData = RequestState.Empty,
-            //TEST
-            onNavigateToBusinessProfile = {}
-        )
-    }
-}

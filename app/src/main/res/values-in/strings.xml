@@ -94,4 +94,5 @@
     <string name="str_biz_profile_init_failed">Profilmu gagal diinisialisasi. Silakan coba kembali nanti</string>
     <string name="str_company_legal_name">Nama resmi perusahaan</string>
     <string name="str_company_common_name">Nama umum perusahaan</string>
+    <string name="str_auth_welcome_message">Selamat datang di Aplikasi! Untuk melanjutkan, silakan sign in menggunakan Akunmu.</string>
 </resources>
