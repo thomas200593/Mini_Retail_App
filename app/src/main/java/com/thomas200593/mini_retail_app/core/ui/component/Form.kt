@@ -20,8 +20,10 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -200,39 +202,47 @@ object Form{
                     keyboardType == KeyboardType.Password ||
                     keyboardType == KeyboardType.NumberPassword
                 )
-            val visualTransformation = when(isTypePassword){
-                true -> {
-                    when(isVisible){
-                        true -> { PasswordVisualTransformation() }
-                        false -> { VisualTransformation.None }
-                    }
+            val visualTransformation by rememberUpdatedState(
+                newValue = if(isTypePassword){
+                    if(isVisible) { PasswordVisualTransformation() }
+                    else { VisualTransformation.None }
                 }
-                false -> { VisualTransformation.None }
-            }
-            val colorBorder = if (isError) { MaterialTheme.colorScheme.error }
-            else if (isFocused){ MaterialTheme.colorScheme.primary }
-            else { MaterialTheme.colorScheme.primary.copy(alpha = 0.3f) }
+                else{ VisualTransformation.None }
+            )
+            val colorBorder by rememberUpdatedState(
+                newValue = when{
+                    isError -> { MaterialTheme.colorScheme.error }
+                    isFocused -> { MaterialTheme.colorScheme.primary }
+                    else -> { MaterialTheme.colorScheme.primary.copy(alpha = 0.3f) }
+                }
+            )
+            val shouldShowLabel by remember(value) { derivedStateOf { value.isNotEmpty() && !label.isNullOrBlank() } }
+            val placeholderText = placeholder.orEmpty()
+            val labelText = label.orEmpty()
+
             Column(
                 modifier = modifier,
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically)
+                horizontalAlignment = Alignment.Start,
+                verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterVertically)
             ) {
                 AnimatedVisibility(
                     modifier = Modifier.fillMaxWidth(),
-                    visible = ((!label.isNullOrEmpty())) || (!label.isNullOrBlank())
+                    visible = shouldShowLabel
                 ) {
                     Text(
-                        text = label.orEmpty(),
+                        text = labelText,
                         color = MaterialTheme.colorScheme.primary,
                         style = MaterialTheme.typography.labelSmall,
-                        modifier = modifier,
-                        textAlign = TextAlign.Start
+                        textAlign = TextAlign.Start,
+                        modifier = Modifier.fillMaxWidth()
                     )
                 }
                 BasicTextField(
                     modifier = modifier.fillMaxWidth(),
                     value = value,
-                    onValueChange = onValueChange,
+                    onValueChange = { newValue ->
+                        onValueChange(newValue)
+                    },
                     textStyle = MaterialTheme.typography.bodySmall.copy(
                         color = MaterialTheme.colorScheme.onSurface
                     ),
@@ -258,10 +268,12 @@ object Form{
                             .focusRequester(focusRequester)) {
                             if (leadingIcon != null) { leadingIcon() }
                             else { Spacer(modifier = Modifier.padding(8.dp)) }
-                            Box(modifier = Modifier.weight(1.0f).padding(vertical = 16.dp)) {
-                                if (value.isEmpty() || value.isBlank()) {
+                            Box(modifier = Modifier
+                                .weight(1.0f)
+                                .padding(vertical = 16.dp)) {
+                                if (value.isEmpty()) {
                                     Text(
-                                        text = placeholder.orEmpty(),
+                                        text = placeholderText,
                                         style = MaterialTheme.typography.bodySmall,
                                         color = MaterialTheme.colorScheme.inversePrimary,
                                     )
