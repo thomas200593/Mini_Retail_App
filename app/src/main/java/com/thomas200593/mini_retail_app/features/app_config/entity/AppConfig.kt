@@ -35,4 +35,8 @@ object AppConfig{
         val configCurrent: ConfigCurrent,
         val fontSizes: Set<FontSize>
     )
+
+    data class ConfigLanguages(
+        val configCurrent: ConfigCurrent,
+        val languages: Set<Language>)
 }
