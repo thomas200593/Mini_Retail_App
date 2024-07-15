@@ -5,7 +5,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.AuditTrail
-import com.thomas200593.mini_retail_app.core.ui.component.Form
+import com.thomas200593.mini_retail_app.core.ui.component.Form.Component.UseCase.InputFieldValidation
+import com.thomas200593.mini_retail_app.core.ui.component.Form.Component.UseCase.UiText
 import com.thomas200593.mini_retail_app.features.business.entity.business_profile.BizName
 import com.thomas200593.mini_retail_app.features.business.entity.business_profile.dto.BusinessProfileSummary
 import ulid.ULID
@@ -19,16 +20,14 @@ class InitializationScreenUiEvent(private val vm: InitializationViewModel) {
     }
     data class InitializationUiFormState(
         val legalName: String = String(),
-        val legalNameError: Form.Component.UseCase.UiText? =
-            Form.Component.UseCase.UiText.StringResource(R.string.str_field_required),
+        val legalNameError: UiText? = UiText.StringResource(R.string.str_field_required),
         val commonName: String = String(),
-        val commonNameError: Form.Component.UseCase.UiText? =
-            Form.Component.UseCase.UiText.StringResource(R.string.str_field_required),
+        val commonNameError: UiText? = UiText.StringResource(R.string.str_field_required),
         val submitButtonEnabled: Boolean = false
     )
     var initializationUiFormState by mutableStateOf(InitializationUiFormState())
-    private val validateLegalName = Form.Component.UseCase.InputFieldValidation.RegularTextValidation()
-    private val validateCommonName = Form.Component.UseCase.InputFieldValidation.RegularTextValidation()
+    private val validateLegalName = InputFieldValidation.RegularTextValidation()
+    private val validateCommonName = InputFieldValidation.RegularTextValidation()
     fun onFormEvent(event: InitializationUiFormEvent){
         when(event){
             is InitializationUiFormEvent.LegalNameChanged -> {
