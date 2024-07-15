@@ -30,4 +30,9 @@ object AppConfig{
         val configCurrent: ConfigCurrent,
         val dynamicColors: Set<DynamicColor>
     )
+
+    data class ConfigFontSizes(
+        val configCurrent: ConfigCurrent,
+        val fontSizes: Set<FontSize>
+    )
 }
