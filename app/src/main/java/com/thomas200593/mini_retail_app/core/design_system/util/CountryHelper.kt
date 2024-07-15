@@ -16,13 +16,11 @@ object CountryHelper {
         val isoCountries = Locale.getISOCountries()
         val countries = HashSet<Country>()
         for (isoCountry in isoCountries) {
-            val displayName = Locale(String(), isoCountry).displayName
-            val iso03Country = Locale(String(), isoCountry).isO3Country
             countries.add(
                 Country(
                     isoCode = isoCountry,
-                    iso03Country = iso03Country,
-                    displayName = displayName,
+                    iso03Country = Locale(String(), isoCountry).isO3Country,
+                    displayName = Locale(String(), isoCountry).displayName,
                 )
             )
         }

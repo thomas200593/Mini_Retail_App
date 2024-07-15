@@ -22,19 +22,14 @@ class SessionImpl @Inject constructor(
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
 ): Session {
     override val currentUserSession: Flow<SessionState> = repository.authSessionToken
-        .flowOn(ioDispatcher)
-        .catch { SessionState.Invalid(throwable = it, reason = R.string.str_session_error) }
+        .flowOn(ioDispatcher).catch { SessionState.Invalid(throwable = it, reason = R.string.str_session_error) }
         .map { authToken ->
             if(repository.validateAuthSessionToken(authToken)){
                 val userData = repository.mapAuthSessionTokenToUserData(authToken)
-                if(userData != null){
-                    SessionState.Valid(userData = userData)
-                }else{
-                    SessionState.Invalid(throwable = null, reason = R.string.str_session_expired)
-                }
-            }else{
-                SessionState.Invalid(throwable = null, reason = R.string.str_session_expired)
+                if(userData != null){ SessionState.Valid(userData = userData) }
+                else{ SessionState.Invalid(throwable = null, reason = R.string.str_session_expired) }
             }
+            else{ SessionState.Invalid(throwable = null, reason = R.string.str_session_expired) }
         }
 }
 

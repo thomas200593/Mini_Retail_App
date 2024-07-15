@@ -26,12 +26,8 @@ import javax.inject.Singleton
 )
 @TypeConverters(
     value = [
-        TypeConverterAuditTrail::class,
-        TypeConverterBizIdentity::class,
-        TypeConverterAddress::class,
-        TypeConverterContact::class,
-        TypeConverterLinks::class,
-        TypeConverterBizName::class
+        TypeConverterAuditTrail::class, TypeConverterBizIdentity::class, TypeConverterAddress::class,
+        TypeConverterContact::class, TypeConverterLinks::class, TypeConverterBizName::class
     ]
 )
 abstract class AppLocalDatabaseHelper: RoomDatabase(){

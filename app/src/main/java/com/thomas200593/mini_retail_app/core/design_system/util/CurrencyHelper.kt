@@ -18,18 +18,13 @@ object CurrencyHelper {
         val currencies = CurrencyUnit.registeredCurrencies()
         val sets = HashSet<Currency>()
         for (currency in currencies) {
-            val code = currency.code
-            val displayName = currency.toCurrency().displayName
-            val symbol = currency.symbol
-            val defaultFractionDigits = currency.toCurrency().defaultFractionDigits
-            val decimalPlaces = currency.decimalPlaces
             sets.add(
                 Currency(
-                    code = code,
-                    displayName = displayName,
-                    symbol = symbol,
-                    defaultFractionDigits = defaultFractionDigits,
-                    decimalPlaces = decimalPlaces
+                    code = currency.code,
+                    displayName = currency.toCurrency().displayName,
+                    symbol = currency.symbol,
+                    defaultFractionDigits = currency.toCurrency().defaultFractionDigits,
+                    decimalPlaces = currency.decimalPlaces
                 )
             )
         }

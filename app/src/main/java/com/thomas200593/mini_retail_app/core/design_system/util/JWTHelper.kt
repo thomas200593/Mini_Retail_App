@@ -20,13 +20,10 @@ object JWTHelper {
     private val typList = listOf("JWT")
 
     object GoogleOAuth2{
-        suspend fun validateToken(
-            authSessionToken: AuthSessionToken
-        ) = withContext(Dispatchers.IO) {
+        suspend fun validateToken(authSessionToken: AuthSessionToken) = withContext(Dispatchers.IO) {
             try {
-                if (authSessionToken.idToken.isNullOrBlank() || authSessionToken.authProvider?.name != OAuthProvider.GOOGLE.name) {
-                    return@withContext false
-                }
+                if (authSessionToken.idToken.isNullOrBlank() || authSessionToken.authProvider?.name != OAuthProvider.GOOGLE.name)
+                { return@withContext false }
                 val jwt = JWT(authSessionToken.idToken)
                 val hdrAlg = jwt.header["alg"]
                 val hdrTyp = jwt.header["typ"]
@@ -37,19 +34,17 @@ object JWTHelper {
                 val exp = jwt.getClaim("exp").asLong()
                 val validationResult =
                     (hdrAlg in algList) &&
-                            (hdrTyp in typList) &&
-                            !name.isNullOrEmpty() &&
-                            !email.isNullOrEmpty() &&
-                            (aud in listOf(BuildConfig.GOOGLE_AUTH_WEB_ID)) &&
-                            (iss in listOf("accounts.google.com", "https://accounts.google.com")) &&
-                            (exp != null && (Constants.NOW_EPOCH_SECOND <= exp)) &&
-                            (authSessionToken.authProvider.name == OAuthProvider.GOOGLE.name)
+                    (hdrTyp in typList) &&
+                    !name.isNullOrEmpty() &&
+                    !email.isNullOrEmpty() &&
+                    (aud in listOf(BuildConfig.GOOGLE_AUTH_WEB_ID)) &&
+                    (iss in listOf("accounts.google.com", "https://accounts.google.com")) &&
+                    (exp != null && (Constants.NOW_EPOCH_SECOND <= exp)) &&
+                    (authSessionToken.authProvider.name == OAuthProvider.GOOGLE.name)
                 return@withContext validationResult
-            } catch (e: DecodeException) {
-                return@withContext false
-            } catch (e: Exception) {
-                return@withContext false
             }
+            catch (e: DecodeException) { return@withContext false }
+            catch (e: Exception) { return@withContext false }
         }
 
         suspend fun generateTokenNonce() = withContext(Dispatchers.IO) {
@@ -80,9 +75,8 @@ object JWTHelper {
                             expiredAt = exp.orEmpty()
                         )
                     )
-                } else {
-                    null
                 }
+                else { null }
             }
     }
 }

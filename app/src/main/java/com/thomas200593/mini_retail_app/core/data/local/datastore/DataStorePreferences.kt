@@ -33,15 +33,12 @@ class DataStorePreferences @Inject constructor(
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ){
     //Onboarding
-    suspend fun hideOnboarding() = withContext(ioDispatcher){
-        datastore.edit {
-            it[DataStoreKeys.AppConfigKeys.dsKeyOnboardingStatus] = OnboardingStatus.HIDE.name
-        }
+    suspend fun hideOnboarding() = withContext(ioDispatcher){ datastore
+        .edit { it[DataStoreKeys.AppConfigKeys.dsKeyOnboardingStatus] = OnboardingStatus.HIDE.name }
     }
 
     //Auth
-    val authSessionToken = datastore.data
-        .flowOn(ioDispatcher)
+    val authSessionToken = datastore.data.flowOn(ioDispatcher)
         .map { data ->
             AuthSessionToken(
                 authProvider = data[DataStoreKeys.AuthKeys.dsKeyAuthProvider] ?.let { oAuthProvider ->
@@ -51,10 +48,8 @@ class DataStorePreferences @Inject constructor(
             )
         }
 
-    suspend fun clearAuthSessionToken() = withContext((ioDispatcher)){
-        datastore.edit {
-            it.remove(DataStoreKeys.AuthKeys.dsKeyAuthSessionToken)
-        }
+    suspend fun clearAuthSessionToken() = withContext((ioDispatcher)){ datastore
+        .edit { it.remove(DataStoreKeys.AuthKeys.dsKeyAuthSessionToken) }
     }
 
     suspend fun saveAuthSessionToken(authSessionToken: AuthSessionToken) = withContext(ioDispatcher){
@@ -76,29 +71,23 @@ class DataStorePreferences @Inject constructor(
     val configCurrent = datastore.data.map { data ->
         AppConfig.ConfigCurrent(
             onboardingStatus = data[DataStoreKeys.AppConfigKeys.dsKeyOnboardingStatus]
-                ?.let { onboardingStatus ->
-                    OnboardingStatus.valueOf(onboardingStatus)
-                } ?: OnboardingStatus.SHOW,
+                ?.let { onboardingStatus -> OnboardingStatus.valueOf(onboardingStatus) }
+                ?: OnboardingStatus.SHOW,
             theme = data[DataStoreKeys.AppConfigKeys.dsKeyTheme]
-                ?.let { theme ->
-                    Theme.valueOf(theme)
-                } ?: Theme.SYSTEM,
+                ?.let { theme -> Theme.valueOf(theme) }
+                ?: Theme.SYSTEM,
             dynamicColor = data[DataStoreKeys.AppConfigKeys.dsKeyDynamicColor]
-                ?.let { dynamicColor ->
-                    DynamicColor.valueOf(dynamicColor)
-                } ?: DynamicColor.DISABLED,
+                ?.let { dynamicColor -> DynamicColor.valueOf(dynamicColor) }
+                ?: DynamicColor.DISABLED,
             fontSize = data[DataStoreKeys.AppConfigKeys.dsKeyFontSize]
-                ?.let { fontSize ->
-                    FontSize.valueOf(fontSize)
-                } ?: FontSize.MEDIUM,
+                ?.let { fontSize -> FontSize.valueOf(fontSize) }
+                ?: FontSize.MEDIUM,
             language = data[DataStoreKeys.AppConfigKeys.dsKeyLanguage]
-                ?.let { language ->
-                    Language.valueOf(language)
-                } ?: Language.EN,
+                ?.let { language -> Language.valueOf(language) }
+                ?: Language.EN,
             timezone = data[DataStoreKeys.AppConfigKeys.dsKeyTimezone]
-                ?.let { offset ->
-                    Timezone(offset)
-                } ?: TimezoneHelper.TIMEZONE_DEFAULT,
+                ?.let { offset -> Timezone(offset) }
+                ?: TimezoneHelper.TIMEZONE_DEFAULT,
             currency = data[DataStoreKeys.AppConfigKeys.dsKeyCurrency]
                 ?.let { currency ->
                     Currency(
@@ -120,50 +109,34 @@ class DataStorePreferences @Inject constructor(
     }
 
     suspend fun setFirstTimeStatus(firstTimeStatus: FirstTimeStatus) = withContext(ioDispatcher){
-        datastore.edit {
-            it[DataStoreKeys.AppConfigKeys.dsKeyFirstTimeStatus] = firstTimeStatus.name
-        }
+        datastore.edit { it[DataStoreKeys.AppConfigKeys.dsKeyFirstTimeStatus] = firstTimeStatus.name }
     }
 
     suspend fun setTheme(theme: Theme) = withContext(ioDispatcher){
-        datastore.edit {
-            it[DataStoreKeys.AppConfigKeys.dsKeyTheme] = theme.name
-        }
+        datastore.edit { it[DataStoreKeys.AppConfigKeys.dsKeyTheme] = theme.name }
     }
 
     suspend fun setDynamicColor(dynamicColor: DynamicColor) = withContext(ioDispatcher){
-        datastore.edit {
-            it[DataStoreKeys.AppConfigKeys.dsKeyDynamicColor] = dynamicColor.name
-        }
+        datastore.edit { it[DataStoreKeys.AppConfigKeys.dsKeyDynamicColor] = dynamicColor.name }
     }
 
     suspend fun setLanguage(language: Language) = withContext(ioDispatcher){
-        datastore.edit {
-            it[DataStoreKeys.AppConfigKeys.dsKeyLanguage] = language.name
-        }
+        datastore.edit { it[DataStoreKeys.AppConfigKeys.dsKeyLanguage] = language.name }
     }
 
     suspend fun setTimezone(timezone: Timezone) = withContext(ioDispatcher){
-        datastore.edit {
-            it[DataStoreKeys.AppConfigKeys.dsKeyTimezone] = timezone.timezoneOffset
-        }
+        datastore.edit { it[DataStoreKeys.AppConfigKeys.dsKeyTimezone] = timezone.timezoneOffset }
     }
 
     suspend fun setCurrency(currency: Currency) = withContext(ioDispatcher){
-        datastore.edit {
-            it[DataStoreKeys.AppConfigKeys.dsKeyCurrency] = currency.code
-        }
+        datastore.edit { it[DataStoreKeys.AppConfigKeys.dsKeyCurrency] = currency.code }
     }
 
     suspend fun setFontSize(fontSize: FontSize) = withContext(ioDispatcher){
-        datastore.edit {
-            it[DataStoreKeys.AppConfigKeys.dsKeyFontSize] = fontSize.name
-        }
+        datastore.edit { it[DataStoreKeys.AppConfigKeys.dsKeyFontSize] = fontSize.name }
     }
 
     suspend fun setCountry(country: Country) = withContext(ioDispatcher){
-        datastore.edit {
-            it[DataStoreKeys.AppConfigKeys.dsKeyCountry] = country.isoCode
-        }
+        datastore.edit { it[DataStoreKeys.AppConfigKeys.dsKeyCountry] = country.isoCode }
     }
 }
