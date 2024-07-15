@@ -161,28 +161,13 @@ private fun ScreenContent(
         var visible by remember { mutableStateOf(false) }
         var expanded by remember { mutableStateOf(false) }
         Row(
-            modifier = Modifier.fillMaxWidth(1.0f)
+            modifier = Modifier
+                .fillMaxWidth(1.0f)
+                .padding(8.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
         ){
             Row(modifier = Modifier.weight(0.5f), horizontalArrangement = Arrangement.Start, verticalAlignment = Alignment.CenterVertically) {
-//                Box {
-//                    TextButton(onClick = { expanded = true }) {
-//                        Text(text = sortBy.title)
-//                    }
-//                    DropdownMenu(
-//                        expanded = expanded,
-//                        onDismissRequest = { expanded = false }
-//                    ) {
-//                        SortSupplier.entries.forEach { dropdownItem ->
-//                            DropdownMenuItem(
-//                                onClick = {
-//                                    onSortByChanged(dropdownItem)
-//                                    expanded = false
-//                                },
-//                                text = { Text(dropdownItem.title) }
-//                            )
-//                        }
-//                    }
-//                }
                 ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = {expanded = !expanded}) {
                     TextField(
                         modifier = Modifier
@@ -191,12 +176,8 @@ private fun ScreenContent(
                         readOnly = true,
                         value = sortBy.title,
                         onValueChange = {},
-                        leadingIcon = {
-                            Icon(imageVector = Icons.AutoMirrored.Default.List, contentDescription = null)
-                        },
-                        trailingIcon = {
-                            ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
-                        },
+                        leadingIcon = { Icon(imageVector = Icons.AutoMirrored.Default.List, contentDescription = null) },
+                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
                         colors = ExposedDropdownMenuDefaults.textFieldColors()
                     )
                     ExposedDropdownMenu(
@@ -205,13 +186,8 @@ private fun ScreenContent(
                     ) {
                         SortSupplier.entries.forEach { dropdownItem ->
                             DropdownMenuItem(
-                                onClick = {
-                                    onSortByChanged(dropdownItem)
-                                    expanded = false
-                                },
-                                text =  {
-                                    Text(text = dropdownItem.title)
-                                },
+                                onClick = { onSortByChanged(dropdownItem); expanded = false },
+                                text =  { Text(text = dropdownItem.title) },
                                 contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
                             )
                         }

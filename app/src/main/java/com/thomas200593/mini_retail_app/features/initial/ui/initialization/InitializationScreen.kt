@@ -68,7 +68,7 @@ fun InitializationScreen(
     appState: AppState = LocalAppState.current
 ){
     val coroutineScope = rememberCoroutineScope()
-    val uiState by viewModel.uiState
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val showWelcomeMessage = viewModel.showWelcomeMessage
     val showInputManualForm = viewModel.showInputManualForm
     val formUseCase = viewModel.initBizProfileManual
@@ -77,8 +77,6 @@ fun InitializationScreen(
     val showLoadingDialog = remember { mutableStateOf(false) }
     val showSuccessDialog = remember { mutableStateOf(false) }
     val showErrorDialog = remember { mutableStateOf(false) }
-
-    LaunchedEffect(Unit) { viewModel.onOpen() }
 
     LaunchedEffect(initBizProfileProgress) {
         when(initBizProfileProgress){

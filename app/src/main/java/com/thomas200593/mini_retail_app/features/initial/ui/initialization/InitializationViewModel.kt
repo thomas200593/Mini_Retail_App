@@ -1,7 +1,6 @@
 package com.thomas200593.mini_retail_app.features.initial.ui.initialization
 
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -22,12 +21,13 @@ import com.thomas200593.mini_retail_app.features.business.entity.business_profil
 import com.thomas200593.mini_retail_app.features.business.entity.business_profile.dto.BusinessProfileSummary
 import com.thomas200593.mini_retail_app.features.initial.domain.GetInitializationDataUseCase
 import com.thomas200593.mini_retail_app.features.initial.domain.SetDefaultInitialBizProfileUseCase
-import com.thomas200593.mini_retail_app.features.initial.entity.Initialization
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import ulid.ULID
 import java.util.Locale
@@ -35,8 +35,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class InitializationViewModel @Inject constructor(
+    getUiStateUseCase: GetInitializationDataUseCase,
     private val cfgGeneralRepository: ConfigGeneralRepository,
-    private val getUiStateUseCase: GetInitializationDataUseCase,
     private val setDefaultUseCase: SetDefaultInitialBizProfileUseCase,
     private val savedStateHandle: SavedStateHandle,
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
@@ -58,20 +58,15 @@ class InitializationViewModel @Inject constructor(
     private val _initBizProfileProgress: MutableStateFlow<String> = MutableStateFlow(savedStateHandle[KEY_INIT_BUSINESS_PROFILE_PROGRESS] ?: Status.IDLE.name)
     val initBizProfileProgress: StateFlow<String> get() = _initBizProfileProgress
 
-    private val _uiState: MutableState<RequestState<Initialization>> = mutableStateOf(RequestState.Idle)
-    val uiState = _uiState
+    val uiState = getUiStateUseCase.invoke()
+        .flowOn(ioDispatcher)
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Eagerly,
+            initialValue = RequestState.Loading
+        )
 
     val initBizProfileManual = InitBizProfileManual(this)
-
-    fun onOpen() = viewModelScope.launch(ioDispatcher) {
-        getUiState()
-    }
-
-    private fun getUiState() = viewModelScope.launch(ioDispatcher){
-        _uiState.value = RequestState.Loading
-        try{ getUiStateUseCase.invoke().flowOn(ioDispatcher).collect{ data -> _uiState.value = data } }
-        catch (e:Throwable){ _uiState.value = RequestState.Error(e) }
-    }
 
     fun setLanguage(language: Language) = viewModelScope.launch(ioDispatcher) {
         cfgGeneralRepository.setLanguage(language)
