@@ -64,14 +64,10 @@ class MainActivity: AppCompatActivity() {
                 enableEdgeToEdge(
                     statusBarStyle = auto(TRANSPARENT, TRANSPARENT) { darkTheme },
                     navigationBarStyle = auto(lightScrim = Colors.lightScrim, darkScrim = Colors.darkScrim) { darkTheme }
-                )
-                onDispose {}
+                ); onDispose {}
             }
 
-            val appState = rememberAppState(
-                networkMonitor = networkMonitor,
-                session = session
-            )
+            val appState = rememberAppState(networkMonitor = networkMonitor, session = session)
 
             CompositionLocalProvider(LocalAppState provides appState) {
                 Themes.ApplicationTheme(
