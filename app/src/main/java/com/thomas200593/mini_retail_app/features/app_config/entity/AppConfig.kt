@@ -38,5 +38,16 @@ object AppConfig{
 
     data class ConfigLanguages(
         val configCurrent: ConfigCurrent,
-        val languages: Set<Language>)
+        val languages: Set<Language>
+    )
+
+    data class ConfigThemes(
+        val configCurrent: ConfigCurrent,
+        val themes: Set<Theme>
+    )
+
+    data class ConfigTimezones(
+        val configCurrent: ConfigCurrent,
+        val timezones: List<Timezone>
+    )
 }

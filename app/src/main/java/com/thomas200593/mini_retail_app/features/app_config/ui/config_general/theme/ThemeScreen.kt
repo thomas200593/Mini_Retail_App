@@ -19,7 +19,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -45,29 +44,17 @@ import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.Loa
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.ThreeRowCardItem
 import com.thomas200593.mini_retail_app.features.app_config.entity.AppConfig
 import com.thomas200593.mini_retail_app.features.app_config.entity.Theme
-import timber.log.Timber
-
-private const val TAG = "AppConfigGeneralThemeScreen"
 
 @Composable
 fun ThemeScreen(
     viewModel: ThemeViewModel = hiltViewModel(),
     appState: AppState = LocalAppState.current
 ) {
-    Timber.d("Called : fun $TAG()")
-    val configCurrent by viewModel.configCurrent.collectAsStateWithLifecycle()
-    val themes by viewModel.themes
+    val configData by viewModel.configData.collectAsStateWithLifecycle()
 
-    LaunchedEffect(Unit) {
-        viewModel.onOpen()
-    }
-
-    TopAppBar(
-        onNavigateBack = appState::onNavigateUp
-    )
+    TopAppBar(onNavigateBack = appState::onNavigateUp)
     ScreenContent(
-        themes = themes,
-        configCurrent = configCurrent,
+        configData = configData,
         onSaveSelectedTheme = viewModel::setTheme
     )
 }
@@ -121,19 +108,11 @@ private fun TopAppBar(onNavigateBack: () -> Unit) {
 
 @Composable
 private fun ScreenContent(
-    themes: RequestState<Set<Theme>>,
-    configCurrent: RequestState<AppConfig.ConfigCurrent>,
+    configData: RequestState<AppConfig.ConfigThemes>,
     onSaveSelectedTheme: (Theme) -> Unit
 ) {
-    when(configCurrent){
+    when(configData){
         RequestState.Idle, RequestState.Loading -> { LoadingScreen() }
-        is RequestState.Error -> {
-            ErrorScreen(
-                title = stringResource(id = R.string.str_error),
-                errorMessage = stringResource(id = R.string.str_error_fetching_preferences),
-                showIcon = true
-            )
-        }
         RequestState.Empty -> {
             EmptyScreen(
                 title = stringResource(id = R.string.str_empty_message_title),
@@ -141,88 +120,82 @@ private fun ScreenContent(
                 showIcon = true
             )
         }
+        is RequestState.Error -> {
+            ErrorScreen(
+                title = stringResource(id = R.string.str_error),
+                errorMessage = stringResource(id = R.string.str_error_fetching_preferences),
+                showIcon = true
+            )
+        }
         is RequestState.Success -> {
-            when(themes){
-                RequestState.Idle, RequestState.Loading -> { LoadingScreen() }
-                is RequestState.Error -> {
-                    ErrorScreen(
-                        title = stringResource(id = R.string.str_error),
-                        errorMessage = stringResource(id = R.string.str_error_fetching_preferences),
-                        showIcon = true
-                    )
-                }
-                RequestState.Empty -> {
-                    EmptyScreen(
-                        title = stringResource(id = R.string.str_empty_message_title),
-                        emptyMessage = stringResource(id = R.string.str_empty_message),
-                        showIcon = true
-                    )
-                }
-                is RequestState.Success -> {
-                    val currentData = configCurrent.data.theme
-                    val preferencesList = themes.data
+            val currentData = configData.data.configCurrent.theme
+            val preferencesList = configData.data.themes
 
-                    Column(
-                        modifier = Modifier.fillMaxSize().padding(4.dp),
-                        verticalArrangement = Arrangement.spacedBy(10.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(
-                            text = "${stringResource(id = R.string.str_theme)} : ${stringResource(id = currentData.title)}",
-                            modifier = Modifier.fillMaxWidth().padding(4.dp),
-                            fontWeight = FontWeight.Bold,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            textAlign = TextAlign.Center,
-                        )
-                        LazyColumn(
-                            modifier = Modifier.fillMaxSize().padding(4.dp),
-                            verticalArrangement = Arrangement.spacedBy(10.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            items(count = preferencesList.count()){ index ->
-                                val data = preferencesList.elementAt(index)
-                                ThreeRowCardItem(
-                                    firstRowContent = {
-                                        Surface(modifier = Modifier.fillMaxWidth()) {
-                                            Icon(
-                                                imageVector = ImageVector.vectorResource(data.iconRes),
-                                                contentDescription = null
-                                            )
-                                        }
-                                    },
-                                    secondRowContent = {
-                                        Text(
-                                            text = stringResource(id = data.title),
-                                            modifier = Modifier.fillMaxWidth(),
-                                            textAlign = TextAlign.Start,
-                                            fontWeight = FontWeight.Bold,
-                                            maxLines = 1,
-                                            overflow = TextOverflow.Ellipsis
-                                        )
-                                        Text(
-                                            text = stringResource(id = data.description),
-                                            modifier = Modifier.fillMaxWidth(),
-                                            textAlign = TextAlign.Start,
-                                            maxLines = 1,
-                                            overflow = TextOverflow.Ellipsis
-                                        )
-                                    },
-                                    thirdRowContent = {
-                                        Surface(
-                                            modifier = Modifier.fillMaxWidth(),
-                                            onClick = { onSaveSelectedTheme(data) }
-                                        ) {
-                                            Icon(
-                                                imageVector = if (data == currentData) Icons.Default.CheckCircle else Icons.AutoMirrored.Outlined.KeyboardArrowRight,
-                                                contentDescription = null,
-                                                tint = if (data == currentData) Color.Green else MaterialTheme.colorScheme.onTertiaryContainer
-                                            )
-                                        }
-                                    }
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(4.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "${stringResource(id = R.string.str_theme)} : ${stringResource(id = currentData.title)}",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(4.dp),
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    textAlign = TextAlign.Center,
+                )
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(4.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    items(count = preferencesList.count()){ index ->
+                        val data = preferencesList.elementAt(index)
+                        ThreeRowCardItem(
+                            firstRowContent = {
+                                Surface(modifier = Modifier.fillMaxWidth()) {
+                                    Icon(
+                                        imageVector = ImageVector.vectorResource(data.iconRes),
+                                        contentDescription = null
+                                    )
+                                }
+                            },
+                            secondRowContent = {
+                                Text(
+                                    text = stringResource(id = data.title),
+                                    modifier = Modifier.fillMaxWidth(),
+                                    textAlign = TextAlign.Start,
+                                    fontWeight = FontWeight.Bold,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
                                 )
+                                Text(
+                                    text = stringResource(id = data.description),
+                                    modifier = Modifier.fillMaxWidth(),
+                                    textAlign = TextAlign.Start,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                            },
+                            thirdRowContent = {
+                                Surface(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    onClick = { onSaveSelectedTheme(data) }
+                                ) {
+                                    Icon(
+                                        imageVector = if (data == currentData) Icons.Default.CheckCircle else Icons.AutoMirrored.Outlined.KeyboardArrowRight,
+                                        contentDescription = null,
+                                        tint = if (data == currentData) Color.Green else MaterialTheme.colorScheme.onTertiaryContainer
+                                    )
+                                }
                             }
-                        }
+                        )
                     }
                 }
             }
