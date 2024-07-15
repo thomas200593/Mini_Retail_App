@@ -1,8 +1,8 @@
 package com.thomas200593.mini_retail_app.features.app_config.entity
 
-import com.thomas200593.mini_retail_app.core.util.CountryHelper
-import com.thomas200593.mini_retail_app.core.util.CurrencyHelper
-import com.thomas200593.mini_retail_app.core.util.TimezoneHelper
+import com.thomas200593.mini_retail_app.core.design_system.util.CountryHelper
+import com.thomas200593.mini_retail_app.core.design_system.util.CurrencyHelper
+import com.thomas200593.mini_retail_app.core.design_system.util.TimezoneHelper
 
 object AppConfig{
     data class ConfigCurrent(
