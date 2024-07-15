@@ -25,4 +25,9 @@ object AppConfig{
         val configCurrent: ConfigCurrent,
         val currencies: List<Currency>
     )
+
+    data class ConfigDynamicColor(
+        val configCurrent: ConfigCurrent,
+        val dynamicColors: Set<DynamicColor>
+    )
 }
