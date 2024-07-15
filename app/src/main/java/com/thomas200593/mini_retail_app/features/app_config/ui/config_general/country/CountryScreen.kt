@@ -20,7 +20,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -44,7 +43,7 @@ import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.Emp
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.ErrorScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.LoadingScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.ThreeRowCardItem
-import com.thomas200593.mini_retail_app.features.app_config.entity.ConfigCurrent
+import com.thomas200593.mini_retail_app.features.app_config.entity.AppConfig
 import com.thomas200593.mini_retail_app.features.app_config.entity.Country
 
 @Composable
@@ -52,21 +51,10 @@ fun CountryScreen(
     viewModel: CountryViewModel = hiltViewModel(),
     appState: AppState = LocalAppState.current
 ){
-    val configCurrent by viewModel.configCurrent.collectAsStateWithLifecycle()
-    val countries by viewModel.countries
+    val configData by viewModel.configData.collectAsStateWithLifecycle()
 
-    LaunchedEffect(Unit) {
-        viewModel.onOpen()
-    }
-
-    TopAppBar(
-        onNavigateBack = appState::onNavigateUp
-    )
-    ScreenContent(
-        countries = countries,
-        configCurrent = configCurrent,
-        onSaveSelectedCountry = viewModel::setCountry
-    )
+    TopAppBar(onNavigateBack = appState::onNavigateUp)
+    ScreenContent(configData = configData, onSaveSelectedCountry = viewModel::setCountry)
 }
 
 @Composable
@@ -118,19 +106,11 @@ private fun TopAppBar(onNavigateBack: () -> Unit) {
 
 @Composable
 private fun ScreenContent(
-    countries: RequestState<List<Country>>,
-    configCurrent: RequestState<ConfigCurrent>,
-    onSaveSelectedCountry: (Country) -> Unit
+    configData: RequestState<AppConfig.ConfigCountry>,
+    onSaveSelectedCountry: (Country) -> Unit,
 ) {
-    when(configCurrent){
+    when(configData){
         RequestState.Idle, RequestState.Loading -> { LoadingScreen() }
-        is RequestState.Error -> {
-            ErrorScreen(
-                title = stringResource(id = R.string.str_error),
-                errorMessage = stringResource(id = R.string.str_error_fetching_preferences),
-                showIcon = true
-            )
-        }
         RequestState.Empty -> {
             EmptyScreen(
                 title = stringResource(id = R.string.str_empty_message_title),
@@ -138,97 +118,83 @@ private fun ScreenContent(
                 showIcon = true
             )
         }
+        is RequestState.Error -> {
+            ErrorScreen(
+                title = stringResource(id = R.string.str_error),
+                errorMessage = stringResource(id = R.string.str_error_fetching_preferences),
+                showIcon = true
+            )
+        }
         is RequestState.Success -> {
-            when(countries){
-                RequestState.Idle -> Unit
-                RequestState.Loading -> { LoadingScreen() }
-                is RequestState.Error -> {
-                    ErrorScreen(
-                        title = stringResource(id = R.string.str_error),
-                        errorMessage = stringResource(id = R.string.str_error_fetching_preferences),
-                        showIcon = true
-                    )
-                }
-                RequestState.Empty -> {
-                    EmptyScreen(
-                        title = stringResource(id = R.string.str_empty_message_title),
-                        emptyMessage = stringResource(id = R.string.str_empty_message),
-                        showIcon = true
-                    )
-                }
-                is RequestState.Success -> {
-                    val currentData = configCurrent.data.country
-                    val preferencesList = countries.data
-
-                    Column(
-                        modifier = Modifier.fillMaxSize().padding(4.dp),
-                        verticalArrangement = Arrangement.spacedBy(10.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(
-                            text = "${stringResource(id = R.string.str_country)} : ${currentData.displayName}",
-                            modifier = Modifier.fillMaxWidth().padding(4.dp),
-                            fontWeight = FontWeight.Bold,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            textAlign = TextAlign.Center,
-                        )
-                        LazyColumn(
-                            modifier = Modifier.fillMaxSize().padding(8.dp),
-                            verticalArrangement = Arrangement.spacedBy(10.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            items(count = preferencesList.count()){ index ->
-                                val data = preferencesList[index]
-                                ThreeRowCardItem(
-                                    firstRowContent = {
-                                        Text(
-                                            text = data.isoCode,
-                                            modifier = Modifier.fillMaxWidth(),
-                                            textAlign = TextAlign.Center,
-                                            fontWeight = FontWeight.Bold,
-                                            maxLines = 1,
-                                            overflow = TextOverflow.Ellipsis
-                                        )
-                                        HorizontalDivider()
-                                        Text(
-                                            text = data.iso03Country,
-                                            modifier = Modifier.fillMaxWidth(),
-                                            textAlign = TextAlign.Center,
-                                            fontWeight = FontWeight.Bold,
-                                            maxLines = 1,
-                                            overflow = TextOverflow.Ellipsis
-                                        )
-                                    },
-                                    secondRowContent = {
-                                        Text(
-                                            text = data.displayName,
-                                            modifier = Modifier.fillMaxWidth(),
-                                            textAlign = TextAlign.Start,
-                                            fontWeight = FontWeight.Bold,
-                                            maxLines = 1,
-                                            overflow = TextOverflow.Ellipsis
-                                        )
-                                    },
-                                    thirdRowContent = {
-                                        Surface(
-                                            modifier = Modifier.fillMaxWidth(),
-                                            onClick = { onSaveSelectedCountry(data) }
-                                        ) {
-                                            Icon(
-                                                imageVector = 
-                                                    if (data == currentData) { Icons.Default.CheckCircle }
-                                                    else { Icons.AutoMirrored.Outlined.KeyboardArrowRight },
-                                                contentDescription = null,
-                                                tint =
-                                                    if (data == currentData) { Color.Green }
-                                                    else { MaterialTheme.colorScheme.onTertiaryContainer }
-                                            )
-                                        }
-                                    }
+            val currentData = configData.data.configCurrent.country
+            val preferencesList = configData.data.countries
+            Column(
+                modifier = Modifier.fillMaxSize().padding(4.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "${stringResource(id = R.string.str_country)} : ${currentData.displayName}",
+                    modifier = Modifier.fillMaxWidth().padding(4.dp),
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    textAlign = TextAlign.Center,
+                )
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize().padding(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    items(count = preferencesList.count()){ index ->
+                        val data = preferencesList[index]
+                        ThreeRowCardItem(
+                            firstRowContent = {
+                                Text(
+                                    text = data.isoCode,
+                                    modifier = Modifier.fillMaxWidth(),
+                                    textAlign = TextAlign.Center,
+                                    fontWeight = FontWeight.Bold,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
                                 )
+                                HorizontalDivider()
+                                Text(
+                                    text = data.iso03Country,
+                                    modifier = Modifier.fillMaxWidth(),
+                                    textAlign = TextAlign.Center,
+                                    fontWeight = FontWeight.Bold,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                            },
+                            secondRowContent = {
+                                Text(
+                                    text = data.displayName,
+                                    modifier = Modifier.fillMaxWidth(),
+                                    textAlign = TextAlign.Start,
+                                    fontWeight = FontWeight.Bold,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                            },
+                            thirdRowContent = {
+                                Surface(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    onClick = { onSaveSelectedCountry(data) }
+                                ) {
+                                    Icon(
+                                        imageVector =
+                                        if (data == currentData) { Icons.Default.CheckCircle }
+                                        else { Icons.AutoMirrored.Outlined.KeyboardArrowRight },
+                                        contentDescription = null,
+                                        tint =
+                                        if (data == currentData) { Color.Green }
+                                        else { MaterialTheme.colorScheme.onTertiaryContainer }
+                                    )
+                                }
                             }
-                        }
+                        )
                     }
                 }
             }

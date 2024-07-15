@@ -51,7 +51,7 @@ import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.Loa
 import com.thomas200593.mini_retail_app.core.ui.component.Dialog
 import com.thomas200593.mini_retail_app.core.ui.component.Dialog.AppAlertDialog
 import com.thomas200593.mini_retail_app.core.ui.component.Form.Component.TextInput
-import com.thomas200593.mini_retail_app.features.app_config.entity.ConfigCurrent
+import com.thomas200593.mini_retail_app.features.app_config.entity.AppConfig
 import com.thomas200593.mini_retail_app.features.app_config.entity.Language
 import com.thomas200593.mini_retail_app.features.business.entity.business_profile.BizName
 import com.thomas200593.mini_retail_app.features.business.entity.business_profile.dto.BusinessProfileSummary
@@ -239,7 +239,7 @@ private fun SuccessScreen(
 @Composable
 private fun LanguageSection(
     languages: Set<Language>,
-    configCurrent: ConfigCurrent,
+    configCurrent: AppConfig.ConfigCurrent,
     onSetLanguage: (Language) -> Unit
 ) {
     Row(

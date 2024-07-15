@@ -4,7 +4,7 @@ import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStorePrefe
 import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatchers
-import com.thomas200593.mini_retail_app.features.app_config.entity.ConfigCurrent
+import com.thomas200593.mini_retail_app.features.app_config.entity.AppConfig
 import com.thomas200593.mini_retail_app.features.app_config.navigation.DestinationAppConfig
 import com.thomas200593.mini_retail_app.features.initial.entity.FirstTimeStatus
 import kotlinx.coroutines.CoroutineDispatcher
@@ -16,7 +16,7 @@ internal class AppConfigRepositoryImpl @Inject constructor(
     private val dataStore: DataStorePreferences,
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ):AppConfigRepository {
-    override val configCurrent: Flow<ConfigCurrent> = dataStore.configCurrent
+    override val configCurrent: Flow<AppConfig.ConfigCurrent> = dataStore.configCurrent
     override val firstTimeStatus: Flow<FirstTimeStatus> = dataStore.firstTimeStatus
     override suspend fun setFirstTimeStatus(firstTimeStatus: FirstTimeStatus) {
         dataStore.setFirstTimeStatus(firstTimeStatus)

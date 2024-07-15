@@ -45,7 +45,7 @@ import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.Emp
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.ErrorScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.LoadingScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.ThreeRowCardItem
-import com.thomas200593.mini_retail_app.features.app_config.entity.ConfigCurrent
+import com.thomas200593.mini_retail_app.features.app_config.entity.AppConfig
 import com.thomas200593.mini_retail_app.features.app_config.entity.Language
 import kotlinx.coroutines.Job
 import kotlin.reflect.KFunction1
@@ -124,7 +124,7 @@ private fun TopAppBar(onNavigateBack: () -> Unit) {
 @Composable
 private fun ScreenContent(
     languages: RequestState<Set<Language>>,
-    configCurrent: RequestState<ConfigCurrent>,
+    configCurrent: RequestState<AppConfig.ConfigCurrent>,
     onSaveSelectedLanguage: KFunction1<Language, Job>
 ) {
     when(configCurrent){

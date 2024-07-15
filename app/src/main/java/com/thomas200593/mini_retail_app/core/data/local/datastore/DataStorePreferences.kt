@@ -8,7 +8,7 @@ import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatche
 import com.thomas200593.mini_retail_app.core.util.CountryHelper
 import com.thomas200593.mini_retail_app.core.util.CurrencyHelper
 import com.thomas200593.mini_retail_app.core.util.TimezoneHelper
-import com.thomas200593.mini_retail_app.features.app_config.entity.ConfigCurrent
+import com.thomas200593.mini_retail_app.features.app_config.entity.AppConfig
 import com.thomas200593.mini_retail_app.features.app_config.entity.Country
 import com.thomas200593.mini_retail_app.features.app_config.entity.Currency
 import com.thomas200593.mini_retail_app.features.app_config.entity.DynamicColor
@@ -74,7 +74,7 @@ class DataStorePreferences @Inject constructor(
 
     //App Config
     val configCurrent = datastore.data.map { data ->
-        ConfigCurrent(
+        AppConfig.ConfigCurrent(
             onboardingStatus = data[DataStoreKeys.AppConfigKeys.dsKeyOnboardingStatus]
                 ?.let { onboardingStatus ->
                     OnboardingStatus.valueOf(onboardingStatus)

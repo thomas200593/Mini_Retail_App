@@ -43,7 +43,7 @@ import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.Emp
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.ErrorScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.LoadingScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.ThreeRowCardItem
-import com.thomas200593.mini_retail_app.features.app_config.entity.ConfigCurrent
+import com.thomas200593.mini_retail_app.features.app_config.entity.AppConfig
 import com.thomas200593.mini_retail_app.features.app_config.entity.Theme
 import timber.log.Timber
 
@@ -122,7 +122,7 @@ private fun TopAppBar(onNavigateBack: () -> Unit) {
 @Composable
 private fun ScreenContent(
     themes: RequestState<Set<Theme>>,
-    configCurrent: RequestState<ConfigCurrent>,
+    configCurrent: RequestState<AppConfig.ConfigCurrent>,
     onSaveSelectedTheme: (Theme) -> Unit
 ) {
     when(configCurrent){
