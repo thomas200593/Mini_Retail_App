@@ -4,7 +4,5 @@ import com.thomas200593.mini_retail_app.BuildConfig
 import timber.log.Timber
 
 object TimberHelper {
-    fun initializeDebugTree(){
-        if (Timber.treeCount == 0 && BuildConfig.DEBUG){ Timber.plant(tree = Timber.DebugTree()) }
-    }
+    fun initializeDebugTree(){ if (Timber.treeCount == 0 && BuildConfig.DEBUG){ Timber.plant(tree = Timber.DebugTree()) } }
 }

@@ -20,4 +20,9 @@ object AppConfig{
         val configCurrent: ConfigCurrent,
         val countries: List<Country>
     )
+
+    data class ConfigCurrency(
+        val configCurrent: ConfigCurrent,
+        val currencies: List<Currency>
+    )
 }

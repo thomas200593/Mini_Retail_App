@@ -47,8 +47,7 @@ internal class NetworkMonitorImpl @Inject constructor(
                 }
             }
             trace("NetworkMonitor.registerNetworkCallback"){
-                val request = NetworkRequest
-                    .Builder().addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET).build()
+                val request = NetworkRequest.Builder().addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET).build()
                 connectivityManager.registerNetworkCallback(request, callback)
             }
             channel.trySend(connectivityManager.isCurrentlyConnected())
