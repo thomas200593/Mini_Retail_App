@@ -54,6 +54,8 @@ class InitializationViewModel @Inject constructor(
     var initializationUiEventStatus by mutableStateOf(savedStateHandle[keyUiEventStatus] ?: InitializationUiEventStatus.IDLE.name)
         private set
 
+
+    //TODO STILL NOT CLEAN
     val initializationScreenUiEvent = InitializationScreenUiEvent(this)
 
     fun setLanguage(language: Language) = viewModelScope.launch(ioDispatcher) {
