@@ -248,9 +248,7 @@ private fun LanguageSection(
             onExpandedChange = { expanded = !expanded }
         ) {
             TextButton(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .menuAnchor(), onClick = { expanded = true }
+                modifier = Modifier.fillMaxWidth().menuAnchor(), onClick = { expanded = true }
             ) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -330,9 +328,7 @@ private fun WelcomeHeader(
         )
     }
     Surface(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
+        modifier = Modifier.fillMaxWidth().padding(16.dp),
         shape = MaterialTheme.shapes.medium,
         color = MaterialTheme.colorScheme.primaryContainer,
         contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
@@ -343,9 +339,7 @@ private fun WelcomeHeader(
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
+                modifier = Modifier.fillMaxWidth().padding(16.dp),
                 text = stringResource(R.string.str_init_welcome_message),
                 style = MaterialTheme.typography.labelLarge,
                 textAlign = TextAlign.Justify
@@ -394,9 +388,7 @@ private fun InputManualForm(
         color = MaterialTheme.colorScheme.surfaceContainerHighest
     ){
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(12.dp),
+            modifier = Modifier.fillMaxWidth().padding(12.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically)
         ) {
