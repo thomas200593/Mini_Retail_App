@@ -165,8 +165,10 @@ class InitializationViewModel @Inject constructor(
                     uiEnableSuccessDialog = mutableStateOf(false),
                     uiEnableEmptyDialog = mutableStateOf(false),
                     uiEnableErrorDialog = mutableStateOf(false),
+                    uiEnableInitManualForm = false,
+                    uiEnableWelcomeMessage = true,
                     initializationUiFormState = InitializationUiFormState(
-                        initBizProfileResult = InitializationUiEvent.InitBizProfileResult.Idle
+                        initBizProfileResult = InitializationUiEvent.InitBizProfileResult.Idle,
                     )
                 )
             }
