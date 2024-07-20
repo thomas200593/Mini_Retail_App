@@ -12,9 +12,7 @@ import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatche
 import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
 import com.thomas200593.mini_retail_app.core.ui.component.Form.Component.UseCase.InputFieldValidation
 import com.thomas200593.mini_retail_app.core.ui.component.Form.Component.UseCase.UiText
-import com.thomas200593.mini_retail_app.features.app_config.entity.Language
 import com.thomas200593.mini_retail_app.features.app_config.repository.ConfigGeneralRepository
-import com.thomas200593.mini_retail_app.features.business.entity.business_profile.dto.BusinessProfileSummary
 import com.thomas200593.mini_retail_app.features.initial.domain.GetInitializationDataUseCase
 import com.thomas200593.mini_retail_app.features.initial.domain.SetDefaultInitialBizProfileUseCase
 import com.thomas200593.mini_retail_app.features.initial.entity.Initialization
@@ -201,24 +199,6 @@ class InitializationViewModel @Inject constructor(
             initUiPropertiesState = uiState.value.initUiPropertiesState
                 .copy(uiFormEnableSubmitBtn = result)
         )
-    }
-}
-
-sealed class InitializationUiEvent{
-    data object OnOpen: InitializationUiEvent()
-    data class OnChangeLanguage(val language: Language): InitializationUiEvent()
-    data object BeginInitBizProfileManual: InitializationUiEvent()
-    data class OnUiFormLegalNameChanged(val legalName: String): InitializationUiEvent()
-    data class OnUiFormCommonNameChanged(val commonName: String): InitializationUiEvent()
-    data class OnUiFormSubmitInitManual(val bizProfile: BusinessProfileSummary): InitializationUiEvent()
-    data object OnUiFormCancelInitManual: InitializationUiEvent()
-    data class BeginInitBizProfileDefault(val bizProfile: BusinessProfileSummary): InitializationUiEvent()
-    sealed class InitBizProfileResult {
-        data object Idle: InitBizProfileResult()
-        data object Loading: InitBizProfileResult()
-        data object Empty: InitBizProfileResult()
-        data class Success(val bizProfileSummary: BusinessProfileSummary): InitBizProfileResult()
-        data class Error(val t: Throwable?): InitBizProfileResult()
     }
 }
 
