@@ -1,21 +1,19 @@
 package com.thomas200593.mini_retail_app.features.initial.ui.initialization
 
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatchers.Dispatchers.IO
 import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
 import com.thomas200593.mini_retail_app.core.ui.component.Form.Component.UseCase.InputFieldValidation
-import com.thomas200593.mini_retail_app.core.ui.component.Form.Component.UseCase.UiText
 import com.thomas200593.mini_retail_app.features.app_config.repository.ConfigGeneralRepository
 import com.thomas200593.mini_retail_app.features.initial.domain.GetInitializationDataUseCase
 import com.thomas200593.mini_retail_app.features.initial.domain.SetDefaultInitialBizProfileUseCase
-import com.thomas200593.mini_retail_app.features.initial.entity.Initialization
+import com.thomas200593.mini_retail_app.features.initial.entity.InitializationUiFormState
+import com.thomas200593.mini_retail_app.features.initial.entity.InitializationUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.catch
@@ -34,8 +32,9 @@ class InitializationViewModel @Inject constructor(
 ): ViewModel(){
     var uiState = mutableStateOf(
         InitializationUiState(
-            initBizProfileResult = InitializationUiEvent.InitBizProfileResult.Idle,
-            initUiPropertiesState = InitUiPropertiesState()
+            initializationUiFormState = InitializationUiFormState(
+                initBizProfileResult = InitializationUiEvent.InitBizProfileResult.Idle
+            )
         )
     );  private set
 
@@ -53,142 +52,147 @@ class InitializationViewModel @Inject constructor(
             }
             is InitializationUiEvent.BeginInitBizProfileDefault -> viewModelScope.launch(ioDispatcher) {
                 uiState.value = uiState.value.copy(
-                    initBizProfileResult = InitializationUiEvent.InitBizProfileResult.Loading,
-                    initUiPropertiesState = uiState.value.initUiPropertiesState.copy(
-                        uiEnableLoadingDialog = mutableStateOf(true),
-                        uiEnableSuccessDialog = mutableStateOf(false),
-                        uiEnableEmptyDialog = mutableStateOf(false),
-                        uiEnableErrorDialog = mutableStateOf(false)
+                    uiEnableLoadingDialog = mutableStateOf(true),
+                    uiEnableSuccessDialog = mutableStateOf(false),
+                    uiEnableEmptyDialog = mutableStateOf(false),
+                    uiEnableErrorDialog = mutableStateOf(false),
+                    initializationUiFormState = InitializationUiFormState(
+                        initBizProfileResult = InitializationUiEvent.InitBizProfileResult.Loading,
                     )
                 )
                 try {
                     val result = setDefaultUseCase.invoke(event.bizProfile)
                     if(result != null){
                         uiState.value = uiState.value.copy(
-                            initBizProfileResult = InitializationUiEvent.InitBizProfileResult.Success(result),
-                            initUiPropertiesState = uiState.value.initUiPropertiesState.copy(
-                                uiEnableLoadingDialog = mutableStateOf(false),
-                                uiEnableSuccessDialog = mutableStateOf(true),
-                                uiEnableEmptyDialog = mutableStateOf(false),
-                                uiEnableErrorDialog = mutableStateOf(false)
+                            uiEnableLoadingDialog = mutableStateOf(false),
+                            uiEnableSuccessDialog = mutableStateOf(true),
+                            uiEnableEmptyDialog = mutableStateOf(false),
+                            uiEnableErrorDialog = mutableStateOf(false),
+                            initializationUiFormState = uiState.value.initializationUiFormState.copy(
+                                initBizProfileResult = InitializationUiEvent.InitBizProfileResult.Success(result)
                             )
                         )
                     }
                     else{
                         uiState.value = uiState.value.copy(
-                            initBizProfileResult = InitializationUiEvent.InitBizProfileResult.Empty,
-                            initUiPropertiesState = uiState.value.initUiPropertiesState.copy(
-                                uiEnableLoadingDialog = mutableStateOf(false),
-                                uiEnableSuccessDialog = mutableStateOf(false),
-                                uiEnableEmptyDialog = mutableStateOf(true),
-                                uiEnableErrorDialog = mutableStateOf(false)
+                            uiEnableLoadingDialog = mutableStateOf(false),
+                            uiEnableSuccessDialog = mutableStateOf(false),
+                            uiEnableEmptyDialog = mutableStateOf(true),
+                            uiEnableErrorDialog = mutableStateOf(false),
+                            initializationUiFormState = uiState.value.initializationUiFormState.copy(
+                                initBizProfileResult = InitializationUiEvent.InitBizProfileResult.Empty,
                             )
                         )
                     }
                 }catch (e: Throwable){
                     uiState.value = uiState.value.copy(
-                        initBizProfileResult = InitializationUiEvent.InitBizProfileResult.Error(e),
-                        initUiPropertiesState = uiState.value.initUiPropertiesState.copy(
-                            uiEnableLoadingDialog = mutableStateOf(false),
-                            uiEnableSuccessDialog = mutableStateOf(false),
-                            uiEnableEmptyDialog = mutableStateOf(false),
-                            uiEnableErrorDialog = mutableStateOf(true)
+                        uiEnableLoadingDialog = mutableStateOf(false),
+                        uiEnableSuccessDialog = mutableStateOf(false),
+                        uiEnableEmptyDialog = mutableStateOf(false),
+                        uiEnableErrorDialog = mutableStateOf(true),
+                        initializationUiFormState = uiState.value.initializationUiFormState.copy(
+                            initBizProfileResult = InitializationUiEvent.InitBizProfileResult.Error(e),
                         )
                     )
                 }
             }
             InitializationUiEvent.BeginInitBizProfileManual -> viewModelScope.launch(ioDispatcher) {
-                uiState.value = uiState.value
-                    .copy(initUiPropertiesState = uiState.value.initUiPropertiesState
-                            .copy(uiEnableWelcomeMessage = false, uiEnableInitManualForm = true)
-                    )
+                uiState.value = uiState.value.copy(uiEnableWelcomeMessage = false, uiEnableInitManualForm = true)
             }
             is InitializationUiEvent.OnUiFormLegalNameChanged -> viewModelScope.launch(ioDispatcher){
                 uiState.value = uiState.value.copy(
-                    initUiPropertiesState = uiState.value.initUiPropertiesState
+                    initializationUiFormState = uiState.value.initializationUiFormState
                         .copy(uiFormLegalName = event.legalName)
                 )
                 enableSubmitButton()
             }
             is InitializationUiEvent.OnUiFormCommonNameChanged -> viewModelScope.launch(ioDispatcher){
                 uiState.value = uiState.value.copy(
-                    initUiPropertiesState = uiState.value.initUiPropertiesState
+                    initializationUiFormState = uiState.value.initializationUiFormState
                         .copy(uiFormCommonName = event.commonName)
                 )
                 enableSubmitButton()
             }
             is InitializationUiEvent.OnUiFormSubmitInitManual -> viewModelScope.launch(ioDispatcher){
                 uiState.value = uiState.value.copy(
-                    initBizProfileResult = InitializationUiEvent.InitBizProfileResult.Loading,
-                    initUiPropertiesState = uiState.value.initUiPropertiesState.copy(
-                        uiEnableLoadingDialog = mutableStateOf(true),
-                        uiEnableSuccessDialog = mutableStateOf(false),
-                        uiEnableEmptyDialog = mutableStateOf(false),
-                        uiEnableErrorDialog = mutableStateOf(false)
+                    uiEnableLoadingDialog = mutableStateOf(true),
+                    uiEnableSuccessDialog = mutableStateOf(false),
+                    uiEnableEmptyDialog = mutableStateOf(false),
+                    uiEnableErrorDialog = mutableStateOf(false),
+                    initializationUiFormState = uiState.value.initializationUiFormState.copy(
+                        initBizProfileResult = InitializationUiEvent.InitBizProfileResult.Loading,
                     )
                 )
                 try {
                     val result = setDefaultUseCase.invoke(event.bizProfile)
                     if(result != null){
                         uiState.value = uiState.value.copy(
-                            initBizProfileResult = InitializationUiEvent.InitBizProfileResult.Success(result),
-                            initUiPropertiesState = uiState.value.initUiPropertiesState.copy(
-                                uiEnableLoadingDialog = mutableStateOf(false),
-                                uiEnableSuccessDialog = mutableStateOf(true),
-                                uiEnableEmptyDialog = mutableStateOf(false),
-                                uiEnableErrorDialog = mutableStateOf(false)
+                            uiEnableLoadingDialog = mutableStateOf(false),
+                            uiEnableSuccessDialog = mutableStateOf(true),
+                            uiEnableEmptyDialog = mutableStateOf(false),
+                            uiEnableErrorDialog = mutableStateOf(false),
+                            initializationUiFormState = uiState.value.initializationUiFormState.copy(
+                                initBizProfileResult = InitializationUiEvent.InitBizProfileResult.Success(result),
                             )
                         )
                     }
                     else{
                         uiState.value = uiState.value.copy(
-                            initBizProfileResult = InitializationUiEvent.InitBizProfileResult.Empty,
-                            initUiPropertiesState = uiState.value.initUiPropertiesState.copy(
-                                uiEnableLoadingDialog = mutableStateOf(false),
-                                uiEnableSuccessDialog = mutableStateOf(false),
-                                uiEnableEmptyDialog = mutableStateOf(true),
-                                uiEnableErrorDialog = mutableStateOf(false)
+                            uiEnableLoadingDialog = mutableStateOf(false),
+                            uiEnableSuccessDialog = mutableStateOf(false),
+                            uiEnableEmptyDialog = mutableStateOf(true),
+                            uiEnableErrorDialog = mutableStateOf(false),
+                            initializationUiFormState = uiState.value.initializationUiFormState.copy(
+                                initBizProfileResult = InitializationUiEvent.InitBizProfileResult.Empty
                             )
                         )
                     }
                 }catch (e: Throwable){
                     uiState.value = uiState.value.copy(
-                        initBizProfileResult = InitializationUiEvent.InitBizProfileResult.Error(e),
-                        initUiPropertiesState = uiState.value.initUiPropertiesState.copy(
-                            uiEnableLoadingDialog = mutableStateOf(false),
-                            uiEnableSuccessDialog = mutableStateOf(false),
-                            uiEnableEmptyDialog = mutableStateOf(false),
-                            uiEnableErrorDialog = mutableStateOf(true)
+                        uiEnableLoadingDialog = mutableStateOf(false),
+                        uiEnableSuccessDialog = mutableStateOf(false),
+                        uiEnableEmptyDialog = mutableStateOf(false),
+                        uiEnableErrorDialog = mutableStateOf(true),
+                        initializationUiFormState = uiState.value.initializationUiFormState.copy(
+                            initBizProfileResult = InitializationUiEvent.InitBizProfileResult.Error(e),
                         )
                     )
                 }
             }
             InitializationUiEvent.OnUiFormCancelInitManual -> viewModelScope.launch(ioDispatcher){
-                uiState.value = uiState.value.copy(initUiPropertiesState = InitUiPropertiesState())
+                uiState.value = uiState.value.copy(
+                    uiEnableLoadingDialog = mutableStateOf(false),
+                    uiEnableSuccessDialog = mutableStateOf(false),
+                    uiEnableEmptyDialog = mutableStateOf(false),
+                    uiEnableErrorDialog = mutableStateOf(false),
+                    initializationUiFormState = InitializationUiFormState(
+                        initBizProfileResult = InitializationUiEvent.InitBizProfileResult.Idle
+                    )
+                )
             }
         }
     }
 
     private fun validateLegalName(): Boolean {
         val result = InputFieldValidation.RegularTextValidation().execute(
-            input = uiState.value.initUiPropertiesState.uiFormLegalName,
+            input = uiState.value.initializationUiFormState.uiFormLegalName,
             required = true,
             maxLength = 100,
         )
         uiState.value = uiState.value.copy(
-            initUiPropertiesState = uiState.value.initUiPropertiesState
+            initializationUiFormState = uiState.value.initializationUiFormState
                 .copy(uiFormLegalNameError = result.errorMessage)
         )
         return result.isSuccess
     }
     private fun validateCommonName(): Boolean {
         val result = InputFieldValidation.RegularTextValidation().execute(
-            input = uiState.value.initUiPropertiesState.uiFormCommonName,
+            input = uiState.value.initializationUiFormState.uiFormCommonName,
             required = true,
             maxLength = 100
         )
         uiState.value = uiState.value.copy(
-            initUiPropertiesState = uiState.value.initUiPropertiesState
+            initializationUiFormState = uiState.value.initializationUiFormState
                 .copy(uiFormCommonNameError = result.errorMessage)
         )
         return result.isSuccess
@@ -196,29 +200,8 @@ class InitializationViewModel @Inject constructor(
     private fun enableSubmitButton() {
         val result = validateLegalName() && validateCommonName()
         uiState.value = uiState.value.copy(
-            initUiPropertiesState = uiState.value.initUiPropertiesState
+            initializationUiFormState = uiState.value.initializationUiFormState
                 .copy(uiFormEnableSubmitBtn = result)
         )
     }
 }
-
-data class InitializationUiState(
-    val initializationData: RequestState<Initialization> = RequestState.Idle,
-    val initUiPropertiesState: InitUiPropertiesState,
-    val initBizProfileResult: InitializationUiEvent.InitBizProfileResult
-)
-
-data class InitUiPropertiesState(
-    val uiEnableWelcomeMessage: Boolean = true,
-    val uiEnableInitManualForm: Boolean = false,
-    val uiEnableLoadingDialog: MutableState<Boolean> = mutableStateOf(false),
-    val uiEnableEmptyDialog: MutableState<Boolean> = mutableStateOf(false),
-    val uiEnableSuccessDialog: MutableState<Boolean> = mutableStateOf(false),
-    val uiEnableErrorDialog: MutableState<Boolean> = mutableStateOf(false),
-
-    val uiFormLegalName: String = String(),
-    val uiFormLegalNameError: UiText? = UiText.StringResource(R.string.str_field_required),
-    val uiFormCommonName: String = String(),
-    val uiFormCommonNameError: UiText? = UiText.StringResource(R.string.str_field_required),
-    val uiFormEnableSubmitBtn: Boolean = false
-)
