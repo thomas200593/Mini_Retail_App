@@ -21,6 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,7 +37,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.thomas200593.mini_retail_app.BuildConfig
 import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.app.ui.AppState
@@ -57,8 +57,6 @@ import com.thomas200593.mini_retail_app.features.business.entity.business_profil
 import com.thomas200593.mini_retail_app.features.business.entity.business_profile.dto.BusinessProfileSummary
 import com.thomas200593.mini_retail_app.features.initial.entity.Initialization
 import com.thomas200593.mini_retail_app.features.initial.navigation.navigateToInitial
-import com.thomas200593.mini_retail_app.features.initial.ui.initialization.InitializationScreenUiEvent.InitializationUiEventStatus
-import com.thomas200593.mini_retail_app.features.initial.ui.initialization.InitializationScreenUiEvent.InitializationUiFormEvent
 import kotlinx.coroutines.launch
 import ulid.ULID
 
@@ -67,27 +65,13 @@ fun InitializationScreen(
     viewModel: InitializationViewModel = hiltViewModel(),
     appState: AppState = LocalAppState.current
 ){
+    val uiState = viewModel.uiState
     val coroutineScope = rememberCoroutineScope()
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val uiEvent = viewModel.initializationScreenUiEvent
-    val uiWelcomeMessage = viewModel.uiWelcomeMessage
-    val uiInputBizProfileForm = viewModel.uiInputBizProfileForm
-    val uiEventStatus = viewModel.initializationUiEventStatus
-    val uiLoadingDlg = remember { mutableStateOf(false) }
-    val uiSuccessDlg = remember { mutableStateOf(false) }
-    val uiErrorDlg = remember { mutableStateOf(false) }
 
-    LaunchedEffect(uiEventStatus) {
-        when(uiEventStatus){
-            InitializationUiEventStatus.IDLE.name -> { uiLoadingDlg.value = false; uiSuccessDlg.value = false; uiErrorDlg.value = false }
-            InitializationUiEventStatus.LOADING.name -> { uiLoadingDlg.value = true; uiSuccessDlg.value = false; uiErrorDlg.value = false }
-            InitializationUiEventStatus.SUCCESS.name -> { uiLoadingDlg.value = false; uiSuccessDlg.value = true; uiErrorDlg.value= false }
-            InitializationUiEventStatus.FAILED.name -> { uiLoadingDlg.value = false; uiSuccessDlg.value = false; uiErrorDlg.value = true }
-        }
-    }
+    LaunchedEffect(Unit) { viewModel.onEvent(InitializationUiEvent.OnOpen) }
 
     AppAlertDialog(
-        showDialog = uiLoadingDlg,
+        showDialog = uiState.value.initUiPropertiesState.uiEnableLoadingDialog,
         dialogContext = Dialog.AlertDialogContext.INFORMATION,
         showIcon = true,
         showTitle = true,
@@ -97,7 +81,7 @@ fun InitializationScreen(
     )
 
     AppAlertDialog(
-        showDialog = uiSuccessDlg,
+        showDialog = uiState.value.initUiPropertiesState.uiEnableSuccessDialog,
         dialogContext = Dialog.AlertDialogContext.SUCCESS,
         showIcon = true,
         showTitle = true,
@@ -106,17 +90,13 @@ fun InitializationScreen(
         body = { Text(stringResource(R.string.str_biz_profile_init_success)) },
         useConfirmButton = true,
         confirmButton = {
-            TextButton(
-                onClick = {
-                    uiSuccessDlg.value = false
-                    coroutineScope.launch { appState.navController.navigateToInitial() }
-                }
-            ) { Text(stringResource(id = R.string.str_ok)) }
+            TextButton(onClick = { coroutineScope.launch { appState.navController.navigateToInitial() } })
+            { Text(stringResource(id = R.string.str_ok)) }
         }
     )
 
     AppAlertDialog(
-        showDialog = uiErrorDlg,
+        showDialog = uiState.value.initUiPropertiesState.uiEnableErrorDialog,
         dialogContext = Dialog.AlertDialogContext.ERROR,
         showIcon = true,
         showTitle = true,
@@ -125,41 +105,35 @@ fun InitializationScreen(
         body = { Text(stringResource(R.string.str_biz_profile_init_failed)) },
         useDismissButton = true,
         dismissButton = {
-            TextButton(
-                onClick = {
-                    uiSuccessDlg.value = false
-                    coroutineScope.launch { appState.navController.navigateToInitial() }
-                }
-            ) { Text(stringResource(id = R.string.str_ok)) }
+            TextButton(onClick = { coroutineScope.launch { appState.navController.navigateToInitial() } })
+            { Text(stringResource(id = R.string.str_ok)) }
         }
     )
 
     ScreenContent(
         uiState = uiState,
-        uiEvent = uiEvent,
-        uiWelcomeMessage = uiWelcomeMessage,
-        uiInputBizProfileForm = uiInputBizProfileForm,
-        onSetLanguage = viewModel::setLanguage,
-        onSetBizProfileDefault = viewModel::setBizProfileDefault,
-        onBeginSetBizProfileManual = viewModel::beginSetBizProfileManual,
-        onSubmitForm = { viewModel.initializationScreenUiEvent.onFormEvent(InitializationUiFormEvent.Submit) },
-        onCancelForm = viewModel::onCancelManualInit
+        onChangeLanguage = { viewModel.onEvent(InitializationUiEvent.OnChangeLanguage(it)) },
+        onInitBizProfileDefault = { viewModel.onEvent(InitializationUiEvent.BeginInitBizProfileDefault(it)) },
+        onInitBizProfileManual = { viewModel.onEvent(InitializationUiEvent.BeginInitBizProfileManual) },
+        onUiFormLegalNameChanged = { viewModel.onEvent(InitializationUiEvent.OnUiFormLegalNameChanged(it)) },
+        onUiFormCommonNameChanged = { viewModel.onEvent(InitializationUiEvent.OnUiFormCommonNameChanged(it))},
+        onUiFormSubmitInitManual = { viewModel.onEvent(InitializationUiEvent.OnUiFormSubmitInitManual(it)) },
+        onUiFormCancelInitManual = { viewModel.onEvent(InitializationUiEvent.OnUiFormCancelInitManual) }
     )
 }
 
 @Composable
-fun ScreenContent(
-    uiState: RequestState<Initialization>,
-    uiEvent: InitializationScreenUiEvent,
-    uiWelcomeMessage: Boolean,
-    uiInputBizProfileForm: Boolean,
-    onSetLanguage: (Language) -> Unit,
-    onSetBizProfileDefault: (BusinessProfileSummary) -> Unit,
-    onBeginSetBizProfileManual: () -> Unit,
-    onSubmitForm: () -> Unit,
-    onCancelForm: () -> Unit,
+private fun ScreenContent(
+    uiState: MutableState<InitializationUiState>,
+    onChangeLanguage: (Language) -> Unit,
+    onInitBizProfileDefault: (BusinessProfileSummary) -> Unit,
+    onInitBizProfileManual: () -> Unit,
+    onUiFormLegalNameChanged: (String) -> Unit,
+    onUiFormCommonNameChanged: (String) -> Unit,
+    onUiFormSubmitInitManual: (BusinessProfileSummary) -> Unit,
+    onUiFormCancelInitManual: () -> Unit
 ) {
-    when(uiState){
+    when(uiState.value.initializationData){
         RequestState.Idle, RequestState.Loading -> { LoadingScreen() }
         RequestState.Empty -> {
             EmptyScreen(
@@ -176,32 +150,35 @@ fun ScreenContent(
             )
         }
         is RequestState.Success -> {
-            SuccessScreen(
-                uiState = uiState,
-                uiEvent = uiEvent,
-                uiWelcomeMessage = uiWelcomeMessage,
-                uiInputBizProfileForm = uiInputBizProfileForm,
-                onSetLanguage = onSetLanguage,
-                onSetBizProfileDefault = onSetBizProfileDefault,
-                onBeginSetBizProfileManual = onBeginSetBizProfileManual,
-                onSubmitForm = onSubmitForm,
-                onCancelForm = onCancelForm
+            val initData = (uiState.value.initializationData as RequestState.Success<Initialization>).data
+            val initUiPropertiesState = uiState.value.initUiPropertiesState
+
+            SuccessSection(
+                initData = initData,
+                onChangeLanguage = onChangeLanguage,
+                initUiPropertiesState = initUiPropertiesState,
+                onInitBizProfileDefault = onInitBizProfileDefault,
+                onInitBizProfileManual = onInitBizProfileManual,
+                onUiFormLegalNameChanged = onUiFormLegalNameChanged,
+                onUiFormCommonNameChanged = onUiFormCommonNameChanged,
+                onUiFormSubmitInitManual = onUiFormSubmitInitManual,
+                onUiFormCancelInitManual = onUiFormCancelInitManual
             )
         }
     }
 }
 
 @Composable
-private fun SuccessScreen(
-    uiState: RequestState.Success<Initialization>,
-    uiEvent: InitializationScreenUiEvent,
-    uiWelcomeMessage: Boolean,
-    uiInputBizProfileForm: Boolean,
-    onSetLanguage: (Language) -> Unit,
-    onSetBizProfileDefault: (BusinessProfileSummary) -> Unit,
-    onBeginSetBizProfileManual: () -> Unit,
-    onSubmitForm: () -> Unit,
-    onCancelForm: () -> Unit
+private fun SuccessSection(
+    initData: Initialization,
+    initUiPropertiesState: InitUiPropertiesState,
+    onChangeLanguage: (Language) -> Unit,
+    onInitBizProfileDefault: (BusinessProfileSummary) -> Unit,
+    onInitBizProfileManual: () -> Unit,
+    onUiFormLegalNameChanged: (String) -> Unit,
+    onUiFormCommonNameChanged: (String) -> Unit,
+    onUiFormSubmitInitManual: (BusinessProfileSummary) -> Unit,
+    onUiFormCancelInitManual: () -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxSize().padding(8.dp).verticalScroll(rememberScrollState()),
@@ -209,21 +186,23 @@ private fun SuccessScreen(
         verticalArrangement = Arrangement.spacedBy(30.dp, Alignment.Top)
     ) {
         LanguageSection(
-            languages = uiState.data.languages,
-            configCurrent = uiState.data.configCurrent,
-            onSetLanguage = onSetLanguage
+            languages = initData.languages,
+            configCurrent = initData.configCurrent,
+            onChangeLanguage = onChangeLanguage
         )
-        if(uiWelcomeMessage) {
-            WelcomeHeader(
-                onManualInit = onBeginSetBizProfileManual,
-                onDefaultInit = onSetBizProfileDefault
+        if(initUiPropertiesState.uiEnableWelcomeMessage){
+            WelcomeMessage(
+                onInitBizProfileDefault = onInitBizProfileDefault,
+                onInitBizProfileManual = onInitBizProfileManual
             )
         }
-        if(uiInputBizProfileForm){
+        if(initUiPropertiesState.uiEnableInitManualForm){
             InputManualForm(
-                onSubmitInit = onSubmitForm,
-                onCancelInit = onCancelForm,
-                formUseCase = uiEvent
+                initUiPropertiesState = initUiPropertiesState,
+                onUiFormLegalNameChanged = onUiFormLegalNameChanged,
+                onUiFormCommonNameChanged = onUiFormCommonNameChanged,
+                onUiFormSubmitInitManual = onUiFormSubmitInitManual,
+                onUiFormCancelInitManual = onUiFormCancelInitManual
             )
         }
     }
@@ -234,7 +213,7 @@ private fun SuccessScreen(
 private fun LanguageSection(
     languages: Set<Language>,
     configCurrent: AppConfig.ConfigCurrent,
-    onSetLanguage: (Language) -> Unit
+    onChangeLanguage: (Language) -> Unit
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(1.0f),
@@ -283,7 +262,7 @@ private fun LanguageSection(
                         text = { Text(modifier = Modifier.fillMaxWidth(), text = stringResource(id = language.title)) },
                         onClick = {
                             expanded = false
-                            onSetLanguage.invoke(language)
+                            onChangeLanguage.invoke(language)
                         },
                         contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
                     )
@@ -294,10 +273,10 @@ private fun LanguageSection(
 }
 
 @Composable
-private fun WelcomeHeader(
-    onManualInit: () -> Unit,
-    onDefaultInit: (BusinessProfileSummary) -> Unit
-) {
+private fun WelcomeMessage(
+    onInitBizProfileDefault: (BusinessProfileSummary) -> Unit,
+    onInitBizProfileManual: () -> Unit
+){
     Column(
         modifier = Modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -346,7 +325,7 @@ private fun WelcomeHeader(
             )
             AppIconButton(
                 modifier = Modifier.fillMaxWidth(),
-                onClick = { onManualInit.invoke() },
+                onClick = { onInitBizProfileManual.invoke() },
                 icon = ImageVector.vectorResource(id = Icons.Emotion.happy),
                 text = stringResource(R.string.str_init_setup_yes)
             )
@@ -354,7 +333,7 @@ private fun WelcomeHeader(
     }
     TextButton(
         onClick = {
-            onDefaultInit.invoke(
+            onInitBizProfileDefault.invoke(
                 BusinessProfileSummary(
                     seqId = 0,
                     genId = ULID.randomULID(),
@@ -378,9 +357,11 @@ private fun WelcomeHeader(
 
 @Composable
 private fun InputManualForm(
-    onSubmitInit: () -> Unit,
-    onCancelInit: () -> Unit,
-    formUseCase: InitializationScreenUiEvent
+    onUiFormSubmitInitManual: (BusinessProfileSummary) -> Unit,
+    onUiFormCancelInitManual: () -> Unit,
+    initUiPropertiesState: InitUiPropertiesState,
+    onUiFormLegalNameChanged: (String) -> Unit,
+    onUiFormCommonNameChanged: (String) -> Unit,
 ) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
@@ -415,39 +396,52 @@ private fun InputManualForm(
                 color = MaterialTheme.colorScheme.onSurface
             )
             TextInput(
-                value = formUseCase.initializationUiFormState.legalName,
-                onValueChange = { formUseCase.onFormEvent(InitializationUiFormEvent.LegalNameChanged(it)) },
+                value = initUiPropertiesState.uiFormLegalName,
+                onValueChange = { onUiFormLegalNameChanged(it) },
                 label = stringResource(R.string.str_company_legal_name),
                 placeholder = stringResource(R.string.str_company_legal_name),
                 singleLine = true,
-                isError = formUseCase.initializationUiFormState.legalNameError != null,
-                errorMessage = formUseCase.initializationUiFormState.legalNameError
+                isError = initUiPropertiesState.uiFormLegalNameError != null,
+                errorMessage = initUiPropertiesState.uiFormLegalNameError
             )
             TextInput(
-                value = formUseCase.initializationUiFormState.commonName,
-                onValueChange = { formUseCase.onFormEvent(InitializationUiFormEvent.CommonNameChanged(it)) },
+                value = initUiPropertiesState.uiFormCommonName,
+                onValueChange = { onUiFormCommonNameChanged(it) },
                 label = stringResource(R.string.str_company_common_name),
                 placeholder = stringResource(R.string.str_company_common_name),
                 singleLine = true,
-                isError = formUseCase.initializationUiFormState.commonNameError != null,
-                errorMessage = formUseCase.initializationUiFormState.commonNameError
+                isError = initUiPropertiesState.uiFormCommonNameError != null,
+                errorMessage = initUiPropertiesState.uiFormCommonNameError
             )
             Row(
                 modifier = Modifier.fillMaxWidth(1.0f),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                if(formUseCase.initializationUiFormState.submitButtonEnabled){
+                if(initUiPropertiesState.uiFormEnableSubmitBtn){
                     AppIconButton(
-                        modifier = Modifier.weight(if(formUseCase.initializationUiFormState.submitButtonEnabled){0.5f}else{0.0f}),
-                        onClick = onSubmitInit,
+                        modifier = Modifier.weight(0.5f),
+                        onClick = {
+                            onUiFormSubmitInitManual.invoke(
+                                BusinessProfileSummary(
+                                    seqId = 0,
+                                    genId = ULID.randomULID(),
+                                    bizName = BizName(
+                                        legalName = initUiPropertiesState.uiFormLegalName,
+                                        commonName = initUiPropertiesState.uiFormCommonName,
+                                    ),
+                                    bizIndustry = null,
+                                    auditTrail = AuditTrail()
+                                )
+                            )
+                        },
                         icon = ImageVector.vectorResource(id = Icons.Emotion.neutral),
                         text = stringResource(id = R.string.str_save)
                     )
                 }
                 AppIconButton(
-                    modifier = Modifier.weight(if(formUseCase.initializationUiFormState.submitButtonEnabled){0.5f}else{1.0f}),
-                    onClick = onCancelInit,
+                    modifier = Modifier.weight(if(initUiPropertiesState.uiFormEnableSubmitBtn){0.5f}else{1.0f}),
+                    onClick = onUiFormCancelInitManual,
                     icon = ImageVector.vectorResource(id = Icons.Emotion.neutral),
                     text = stringResource(id = R.string.str_cancel)
                 )
