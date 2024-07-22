@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class VMConfCountry @Inject constructor(
+class VMConfGenCountry @Inject constructor(
     private val repoConfGenCountry: RepoConfGenCountry,
     ucFetchConfCountry: UCFetchConfCountry,
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher

@@ -48,7 +48,7 @@ import com.thomas200593.mini_retail_app.features.app_conf._gen_country.entity.Co
 
 @Composable
 fun ScrConfGenCountry(
-    vm: VMConfCountry = hiltViewModel(),
+    vm: VMConfGenCountry = hiltViewModel(),
     stateApp: StateApp = LocalStateApp.current
 ){
     val confData by vm.confData.collectAsStateWithLifecycle()
