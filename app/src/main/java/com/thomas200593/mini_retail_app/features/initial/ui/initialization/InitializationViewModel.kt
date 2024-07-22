@@ -9,7 +9,7 @@ import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatche
 import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatchers.Dispatchers.IO
 import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
 import com.thomas200593.mini_retail_app.core.ui.component.Form.Component.UseCase.InputFieldValidation
-import com.thomas200593.mini_retail_app.features.app_config.repository.ConfigGeneralRepository
+import com.thomas200593.mini_retail_app.features.app_config.app_cfg_general_language.repository.RepositoryAppCfgGeneralLanguage
 import com.thomas200593.mini_retail_app.features.initial.domain.GetInitializationDataUseCase
 import com.thomas200593.mini_retail_app.features.initial.domain.SetDefaultInitialBizProfileUseCase
 import com.thomas200593.mini_retail_app.features.initial.entity.InitializationUiFormState
@@ -26,7 +26,7 @@ import javax.inject.Inject
 @HiltViewModel
 class InitializationViewModel @Inject constructor(
     private val getInitializationDataUseCase: GetInitializationDataUseCase,
-    private val cfgGeneralRepository: ConfigGeneralRepository,
+    private val repositoryAppCfgGeneralLanguage: RepositoryAppCfgGeneralLanguage,
     private val setDefaultUseCase: SetDefaultInitialBizProfileUseCase,
     @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
 ): ViewModel(){
@@ -47,7 +47,7 @@ class InitializationViewModel @Inject constructor(
                     .collectLatest{ initializationData -> uiState.value = uiState.value.copy(initializationData = initializationData) }
             }
             is InitializationUiEvent.OnChangeLanguage -> viewModelScope.launch(ioDispatcher) {
-                cfgGeneralRepository.setLanguage(language = event.language)
+                repositoryAppCfgGeneralLanguage.setLanguage(language = event.language)
                 AppCompatDelegate.setApplicationLocales( LocaleListCompat.create(Locale(event.language.code)) )
             }
             is InitializationUiEvent.BeginInitBizProfileDefault -> viewModelScope.launch(ioDispatcher) {

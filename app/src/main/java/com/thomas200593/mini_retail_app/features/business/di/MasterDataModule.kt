@@ -11,7 +11,7 @@ import dagger.hilt.components.SingletonComponent
 @InstallIn(SingletonComponent::class)
 abstract class MasterDataModule {
     @Binds
-    internal abstract fun bindsMasterDataRepository(
+    internal abstract fun bindsRepository(
         impl: MasterDataRepositoryImpl
     ): MasterDataRepository
 }

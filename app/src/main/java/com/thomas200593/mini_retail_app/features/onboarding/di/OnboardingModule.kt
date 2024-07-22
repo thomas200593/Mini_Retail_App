@@ -11,7 +11,7 @@ import dagger.hilt.components.SingletonComponent
 @InstallIn(SingletonComponent::class)
 abstract class OnboardingModule{
     @Binds
-    internal abstract fun bindOnboardingRepository(
+    internal abstract fun bindsRepository(
         impl: OnboardingRepositoryImpl
     ):OnboardingRepository
 }

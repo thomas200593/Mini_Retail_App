@@ -5,8 +5,8 @@ import androidx.compose.runtime.mutableStateOf
 import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
 import com.thomas200593.mini_retail_app.core.ui.component.Form.Component.UseCase.UiText
-import com.thomas200593.mini_retail_app.features.app_config.entity.AppConfig
-import com.thomas200593.mini_retail_app.features.app_config.entity.Language
+import com.thomas200593.mini_retail_app.features.app_config.app_cfg.entity.AppConfig
+import com.thomas200593.mini_retail_app.features.app_config.app_cfg_general_language.entity.Language
 import com.thomas200593.mini_retail_app.features.initial.ui.initialization.InitializationUiEvent
 
 data class Initialization(val configCurrent: AppConfig.ConfigCurrent, val languages: Set<Language>)

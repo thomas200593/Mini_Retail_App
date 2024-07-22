@@ -15,13 +15,13 @@ import kotlinx.coroutines.Dispatchers
 object DispatchersModule {
     @Provides
     @Dispatcher(IO)
-    fun provideIODispatcher(): CoroutineDispatcher{
+    fun providesCoroutineDispatcherIO(): CoroutineDispatcher{
         return Dispatchers.IO
     }
 
     @Provides
     @Dispatcher(Default)
-    fun provideDefaultDispatcher(): CoroutineDispatcher{
+    fun providesCoroutineDispatcherDefault(): CoroutineDispatcher{
         return Dispatchers.Default
     }
 }

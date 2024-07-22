@@ -16,7 +16,7 @@ abstract class SessionMonitorModule{
     @Binds
     @IntoMap
     @WorkerKey(SessionMonitorWorker::class)
-    abstract fun bindsSessionMonitorWorker(
+    abstract fun binsImplementation(
         factory: SessionMonitorWorkerFactory
     ): CustomWorkerFactory
 }

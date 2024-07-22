@@ -15,9 +15,9 @@ import kotlinx.coroutines.SupervisorJob
 object CoroutineScopesModule {
     @Provides
     @CoroutineScopes(CoroutineScopesJob.Options.IOSupervisor)
-    fun provideCoroutineScopeIoSupervisorJob() = CoroutineScope(Dispatchers.IO + SupervisorJob())
+    fun providesCoroutineScopeIo() = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
     @Provides
     @CoroutineScopes(CoroutineScopesJob.Options.DefaultSupervisor)
-    fun provideCoroutineScopeDefaultSupervisorJob() = CoroutineScope(Dispatchers.Default + SupervisorJob())
+    fun providesCoroutineScopeDefault() = CoroutineScope(Dispatchers.Default + SupervisorJob())
 }

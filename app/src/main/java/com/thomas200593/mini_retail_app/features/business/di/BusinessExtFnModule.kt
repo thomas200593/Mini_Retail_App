@@ -11,7 +11,7 @@ import dagger.hilt.components.SingletonComponent
 @InstallIn(SingletonComponent::class)
 abstract class BusinessExtFnModule {
     @Binds
-    abstract fun bindsBusinessExtFn(
+    abstract fun bindsImplementation(
         impl: BusinessExtFnImpl
     ): BusinessExtFn
 }
