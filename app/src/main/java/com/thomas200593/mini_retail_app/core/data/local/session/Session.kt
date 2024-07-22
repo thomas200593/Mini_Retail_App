@@ -21,8 +21,8 @@ class SessionImpl @Inject constructor(
     repoAuth: RepoAuth,
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
 ): Session {
-    override val currentUserSession: Flow<SessionState> = repoAuth.authSessionToken
-        .flowOn(ioDispatcher).catch { SessionState.Invalid(throwable = it, reason = R.string.str_session_error) }
+    override val currentUserSession: Flow<SessionState> = repoAuth.authSessionToken.flowOn(ioDispatcher)
+        .catch { SessionState.Invalid(throwable = it, reason = R.string.str_session_error) }
         .map { authToken ->
             if(repoAuth.validateAuthSessionToken(authToken)){
                 val userData = repoAuth.mapAuthSessionTokenToUserData(authToken)

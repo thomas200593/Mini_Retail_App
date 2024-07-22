@@ -11,7 +11,5 @@ import dagger.hilt.components.SingletonComponent
 @InstallIn(SingletonComponent::class)
 abstract class ModSession {
     @Binds
-    internal abstract fun bindsImplementation(
-        impl: SessionImpl
-    ): Session
+    internal abstract fun bindsImplementation(impl: SessionImpl): Session
 }

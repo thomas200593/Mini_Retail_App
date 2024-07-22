@@ -31,12 +31,7 @@ fun rememberStateApplication(
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
     navController: NavHostController = rememberNavController()
 ): StateApp =
-    remember(
-        networkMonitor,
-        session,
-        coroutineScope,
-        navController
-    ) {
+    remember(networkMonitor, session, coroutineScope, navController) {
         StateApp(
             networkMonitor = networkMonitor,
             session = session,
@@ -52,19 +47,17 @@ class StateApp(
     val coroutineScope: CoroutineScope,
     val navController: NavHostController,
 ) {
-    val isNetworkOffline = networkMonitor.isNetworkOnline.map(Boolean::not)
-        .stateIn(
-            scope = coroutineScope,
-            initialValue = false,
-            started = SharingStarted.WhileSubscribed(1_000)
-        )
+    val isNetworkOffline = networkMonitor.isNetworkOnline.map(Boolean::not).stateIn(
+        scope = coroutineScope,
+        initialValue = false,
+        started = SharingStarted.WhileSubscribed(1_000)
+    )
 
-    val isSessionValid = session.currentUserSession
-        .stateIn(
-            scope = coroutineScope,
-            initialValue = SessionState.Loading,
-            started = SharingStarted.Eagerly
-        )
+    val isSessionValid = session.currentUserSession.stateIn(
+        scope = coroutineScope,
+        initialValue = SessionState.Loading,
+        started = SharingStarted.Eagerly
+    )
 
     val destCurrent: NavDestination?
         @Composable get() = navController.currentBackStackEntryAsState().value?.destination
@@ -75,28 +68,22 @@ class StateApp(
         @Composable get() = destCurrent?.route in destTopLevels.map { it.route }
 
     val shouldShowTopBar: Boolean
-        @Composable get() = destCurrent?.route in
-                DestWithTopAppBar.destWithTopAppBar()
+        @Composable get() = destCurrent?.route in DestWithTopAppBar.destWithTopAppBar()
 
     fun navToDestTopLevel(destTopLevel: DestTopLevel){
         val destTopLevelNavOptions = navOptions {
             popUpTo(id = navController.graph.findStartDestination().id){ saveState = true }
-            launchSingleTop = true
-            restoreState = true
+            launchSingleTop = true; restoreState = true
         }
         when(destTopLevel){
-            DestTopLevel.DASHBOARD -> {
-                navController.navigateToDashboard(navOptions = destTopLevelNavOptions)
-            }
-            DestTopLevel.BUSINESS -> {
-                navController.navigateToBusiness(navOptions = destTopLevelNavOptions)
-            }
-            DestTopLevel.REPORTING -> {
-                navController.navigateToReporting(navOptions = destTopLevelNavOptions)
-            }
-            DestTopLevel.USER_PROFILE -> {
-                navController.navigateToUserProfile(navOptions = destTopLevelNavOptions)
-            }
+            DestTopLevel.DASHBOARD ->
+                { navController.navigateToDashboard(navOptions = destTopLevelNavOptions) }
+            DestTopLevel.BUSINESS ->
+                { navController.navigateToBusiness(navOptions = destTopLevelNavOptions) }
+            DestTopLevel.REPORTING ->
+                { navController.navigateToReporting(navOptions = destTopLevelNavOptions) }
+            DestTopLevel.USER_PROFILE ->
+                { navController.navigateToUserProfile(navOptions = destTopLevelNavOptions) }
         }
     }
 

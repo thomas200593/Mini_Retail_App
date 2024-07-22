@@ -43,9 +43,8 @@ class ActMain: AppCompatActivity() {
         super.onCreate(savedInstanceState)
         var uiState: UiStateMain by mutableStateOf(UiStateMain.Loading)
         lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(STARTED){
-                launch { vm.uiState.onEach { uiState = it }.collect() }
-            }
+            lifecycle.repeatOnLifecycle(STARTED)
+            { launch { vm.uiState.onEach { uiState = it }.collect() } }
         }
         splashscreen.setKeepOnScreenCondition{
             when(uiState){

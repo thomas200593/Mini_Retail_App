@@ -38,22 +38,20 @@ class DataStorePreferences @Inject constructor(
     }
 
     //Auth
-    val authSessionToken = datastore.data.flowOn(ioDispatcher)
-        .map { data ->
-            AuthSessionToken(
-                authProvider = data[DataStoreKeys.AuthKeys.dsKeyAuthProvider] ?.let { oAuthProvider ->
-                    OAuthProvider.valueOf(oAuthProvider)
-                } ?: OAuthProvider.GOOGLE,
-                idToken = data[DataStoreKeys.AuthKeys.dsKeyAuthSessionToken]
-            )
-        }
-
-    suspend fun clearAuthSessionToken() = withContext((ioDispatcher)){ datastore
-        .edit { it.remove(DataStoreKeys.AuthKeys.dsKeyAuthSessionToken) }
+    val authSessionToken = datastore.data.flowOn(ioDispatcher).map { data ->
+        AuthSessionToken(
+            authProvider = data[DataStoreKeys.AuthKeys.dsKeyAuthProvider] ?.let { oAuthProvider ->
+                OAuthProvider.valueOf(oAuthProvider)
+            } ?: OAuthProvider.GOOGLE,
+            idToken = data[DataStoreKeys.AuthKeys.dsKeyAuthSessionToken]
+        )
     }
 
-    suspend fun saveAuthSessionToken(authSessionToken: AuthSessionToken) = withContext(ioDispatcher){
-        datastore.edit {
+    suspend fun clearAuthSessionToken() = withContext((ioDispatcher))
+    { datastore.edit { it.remove(DataStoreKeys.AuthKeys.dsKeyAuthSessionToken) } }
+
+    suspend fun saveAuthSessionToken(authSessionToken: AuthSessionToken) =
+        withContext(ioDispatcher){ datastore.edit {
             it[DataStoreKeys.AuthKeys.dsKeyAuthSessionToken] = authSessionToken.idToken!!
             it[DataStoreKeys.AuthKeys.dsKeyAuthProvider] = authSessionToken.authProvider?.name!!
         }
@@ -62,9 +60,8 @@ class DataStorePreferences @Inject constructor(
     //First Time Status
     val firstTimeStatus = datastore.data.map { data ->
         data[DataStoreKeys.AppConfigKeys.dsKeyFirstTimeStatus]
-            ?.let { firstTimeStatus ->
-                FirstTimeStatus.valueOf(firstTimeStatus)
-            } ?: FirstTimeStatus.YES
+            ?.let { firstTimeStatus -> FirstTimeStatus.valueOf(firstTimeStatus) }
+            ?: FirstTimeStatus.YES
     }
 
     //App Config

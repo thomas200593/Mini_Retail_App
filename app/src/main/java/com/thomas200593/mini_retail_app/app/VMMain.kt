@@ -20,8 +20,7 @@ class VMMain @Inject constructor(
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel(){
     val uiState: StateFlow<UiStateMain> = repoAppConf.configCurrent.flowOn(ioDispatcher)
-        .map { UiStateMain.Success(confCurrent = it) }
-        .stateIn(
+        .map { UiStateMain.Success(confCurrent = it) }.stateIn(
             scope = viewModelScope,
             initialValue = UiStateMain.Loading,
             started = Eagerly

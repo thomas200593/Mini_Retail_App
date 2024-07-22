@@ -16,9 +16,7 @@ fun NavGraphBuilder.navGraphConfData() {
     ){
         composable(
             route = ScrGraphs.ConfigData.route
-        ){
-            ScrConfData()
-        }
+        ){ ScrConfData() }
 
         //More Screen
     }
