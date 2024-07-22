@@ -1,7 +1,7 @@
 package com.thomas200593.mini_retail_app.features.auth.di
 
-import com.thomas200593.mini_retail_app.features.auth.repository.AuthRepository
-import com.thomas200593.mini_retail_app.features.auth.repository.AuthRepositoryImpl
+import com.thomas200593.mini_retail_app.features.auth.repository.RepoAuth
+import com.thomas200593.mini_retail_app.features.auth.repository.RepoAuthImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -12,6 +12,6 @@ import dagger.hilt.components.SingletonComponent
 abstract class AuthModule {
     @Binds
     internal abstract fun bindsRepository(
-        impl: AuthRepositoryImpl
-    ):AuthRepository
+        impl: RepoAuthImpl
+    ):RepoAuth
 }

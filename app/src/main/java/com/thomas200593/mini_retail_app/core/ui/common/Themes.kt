@@ -15,9 +15,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 import com.thomas200593.mini_retail_app.app.UiStateMain
-import com.thomas200593.mini_retail_app.features.app_config._g_dynamic_color.entity.DynamicColor
-import com.thomas200593.mini_retail_app.features.app_config._g_font_size.entity.FontSize
-import com.thomas200593.mini_retail_app.features.app_config._g_theme.entity.Theme
+import com.thomas200593.mini_retail_app.features.app_conf._g_dynamic_color.entity.DynamicColor
+import com.thomas200593.mini_retail_app.features.app_conf._g_font_size.entity.FontSize
+import com.thomas200593.mini_retail_app.features.app_conf._g_theme.entity.Theme
 
 object Themes{
     private val lightScheme = Colors.lightScheme
@@ -32,7 +32,7 @@ object Themes{
     fun shouldUseDarkTheme(uiState: UiStateMain): Boolean {
         return when(uiState){
             UiStateMain.Loading -> isSystemInDarkTheme()
-            is UiStateMain.Success -> when(uiState.configCurrent.theme){
+            is UiStateMain.Success -> when(uiState.confCurrent.theme){
                 Theme.SYSTEM -> isSystemInDarkTheme()
                 Theme.LIGHT -> false
                 Theme.DARK -> true
@@ -47,7 +47,7 @@ object Themes{
     fun shouldUseDynamicColor(uiState: UiStateMain): Boolean {
         return when (uiState) {
             UiStateMain.Loading -> false
-            is UiStateMain.Success -> when(uiState.configCurrent.dynamicColor){
+            is UiStateMain.Success -> when(uiState.confCurrent.dynamicColor){
                 DynamicColor.ENABLED -> true
                 DynamicColor.DISABLED -> false
             }
@@ -58,7 +58,7 @@ object Themes{
     fun calculateInitialFontSize(uiState: UiStateMain): FontSize {
         return when(uiState) {
             UiStateMain.Loading -> FontSize.MEDIUM
-            is UiStateMain.Success -> when(uiState.configCurrent.fontSize){
+            is UiStateMain.Success -> when(uiState.confCurrent.fontSize){
                 FontSize.MEDIUM -> FontSize.MEDIUM
                 FontSize.SMALL -> FontSize.SMALL
                 FontSize.LARGE -> FontSize.LARGE

@@ -17,13 +17,13 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
-import com.thomas200593.mini_retail_app.app.navigation.DestinationTopLevel
+import com.thomas200593.mini_retail_app.app.navigation.DestTopLevel
 
 object BottomBar {
     @Composable
     fun BottomBar(
-        destinations: List<DestinationTopLevel>,
-        onNavigateToDestination: (DestinationTopLevel) -> Unit,
+        destinations: List<DestTopLevel>,
+        onNavigateToDestination: (DestTopLevel) -> Unit,
         currentDestination: NavDestination?,
         modifier: Modifier = Modifier
     ) {
@@ -107,7 +107,7 @@ object BottomBar {
         fun navigationIndicatorColor() = MaterialTheme.colorScheme.primaryContainer
     }
 
-    private fun NavDestination?.isDestinationTopLevelInHierarchy(destination: DestinationTopLevel) =
+    private fun NavDestination?.isDestinationTopLevelInHierarchy(destination: DestTopLevel) =
         this?.hierarchy?.any{
             it.route?.contains(other = destination.route, ignoreCase = true) ?:false
         } ?:false

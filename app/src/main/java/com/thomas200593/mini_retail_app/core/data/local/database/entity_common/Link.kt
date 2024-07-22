@@ -15,7 +15,7 @@ data class Link(
     val auditTrail: AuditTrail = AuditTrail()
 )
 
-class TypeConverterLinks{
+class TypeConvLinks{
     @TypeConverter
     fun toJson(link: Link?): String = Json.encodeToString(value = link)
 

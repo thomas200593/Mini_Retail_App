@@ -18,7 +18,7 @@ data class BizIdentity(
     val auditTrail: AuditTrail = AuditTrail()
 )
 
-class TypeConverterBizIdentity{
+class TypeConvBizIdentity{
     @TypeConverter
     fun toJson(bizIdentity: BizIdentity?): String =
         Json.encodeToString(bizIdentity)

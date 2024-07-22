@@ -11,5 +11,5 @@ object Constants {
      * System Notification Constants
      */
     const val MAX_NUM_NOTIFICATIONS: Int = 5
-    const val TARGET_ACTIVITY_NAME: String = "com.thomas200593.mini_retail_app.app.ActivityMain"
+    const val TARGET_ACTIVITY_NAME: String = "com.thomas200593.mini_retail_app.app.ActMain"
 }

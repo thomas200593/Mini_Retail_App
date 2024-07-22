@@ -16,7 +16,7 @@ data class Contact(
     val auditTrail: AuditTrail = AuditTrail()
 )
 
-class TypeConverterContact{
+class TypeConvContact{
     @TypeConverter
     fun toJson(contact: Contact?): String = Json.encodeToString(value = contact)
 

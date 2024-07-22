@@ -14,7 +14,7 @@ data class AuditTrail(
     val modifiedAt: Long = Constants.NOW_EPOCH_SECOND
 )
 
-class TypeConverterAuditTrail{
+class TypeConvAuditTrail{
     @TypeConverter
     fun toJson(auditTrail: AuditTrail?): String = Json.encodeToString(value = auditTrail)
 

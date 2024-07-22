@@ -5,18 +5,18 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers
-import com.thomas200593.mini_retail_app.core.design_system.util.HelperCountry
-import com.thomas200593.mini_retail_app.core.design_system.util.HelperCurrency
-import com.thomas200593.mini_retail_app.core.design_system.util.HelperTimezone
-import com.thomas200593.mini_retail_app.features.app_config.app_config.entity.AppConfig
-import com.thomas200593.mini_retail_app.features.app_config._g_country.entity.Country
-import com.thomas200593.mini_retail_app.features.app_config._g_currency.entity.Currency
-import com.thomas200593.mini_retail_app.features.app_config._g_dynamic_color.entity.DynamicColor
-import com.thomas200593.mini_retail_app.features.app_config._g_font_size.entity.FontSize
-import com.thomas200593.mini_retail_app.features.app_config._g_language.entity.Language
+import com.thomas200593.mini_retail_app.core.design_system.util.HlpCountry
+import com.thomas200593.mini_retail_app.core.design_system.util.HlpCurrency
+import com.thomas200593.mini_retail_app.core.design_system.util.HlpTimezone
+import com.thomas200593.mini_retail_app.features.app_conf.app_config.entity.AppConfig
+import com.thomas200593.mini_retail_app.features.app_conf._gen_country.entity.Country
+import com.thomas200593.mini_retail_app.features.app_conf._g_currency.entity.Currency
+import com.thomas200593.mini_retail_app.features.app_conf._g_dynamic_color.entity.DynamicColor
+import com.thomas200593.mini_retail_app.features.app_conf._g_font_size.entity.FontSize
+import com.thomas200593.mini_retail_app.features.app_conf._g_language.entity.Language
 import com.thomas200593.mini_retail_app.features.onboarding.entity.OnboardingStatus
-import com.thomas200593.mini_retail_app.features.app_config._g_theme.entity.Theme
-import com.thomas200593.mini_retail_app.features.app_config._g_timezone.entity.Timezone
+import com.thomas200593.mini_retail_app.features.app_conf._g_theme.entity.Theme
+import com.thomas200593.mini_retail_app.features.app_conf._g_timezone.entity.Timezone
 import com.thomas200593.mini_retail_app.features.auth.entity.AuthSessionToken
 import com.thomas200593.mini_retail_app.features.auth.entity.OAuthProvider
 import com.thomas200593.mini_retail_app.features.initial.entity.FirstTimeStatus
@@ -87,7 +87,7 @@ class DataStorePreferences @Inject constructor(
                 ?: Language.EN,
             timezone = data[DataStoreKeys.AppConfigKeys.dsKeyTimezone]
                 ?.let { offset -> Timezone(offset) }
-                ?: HelperTimezone.TIMEZONE_DEFAULT,
+                ?: HlpTimezone.TIMEZONE_DEFAULT,
             currency = data[DataStoreKeys.AppConfigKeys.dsKeyCurrency]
                 ?.let { currency ->
                     Currency(
@@ -97,14 +97,14 @@ class DataStorePreferences @Inject constructor(
                         defaultFractionDigits = CurrencyUnit.of(currency).toCurrency().defaultFractionDigits,
                         decimalPlaces = CurrencyUnit.of(currency).decimalPlaces
                     )
-                } ?: HelperCurrency.CURRENCY_DEFAULT,
+                } ?: HlpCurrency.CURRENCY_DEFAULT,
             country = data[DataStoreKeys.AppConfigKeys.dsKeyCountry] ?.let{ country ->
                 Country(
                     isoCode = country,
                     iso03Country = Locale("", country).isO3Country,
                     displayName = Locale("", country).displayName
                 )
-            } ?: HelperCountry.COUNTRY_DEFAULT
+            } ?: HlpCountry.COUNTRY_DEFAULT
         )
     }
 

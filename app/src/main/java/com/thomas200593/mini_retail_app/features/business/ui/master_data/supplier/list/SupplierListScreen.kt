@@ -68,7 +68,7 @@ fun SupplierListScreen(
     val pagedListData = viewModel.pagedDataFlow.collectAsLazyPagingItems()
 
     TopAppBar(
-        onNavigateBack = stateApp::onNavigateUp,
+        onNavigateBack = stateApp::onNavUp,
         //TODO: REMOVE LATER
         testGen = viewModel::testGen
     )

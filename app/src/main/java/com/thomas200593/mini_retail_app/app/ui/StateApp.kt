@@ -10,8 +10,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
-import com.thomas200593.mini_retail_app.app.navigation.DestinationTopLevel
-import com.thomas200593.mini_retail_app.app.navigation.DestinationWithTopAppBar
+import com.thomas200593.mini_retail_app.app.navigation.DestTopLevel
+import com.thomas200593.mini_retail_app.app.navigation.DestWithTopAppBar
 import com.thomas200593.mini_retail_app.core.data.local.session.Session
 import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
 import com.thomas200593.mini_retail_app.core.design_system.network_monitor.NetworkMonitor
@@ -66,39 +66,39 @@ class StateApp(
             started = SharingStarted.Eagerly
         )
 
-    val destinationCurrent: NavDestination?
+    val destCurrent: NavDestination?
         @Composable get() = navController.currentBackStackEntryAsState().value?.destination
 
-    val destinationTopLevels: List<DestinationTopLevel> = DestinationTopLevel.entries
+    val destTopLevels: List<DestTopLevel> = DestTopLevel.entries
 
     val shouldShowBottomBar: Boolean
-        @Composable get() = destinationCurrent?.route in destinationTopLevels.map { it.route }
+        @Composable get() = destCurrent?.route in destTopLevels.map { it.route }
 
     val shouldShowTopBar: Boolean
-        @Composable get() = destinationCurrent?.route in
-                DestinationWithTopAppBar.destinationWithTopAppBar()
+        @Composable get() = destCurrent?.route in
+                DestWithTopAppBar.destWithTopAppBar()
 
-    fun navigateToDestinationTopLevel(destinationTopLevel: DestinationTopLevel){
-        val destinationTopLevelNavOptions = navOptions {
+    fun navToDestTopLevel(destTopLevel: DestTopLevel){
+        val destTopLevelNavOptions = navOptions {
             popUpTo(id = navController.graph.findStartDestination().id){ saveState = true }
             launchSingleTop = true
             restoreState = true
         }
-        when(destinationTopLevel){
-            DestinationTopLevel.DASHBOARD -> {
-                navController.navigateToDashboard(navOptions = destinationTopLevelNavOptions)
+        when(destTopLevel){
+            DestTopLevel.DASHBOARD -> {
+                navController.navigateToDashboard(navOptions = destTopLevelNavOptions)
             }
-            DestinationTopLevel.BUSINESS -> {
-                navController.navigateToBusiness(navOptions = destinationTopLevelNavOptions)
+            DestTopLevel.BUSINESS -> {
+                navController.navigateToBusiness(navOptions = destTopLevelNavOptions)
             }
-            DestinationTopLevel.REPORTING -> {
-                navController.navigateToReporting(navOptions = destinationTopLevelNavOptions)
+            DestTopLevel.REPORTING -> {
+                navController.navigateToReporting(navOptions = destTopLevelNavOptions)
             }
-            DestinationTopLevel.USER_PROFILE -> {
-                navController.navigateToUserProfile(navOptions = destinationTopLevelNavOptions)
+            DestTopLevel.USER_PROFILE -> {
+                navController.navigateToUserProfile(navOptions = destTopLevelNavOptions)
             }
         }
     }
 
-    fun onNavigateUp() { navController.navigateUp() }
+    fun onNavUp() { navController.navigateUp() }
 }

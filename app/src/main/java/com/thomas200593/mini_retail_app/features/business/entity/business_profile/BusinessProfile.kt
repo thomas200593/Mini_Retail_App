@@ -10,7 +10,7 @@ import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.A
 import com.thomas200593.mini_retail_app.core.design_system.base_class.BaseEntity
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.Contact
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.Link
-import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.TypeConverterAuditTrail
+import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.TypeConvAuditTrail
 import kotlinx.serialization.Serializable
 import ulid.ULID
 
@@ -30,7 +30,7 @@ data class BusinessProfile(
     override val genId: String = ULID.randomULID(),
 
     @ColumnInfo(name = "audit_trail")
-    @TypeConverters(TypeConverterAuditTrail::class)
+    @TypeConverters(TypeConvAuditTrail::class)
     override val auditTrail: AuditTrail = AuditTrail(),
 
     @ColumnInfo(name = "biz_identity")

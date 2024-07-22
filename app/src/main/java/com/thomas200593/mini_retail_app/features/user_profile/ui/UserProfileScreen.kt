@@ -62,13 +62,13 @@ import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.Err
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.LoadingPanelCircularIndicator
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.LoadingScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.TextContentWithIcon
-import com.thomas200593.mini_retail_app.features.app_config.app_config.navigation.navigateToAppConfig
+import com.thomas200593.mini_retail_app.features.app_conf.app_config.navigation.navigateToAppConfig
 import com.thomas200593.mini_retail_app.features.auth.entity.OAuth2UserMetadata
 import com.thomas200593.mini_retail_app.features.auth.entity.OAuthProvider
 import com.thomas200593.mini_retail_app.features.auth.entity.UserData
 import com.thomas200593.mini_retail_app.features.business.entity.business_profile.dto.BusinessProfileSummary
 import com.thomas200593.mini_retail_app.features.initial.navigation.navigateToInitial
-import com.thomas200593.mini_retail_app.work.workers.session_monitor.manager.SessionMonitorWorkManager
+import com.thomas200593.mini_retail_app.work.workers.session_monitor.manager.ManagerWorkSessionMonitor
 import timber.log.Timber
 import java.time.Instant
 
@@ -110,7 +110,7 @@ fun UserProfileScreen(
         },
         onSignedOut = {
             viewModel.handleSignOut()
-            SessionMonitorWorkManager.terminate(applicationContext)
+            ManagerWorkSessionMonitor.terminate(applicationContext)
         },
         onNavigateToBusinessProfile = {
 

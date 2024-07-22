@@ -11,7 +11,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavOptions
 import com.thomas200593.mini_retail_app.R
-import com.thomas200593.mini_retail_app.app.navigation.NavigationGraphs
+import com.thomas200593.mini_retail_app.app.navigation.NavGraph
 import com.thomas200593.mini_retail_app.app.ui.StateApp
 import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
@@ -45,7 +45,7 @@ fun InitialScreen(
         onNavigateToOnboarding = { coroutineScope.launch { stateApp.navController.navigateToOnboarding() } },
         onNavigateToInitialization = { coroutineScope.launch { stateApp.navController.navigateToInitialization() } },
         onNavigateToDashboard = { userData ->
-            val navOptions = NavOptions.Builder().setPopUpTo(route = NavigationGraphs.G_INITIAL, inclusive = true, saveState = true).setLaunchSingleTop(true).setRestoreState(true).build()
+            val navOptions = NavOptions.Builder().setPopUpTo(route = NavGraph.G_INITIAL, inclusive = true, saveState = true).setLaunchSingleTop(true).setRestoreState(true).build()
             when(userData.authSessionToken?.authProvider){
                 OAuthProvider.GOOGLE -> { Toast.makeText(context, "Welcome back! ${(userData.oAuth2UserMetadata as OAuth2UserMetadata.Google).name}", Toast.LENGTH_SHORT).show() }
                 null -> Unit

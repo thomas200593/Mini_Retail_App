@@ -61,7 +61,7 @@ fun MasterDataScreen(
     }
 
     TopAppBar(
-        onNavigateBack = stateApp::onNavigateUp
+        onNavigateBack = stateApp::onNavUp
     )
     ScreenContent(
         menuData = menuData,

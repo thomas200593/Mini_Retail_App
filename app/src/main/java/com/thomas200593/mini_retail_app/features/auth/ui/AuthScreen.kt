@@ -46,9 +46,9 @@ import com.thomas200593.mini_retail_app.core.ui.component.Button
 import com.thomas200593.mini_retail_app.core.ui.component.Button.Google.SignInWithGoogle
 import com.thomas200593.mini_retail_app.core.ui.component.Button.Google.handleClearCredential
 import com.thomas200593.mini_retail_app.core.ui.component.ScreenUtil
-import com.thomas200593.mini_retail_app.features.app_config.app_config.navigation.navigateToAppConfig
+import com.thomas200593.mini_retail_app.features.app_conf.app_config.navigation.navigateToAppConfig
 import com.thomas200593.mini_retail_app.features.initial.navigation.navigateToInitial
-import com.thomas200593.mini_retail_app.work.workers.session_monitor.manager.SessionMonitorWorkManager
+import com.thomas200593.mini_retail_app.work.workers.session_monitor.manager.ManagerWorkSessionMonitor
 import kotlinx.coroutines.launch
 
 @Composable
@@ -74,7 +74,7 @@ fun AuthScreen(
     LaunchedEffect(authSessionTokenState) {
         when(authSessionTokenState){
             is ResourceState.Success -> {
-                SessionMonitorWorkManager.initialize(appContext)
+                ManagerWorkSessionMonitor.initialize(appContext)
                 stateApp.navController.navigateToInitial()
             }
             is ResourceState.Error -> {

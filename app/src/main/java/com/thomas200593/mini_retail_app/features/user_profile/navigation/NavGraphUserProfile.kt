@@ -5,8 +5,8 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.thomas200593.mini_retail_app.app.navigation.NavigationGraphs.G_USER_PROFILE
-import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs
+import com.thomas200593.mini_retail_app.app.navigation.NavGraph.G_USER_PROFILE
+import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs
 import com.thomas200593.mini_retail_app.features.user_profile.ui.UserProfileScreen
 import timber.log.Timber
 
@@ -17,10 +17,10 @@ fun NavGraphBuilder.navGraphUserProfile(){
     Timber.d("Called : fun $TAG_NAV_GRAPH_BUILDER.userProfileNavGraph()")
     navigation(
         route = G_USER_PROFILE,
-        startDestination = ScreenGraphs.UserProfile.route
+        startDestination = ScrGraphs.UserProfile.route
     ){
         composable(
-            route = ScreenGraphs.UserProfile.route
+            route = ScrGraphs.UserProfile.route
         ){
             UserProfileScreen()
         }

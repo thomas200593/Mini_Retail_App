@@ -11,7 +11,7 @@ import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Id
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Loading
 import com.thomas200593.mini_retail_app.features.auth.domain.ValidateAuthSessionUseCase
 import com.thomas200593.mini_retail_app.features.auth.entity.AuthSessionToken
-import com.thomas200593.mini_retail_app.features.auth.repository.AuthRepository
+import com.thomas200593.mini_retail_app.features.auth.repository.RepoAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,7 +20,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
-    private val repository: AuthRepository,
+    private val repository: RepoAuth,
     private val authUseCase: ValidateAuthSessionUseCase,
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {

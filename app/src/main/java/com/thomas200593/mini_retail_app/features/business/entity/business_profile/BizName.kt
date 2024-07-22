@@ -13,7 +13,7 @@ data class BizName(
     val auditTrail: AuditTrail = AuditTrail()
 )
 
-class TypeConverterBizName{
+class TypeConvBizName{
     @TypeConverter
     fun toJson(bizName: BizName?): String = Json.encodeToString(value = bizName)
 

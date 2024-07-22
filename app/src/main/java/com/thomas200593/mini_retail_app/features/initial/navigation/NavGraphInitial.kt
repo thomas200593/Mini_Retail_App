@@ -7,8 +7,8 @@ import androidx.navigation.navigation
 import com.thomas200593.mini_retail_app.features.auth.navigation.navGraphAuth
 import com.thomas200593.mini_retail_app.features.initial.ui.InitialScreen
 import com.thomas200593.mini_retail_app.features.onboarding.navigation.navGraphOnboarding
-import com.thomas200593.mini_retail_app.app.navigation.NavigationGraphs.G_INITIAL
-import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs
+import com.thomas200593.mini_retail_app.app.navigation.NavGraph.G_INITIAL
+import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs
 import com.thomas200593.mini_retail_app.features.initial.ui.initialization.InitializationScreen
 import timber.log.Timber
 
@@ -19,15 +19,15 @@ fun NavGraphBuilder.navGraphInitial() {
     Timber.d("Called : fun $TAG_NAV_GRAPH_BUILDER.initialNavGraph()")
     navigation(
         route = G_INITIAL,
-        startDestination = ScreenGraphs.Initial.route
+        startDestination = ScrGraphs.Initial.route
     ){
         composable(
-            route = ScreenGraphs.Initial.route
+            route = ScrGraphs.Initial.route
         ){
             InitialScreen()
         }
         composable(
-            route = ScreenGraphs.Initialization.route
+            route = ScrGraphs.Initialization.route
         ){
             InitializationScreen()
         }
@@ -51,7 +51,7 @@ fun NavController.navigateToInitial(){
 
 fun NavController.navigateToInitialization(){
     this.navigate(
-        route = ScreenGraphs.Initialization.route
+        route = ScrGraphs.Initialization.route
     ){
         launchSingleTop = true
         restoreState = true

@@ -5,7 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Upsert
-import com.thomas200593.mini_retail_app.core.data.local.database.HelperAppLocalDatabase
+import com.thomas200593.mini_retail_app.core.data.local.database.HlpLocalDatabase
 import com.thomas200593.mini_retail_app.features.business.entity.business_profile.BusinessProfile
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -33,7 +33,7 @@ FROM business_profile bp LIMIT 1
 }
 
 class BusinessProfileDaoImpl @Inject constructor(
-    private val dbHelper: HelperAppLocalDatabase
+    private val dbHelper: HlpLocalDatabase
 ): BusinessProfileDao{
     override fun getBusinessProfile(): Flow<BusinessProfile?> =
         dbHelper.getBusinessProfileDao().getBusinessProfile()

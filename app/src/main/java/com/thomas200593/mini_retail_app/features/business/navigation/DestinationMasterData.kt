@@ -3,7 +3,7 @@ package com.thomas200593.mini_retail_app.features.business.navigation
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import com.thomas200593.mini_retail_app.R
-import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs
+import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs
 import com.thomas200593.mini_retail_app.core.ui.common.Icons
 
 enum class DestinationMasterData(
@@ -14,14 +14,14 @@ enum class DestinationMasterData(
     val usesAuth: Boolean
 ){
     SUPPLIER(
-        route = ScreenGraphs.Supplier.route,
+        route = ScrGraphs.Supplier.route,
         iconRes = Icons.Supplier.supplier,
         title = R.string.str_supplier,
         description = R.string.str_supplier_desc,
         usesAuth = true
     ),
 //    CUSTOMER(
-//        route = ScreenGraphs.Customer.route,
+//        route = ScrGraphs.Customer.route,
 //        iconRes = Icons.Customer.customer,
 //        title = R.string.str_customer,
 //        description = R.string.str_customer_desc,

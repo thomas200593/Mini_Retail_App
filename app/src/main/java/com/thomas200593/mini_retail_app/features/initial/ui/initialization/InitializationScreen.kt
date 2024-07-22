@@ -51,8 +51,8 @@ import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.Loa
 import com.thomas200593.mini_retail_app.core.ui.component.Dialog
 import com.thomas200593.mini_retail_app.core.ui.component.Dialog.AppAlertDialog
 import com.thomas200593.mini_retail_app.core.ui.component.Form.Component.TextInput
-import com.thomas200593.mini_retail_app.features.app_config.app_config.entity.AppConfig
-import com.thomas200593.mini_retail_app.features.app_config._g_language.entity.Language
+import com.thomas200593.mini_retail_app.features.app_conf.app_config.entity.AppConfig
+import com.thomas200593.mini_retail_app.features.app_conf._g_language.entity.Language
 import com.thomas200593.mini_retail_app.features.business.entity.business_profile.BizName
 import com.thomas200593.mini_retail_app.features.business.entity.business_profile.dto.BusinessProfileSummary
 import com.thomas200593.mini_retail_app.features.initial.entity.InitializationUiFormState

@@ -53,8 +53,8 @@ import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential.Co
 import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
 import com.thomas200593.mini_retail_app.BuildConfig
 import com.thomas200593.mini_retail_app.core.ui.common.Icons.Google.google_logo
-import com.thomas200593.mini_retail_app.core.design_system.util.HelperJwt
-import com.thomas200593.mini_retail_app.core.design_system.util.HelperJwt.GoogleOAuth2.validateToken
+import com.thomas200593.mini_retail_app.core.design_system.util.HlpJwt
+import com.thomas200593.mini_retail_app.core.design_system.util.HlpJwt.GoogleOAuth2.validateToken
 import com.thomas200593.mini_retail_app.features.auth.entity.AuthSessionToken
 import com.thomas200593.mini_retail_app.features.auth.entity.OAuthProvider.GOOGLE
 import kotlinx.coroutines.CoroutineScope
@@ -205,7 +205,7 @@ object Button {
                 val credentialManager = create(activityContext)
                 val googleIdOptions = GetGoogleIdOption.Builder()
                     .setFilterByAuthorizedAccounts(false)
-                    .setNonce(HelperJwt.GoogleOAuth2.generateTokenNonce())
+                    .setNonce(HlpJwt.GoogleOAuth2.generateTokenNonce())
                     .setAutoSelectEnabled(false)
                     .setServerClientId(BuildConfig.GOOGLE_AUTH_WEB_ID)
                     .build()
