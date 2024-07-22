@@ -53,9 +53,9 @@ import com.thomas200593.mini_retail_app.app.ui.StateApp
 import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
 import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
-import com.thomas200593.mini_retail_app.core.ui.common.Icons.Auth.session_expire
-import com.thomas200593.mini_retail_app.core.ui.common.Icons.Emotion.sad
-import com.thomas200593.mini_retail_app.core.ui.common.Icons.Setting.settings
+import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.Auth.session_expire
+import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.Emotion.sad
+import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.Setting.settings
 import com.thomas200593.mini_retail_app.core.ui.component.Button.Common.AppIconButton
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.EmptyPanel
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.ErrorPanel

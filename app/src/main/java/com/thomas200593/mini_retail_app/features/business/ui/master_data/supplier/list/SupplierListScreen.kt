@@ -51,8 +51,8 @@ import androidx.paging.compose.itemKey
 import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.app.ui.StateApp
 import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
-import com.thomas200593.mini_retail_app.core.ui.common.Icons.App.app
-import com.thomas200593.mini_retail_app.core.ui.common.Icons.Data.master_data
+import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.App.app
+import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.Data.master_data
 import com.thomas200593.mini_retail_app.core.ui.component.AppBar
 import com.thomas200593.mini_retail_app.core.ui.component.Searching.SearchToolBar
 import com.thomas200593.mini_retail_app.features.business.entity.supplier.Supplier

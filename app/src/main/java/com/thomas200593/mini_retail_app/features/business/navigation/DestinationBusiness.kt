@@ -4,7 +4,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs
-import com.thomas200593.mini_retail_app.core.ui.common.Icons
+import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons
 
 enum class DestinationBusiness(
     val route: String,
@@ -15,14 +15,14 @@ enum class DestinationBusiness(
 ) {
     MASTER_DATA(
         route = ScrGraphs.MasterData.route,
-        iconRes = Icons.Data.master_data,
+        iconRes = CustomIcons.Data.master_data,
         title = R.string.str_biz_master_data,
         description = R.string.str_biz_master_data_desc,
         usesAuth = true
     ),
 //    BUSINESS_PROFILE(
 //        route = ScrGraphs.BusinessProfile.route,
-//        iconRes = Icons.Business.business_profile,
+//        iconRes = CustomIcons.Business.business_profile,
 //        title = R.string.business_profile,
 //        description = R.string.business_profile_desc,
 //        usesAuth = true

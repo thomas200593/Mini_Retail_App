@@ -9,7 +9,7 @@ import com.thomas200593.mini_retail_app.app.navigation.NavGraph
 import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.ui.AppConfigScreen
 import com.thomas200593.mini_retail_app.features.app_conf._data.navigation.navGraphConfData
-import com.thomas200593.mini_retail_app.features.app_conf._general.navigation.navGraphConfigGeneral
+import com.thomas200593.mini_retail_app.features.app_conf._general.navigation.navGraphConfGen
 
 fun NavGraphBuilder.navGraphAppConfig(){
     navigation(
@@ -21,7 +21,7 @@ fun NavGraphBuilder.navGraphAppConfig(){
         ){
             AppConfigScreen()
         }
-        navGraphConfigGeneral()
+        navGraphConfGen()
         navGraphConfData()
     }
 }

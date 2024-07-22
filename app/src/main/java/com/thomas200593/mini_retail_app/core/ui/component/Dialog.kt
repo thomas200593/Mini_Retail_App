@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.window.SecureFlagPolicy
-import com.thomas200593.mini_retail_app.core.ui.common.Icons.Emotion
+import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.Emotion
 
 object Dialog {
     /**

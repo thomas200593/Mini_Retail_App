@@ -4,7 +4,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs
-import com.thomas200593.mini_retail_app.core.ui.common.Icons
+import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons
 
 enum class DestinationAppConfig(
     val route: String,
@@ -15,14 +15,14 @@ enum class DestinationAppConfig(
 ){
     CONFIG_GENERAL(
         route = ScrGraphs.ConfigGeneral.route,
-        iconRes = Icons.Setting.settings_general,
+        iconRes = CustomIcons.Setting.settings_general,
         title = R.string.str_configuration_general,
         description = R.string.str_configuration_general,
         usesAuth = false
     ),
     CONFIG_DATA(
         route = ScrGraphs.ConfigData.route,
-        iconRes = Icons.Setting.settings_data,
+        iconRes = CustomIcons.Setting.settings_data,
         title = R.string.str_configuration_data,
         description = R.string.str_configuration_data,
         usesAuth = true

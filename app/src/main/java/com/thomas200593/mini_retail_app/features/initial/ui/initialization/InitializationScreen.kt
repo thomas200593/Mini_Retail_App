@@ -43,7 +43,7 @@ import com.thomas200593.mini_retail_app.app.ui.StateApp
 import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.AuditTrail
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
-import com.thomas200593.mini_retail_app.core.ui.common.Icons
+import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons
 import com.thomas200593.mini_retail_app.core.ui.component.Button.Common.AppIconButton
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.EmptyScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.ErrorScreen
@@ -291,7 +291,7 @@ private fun WelcomeMessage(
             modifier = Modifier.size(150.dp),
             color = Color.Transparent,
             shape = MaterialTheme.shapes.medium
-        ) { Image(imageVector = ImageVector.vectorResource(id = Icons.App.app), contentDescription = null) }
+        ) { Image(imageVector = ImageVector.vectorResource(id = CustomIcons.App.app), contentDescription = null) }
         Text(
             modifier = Modifier.fillMaxWidth(),
             text = stringResource(id = R.string.app_name),
@@ -331,7 +331,7 @@ private fun WelcomeMessage(
             AppIconButton(
                 modifier = Modifier.fillMaxWidth(),
                 onClick = { onInitBizProfileManual.invoke() },
-                icon = ImageVector.vectorResource(id = Icons.Emotion.happy),
+                icon = ImageVector.vectorResource(id = CustomIcons.Emotion.happy),
                 text = stringResource(R.string.str_init_setup_yes)
             )
         }
@@ -440,14 +440,14 @@ private fun InputManualForm(
                                 )
                             )
                         },
-                        icon = ImageVector.vectorResource(id = Icons.Emotion.neutral),
+                        icon = ImageVector.vectorResource(id = CustomIcons.Emotion.neutral),
                         text = stringResource(id = R.string.str_save)
                     )
                 }
                 AppIconButton(
                     modifier = Modifier.weight(if(initializationUiFormState.uiFormEnableSubmitBtn){0.5f}else{1.0f}),
                     onClick = onUiFormCancelInitManual,
-                    icon = ImageVector.vectorResource(id = Icons.Emotion.neutral),
+                    icon = ImageVector.vectorResource(id = CustomIcons.Emotion.neutral),
                     text = stringResource(id = R.string.str_cancel)
                 )
             }

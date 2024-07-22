@@ -40,8 +40,8 @@ import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.app.ui.StateApp
 import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
-import com.thomas200593.mini_retail_app.core.ui.common.Icons
-import com.thomas200593.mini_retail_app.core.ui.common.Icons.Setting.settings
+import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons
+import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.Setting.settings
 import com.thomas200593.mini_retail_app.core.ui.component.Button
 import com.thomas200593.mini_retail_app.core.ui.component.Button.Google.SignInWithGoogle
 import com.thomas200593.mini_retail_app.core.ui.component.Button.Google.handleClearCredential
@@ -184,7 +184,7 @@ private fun ScreenContent(
                 contentAlignment = Alignment.Center
             ){
                 Image(
-                    imageVector = ImageVector.vectorResource(id = Icons.App.app),
+                    imageVector = ImageVector.vectorResource(id = CustomIcons.App.app),
                     contentDescription = stringResource(id = R.string.app_name),
                     alignment = Alignment.Center,
                     modifier = Modifier

@@ -41,7 +41,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.thomas200593.mini_retail_app.BuildConfig
 import com.thomas200593.mini_retail_app.R
-import com.thomas200593.mini_retail_app.core.ui.common.Icons
+import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons
 import com.thomas200593.mini_retail_app.core.ui.common.Shapes
 import kotlin.Int.Companion.MAX_VALUE
 
@@ -101,7 +101,7 @@ object CommonMessagePanel{
                     ){
                         Image(
                             modifier = Modifier,
-                            imageVector = ImageVector.vectorResource(id = Icons.App.app),
+                            imageVector = ImageVector.vectorResource(id = CustomIcons.App.app),
                             contentDescription = null
                         )
                         Text(
@@ -298,7 +298,7 @@ object CommonMessagePanel{
                         contentColor = MaterialTheme.colorScheme.onErrorContainer
                     ) {
                         Icon(
-                            imageVector = if(iconRes == null) { ImageVector.vectorResource(id = Icons.Content.empty) }
+                            imageVector = if(iconRes == null) { ImageVector.vectorResource(id = CustomIcons.Content.empty) }
                             else { ImageVector.vectorResource(id = iconRes) },
                             contentDescription = null,
                         )
@@ -361,7 +361,7 @@ object CommonMessagePanel{
                         contentColor = MaterialTheme.colorScheme.onSurface
                     ) {
                         Icon(
-                            imageVector = if(iconRes == null){ ImageVector.vectorResource(id = Icons.Content.empty) }
+                            imageVector = if(iconRes == null){ ImageVector.vectorResource(id = CustomIcons.Content.empty) }
                             else { ImageVector.vectorResource(id = iconRes) },
                             contentDescription = null
                         )

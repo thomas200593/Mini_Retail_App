@@ -10,10 +10,11 @@ import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarDuration.Indefinite
+import androidx.compose.material3.SnackbarDuration.Short
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.SnackbarResult
+import androidx.compose.material3.SnackbarResult.ActionPerformed
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -42,7 +43,7 @@ fun ScrApp(
         if(isNetworkOffline){
             snackBarHostState.showSnackbar(
                 message = networkNotConnectedMessage,
-                duration = SnackbarDuration.Indefinite
+                duration = Indefinite
             )
         }
     }
@@ -86,8 +87,8 @@ internal fun ScrApp(
                             snackBarHostState.showSnackbar(
                                 message = message,
                                 actionLabel = action,
-                                duration = duration ?: SnackbarDuration.Short
-                            ) == SnackbarResult.ActionPerformed
+                                duration = duration ?: Short
+                            ) == ActionPerformed
                         }
                     )
                 }

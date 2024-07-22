@@ -37,7 +37,7 @@ import com.thomas200593.mini_retail_app.app.ui.StateApp
 import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
 import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
-import com.thomas200593.mini_retail_app.core.ui.common.Icons
+import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons
 import com.thomas200593.mini_retail_app.core.ui.component.AppBar
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.EmptyScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.ErrorScreen
@@ -84,7 +84,7 @@ private fun TopAppBar() {
         ){
             Icon(
                 modifier = Modifier.sizeIn(maxHeight = ButtonDefaults.IconSize),
-                imageVector = ImageVector.vectorResource(id = Icons.TopLevelDestinations.business),
+                imageVector = ImageVector.vectorResource(id = CustomIcons.TopLevelDestinations.business),
                 contentDescription = null
             )
             Text(

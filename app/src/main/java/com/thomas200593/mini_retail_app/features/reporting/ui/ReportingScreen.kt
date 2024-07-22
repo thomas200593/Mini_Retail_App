@@ -18,7 +18,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.thomas200593.mini_retail_app.R
-import com.thomas200593.mini_retail_app.core.ui.common.Icons
+import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons
 import com.thomas200593.mini_retail_app.core.ui.component.AppBar
 import timber.log.Timber
 
@@ -43,7 +43,7 @@ private fun TopAppBar() {
             Icon(
                 modifier = Modifier
                     .sizeIn(maxHeight = ButtonDefaults.IconSize),
-                imageVector = ImageVector.vectorResource(id = Icons.TopLevelDestinations.reporting),
+                imageVector = ImageVector.vectorResource(id = CustomIcons.TopLevelDestinations.reporting),
                 contentDescription = null
             )
             Text(

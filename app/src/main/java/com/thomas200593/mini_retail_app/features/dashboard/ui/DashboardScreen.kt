@@ -30,7 +30,7 @@ import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.app.ui.StateApp
 import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
 import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
-import com.thomas200593.mini_retail_app.core.ui.common.Icons
+import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons
 import com.thomas200593.mini_retail_app.core.ui.component.AppBar
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.LoadingScreen
 import com.thomas200593.mini_retail_app.features.initial.navigation.navigateToInitial
@@ -78,7 +78,7 @@ private fun TopAppBar() {
             Icon(
                 modifier = Modifier
                     .sizeIn(maxHeight = ButtonDefaults.IconSize),
-                imageVector = ImageVector.vectorResource(id = Icons.TopLevelDestinations.dashboard),
+                imageVector = ImageVector.vectorResource(id = CustomIcons.TopLevelDestinations.dashboard),
                 contentDescription = null
             )
             Text(

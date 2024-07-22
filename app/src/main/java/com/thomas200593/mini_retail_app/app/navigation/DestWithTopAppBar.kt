@@ -1,42 +1,44 @@
 package com.thomas200593.mini_retail_app.app.navigation
 
+import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs.*
+
 object DestWithTopAppBar{
     fun destWithTopAppBar(): Set<String> {
         return setOf(
             /**
              * App Config
              */
-            ScrGraphs.AppConfig.route,
+            AppConfig.route,
             //Config General
-            ScrGraphs.ConfigGeneral.route,
-            ScrGraphs.Country.route,
-            ScrGraphs.Currency.route,
-            ScrGraphs.DynamicColor.route,
-            ScrGraphs.FontSize.route,
-            ScrGraphs.Language.route,
-            ScrGraphs.Theme.route,
-            ScrGraphs.Timezone.route,
+            ConfigGeneral.route,
+            Country.route,
+            Currency.route,
+            DynamicColor.route,
+            FontSize.route,
+            Language.route,
+            Theme.route,
+            Timezone.route,
             //Config Data
-            ScrGraphs.ConfigData.route,
+            ConfigData.route,
 
             /**
              * Dashboard
              */
-            ScrGraphs.Dashboard.route,
+            Dashboard.route,
 
             /**
              * Business
              */
-            ScrGraphs.Business.route,
+            Business.route,
             //Master Data
-            ScrGraphs.MasterData.route,
-            ScrGraphs.Customer.route,
-            ScrGraphs.Supplier.route,
+            MasterData.route,
+            Customer.route,
+            Supplier.route,
 
             /**
              * Reporting
              */
-            ScrGraphs.Reporting.route,
+            Reporting.route,
         )
     }
 }

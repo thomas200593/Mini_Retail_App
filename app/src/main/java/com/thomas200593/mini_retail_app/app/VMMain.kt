@@ -2,8 +2,10 @@ package com.thomas200593.mini_retail_app.app
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.thomas200593.mini_retail_app.app.UiStateMain.Loading
+import com.thomas200593.mini_retail_app.app.UiStateMain.Success
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatcher
-import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers
+import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers.Dispatchers.IO
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.repository.RepoAppConf
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -17,12 +19,12 @@ import javax.inject.Inject
 @HiltViewModel
 class VMMain @Inject constructor(
     repoAppConf: RepoAppConf,
-    @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
+    @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel(){
     val uiState: StateFlow<UiStateMain> = repoAppConf.configCurrent.flowOn(ioDispatcher)
-        .map { UiStateMain.Success(confCurrent = it) }.stateIn(
+        .map { Success(confCurrent = it) }.stateIn(
             scope = viewModelScope,
-            initialValue = UiStateMain.Loading,
+            initialValue = Loading,
             started = Eagerly
         )
 }

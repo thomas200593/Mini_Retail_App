@@ -3,7 +3,7 @@ package com.thomas200593.mini_retail_app.features.app_conf._g_dynamic_color.enti
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import com.thomas200593.mini_retail_app.R
-import com.thomas200593.mini_retail_app.core.ui.common.Icons
+import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons
 
 enum class DynamicColor (
     val code: String,
@@ -13,11 +13,11 @@ enum class DynamicColor (
     ENABLED(
         code = "dynamic_color_enabled",
         title = R.string.str_dynamic_color_enabled,
-        iconRes = Icons.DynamicColor.enabled
+        iconRes = CustomIcons.DynamicColor.enabled
     ),
     DISABLED(
         code = "dynamic_color_disabled",
         title = R.string.str_dynamic_color_disabled,
-        iconRes = Icons.DynamicColor.disabled
+        iconRes = CustomIcons.DynamicColor.disabled
     )
 }

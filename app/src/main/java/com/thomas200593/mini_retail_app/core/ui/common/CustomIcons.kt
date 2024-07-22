@@ -3,7 +3,7 @@ package com.thomas200593.mini_retail_app.core.ui.common
 import androidx.annotation.DrawableRes
 import com.thomas200593.mini_retail_app.R
 
-object Icons {
+object CustomIcons {
     object App{
         @DrawableRes val app = +R.drawable.app_icon_48x48px
     }

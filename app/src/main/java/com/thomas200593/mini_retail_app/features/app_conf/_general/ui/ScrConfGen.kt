@@ -27,50 +27,40 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.thomas200593.mini_retail_app.R
-import com.thomas200593.mini_retail_app.app.ui.StateApp
 import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
+import com.thomas200593.mini_retail_app.app.ui.StateApp
 import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
-import com.thomas200593.mini_retail_app.core.ui.common.Icons.Setting.settings_general
+import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.Setting.settings_general
 import com.thomas200593.mini_retail_app.core.ui.component.AppBar
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.ClickableCardItem
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.EmptyScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.ErrorScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.LoadingScreen
-import com.thomas200593.mini_retail_app.features.app_conf._general.navigation.DestinationConfigGeneral
-import com.thomas200593.mini_retail_app.features.app_conf._general.navigation.navigateToConfigGeneral
-import timber.log.Timber
-
-private const val TAG = "AppConfigGeneralScreen"
+import com.thomas200593.mini_retail_app.features.app_conf._general.navigation.DestConfGen
+import com.thomas200593.mini_retail_app.features.app_conf._general.navigation.navToConfGen
 
 @Composable
-fun ConfigGeneralScreen(
-    viewModel: ConfigGeneralViewModel = hiltViewModel(),
+fun ScrConfGen(
+    vm: VMConfGen = hiltViewModel(),
     stateApp: StateApp = LocalStateApp.current
 ) {
-    Timber.d("Called : fun $TAG()")
     val sessionState by stateApp.isSessionValid.collectAsStateWithLifecycle()
-    val menuData by viewModel.menuData
-
+    val menuData by vm.menuData
     when(sessionState){
         SessionState.Loading -> { LoadingScreen() }
-        is SessionState.Invalid -> { LaunchedEffect(Unit) { viewModel.onOpen(sessionState) } }
-        is SessionState.Valid -> { LaunchedEffect(Unit) { viewModel.onOpen(sessionState) } }
+        is SessionState.Invalid -> { LaunchedEffect(Unit) { vm.onOpen(sessionState) } }
+        is SessionState.Valid -> { LaunchedEffect(Unit) { vm.onOpen(sessionState) } }
     }
-
-    TopAppBar(
-        onNavigateBack = stateApp::onNavUp
-    )
+    TopAppBar(onNavigateBack = stateApp::onNavUp)
     ScreenContent(
         appConfigGeneralMenuPreferences = menuData,
-        onNavigateToMenu = { menu -> stateApp.navController.navigateToConfigGeneral(menu) }
+        onNavigateToMenu = { menu -> stateApp.navController.navToConfGen(menu) }
     )
 }
 
 @Composable
-private fun TopAppBar(
-    onNavigateBack: () -> Unit
-){
+private fun TopAppBar(onNavigateBack: () -> Unit){
     AppBar.ProvideTopAppBarNavigationIcon {
         Surface(
             onClick =  onNavigateBack,
@@ -118,8 +108,8 @@ private fun TopAppBar(
 
 @Composable
 private fun ScreenContent(
-    appConfigGeneralMenuPreferences: ResourceState<Set<DestinationConfigGeneral>>,
-    onNavigateToMenu: (DestinationConfigGeneral) -> Unit
+    appConfigGeneralMenuPreferences: ResourceState<Set<DestConfGen>>,
+    onNavigateToMenu: (DestConfGen) -> Unit
 ) {
     when(appConfigGeneralMenuPreferences){
         ResourceState.Idle, ResourceState.Loading -> { LoadingScreen() }
