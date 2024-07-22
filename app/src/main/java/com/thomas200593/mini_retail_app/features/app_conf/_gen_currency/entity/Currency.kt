@@ -1,4 +1,4 @@
-package com.thomas200593.mini_retail_app.features.app_conf._g_currency.entity
+package com.thomas200593.mini_retail_app.features.app_conf._gen_currency.entity
 
 data class Currency(
     val code: String,

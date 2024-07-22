@@ -8,8 +8,8 @@ import androidx.navigation.navigation
 import com.thomas200593.mini_retail_app.app.navigation.NavGraph
 import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs
 import com.thomas200593.mini_retail_app.features.app_conf._general.ui.ConfigGeneralScreen
-import com.thomas200593.mini_retail_app.features.app_conf._gen_country.ui.ScreenConfCountry
-import com.thomas200593.mini_retail_app.features.app_conf._g_currency.ui.CurrencyScreen
+import com.thomas200593.mini_retail_app.features.app_conf._gen_country.ui.ScrConfGenCountry
+import com.thomas200593.mini_retail_app.features.app_conf._gen_currency.ui.ScrConfGenCurrency
 import com.thomas200593.mini_retail_app.features.app_conf._g_dynamic_color.ui.DynamicColorScreen
 import com.thomas200593.mini_retail_app.features.app_conf._g_font_size.ui.FontSizeScreen
 import com.thomas200593.mini_retail_app.features.app_conf._g_language.ui.LanguageScreen
@@ -30,7 +30,7 @@ fun NavGraphBuilder.navGraphConfigGeneral() {
         composable(
             route = ScrGraphs.Country.route
         ){
-            ScreenConfCountry()
+            ScrConfGenCountry()
         }
 
         composable(
@@ -66,7 +66,7 @@ fun NavGraphBuilder.navGraphConfigGeneral() {
         composable(
             route = ScrGraphs.Currency.route
         ){
-            CurrencyScreen()
+            ScrConfGenCurrency()
         }
     }
 }

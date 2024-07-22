@@ -18,19 +18,15 @@ import javax.inject.Inject
 
 @HiltViewModel
 class VMConfCountry @Inject constructor(
-    private val repoAppCfgGeneralCountry: RepoConfGenCountry,
-    UCFetchConfCountry: UCFetchConfCountry,
+    private val repoConfGenCountry: RepoConfGenCountry,
+    ucFetchConfCountry: UCFetchConfCountry,
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel(){
-
-    val configData = UCFetchConfCountry.invoke().flowOn(ioDispatcher)
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.Eagerly,
-            initialValue = ResourceState.Loading
-        )
-
-    fun setCountry(country: Country) = viewModelScope.launch{
-        repoAppCfgGeneralCountry.setCountry(country)
-    }
+    val confData = ucFetchConfCountry.invoke().flowOn(ioDispatcher).stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.Eagerly,
+        initialValue = ResourceState.Loading
+    )
+    fun setCountry(country: Country) =
+        viewModelScope.launch{ repoConfGenCountry.setCountry(country) }
 }

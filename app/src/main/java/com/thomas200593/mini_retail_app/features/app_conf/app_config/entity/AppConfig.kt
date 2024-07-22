@@ -4,7 +4,7 @@ import com.thomas200593.mini_retail_app.core.design_system.util.HlpCountry
 import com.thomas200593.mini_retail_app.core.design_system.util.HlpCurrency
 import com.thomas200593.mini_retail_app.core.design_system.util.HlpTimezone
 import com.thomas200593.mini_retail_app.features.app_conf._gen_country.entity.Country
-import com.thomas200593.mini_retail_app.features.app_conf._g_currency.entity.Currency
+import com.thomas200593.mini_retail_app.features.app_conf._gen_currency.entity.Currency
 import com.thomas200593.mini_retail_app.features.app_conf._g_dynamic_color.entity.DynamicColor
 import com.thomas200593.mini_retail_app.features.app_conf._g_font_size.entity.FontSize
 import com.thomas200593.mini_retail_app.features.app_conf._g_language.entity.Language

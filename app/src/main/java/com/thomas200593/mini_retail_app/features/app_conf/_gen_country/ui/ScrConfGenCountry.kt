@@ -47,21 +47,21 @@ import com.thomas200593.mini_retail_app.features.app_conf.app_config.entity.AppC
 import com.thomas200593.mini_retail_app.features.app_conf._gen_country.entity.Country
 
 @Composable
-fun ScreenConfCountry(
+fun ScrConfGenCountry(
     vm: VMConfCountry = hiltViewModel(),
     stateApp: StateApp = LocalStateApp.current
 ){
-    val configData by vm.configData.collectAsStateWithLifecycle()
+    val confData by vm.confData.collectAsStateWithLifecycle()
 
-    TopAppBar(onNavigateBack = stateApp::onNavUp)
-    ScreenContent(configData = configData, onSaveSelectedCountry = vm::setCountry)
+    TopAppBar(onNavBack = stateApp::onNavUp)
+    ScreenContent(confData = confData, onSaveSelectedCountry = vm::setCountry)
 }
 
 @Composable
-private fun TopAppBar(onNavigateBack: () -> Unit) {
+private fun TopAppBar(onNavBack: () -> Unit) {
     AppBar.ProvideTopAppBarNavigationIcon {
         Surface(
-            onClick =  onNavigateBack,
+            onClick =  onNavBack,
             modifier = Modifier
         ) {
             Icon(
@@ -106,10 +106,10 @@ private fun TopAppBar(onNavigateBack: () -> Unit) {
 
 @Composable
 private fun ScreenContent(
-    configData: ResourceState<AppConfig.ConfigCountry>,
+    confData: ResourceState<AppConfig.ConfigCountry>,
     onSaveSelectedCountry: (Country) -> Unit,
 ) {
-    when(configData){
+    when(confData){
         ResourceState.Idle, ResourceState.Loading -> { LoadingScreen() }
         ResourceState.Empty -> {
             EmptyScreen(
@@ -126,8 +126,8 @@ private fun ScreenContent(
             )
         }
         is ResourceState.Success -> {
-            val currentData = configData.data.configCurrent.country
-            val preferencesList = configData.data.countries
+            val currentData = confData.data.configCurrent.country
+            val preferencesList = confData.data.countries
             Column(
                 modifier = Modifier.fillMaxSize().padding(4.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp),

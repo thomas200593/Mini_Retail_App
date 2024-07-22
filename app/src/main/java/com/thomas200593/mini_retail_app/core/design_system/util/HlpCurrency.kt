@@ -1,6 +1,6 @@
 package com.thomas200593.mini_retail_app.core.design_system.util
 
-import com.thomas200593.mini_retail_app.features.app_conf._g_currency.entity.Currency
+import com.thomas200593.mini_retail_app.features.app_conf._gen_currency.entity.Currency
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.joda.money.CurrencyUnit

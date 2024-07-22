@@ -15,13 +15,14 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class UCFetchConfCountry @Inject constructor(
-    private val appCfgRepository: RepoAppConf,
-    private val cfgGeneralCountryRepository: RepoConfGenCountry,
+    private val repoAppConf: RepoAppConf,
+    private val repoConfGenCountry: RepoConfGenCountry,
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
 ) {
     operator fun invoke() = combine(
-        appCfgRepository.configCurrent, flow { emit(cfgGeneralCountryRepository.getCountries()) }
-    ){ configCurrent, countries ->
+        flow = repoAppConf.configCurrent,
+        flow2 = flow { emit(repoConfGenCountry.getCountries()) }
+    ) { configCurrent, countries ->
         ResourceState.Success(
             data = AppConfig.ConfigCountry(configCurrent = configCurrent, countries = countries)
         )

@@ -1,4 +1,4 @@
-package com.thomas200593.mini_retail_app.features.app_conf._g_currency.ui
+package com.thomas200593.mini_retail_app.features.app_conf._gen_currency.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -43,19 +43,19 @@ import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.Err
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.LoadingScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.ThreeRowCardItem
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.entity.AppConfig
-import com.thomas200593.mini_retail_app.features.app_conf._g_currency.entity.Currency
+import com.thomas200593.mini_retail_app.features.app_conf._gen_currency.entity.Currency
 
 @Composable
-fun CurrencyScreen(
-    viewModel: CurrencyViewModel = hiltViewModel(),
+fun ScrConfGenCurrency(
+    vm: VMConfGenCurrency = hiltViewModel(),
     stateApp: StateApp = LocalStateApp.current
 ) {
-    val configData by viewModel.configData.collectAsStateWithLifecycle()
+    val confData by vm.confData.collectAsStateWithLifecycle()
 
     TopAppBar(onNavigateBack = stateApp::onNavUp)
     ScreenContent(
-        configData = configData,
-        onSaveSelectedCurrency = viewModel::setCurrency
+        configData = confData,
+        onSaveSelectedCurrency = vm::setCurrency
     )
 }
 

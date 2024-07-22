@@ -11,7 +11,5 @@ import dagger.hilt.components.SingletonComponent
 @InstallIn(SingletonComponent::class)
 abstract class ModConfCountry {
     @Binds
-    internal abstract fun bindsRepository(
-        impl: RepoImplConfGenCountry
-    ): RepoConfGenCountry
+    internal abstract fun bindsRepository(impl: RepoImplConfGenCountry): RepoConfGenCountry
 }

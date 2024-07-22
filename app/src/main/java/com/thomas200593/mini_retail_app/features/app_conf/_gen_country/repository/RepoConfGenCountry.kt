@@ -18,10 +18,8 @@ internal class RepoImplConfGenCountry @Inject constructor(
     private val dataStore: DataStorePreferences,
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ): RepoConfGenCountry{
-    override suspend fun getCountries(): List<Country> = withContext(ioDispatcher){
-        HlpCountry.getCountryList()
-    }
-    override suspend fun setCountry(country: Country) {
-        dataStore.setCountry(country)
-    }
+    override suspend fun getCountries(): List<Country> =
+        withContext(ioDispatcher){ HlpCountry.getCountryList() }
+    override suspend fun setCountry(country: Country)
+    { dataStore.setCountry(country) }
 }
