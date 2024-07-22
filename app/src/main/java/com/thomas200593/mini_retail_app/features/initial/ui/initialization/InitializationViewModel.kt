@@ -5,11 +5,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatcher
-import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatchers.Dispatchers.IO
+import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatcher
+import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers.Dispatchers.IO
 import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
 import com.thomas200593.mini_retail_app.core.ui.component.Form.Component.UseCase.InputFieldValidation
-import com.thomas200593.mini_retail_app.features.app_config.app_cfg_general_language.repository.RepositoryAppCfgGeneralLanguage
+import com.thomas200593.mini_retail_app.features.app_config.cfg_general_language.repository.RepositoryAppCfgGeneralLanguage
 import com.thomas200593.mini_retail_app.features.initial.domain.GetInitializationDataUseCase
 import com.thomas200593.mini_retail_app.features.initial.domain.SetDefaultInitialBizProfileUseCase
 import com.thomas200593.mini_retail_app.features.initial.entity.InitializationUiFormState

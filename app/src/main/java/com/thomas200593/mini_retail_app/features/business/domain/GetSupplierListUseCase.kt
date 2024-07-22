@@ -1,8 +1,8 @@
 package com.thomas200593.mini_retail_app.features.business.domain
 
 import androidx.paging.PagingData
-import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatcher
-import com.thomas200593.mini_retail_app.core.design_system.dispatchers.Dispatchers
+import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatcher
+import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers
 import com.thomas200593.mini_retail_app.features.business.entity.supplier.Supplier
 import com.thomas200593.mini_retail_app.features.business.entity.supplier.dto.SortSupplier
 import com.thomas200593.mini_retail_app.features.business.repository.SupplierRepository

@@ -1,6 +1,6 @@
 package com.thomas200593.mini_retail_app.features.initial.ui.initialization
 
-import com.thomas200593.mini_retail_app.features.app_config.app_cfg_general_language.entity.Language
+import com.thomas200593.mini_retail_app.features.app_config.cfg_general_language.entity.Language
 import com.thomas200593.mini_retail_app.features.business.entity.business_profile.dto.BusinessProfileSummary
 
 sealed class InitializationUiEvent{

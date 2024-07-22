@@ -15,9 +15,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 import com.thomas200593.mini_retail_app.app.MainActivityUiState
-import com.thomas200593.mini_retail_app.features.app_config.app_cfg_general_dynamic_color.entity.DynamicColor
-import com.thomas200593.mini_retail_app.features.app_config.app_cfg_general_font_size.entity.FontSize
-import com.thomas200593.mini_retail_app.features.app_config.app_cfg_general_theme.entity.Theme
+import com.thomas200593.mini_retail_app.features.app_config.cfg_general_dynamic_color.entity.DynamicColor
+import com.thomas200593.mini_retail_app.features.app_config.cfg_general_font_size.entity.FontSize
+import com.thomas200593.mini_retail_app.features.app_config.cfg_general_theme.entity.Theme
 
 object Themes{
     private val lightScheme = Colors.lightScheme

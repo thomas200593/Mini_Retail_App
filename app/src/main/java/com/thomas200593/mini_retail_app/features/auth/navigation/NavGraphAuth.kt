@@ -6,7 +6,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.thomas200593.mini_retail_app.app.navigation.NavigationGraphs
 import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs
-import com.thomas200593.mini_retail_app.features.app_config.app_cfg.navigation.navGraphAppConfig
+import com.thomas200593.mini_retail_app.features.app_config.app_config.navigation.navGraphAppConfig
 import com.thomas200593.mini_retail_app.features.auth.ui.AuthScreen
 import com.thomas200593.mini_retail_app.features.dashboard.navigation.navGraphDashboard
 

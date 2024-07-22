@@ -20,7 +20,7 @@ import com.thomas200593.mini_retail_app.app.ui.AppScreen
 import com.thomas200593.mini_retail_app.app.ui.LocalAppState
 import com.thomas200593.mini_retail_app.app.ui.rememberAppState
 import com.thomas200593.mini_retail_app.core.data.local.session.Session
-import com.thomas200593.mini_retail_app.core.design_system.util.NetworkMonitor
+import com.thomas200593.mini_retail_app.core.design_system.network_monitor.NetworkMonitor
 import com.thomas200593.mini_retail_app.core.ui.common.Colors
 import com.thomas200593.mini_retail_app.core.ui.common.Themes
 import com.thomas200593.mini_retail_app.core.ui.component.Splashscreen
