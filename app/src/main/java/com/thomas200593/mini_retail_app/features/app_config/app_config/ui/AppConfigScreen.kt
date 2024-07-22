@@ -27,10 +27,10 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.thomas200593.mini_retail_app.R
-import com.thomas200593.mini_retail_app.app.ui.AppState
-import com.thomas200593.mini_retail_app.app.ui.LocalAppState
+import com.thomas200593.mini_retail_app.app.ui.StateApp
+import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
 import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
-import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
+import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
 import com.thomas200593.mini_retail_app.core.ui.common.Icons.Setting.settings
 import com.thomas200593.mini_retail_app.core.ui.component.AppBar
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.ClickableCardItem
@@ -43,9 +43,9 @@ import com.thomas200593.mini_retail_app.features.app_config.app_config.navigatio
 @Composable
 fun AppConfigScreen(
     viewModel: AppConfigViewModel = hiltViewModel(),
-    appState: AppState = LocalAppState.current
+    stateApp: StateApp = LocalStateApp.current
 ) {
-    val sessionState by appState.isSessionValid.collectAsStateWithLifecycle()
+    val sessionState by stateApp.isSessionValid.collectAsStateWithLifecycle()
     val menuData by viewModel.menuData
 
     when(sessionState){
@@ -55,11 +55,11 @@ fun AppConfigScreen(
     }
 
     TopAppBar(
-        onNavigateBack = appState::onNavigateUp
+        onNavigateBack = stateApp::onNavigateUp
     )
     ScreenContent(
         appConfigMenuPreferences = menuData,
-        onNavigateToMenu = { menu -> appState.navController.navigateToAppConfig(menu) }
+        onNavigateToMenu = { menu -> stateApp.navController.navigateToAppConfig(menu) }
     )
 }
 
@@ -114,26 +114,26 @@ private fun TopAppBar(
 
 @Composable
 private fun ScreenContent(
-    appConfigMenuPreferences: RequestState<Set<DestinationAppConfig>>,
+    appConfigMenuPreferences: ResourceState<Set<DestinationAppConfig>>,
     onNavigateToMenu: (DestinationAppConfig) -> Unit
 ) {
     when(appConfigMenuPreferences){
-        RequestState.Idle, RequestState.Loading -> { LoadingScreen() }
-        is RequestState.Error -> {
+        ResourceState.Idle, ResourceState.Loading -> { LoadingScreen() }
+        is ResourceState.Error -> {
             ErrorScreen(
                 title = stringResource(id = R.string.str_error),
                 errorMessage = stringResource(id = R.string.str_error_fetching_preferences),
                 showIcon = true
             )
         }
-        RequestState.Empty -> {
+        ResourceState.Empty -> {
             EmptyScreen(
                 title = stringResource(id = R.string.str_empty_message_title),
                 emptyMessage = stringResource(id = R.string.str_empty_message),
                 showIcon = true
             )
         }
-        is RequestState.Success -> {
+        is ResourceState.Success -> {
             val menuPreferences = appConfigMenuPreferences.data
             LazyColumn(
                 modifier = Modifier.fillMaxSize().padding(8.dp),

@@ -39,10 +39,10 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.thomas200593.mini_retail_app.BuildConfig
 import com.thomas200593.mini_retail_app.R
-import com.thomas200593.mini_retail_app.app.ui.AppState
-import com.thomas200593.mini_retail_app.app.ui.LocalAppState
+import com.thomas200593.mini_retail_app.app.ui.StateApp
+import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.AuditTrail
-import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
+import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
 import com.thomas200593.mini_retail_app.core.ui.common.Icons
 import com.thomas200593.mini_retail_app.core.ui.component.Button.Common.AppIconButton
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.EmptyScreen
@@ -52,7 +52,7 @@ import com.thomas200593.mini_retail_app.core.ui.component.Dialog
 import com.thomas200593.mini_retail_app.core.ui.component.Dialog.AppAlertDialog
 import com.thomas200593.mini_retail_app.core.ui.component.Form.Component.TextInput
 import com.thomas200593.mini_retail_app.features.app_config.app_config.entity.AppConfig
-import com.thomas200593.mini_retail_app.features.app_config.cfg_general_language.entity.Language
+import com.thomas200593.mini_retail_app.features.app_config._g_language.entity.Language
 import com.thomas200593.mini_retail_app.features.business.entity.business_profile.BizName
 import com.thomas200593.mini_retail_app.features.business.entity.business_profile.dto.BusinessProfileSummary
 import com.thomas200593.mini_retail_app.features.initial.entity.InitializationUiFormState
@@ -65,7 +65,7 @@ import ulid.ULID
 @Composable
 fun InitializationScreen(
     viewModel: InitializationViewModel = hiltViewModel(),
-    appState: AppState = LocalAppState.current
+    stateApp: StateApp = LocalStateApp.current
 ){
     val uiState = viewModel.uiState
     val coroutineScope = rememberCoroutineScope()
@@ -92,7 +92,7 @@ fun InitializationScreen(
         body = { Text(stringResource(R.string.str_biz_profile_init_success)) },
         useConfirmButton = true,
         confirmButton = {
-            TextButton(onClick = { coroutineScope.launch { appState.navController.navigateToInitial() } })
+            TextButton(onClick = { coroutineScope.launch { stateApp.navController.navigateToInitial() } })
             { Text(stringResource(id = R.string.str_ok)) }
         }
     )
@@ -107,7 +107,7 @@ fun InitializationScreen(
         body = { Text(stringResource(R.string.str_biz_profile_init_failed)) },
         useDismissButton = true,
         dismissButton = {
-            TextButton(onClick = { coroutineScope.launch { appState.navController.navigateToInitial() } })
+            TextButton(onClick = { coroutineScope.launch { stateApp.navController.navigateToInitial() } })
             { Text(stringResource(id = R.string.str_ok)) }
         }
     )
@@ -136,23 +136,23 @@ private fun ScreenContent(
     onUiFormCancelInitManual: () -> Unit
 ) {
     when(uiState.value.initializationData){
-        RequestState.Idle, RequestState.Loading -> { LoadingScreen() }
-        RequestState.Empty -> {
+        ResourceState.Idle, ResourceState.Loading -> { LoadingScreen() }
+        ResourceState.Empty -> {
             EmptyScreen(
                 title = stringResource(id = R.string.str_empty_message_title),
                 emptyMessage = stringResource(id = R.string.str_empty_message),
                 showIcon = true
             )
         }
-        is RequestState.Error -> {
+        is ResourceState.Error -> {
             ErrorScreen(
                 title = stringResource(id = R.string.str_error),
                 errorMessage = stringResource(id = R.string.str_error_fetching_preferences),
                 showIcon = true
             )
         }
-        is RequestState.Success -> {
-            val initializationData = (uiState.value.initializationData as RequestState.Success<Initialization>).data
+        is ResourceState.Success -> {
+            val initializationData = (uiState.value.initializationData as ResourceState.Success<Initialization>).data
             val initUiPropertiesState = uiState.value.initializationUiFormState
             val asd = uiState.value
 

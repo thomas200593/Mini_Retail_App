@@ -27,8 +27,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.thomas200593.mini_retail_app.R
-import com.thomas200593.mini_retail_app.app.ui.AppState
-import com.thomas200593.mini_retail_app.app.ui.LocalAppState
+import com.thomas200593.mini_retail_app.app.ui.StateApp
+import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
 import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
 import com.thomas200593.mini_retail_app.core.ui.common.Icons
 import com.thomas200593.mini_retail_app.core.ui.component.AppBar
@@ -41,16 +41,16 @@ private const val TAG = "DashboardScreen"
 @Composable
 fun DashboardScreen(
     viewModel: DashboardViewModel = hiltViewModel(),
-    appState: AppState = LocalAppState.current
+    stateApp: StateApp = LocalStateApp.current
 ) {
     Timber.d("Called : fun $TAG()")
 
-    val sessionState by appState.isSessionValid.collectAsStateWithLifecycle()
+    val sessionState by stateApp.isSessionValid.collectAsStateWithLifecycle()
 
     when(sessionState){
         is SessionState.Invalid -> {
             LaunchedEffect(key1 = Unit) {
-                appState.navController.navigateToInitial()
+                stateApp.navController.navigateToInitial()
             }
         }
         SessionState.Loading -> {

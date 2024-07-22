@@ -7,9 +7,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers.Dispatchers.IO
-import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
+import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
 import com.thomas200593.mini_retail_app.core.ui.component.Form.Component.UseCase.InputFieldValidation
-import com.thomas200593.mini_retail_app.features.app_config.cfg_general_language.repository.RepositoryAppCfgGeneralLanguage
+import com.thomas200593.mini_retail_app.features.app_config._g_language.repository.RepositoryAppCfgGeneralLanguage
 import com.thomas200593.mini_retail_app.features.initial.domain.GetInitializationDataUseCase
 import com.thomas200593.mini_retail_app.features.initial.domain.SetDefaultInitialBizProfileUseCase
 import com.thomas200593.mini_retail_app.features.initial.entity.InitializationUiFormState
@@ -41,9 +41,9 @@ class InitializationViewModel @Inject constructor(
     fun onEvent(event: InitializationUiEvent){
         when(event){
             InitializationUiEvent.OnOpen -> viewModelScope.launch(ioDispatcher) {
-                uiState.value = uiState.value.copy(initializationData = RequestState.Loading)
+                uiState.value = uiState.value.copy(initializationData = ResourceState.Loading)
                 getInitializationDataUseCase.invoke().flowOn(ioDispatcher)
-                    .catch { error -> uiState.value = uiState.value.copy(initializationData = RequestState.Error(error)) }
+                    .catch { error -> uiState.value = uiState.value.copy(initializationData = ResourceState.Error(error)) }
                     .collectLatest{ initializationData -> uiState.value = uiState.value.copy(initializationData = initializationData) }
             }
             is InitializationUiEvent.OnChangeLanguage -> viewModelScope.launch(ioDispatcher) {

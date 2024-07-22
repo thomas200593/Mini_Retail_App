@@ -1,7 +1,7 @@
 package com.thomas200593.mini_retail_app.core.data.local.database.entity_common
 
 import androidx.room.TypeConverter
-import com.thomas200593.mini_retail_app.features.app_config.cfg_general_country.entity.Country
+import com.thomas200593.mini_retail_app.features.app_config._g_country.entity.Country
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json

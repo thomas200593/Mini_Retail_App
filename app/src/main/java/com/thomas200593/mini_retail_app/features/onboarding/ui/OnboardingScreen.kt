@@ -34,9 +34,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.thomas200593.mini_retail_app.R
-import com.thomas200593.mini_retail_app.app.ui.AppState
-import com.thomas200593.mini_retail_app.app.ui.LocalAppState
-import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
+import com.thomas200593.mini_retail_app.app.ui.StateApp
+import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
+import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.EmptyScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.ErrorScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.LoadingScreen
@@ -53,7 +53,7 @@ private const val TAG = "OnboardingScreen"
 @Composable
 fun OnboardingScreen(
     viewModel: OnboardingViewModel = hiltViewModel(),
-    appState: AppState = LocalAppState.current
+    stateApp: StateApp = LocalStateApp.current
 ){
     Timber.d("Called: %s", TAG)
     ScreenUtil.LockScreenOrientation(orientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
@@ -65,7 +65,7 @@ fun OnboardingScreen(
         viewModel.onOpen()
     }
     LaunchedEffect(isOnboardingFinished) {
-        if(isOnboardingFinished){ appState.navController.navigateToInitial() }
+        if(isOnboardingFinished){ stateApp.navController.navigateToInitial() }
     }
 
     ScreenContent(
@@ -79,30 +79,30 @@ fun OnboardingScreen(
 
 @Composable
 private fun ScreenContent(
-    onboardingPages: RequestState<List<Onboarding.OnboardingPage>>,
+    onboardingPages: ResourceState<List<Onboarding.OnboardingPage>>,
     currentPage: Int,
     onTabSelected: (Int) -> Unit,
     onNextClicked: () -> Unit,
     onFinishedOnboarding: () -> Unit,
 ) {
     when(onboardingPages){
-        RequestState.Idle -> Unit
-        RequestState.Loading -> { LoadingScreen() }
-        is RequestState.Error -> {
+        ResourceState.Idle -> Unit
+        ResourceState.Loading -> { LoadingScreen() }
+        is ResourceState.Error -> {
             ErrorScreen(
                 title = stringResource(id = R.string.str_error),
                 errorMessage = stringResource(id = R.string.str_error_fetching_preferences),
                 showIcon = true
             )
         }
-        RequestState.Empty -> {
+        ResourceState.Empty -> {
             EmptyScreen(
                 title = stringResource(id = R.string.str_empty_message_title),
                 emptyMessage = stringResource(id = R.string.str_empty_message),
                 showIcon = true
             )
         }
-        is RequestState.Success -> {
+        is ResourceState.Success -> {
             val onboardingPagesData = onboardingPages.data
 
             Column(

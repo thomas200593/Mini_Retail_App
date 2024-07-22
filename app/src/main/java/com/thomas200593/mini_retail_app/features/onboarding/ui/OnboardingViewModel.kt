@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers
-import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
+import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
 import com.thomas200593.mini_retail_app.features.onboarding.entity.Onboarding
 import com.thomas200593.mini_retail_app.features.onboarding.repository.OnboardingRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,8 +21,8 @@ class OnboardingViewModel @Inject constructor(
     private val onboardingRepository: OnboardingRepository,
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ): ViewModel(){
-    private val _onboardingPages : MutableState<RequestState<List<Onboarding.OnboardingPage>>> =
-        mutableStateOf(RequestState.Idle)
+    private val _onboardingPages : MutableState<ResourceState<List<Onboarding.OnboardingPage>>> =
+        mutableStateOf(ResourceState.Idle)
     val onboardingPages = _onboardingPages
 
     private val _currentPage : MutableStateFlow<Int> = MutableStateFlow(0)
@@ -34,9 +34,9 @@ class OnboardingViewModel @Inject constructor(
     fun onOpen() = viewModelScope.launch(ioDispatcher) { getOnboardingPages() }
 
     private fun getOnboardingPages() = viewModelScope.launch(ioDispatcher) {
-        _onboardingPages.value = RequestState.Loading
-        _onboardingPages.value = try{ RequestState.Success(onboardingRepository.getOnboardingPages()) }
-        catch (e: Throwable){ RequestState.Error(e) }
+        _onboardingPages.value = ResourceState.Loading
+        _onboardingPages.value = try{ ResourceState.Success(onboardingRepository.getOnboardingPages()) }
+        catch (e: Throwable){ ResourceState.Error(e) }
     }
 
     fun hideOnboarding() = viewModelScope.launch(ioDispatcher) {

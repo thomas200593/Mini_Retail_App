@@ -3,7 +3,7 @@ package com.thomas200593.mini_retail_app.core.data.local.database.di
 import android.content.Context
 import androidx.room.Room
 import com.thomas200593.mini_retail_app.BuildConfig
-import com.thomas200593.mini_retail_app.core.data.local.database.AppLocalDatabaseHelper
+import com.thomas200593.mini_retail_app.core.data.local.database.HelperAppLocalDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,7 +19,7 @@ object ModuleRoomDatabase {
     fun providesRoomDatabase(@ApplicationContext context: Context) =
         Room.databaseBuilder(
             context = context,
-            klass = AppLocalDatabaseHelper::class.java,
+            klass = HelperAppLocalDatabase::class.java,
             name = BuildConfig.APP_LOCAL_DATABASE_FILENAME
         ).build()
 }

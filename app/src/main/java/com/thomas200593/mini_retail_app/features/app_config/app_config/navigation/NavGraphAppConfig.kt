@@ -8,8 +8,8 @@ import androidx.navigation.navigation
 import com.thomas200593.mini_retail_app.app.navigation.NavigationGraphs
 import com.thomas200593.mini_retail_app.app.navigation.ScreenGraphs
 import com.thomas200593.mini_retail_app.features.app_config.app_config.ui.AppConfigScreen
-import com.thomas200593.mini_retail_app.features.app_config.cfg_data.navigation.navGraphConfigData
-import com.thomas200593.mini_retail_app.features.app_config.cfg_general.navigation.navGraphConfigGeneral
+import com.thomas200593.mini_retail_app.features.app_config._data.navigation.navGraphConfigData
+import com.thomas200593.mini_retail_app.features.app_config._general.navigation.navGraphConfigGeneral
 
 fun NavGraphBuilder.navGraphAppConfig(){
     navigation(

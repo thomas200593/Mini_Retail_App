@@ -3,10 +3,10 @@ package com.thomas200593.mini_retail_app.features.initial.entity
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import com.thomas200593.mini_retail_app.R
-import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
+import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
 import com.thomas200593.mini_retail_app.core.ui.component.Form.Component.UseCase.UiText
 import com.thomas200593.mini_retail_app.features.app_config.app_config.entity.AppConfig
-import com.thomas200593.mini_retail_app.features.app_config.cfg_general_language.entity.Language
+import com.thomas200593.mini_retail_app.features.app_config._g_language.entity.Language
 import com.thomas200593.mini_retail_app.features.initial.ui.initialization.InitializationUiEvent
 
 data class Initialization(val configCurrent: AppConfig.ConfigCurrent, val languages: Set<Language>)
@@ -21,7 +21,7 @@ data class InitializationUiFormState(
 )
 
 data class InitializationUiState(
-    val initializationData: RequestState<Initialization> = RequestState.Idle,
+    val initializationData: ResourceState<Initialization> = ResourceState.Idle,
     val uiEnableWelcomeMessage: Boolean = true,
     val uiEnableInitManualForm: Boolean = false,
     val initializationUiFormState: InitializationUiFormState,

@@ -49,10 +49,10 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import coil.transform.CircleCropTransformation
 import com.thomas200593.mini_retail_app.R
-import com.thomas200593.mini_retail_app.app.ui.AppState
-import com.thomas200593.mini_retail_app.app.ui.LocalAppState
+import com.thomas200593.mini_retail_app.app.ui.StateApp
+import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
 import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
-import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
+import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
 import com.thomas200593.mini_retail_app.core.ui.common.Icons.Auth.session_expire
 import com.thomas200593.mini_retail_app.core.ui.common.Icons.Emotion.sad
 import com.thomas200593.mini_retail_app.core.ui.common.Icons.Setting.settings
@@ -77,12 +77,12 @@ private const val TAG = "UserProfileScreen"
 @Composable
 fun UserProfileScreen(
     viewModel: UserProfileViewModel = hiltViewModel(),
-    appState: AppState = LocalAppState.current
+    stateApp: StateApp = LocalStateApp.current
 ){
     Timber.d("Called : fun $TAG()")
 
     val applicationContext = LocalContext.current.applicationContext
-    val sessionState by appState.isSessionValid.collectAsStateWithLifecycle()
+    val sessionState by stateApp.isSessionValid.collectAsStateWithLifecycle()
     val userData by viewModel.currentSessionUserData
     val businessProfileSummaryData by viewModel.businessProfileSummary
 
@@ -92,7 +92,7 @@ fun UserProfileScreen(
         }
         is SessionState.Invalid -> {
             LaunchedEffect(Unit) {
-                appState.navController.navigateToInitial()
+                stateApp.navController.navigateToInitial()
             }
         }
         is SessionState.Valid -> {
@@ -106,7 +106,7 @@ fun UserProfileScreen(
         userData = userData,
         businessProfileSummaryData = businessProfileSummaryData,
         onNavigateToConfig = {
-            appState.navController.navigateToAppConfig(null)
+            stateApp.navController.navigateToAppConfig(null)
         },
         onSignedOut = {
             viewModel.handleSignOut()
@@ -121,8 +121,8 @@ fun UserProfileScreen(
 @Composable
 private fun ScreenContent(
     modifier: Modifier = Modifier,
-    userData: RequestState<UserData>,
-    businessProfileSummaryData: RequestState<BusinessProfileSummary>,
+    userData: ResourceState<UserData>,
+    businessProfileSummaryData: ResourceState<BusinessProfileSummary>,
     onNavigateToConfig: () -> Unit,
     onSignedOut: () -> Unit,
     onNavigateToBusinessProfile: () -> Unit
@@ -153,7 +153,7 @@ private fun ScreenContent(
 @Composable
 private fun ProfileSection(
     modifier: Modifier = Modifier,
-    userData: RequestState<UserData>,
+    userData: ResourceState<UserData>,
     onNavigateToConfig: () -> Unit,
     onSignedOut: () -> Unit
 ) {
@@ -165,10 +165,10 @@ private fun ProfileSection(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         when(userData){
-            RequestState.Idle, RequestState.Loading -> {
+            ResourceState.Idle, ResourceState.Loading -> {
                 LoadingPanelCircularIndicator()
             }
-            is RequestState.Error -> {
+            is ResourceState.Error -> {
                 val error = userData.t
                 ErrorPanel(
                     showIcon = true,
@@ -176,14 +176,14 @@ private fun ProfileSection(
                     errorMessage = error.cause.toString()
                 )
             }
-            RequestState.Empty -> {
+            ResourceState.Empty -> {
                 EmptyPanel(
                     title = stringResource(id = R.string.str_empty_message_title),
                     emptyMessage = stringResource(id = R.string.str_empty_message),
                     showIcon = true
                 )
             }
-            is RequestState.Success -> {
+            is ResourceState.Success -> {
                 val data = userData.data
 
                 when(val provider = data.authSessionToken?.authProvider){
@@ -288,21 +288,21 @@ private fun ProfileSection(
 
 @Composable
 private fun MenuSection(
-    businessProfileSummaryData: RequestState<BusinessProfileSummary>,
+    businessProfileSummaryData: ResourceState<BusinessProfileSummary>,
     onNavigateToBusinessProfile: () -> Unit
 ) {
     when(businessProfileSummaryData){
-        RequestState.Idle, RequestState.Loading -> {
+        ResourceState.Idle, ResourceState.Loading -> {
             LoadingPanelCircularIndicator()
         }
-        is RequestState.Error -> {
+        is ResourceState.Error -> {
             ErrorPanel(
                 showIcon = true,
                 title = businessProfileSummaryData.t.message,
                 errorMessage = businessProfileSummaryData.t.cause.toString()
             )
         }
-        RequestState.Empty -> {
+        ResourceState.Empty -> {
             Surface(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -336,7 +336,7 @@ private fun MenuSection(
                 }
             }
         }
-        is RequestState.Success -> {
+        is ResourceState.Success -> {
             val data = businessProfileSummaryData.data
             Text(text = "Data: $data")
         }

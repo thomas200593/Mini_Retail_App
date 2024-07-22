@@ -6,9 +6,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers
-import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
-import com.thomas200593.mini_retail_app.core.design_system.util.RequestState.Idle
-import com.thomas200593.mini_retail_app.core.design_system.util.RequestState.Loading
+import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
+import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Idle
+import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Loading
 import com.thomas200593.mini_retail_app.features.auth.domain.ValidateAuthSessionUseCase
 import com.thomas200593.mini_retail_app.features.auth.entity.AuthSessionToken
 import com.thomas200593.mini_retail_app.features.auth.repository.AuthRepository
@@ -25,7 +25,7 @@ class AuthViewModel @Inject constructor(
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
-    private val _authSessionTokenState: MutableState<RequestState<AuthSessionToken>> = mutableStateOf(Idle)
+    private val _authSessionTokenState: MutableState<ResourceState<AuthSessionToken>> = mutableStateOf(Idle)
     val authSessionTokenState = _authSessionTokenState
 
     private val _stateSIWGButton = MutableStateFlow(false)
@@ -39,7 +39,7 @@ class AuthViewModel @Inject constructor(
         updateAuthSIWGButtonState(true)
         _authSessionTokenState.value = Loading
         if(authUseCase.invoke(authSessionToken)){
-            _authSessionTokenState.value = RequestState.Success(authSessionToken)
+            _authSessionTokenState.value = ResourceState.Success(authSessionToken)
         }else{
             clearAuthSessionToken()
         }

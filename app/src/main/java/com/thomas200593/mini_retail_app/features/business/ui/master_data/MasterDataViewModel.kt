@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers
-import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
+import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
 import com.thomas200593.mini_retail_app.features.business.navigation.DestinationMasterData
 import com.thomas200593.mini_retail_app.features.business.repository.MasterDataRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,7 +20,7 @@ class MasterDataViewModel @Inject constructor(
     private val repository: MasterDataRepository,
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ): ViewModel() {
-    private val _menuData: MutableState<RequestState<Set<DestinationMasterData>>> = mutableStateOf(RequestState.Idle)
+    private val _menuData: MutableState<ResourceState<Set<DestinationMasterData>>> = mutableStateOf(ResourceState.Idle)
     val menuData = _menuData
 
     fun onOpen(sessionState: SessionState) = viewModelScope.launch(ioDispatcher){
@@ -28,8 +28,8 @@ class MasterDataViewModel @Inject constructor(
     }
 
     private suspend fun getMenuData(sessionState: SessionState) = viewModelScope.launch(ioDispatcher){
-        _menuData.value = RequestState.Loading
-        _menuData.value = try { RequestState.Success(repository.getMenuData(sessionState)) }
-        catch (e: Throwable){ RequestState.Error(e) }
+        _menuData.value = ResourceState.Loading
+        _menuData.value = try { ResourceState.Success(repository.getMenuData(sessionState)) }
+        catch (e: Throwable){ ResourceState.Error(e) }
     }
 }

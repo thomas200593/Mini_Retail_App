@@ -5,7 +5,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.thomas200593.mini_retail_app.core.data.local.database.AppLocalDatabaseHelper
+import com.thomas200593.mini_retail_app.core.data.local.database.HelperAppLocalDatabase
 import com.thomas200593.mini_retail_app.features.business.entity.supplier.Supplier
 import javax.inject.Inject
 
@@ -88,7 +88,7 @@ ORDER BY spr_legal_name DESC
 }
 
 class SupplierDaoImpl @Inject constructor(
-    private val dbHelper: AppLocalDatabaseHelper
+    private val dbHelper: HelperAppLocalDatabase
 ): SupplierDao{
     override fun getAllSortGenIdAsc(): PagingSource<Int, Supplier> =
         dbHelper.getSupplierDao().getAllSortGenIdAsc()

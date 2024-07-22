@@ -37,9 +37,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.thomas200593.mini_retail_app.BuildConfig
 import com.thomas200593.mini_retail_app.R
-import com.thomas200593.mini_retail_app.app.ui.AppState
-import com.thomas200593.mini_retail_app.app.ui.LocalAppState
-import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
+import com.thomas200593.mini_retail_app.app.ui.StateApp
+import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
+import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
 import com.thomas200593.mini_retail_app.core.ui.common.Icons
 import com.thomas200593.mini_retail_app.core.ui.common.Icons.Setting.settings
 import com.thomas200593.mini_retail_app.core.ui.component.Button
@@ -54,7 +54,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun AuthScreen(
     viewModel: AuthViewModel = hiltViewModel(),
-    appState: AppState = LocalAppState.current
+    stateApp: StateApp = LocalStateApp.current
 ){
     ScreenUtil.LockScreenOrientation(orientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
     val activityContext = (LocalContext.current as Activity)
@@ -73,11 +73,11 @@ fun AuthScreen(
 
     LaunchedEffect(authSessionTokenState) {
         when(authSessionTokenState){
-            is RequestState.Success -> {
+            is ResourceState.Success -> {
                 SessionMonitorWorkManager.initialize(appContext)
-                appState.navController.navigateToInitial()
+                stateApp.navController.navigateToInitial()
             }
-            is RequestState.Error -> {
+            is ResourceState.Error -> {
                 handleClearCredential(
                     activityContext = activityContext,
                     onClearSuccess = { viewModel.clearAuthSessionToken() },
@@ -91,7 +91,7 @@ fun AuthScreen(
     //TODO revert to Column Row
     ScreenContent(
         onNavigateToAppConfigScreen = {
-            appState.navController.navigateToAppConfig(destinationAppConfig = null)
+            stateApp.navController.navigateToAppConfig(destinationAppConfig = null)
         },
         onSignInWithGoogleButton = {
             coroutineScope.launch {

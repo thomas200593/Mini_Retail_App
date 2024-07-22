@@ -1,7 +1,7 @@
 package com.thomas200593.mini_retail_app.features.auth.repository
 
 import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStorePreferences
-import com.thomas200593.mini_retail_app.core.design_system.util.JWTHelper
+import com.thomas200593.mini_retail_app.core.design_system.util.HelperJwt
 import com.thomas200593.mini_retail_app.features.auth.entity.AuthSessionToken
 import com.thomas200593.mini_retail_app.features.auth.entity.OAuthProvider
 import com.thomas200593.mini_retail_app.features.auth.entity.UserData
@@ -15,7 +15,7 @@ class AuthRepositoryImpl @Inject constructor(
 
     override suspend fun validateAuthSessionToken(authSessionToken: AuthSessionToken): Boolean {
         return when(authSessionToken.authProvider?.name){
-            OAuthProvider.GOOGLE.name -> { JWTHelper.GoogleOAuth2.validateToken(authSessionToken) }
+            OAuthProvider.GOOGLE.name -> { HelperJwt.GoogleOAuth2.validateToken(authSessionToken) }
             else -> { false }
         }
     }
@@ -30,7 +30,7 @@ class AuthRepositoryImpl @Inject constructor(
 
     override suspend fun mapAuthSessionTokenToUserData(authSessionToken: AuthSessionToken): UserData? {
         return when(authSessionToken.authProvider){
-            OAuthProvider.GOOGLE -> { JWTHelper.GoogleOAuth2.mapToUserData(authSessionToken) }
+            OAuthProvider.GOOGLE -> { HelperJwt.GoogleOAuth2.mapToUserData(authSessionToken) }
             else -> { null }
         }
     }

@@ -49,8 +49,8 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import com.thomas200593.mini_retail_app.R
-import com.thomas200593.mini_retail_app.app.ui.AppState
-import com.thomas200593.mini_retail_app.app.ui.LocalAppState
+import com.thomas200593.mini_retail_app.app.ui.StateApp
+import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
 import com.thomas200593.mini_retail_app.core.ui.common.Icons.App.app
 import com.thomas200593.mini_retail_app.core.ui.common.Icons.Data.master_data
 import com.thomas200593.mini_retail_app.core.ui.component.AppBar
@@ -61,14 +61,14 @@ import com.thomas200593.mini_retail_app.features.business.entity.supplier.dto.So
 @Composable
 fun SupplierListScreen(
     viewModel: SupplierListViewModel = hiltViewModel(),
-    appState: AppState = LocalAppState.current
+    stateApp: StateApp = LocalStateApp.current
 ){
     val searchQuery = viewModel.searchQuery
     val sortBy = viewModel.sortBy
     val pagedListData = viewModel.pagedDataFlow.collectAsLazyPagingItems()
 
     TopAppBar(
-        onNavigateBack = appState::onNavigateUp,
+        onNavigateBack = stateApp::onNavigateUp,
         //TODO: REMOVE LATER
         testGen = viewModel::testGen
     )

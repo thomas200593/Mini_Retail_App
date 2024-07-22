@@ -34,10 +34,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.navOptions
 import com.thomas200593.mini_retail_app.R
-import com.thomas200593.mini_retail_app.app.ui.AppState
-import com.thomas200593.mini_retail_app.app.ui.LocalAppState
+import com.thomas200593.mini_retail_app.app.ui.StateApp
+import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
 import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
-import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
+import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
 import com.thomas200593.mini_retail_app.core.ui.common.Icons.Data.master_data
 import com.thomas200593.mini_retail_app.core.ui.component.AppBar
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.EmptyScreen
@@ -49,9 +49,9 @@ import com.thomas200593.mini_retail_app.features.business.navigation.navigateToM
 @Composable
 fun MasterDataScreen(
     viewModel: MasterDataViewModel = hiltViewModel(),
-    appState: AppState = LocalAppState.current
+    stateApp: StateApp = LocalStateApp.current
 ){
-    val sessionState by appState.isSessionValid.collectAsStateWithLifecycle()
+    val sessionState by stateApp.isSessionValid.collectAsStateWithLifecycle()
     val menuData by viewModel.menuData
 
     when(sessionState){
@@ -61,12 +61,12 @@ fun MasterDataScreen(
     }
 
     TopAppBar(
-        onNavigateBack = appState::onNavigateUp
+        onNavigateBack = stateApp::onNavigateUp
     )
     ScreenContent(
         menuData = menuData,
         onNavigateToMenu = { menu ->
-            appState.navController.navigateToMasterData(
+            stateApp.navController.navigateToMasterData(
                 navOptions = navOptions {
                     launchSingleTop = true
                     restoreState = true
@@ -128,26 +128,26 @@ private fun TopAppBar(
 
 @Composable
 private fun ScreenContent(
-    menuData: RequestState<Set<DestinationMasterData>>,
+    menuData: ResourceState<Set<DestinationMasterData>>,
     onNavigateToMenu: (DestinationMasterData) -> Unit
 ) {
     when(menuData){
-        RequestState.Idle, RequestState.Loading -> { LoadingScreen() }
-        is RequestState.Error -> {
+        ResourceState.Idle, ResourceState.Loading -> { LoadingScreen() }
+        is ResourceState.Error -> {
             ErrorScreen(
                 title = stringResource(id = R.string.str_error),
                 errorMessage = stringResource(id = R.string.str_error_fetching_preferences),
                 showIcon = true
             )
         }
-        RequestState.Empty -> {
+        ResourceState.Empty -> {
             EmptyScreen(
                 title = stringResource(id = R.string.str_empty_message_title),
                 emptyMessage = stringResource(id = R.string.str_empty_message),
                 showIcon = true
             )
         }
-        is RequestState.Success -> {
+        is ResourceState.Success -> {
             val preferencesList = menuData.data
             LazyVerticalGrid(
                 modifier = Modifier.fillMaxSize().padding(8.dp),

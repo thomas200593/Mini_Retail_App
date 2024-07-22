@@ -2,7 +2,7 @@ package com.thomas200593.mini_retail_app.features.initial.domain
 
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers
-import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
+import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
 import com.thomas200593.mini_retail_app.features.app_config.app_config.repository.AppConfigRepository
 import com.thomas200593.mini_retail_app.features.auth.repository.AuthRepository
 import com.thomas200593.mini_retail_app.features.initial.entity.Initial
@@ -19,17 +19,17 @@ class GetInitialDataUseCase @Inject constructor(
     private val appCfgRepository: AppConfigRepository,
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ){
-    operator fun invoke(): Flow<RequestState.Success<Initial>> = combine(
+    operator fun invoke(): Flow<ResourceState.Success<Initial>> = combine(
         flow = authRepository.authSessionToken,
         flow2 = appCfgRepository.configCurrent,
         flow3 = appCfgRepository.firstTimeStatus
     ){ authSession, configCurrent, firstTimeStatus ->
-        RequestState.Success(
+        ResourceState.Success(
             data = Initial(
                 isFirstTime = firstTimeStatus,
                 configCurrent = configCurrent,
                 session = authRepository.mapAuthSessionTokenToUserData(authSession)
             )
         )
-    }.flowOn(ioDispatcher).catch { throwable -> RequestState.Error(throwable) }.map { it }
+    }.flowOn(ioDispatcher).catch { throwable -> ResourceState.Error(throwable) }.map { it }
 }

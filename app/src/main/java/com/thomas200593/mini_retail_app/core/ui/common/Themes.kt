@@ -14,10 +14,10 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
-import com.thomas200593.mini_retail_app.app.MainActivityUiState
-import com.thomas200593.mini_retail_app.features.app_config.cfg_general_dynamic_color.entity.DynamicColor
-import com.thomas200593.mini_retail_app.features.app_config.cfg_general_font_size.entity.FontSize
-import com.thomas200593.mini_retail_app.features.app_config.cfg_general_theme.entity.Theme
+import com.thomas200593.mini_retail_app.app.UiStateMain
+import com.thomas200593.mini_retail_app.features.app_config._g_dynamic_color.entity.DynamicColor
+import com.thomas200593.mini_retail_app.features.app_config._g_font_size.entity.FontSize
+import com.thomas200593.mini_retail_app.features.app_config._g_theme.entity.Theme
 
 object Themes{
     private val lightScheme = Colors.lightScheme
@@ -29,10 +29,10 @@ object Themes{
      * current system context.
      */
     @Composable
-    fun shouldUseDarkTheme(uiState: MainActivityUiState): Boolean {
+    fun shouldUseDarkTheme(uiState: UiStateMain): Boolean {
         return when(uiState){
-            MainActivityUiState.Loading -> isSystemInDarkTheme()
-            is MainActivityUiState.Success -> when(uiState.configCurrent.theme){
+            UiStateMain.Loading -> isSystemInDarkTheme()
+            is UiStateMain.Success -> when(uiState.configCurrent.theme){
                 Theme.SYSTEM -> isSystemInDarkTheme()
                 Theme.LIGHT -> false
                 Theme.DARK -> true
@@ -44,10 +44,10 @@ object Themes{
      * Returns `true` if the dynamic color is enabled, as a function of the [uiState].
      */
     @Composable
-    fun shouldUseDynamicColor(uiState: MainActivityUiState): Boolean {
+    fun shouldUseDynamicColor(uiState: UiStateMain): Boolean {
         return when (uiState) {
-            MainActivityUiState.Loading -> false
-            is MainActivityUiState.Success -> when(uiState.configCurrent.dynamicColor){
+            UiStateMain.Loading -> false
+            is UiStateMain.Success -> when(uiState.configCurrent.dynamicColor){
                 DynamicColor.ENABLED -> true
                 DynamicColor.DISABLED -> false
             }
@@ -55,10 +55,10 @@ object Themes{
     }
 
     @Composable
-    fun calculateInitialFontSize(uiState: MainActivityUiState): FontSize {
+    fun calculateInitialFontSize(uiState: UiStateMain): FontSize {
         return when(uiState) {
-            MainActivityUiState.Loading -> FontSize.MEDIUM
-            is MainActivityUiState.Success -> when(uiState.configCurrent.fontSize){
+            UiStateMain.Loading -> FontSize.MEDIUM
+            is UiStateMain.Success -> when(uiState.configCurrent.fontSize){
                 FontSize.MEDIUM -> FontSize.MEDIUM
                 FontSize.SMALL -> FontSize.SMALL
                 FontSize.LARGE -> FontSize.LARGE

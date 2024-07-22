@@ -12,9 +12,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavOptions
 import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.app.navigation.NavigationGraphs
-import com.thomas200593.mini_retail_app.app.ui.AppState
-import com.thomas200593.mini_retail_app.app.ui.LocalAppState
-import com.thomas200593.mini_retail_app.core.design_system.util.RequestState
+import com.thomas200593.mini_retail_app.app.ui.StateApp
+import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
+import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.ErrorScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.LoadingScreen
 import com.thomas200593.mini_retail_app.features.onboarding.entity.OnboardingStatus
@@ -32,7 +32,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun InitialScreen(
     viewModel: InitialViewModel = hiltViewModel(),
-    appState: AppState = LocalAppState.current
+    stateApp: StateApp = LocalStateApp.current
 ) {
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -42,38 +42,38 @@ fun InitialScreen(
 
     ScreenContent(
         uiState = uiState,
-        onNavigateToOnboarding = { coroutineScope.launch { appState.navController.navigateToOnboarding() } },
-        onNavigateToInitialization = { coroutineScope.launch { appState.navController.navigateToInitialization() } },
+        onNavigateToOnboarding = { coroutineScope.launch { stateApp.navController.navigateToOnboarding() } },
+        onNavigateToInitialization = { coroutineScope.launch { stateApp.navController.navigateToInitialization() } },
         onNavigateToDashboard = { userData ->
             val navOptions = NavOptions.Builder().setPopUpTo(route = NavigationGraphs.G_INITIAL, inclusive = true, saveState = true).setLaunchSingleTop(true).setRestoreState(true).build()
             when(userData.authSessionToken?.authProvider){
                 OAuthProvider.GOOGLE -> { Toast.makeText(context, "Welcome back! ${(userData.oAuth2UserMetadata as OAuth2UserMetadata.Google).name}", Toast.LENGTH_SHORT).show() }
                 null -> Unit
             }
-            coroutineScope.launch { appState.navController.navigateToDashboard(navOptions) }
+            coroutineScope.launch { stateApp.navController.navigateToDashboard(navOptions) }
         },
-        onNavigateToAuth = { coroutineScope.launch { appState.navController.navigateToAuth() } }
+        onNavigateToAuth = { coroutineScope.launch { stateApp.navController.navigateToAuth() } }
     )
 }
 
 @Composable
 private fun ScreenContent(
-    uiState: RequestState<Initial>,
+    uiState: ResourceState<Initial>,
     onNavigateToOnboarding: () -> Unit,
     onNavigateToInitialization: () -> Unit,
     onNavigateToDashboard: (UserData) -> Unit,
     onNavigateToAuth: () -> Unit
 ) {
     when(uiState){
-        RequestState.Idle, RequestState.Loading, RequestState.Empty -> { LoadingScreen() }
-        is RequestState.Error -> {
+        ResourceState.Idle, ResourceState.Loading, ResourceState.Empty -> { LoadingScreen() }
+        is ResourceState.Error -> {
             ErrorScreen(
                 title = stringResource(id = R.string.str_error),
                 errorMessage = stringResource(id = R.string.str_error_fetching_preferences),
                 showIcon = true
             )
         }
-        is RequestState.Success -> {
+        is ResourceState.Success -> {
             when(uiState.data.isFirstTime){
                 FirstTimeStatus.YES -> {
                     when(uiState.data.configCurrent.onboardingStatus){
