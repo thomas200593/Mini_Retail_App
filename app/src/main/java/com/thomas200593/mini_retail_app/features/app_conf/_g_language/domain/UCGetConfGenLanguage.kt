@@ -5,7 +5,7 @@ import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.entity.AppConfig
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.repository.RepoAppConf
-import com.thomas200593.mini_retail_app.features.app_conf._g_language.repository.RepositoryAppCfgGeneralLanguage
+import com.thomas200593.mini_retail_app.features.app_conf._g_language.repository.RepoConfGenLanguage
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
@@ -16,11 +16,11 @@ import javax.inject.Inject
 
 class UCGetConfGenLanguage @Inject constructor(
     private val appCfgRepository: RepoAppConf,
-    private val repositoryAppCfgGeneralLanguage: RepositoryAppCfgGeneralLanguage,
+    private val repoConfGenLanguage: RepoConfGenLanguage,
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
 ) {
     fun invoke() = combine(
-        appCfgRepository.configCurrent, flow { emit(repositoryAppCfgGeneralLanguage.getLanguages()) }
+        appCfgRepository.configCurrent, flow { emit(repoConfGenLanguage.getLanguages()) }
     ){ configCurrent, languages ->
         ResourceState.Success(
             data = AppConfig.ConfigLanguages(configCurrent = configCurrent, languages = languages)

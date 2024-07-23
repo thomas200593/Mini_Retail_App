@@ -1,19 +1,30 @@
 package com.thomas200593.mini_retail_app.features.initial.initialization.ui
 
-import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.app.AppCompatDelegate.setApplicationLocales
 import androidx.compose.runtime.mutableStateOf
-import androidx.core.os.LocaleListCompat
+import androidx.core.os.LocaleListCompat.create
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers.Dispatchers.IO
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
-import com.thomas200593.mini_retail_app.core.ui.component.CustomForm.Component.UseCase.InputFieldValidation
-import com.thomas200593.mini_retail_app.features.app_conf._g_language.repository.RepositoryAppCfgGeneralLanguage
+import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Error
+import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Loading
+import com.thomas200593.mini_retail_app.core.ui.component.CustomForm.Component.UseCase.InputFieldValidation.RegularTextValidation
+import com.thomas200593.mini_retail_app.features.app_conf._g_language.repository.RepoConfGenLanguage
 import com.thomas200593.mini_retail_app.features.initial.initialization.domain.UCGetInitializationData
 import com.thomas200593.mini_retail_app.features.initial.initialization.domain.UCSetDefaultInitialBizProfile
 import com.thomas200593.mini_retail_app.features.initial.initialization.entity.InitializationUiFormState
 import com.thomas200593.mini_retail_app.features.initial.initialization.entity.InitializationUiState
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.InitializationUiEvent.BeginInitBizProfileDefault
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.InitializationUiEvent.BeginInitBizProfileManual
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.InitializationUiEvent.InitBizProfileResult
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.InitializationUiEvent.InitBizProfileResult.Idle
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.InitializationUiEvent.OnChangeLanguage
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.InitializationUiEvent.OnOpen
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.InitializationUiEvent.OnUiFormCancelInitManual
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.InitializationUiEvent.OnUiFormCommonNameChanged
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.InitializationUiEvent.OnUiFormLegalNameChanged
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.InitializationUiEvent.OnUiFormSubmitInitManual
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.catch
@@ -24,44 +35,44 @@ import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
-class InitializationViewModel @Inject constructor(
-    private val UCGetInitializationData: UCGetInitializationData,
-    private val repositoryAppCfgGeneralLanguage: RepositoryAppCfgGeneralLanguage,
-    private val setDefaultUseCase: UCSetDefaultInitialBizProfile,
+class VMInitialization @Inject constructor(
+    private val ucGetInitializationData: UCGetInitializationData,
+    private val ucSetDefaultInitialBizProfile: UCSetDefaultInitialBizProfile,
+    private val repoConfGenLanguage: RepoConfGenLanguage,
     @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
 ): ViewModel(){
     var uiState = mutableStateOf(
         InitializationUiState(
-            initializationUiFormState = InitializationUiFormState(
-                initBizProfileResult = InitializationUiEvent.InitBizProfileResult.Idle
-            )
+            initializationUiFormState = InitializationUiFormState(initBizProfileResult = Idle)
         )
     );  private set
 
     fun onEvent(event: InitializationUiEvent){
         when(event){
-            InitializationUiEvent.OnOpen -> viewModelScope.launch(ioDispatcher) {
-                uiState.value = uiState.value.copy(initializationData = ResourceState.Loading)
-                UCGetInitializationData.invoke().flowOn(ioDispatcher)
-                    .catch { error -> uiState.value = uiState.value.copy(initializationData = ResourceState.Error(error)) }
-                    .collectLatest{ initializationData -> uiState.value = uiState.value.copy(initializationData = initializationData) }
+            OnOpen -> viewModelScope.launch(ioDispatcher) {
+                uiState.value = uiState.value.copy(initializationData = Loading)
+                ucGetInitializationData.invoke().flowOn(ioDispatcher)
+                    .catch { error -> uiState.value =
+                        uiState.value.copy(initializationData = Error(error)) }
+                    .collectLatest{ initializationData -> uiState.value =
+                        uiState.value.copy(initializationData = initializationData) }
             }
-            is InitializationUiEvent.OnChangeLanguage -> viewModelScope.launch(ioDispatcher) {
-                repositoryAppCfgGeneralLanguage.setLanguage(language = event.language)
-                AppCompatDelegate.setApplicationLocales( LocaleListCompat.create(Locale(event.language.code)) )
+            is OnChangeLanguage -> viewModelScope.launch(ioDispatcher) {
+                repoConfGenLanguage.setLanguage(language = event.language)
+                setApplicationLocales( create(Locale(event.language.code)) )
             }
-            is InitializationUiEvent.BeginInitBizProfileDefault -> viewModelScope.launch(ioDispatcher) {
+            is BeginInitBizProfileDefault -> viewModelScope.launch(ioDispatcher) {
                 uiState.value = uiState.value.copy(
                     uiEnableLoadingDialog = mutableStateOf(true),
                     uiEnableSuccessDialog = mutableStateOf(false),
                     uiEnableEmptyDialog = mutableStateOf(false),
                     uiEnableErrorDialog = mutableStateOf(false),
                     initializationUiFormState = InitializationUiFormState(
-                        initBizProfileResult = InitializationUiEvent.InitBizProfileResult.Loading,
+                        initBizProfileResult = InitBizProfileResult.Loading,
                     )
                 )
                 try {
-                    val result = setDefaultUseCase.invoke(event.bizProfile)
+                    val result = ucSetDefaultInitialBizProfile.invoke(event.bizProfile)
                     if(result != null){
                         uiState.value = uiState.value.copy(
                             uiEnableLoadingDialog = mutableStateOf(false),
@@ -69,9 +80,7 @@ class InitializationViewModel @Inject constructor(
                             uiEnableEmptyDialog = mutableStateOf(false),
                             uiEnableErrorDialog = mutableStateOf(false),
                             initializationUiFormState = uiState.value.initializationUiFormState.copy(
-                                initBizProfileResult = InitializationUiEvent.InitBizProfileResult.Success(
-                                    result
-                                )
+                                initBizProfileResult = InitBizProfileResult.Success(result)
                             )
                         )
                     }
@@ -82,7 +91,7 @@ class InitializationViewModel @Inject constructor(
                             uiEnableEmptyDialog = mutableStateOf(true),
                             uiEnableErrorDialog = mutableStateOf(false),
                             initializationUiFormState = uiState.value.initializationUiFormState.copy(
-                                initBizProfileResult = InitializationUiEvent.InitBizProfileResult.Empty,
+                                initBizProfileResult = InitBizProfileResult.Empty,
                             )
                         )
                     }
@@ -93,42 +102,40 @@ class InitializationViewModel @Inject constructor(
                         uiEnableEmptyDialog = mutableStateOf(false),
                         uiEnableErrorDialog = mutableStateOf(true),
                         initializationUiFormState = uiState.value.initializationUiFormState.copy(
-                            initBizProfileResult = InitializationUiEvent.InitBizProfileResult.Error(
-                                e
-                            ),
+                            initBizProfileResult = InitBizProfileResult.Error(e),
                         )
                     )
                 }
             }
-            InitializationUiEvent.BeginInitBizProfileManual -> viewModelScope.launch(ioDispatcher) {
+            BeginInitBizProfileManual -> viewModelScope.launch(ioDispatcher) {
                 uiState.value = uiState.value.copy(uiEnableWelcomeMessage = false, uiEnableInitManualForm = true)
             }
-            is InitializationUiEvent.OnUiFormLegalNameChanged -> viewModelScope.launch(ioDispatcher){
+            is OnUiFormLegalNameChanged -> viewModelScope.launch(ioDispatcher){
                 uiState.value = uiState.value.copy(
                     initializationUiFormState = uiState.value.initializationUiFormState
                         .copy(uiFormLegalName = event.legalName)
                 )
                 enableSubmitButton()
             }
-            is InitializationUiEvent.OnUiFormCommonNameChanged -> viewModelScope.launch(ioDispatcher){
+            is OnUiFormCommonNameChanged -> viewModelScope.launch(ioDispatcher){
                 uiState.value = uiState.value.copy(
                     initializationUiFormState = uiState.value.initializationUiFormState
                         .copy(uiFormCommonName = event.commonName)
                 )
                 enableSubmitButton()
             }
-            is InitializationUiEvent.OnUiFormSubmitInitManual -> viewModelScope.launch(ioDispatcher){
+            is OnUiFormSubmitInitManual -> viewModelScope.launch(ioDispatcher){
                 uiState.value = uiState.value.copy(
                     uiEnableLoadingDialog = mutableStateOf(true),
                     uiEnableSuccessDialog = mutableStateOf(false),
                     uiEnableEmptyDialog = mutableStateOf(false),
                     uiEnableErrorDialog = mutableStateOf(false),
                     initializationUiFormState = uiState.value.initializationUiFormState.copy(
-                        initBizProfileResult = InitializationUiEvent.InitBizProfileResult.Loading,
+                        initBizProfileResult = InitBizProfileResult.Loading,
                     )
                 )
                 try {
-                    val result = setDefaultUseCase.invoke(event.bizProfile)
+                    val result = ucSetDefaultInitialBizProfile.invoke(event.bizProfile)
                     if(result != null){
                         uiState.value = uiState.value.copy(
                             uiEnableLoadingDialog = mutableStateOf(false),
@@ -136,9 +143,7 @@ class InitializationViewModel @Inject constructor(
                             uiEnableEmptyDialog = mutableStateOf(false),
                             uiEnableErrorDialog = mutableStateOf(false),
                             initializationUiFormState = uiState.value.initializationUiFormState.copy(
-                                initBizProfileResult = InitializationUiEvent.InitBizProfileResult.Success(
-                                    result
-                                ),
+                                initBizProfileResult = InitBizProfileResult.Success(result),
                             )
                         )
                     }
@@ -149,7 +154,7 @@ class InitializationViewModel @Inject constructor(
                             uiEnableEmptyDialog = mutableStateOf(true),
                             uiEnableErrorDialog = mutableStateOf(false),
                             initializationUiFormState = uiState.value.initializationUiFormState.copy(
-                                initBizProfileResult = InitializationUiEvent.InitBizProfileResult.Empty
+                                initBizProfileResult = InitBizProfileResult.Empty
                             )
                         )
                     }
@@ -160,14 +165,14 @@ class InitializationViewModel @Inject constructor(
                         uiEnableEmptyDialog = mutableStateOf(false),
                         uiEnableErrorDialog = mutableStateOf(true),
                         initializationUiFormState = uiState.value.initializationUiFormState.copy(
-                            initBizProfileResult = InitializationUiEvent.InitBizProfileResult.Error(
+                            initBizProfileResult = InitBizProfileResult.Error(
                                 e
-                            ),
+                            )
                         )
                     )
                 }
             }
-            InitializationUiEvent.OnUiFormCancelInitManual -> viewModelScope.launch(ioDispatcher){
+            OnUiFormCancelInitManual -> viewModelScope.launch(ioDispatcher){
                 uiState.value = uiState.value.copy(
                     uiEnableLoadingDialog = mutableStateOf(false),
                     uiEnableSuccessDialog = mutableStateOf(false),
@@ -176,7 +181,7 @@ class InitializationViewModel @Inject constructor(
                     uiEnableInitManualForm = false,
                     uiEnableWelcomeMessage = true,
                     initializationUiFormState = InitializationUiFormState(
-                        initBizProfileResult = InitializationUiEvent.InitBizProfileResult.Idle,
+                        initBizProfileResult = Idle
                     )
                 )
             }
@@ -184,7 +189,7 @@ class InitializationViewModel @Inject constructor(
     }
 
     private fun validateLegalName(): Boolean {
-        val result = InputFieldValidation.RegularTextValidation().execute(
+        val result = RegularTextValidation().execute(
             input = uiState.value.initializationUiFormState.uiFormLegalName,
             required = true,
             maxLength = 100,
@@ -196,7 +201,7 @@ class InitializationViewModel @Inject constructor(
         return result.isSuccess
     }
     private fun validateCommonName(): Boolean {
-        val result = InputFieldValidation.RegularTextValidation().execute(
+        val result = RegularTextValidation().execute(
             input = uiState.value.initializationUiFormState.uiFormCommonName,
             required = true,
             maxLength = 100

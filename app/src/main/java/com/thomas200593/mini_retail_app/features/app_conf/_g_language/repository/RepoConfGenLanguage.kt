@@ -8,7 +8,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-interface RepositoryAppCfgGeneralLanguage{
+interface RepoConfGenLanguage{
     suspend fun getLanguages(): Set<Language>
     suspend fun setLanguage(language: Language)
 }
@@ -16,7 +16,7 @@ interface RepositoryAppCfgGeneralLanguage{
 internal class RepositoryImplAppCfgGeneralLanguage @Inject constructor(
     private val dataStore: DataStorePreferences,
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
-): RepositoryAppCfgGeneralLanguage{
+): RepoConfGenLanguage{
     override suspend fun getLanguages(): Set<Language> = withContext(ioDispatcher){
         Language.entries.toSet()
     }

@@ -13,9 +13,11 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.ExposedDropdownMenuDefaults.ItemContentPadding
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.MaterialTheme.shapes
+import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -29,98 +31,135 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.Transparent
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.style.TextAlign.Companion.Center
+import androidx.compose.ui.text.style.TextAlign.Companion.Justify
+import androidx.compose.ui.text.style.TextOverflow.Companion.Ellipsis
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.thomas200593.mini_retail_app.BuildConfig
-import com.thomas200593.mini_retail_app.R
-import com.thomas200593.mini_retail_app.app.ui.StateApp
+import com.thomas200593.mini_retail_app.BuildConfig.BUILD_TYPE
+import com.thomas200593.mini_retail_app.BuildConfig.VERSION_NAME
+import com.thomas200593.mini_retail_app.R.string.app_name
+import com.thomas200593.mini_retail_app.R.string.str_biz_profile_init_failed
+import com.thomas200593.mini_retail_app.R.string.str_biz_profile_init_loading
+import com.thomas200593.mini_retail_app.R.string.str_biz_profile_init_success
+import com.thomas200593.mini_retail_app.R.string.str_business_profile
+import com.thomas200593.mini_retail_app.R.string.str_business_profile_desc
+import com.thomas200593.mini_retail_app.R.string.str_cancel
+import com.thomas200593.mini_retail_app.R.string.str_company_common_name
+import com.thomas200593.mini_retail_app.R.string.str_company_legal_name
+import com.thomas200593.mini_retail_app.R.string.str_empty_message
+import com.thomas200593.mini_retail_app.R.string.str_empty_message_title
+import com.thomas200593.mini_retail_app.R.string.str_error
+import com.thomas200593.mini_retail_app.R.string.str_error_fetching_preferences
+import com.thomas200593.mini_retail_app.R.string.str_init_setup_no
+import com.thomas200593.mini_retail_app.R.string.str_init_setup_yes
+import com.thomas200593.mini_retail_app.R.string.str_init_welcome_message
+import com.thomas200593.mini_retail_app.R.string.str_loading
+import com.thomas200593.mini_retail_app.R.string.str_ok
+import com.thomas200593.mini_retail_app.R.string.str_save
+import com.thomas200593.mini_retail_app.R.string.str_success
 import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
+import com.thomas200593.mini_retail_app.app.ui.StateApp
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.AuditTrail
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
-import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons
+import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Empty
+import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Error
+import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Idle
+import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Loading
+import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Success
+import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.App.app
+import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.Emotion.happy
+import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.Emotion.neutral
 import com.thomas200593.mini_retail_app.core.ui.component.CustomButton.Common.AppIconButton
+import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AlertDialogContext.ERROR
+import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AlertDialogContext.INFORMATION
+import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AlertDialogContext.SUCCESS
+import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AppAlertDialog
+import com.thomas200593.mini_retail_app.core.ui.component.CustomForm.Component.TextInput
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.EmptyScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.ErrorScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.LoadingScreen
-import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog
-import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AppAlertDialog
-import com.thomas200593.mini_retail_app.core.ui.component.CustomForm.Component.TextInput
-import com.thomas200593.mini_retail_app.features.app_conf.app_config.entity.AppConfig
 import com.thomas200593.mini_retail_app.features.app_conf._g_language.entity.Language
+import com.thomas200593.mini_retail_app.features.app_conf.app_config.entity.AppConfig
 import com.thomas200593.mini_retail_app.features.business.entity.business_profile.BizName
 import com.thomas200593.mini_retail_app.features.business.entity.business_profile.dto.BizProfileSummary
-import com.thomas200593.mini_retail_app.features.initial.initialization.entity.InitializationUiFormState
-import com.thomas200593.mini_retail_app.features.initial.initialization.entity.Initialization
-import com.thomas200593.mini_retail_app.features.initial.initialization.entity.InitializationUiState
 import com.thomas200593.mini_retail_app.features.initial.initial.navigation.navToInitial
+import com.thomas200593.mini_retail_app.features.initial.initialization.entity.Initialization
+import com.thomas200593.mini_retail_app.features.initial.initialization.entity.InitializationUiFormState
+import com.thomas200593.mini_retail_app.features.initial.initialization.entity.InitializationUiState
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.InitializationUiEvent.BeginInitBizProfileDefault
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.InitializationUiEvent.BeginInitBizProfileManual
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.InitializationUiEvent.OnChangeLanguage
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.InitializationUiEvent.OnOpen
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.InitializationUiEvent.OnUiFormCancelInitManual
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.InitializationUiEvent.OnUiFormCommonNameChanged
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.InitializationUiEvent.OnUiFormLegalNameChanged
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.InitializationUiEvent.OnUiFormSubmitInitManual
 import kotlinx.coroutines.launch
-import ulid.ULID
+import ulid.ULID.Companion.randomULID
 
 @Composable
 fun InitializationScreen(
-    viewModel: InitializationViewModel = hiltViewModel(),
+    vm: VMInitialization = hiltViewModel(),
     stateApp: StateApp = LocalStateApp.current
 ){
-    val uiState = viewModel.uiState
+    val uiState = vm.uiState
     val coroutineScope = rememberCoroutineScope()
 
-    LaunchedEffect(Unit) { viewModel.onEvent(InitializationUiEvent.OnOpen) }
+    LaunchedEffect(Unit) { vm.onEvent(OnOpen) }
 
     AppAlertDialog(
         showDialog = uiState.value.uiEnableLoadingDialog,
-        dialogContext = CustomDialog.AlertDialogContext.INFORMATION,
+        dialogContext = INFORMATION,
         showIcon = true,
         showTitle = true,
-        title = { Text(stringResource(id = R.string.str_loading)) },
+        title = { Text(stringResource(id = str_loading)) },
         showBody = true,
-        body = { Text(stringResource(R.string.str_biz_profile_init_loading)) }
+        body = { Text(stringResource(str_biz_profile_init_loading)) }
     )
 
     AppAlertDialog(
         showDialog = uiState.value.uiEnableSuccessDialog,
-        dialogContext = CustomDialog.AlertDialogContext.SUCCESS,
+        dialogContext = SUCCESS,
         showIcon = true,
         showTitle = true,
-        title = { Text(stringResource(id = R.string.str_success)) },
+        title = { Text(stringResource(id = str_success)) },
         showBody = true,
-        body = { Text(stringResource(R.string.str_biz_profile_init_success)) },
+        body = { Text(stringResource(str_biz_profile_init_success)) },
         useConfirmButton = true,
         confirmButton = {
             TextButton(onClick = { coroutineScope.launch { stateApp.navController.navToInitial() } })
-            { Text(stringResource(id = R.string.str_ok)) }
+            { Text(stringResource(id = str_ok)) }
         }
     )
 
     AppAlertDialog(
         showDialog = uiState.value.uiEnableErrorDialog,
-        dialogContext = CustomDialog.AlertDialogContext.ERROR,
+        dialogContext = ERROR,
         showIcon = true,
         showTitle = true,
-        title = { Text(stringResource(id = R.string.str_error)) },
+        title = { Text(stringResource(id = str_error)) },
         showBody = true,
-        body = { Text(stringResource(R.string.str_biz_profile_init_failed)) },
+        body = { Text(stringResource(str_biz_profile_init_failed)) },
         useDismissButton = true,
         dismissButton = {
             TextButton(onClick = { coroutineScope.launch { stateApp.navController.navToInitial() } })
-            { Text(stringResource(id = R.string.str_ok)) }
+            { Text(stringResource(id = str_ok)) }
         }
     )
 
     ScreenContent(
         uiState = uiState,
-        onChangeLanguage = { viewModel.onEvent(InitializationUiEvent.OnChangeLanguage(it)) },
-        onInitBizProfileDefault = { viewModel.onEvent(InitializationUiEvent.BeginInitBizProfileDefault(it)) },
-        onInitBizProfileManual = { viewModel.onEvent(InitializationUiEvent.BeginInitBizProfileManual) },
-        onUiFormLegalNameChanged = { viewModel.onEvent(InitializationUiEvent.OnUiFormLegalNameChanged(it)) },
-        onUiFormCommonNameChanged = { viewModel.onEvent(InitializationUiEvent.OnUiFormCommonNameChanged(it))},
-        onUiFormSubmitInitManual = { viewModel.onEvent(InitializationUiEvent.OnUiFormSubmitInitManual(it)) },
-        onUiFormCancelInitManual = { viewModel.onEvent(InitializationUiEvent.OnUiFormCancelInitManual) }
+        onChangeLanguage = { vm.onEvent(OnChangeLanguage(it)) },
+        onInitBizProfileDefault = { vm.onEvent(BeginInitBizProfileDefault(it)) },
+        onInitBizProfileManual = { vm.onEvent(BeginInitBizProfileManual) },
+        onUiFormLegalNameChanged = { vm.onEvent(OnUiFormLegalNameChanged(it)) },
+        onUiFormCommonNameChanged = { vm.onEvent(OnUiFormCommonNameChanged(it))},
+        onUiFormSubmitInitManual = { vm.onEvent(OnUiFormSubmitInitManual(it)) },
+        onUiFormCancelInitManual = { vm.onEvent(OnUiFormCancelInitManual) }
     )
 }
 
@@ -136,30 +175,30 @@ private fun ScreenContent(
     onUiFormCancelInitManual: () -> Unit
 ) {
     when(uiState.value.initializationData){
-        ResourceState.Idle, ResourceState.Loading -> { LoadingScreen() }
-        ResourceState.Empty -> {
+        Idle, Loading -> { LoadingScreen() }
+        Empty -> {
             EmptyScreen(
-                title = stringResource(id = R.string.str_empty_message_title),
-                emptyMessage = stringResource(id = R.string.str_empty_message),
+                title = stringResource(id = str_empty_message_title),
+                emptyMessage = stringResource(id = str_empty_message),
                 showIcon = true
             )
         }
-        is ResourceState.Error -> {
+        is Error -> {
             ErrorScreen(
-                title = stringResource(id = R.string.str_error),
-                errorMessage = stringResource(id = R.string.str_error_fetching_preferences),
+                title = stringResource(id = str_error),
+                errorMessage = stringResource(id = str_error_fetching_preferences),
                 showIcon = true
             )
         }
-        is ResourceState.Success -> {
-            val initializationData = (uiState.value.initializationData as ResourceState.Success<Initialization>).data
+        is Success -> {
+            val initializationData = (uiState.value.initializationData as Success<Initialization>).data
             val initUiPropertiesState = uiState.value.initializationUiFormState
-            val asd = uiState.value
+            val uiStateInitialization = uiState.value
 
             SuccessSection(
                 initializationData = initializationData,
                 onChangeLanguage = onChangeLanguage,
-                asd = asd,
+                uiStateInitialization = uiStateInitialization,
                 initializationUiFormState = initUiPropertiesState,
                 onInitBizProfileDefault = onInitBizProfileDefault,
                 onInitBizProfileManual = onInitBizProfileManual,
@@ -183,7 +222,7 @@ private fun SuccessSection(
     onUiFormCommonNameChanged: (String) -> Unit,
     onUiFormSubmitInitManual: (BizProfileSummary) -> Unit,
     onUiFormCancelInitManual: () -> Unit,
-    asd: InitializationUiState
+    uiStateInitialization: InitializationUiState
 ) {
     Column(
         modifier = Modifier.fillMaxSize().padding(8.dp).verticalScroll(rememberScrollState()),
@@ -195,13 +234,13 @@ private fun SuccessSection(
             configCurrent = initializationData.configCurrent,
             onChangeLanguage = onChangeLanguage
         )
-        if(asd.uiEnableWelcomeMessage){
+        if(uiStateInitialization.uiEnableWelcomeMessage){
             WelcomeMessage(
                 onInitBizProfileDefault = onInitBizProfileDefault,
                 onInitBizProfileManual = onInitBizProfileManual
             )
         }
-        if(asd.uiEnableInitManualForm){
+        if(uiStateInitialization.uiEnableInitManualForm){
             InputManualForm(
                 initializationUiFormState = initializationUiFormState,
                 onUiFormLegalNameChanged = onUiFormLegalNameChanged,
@@ -247,9 +286,9 @@ private fun LanguageSection(
                     Text(
                         modifier = Modifier.weight(0.8f),
                         text = stringResource(id = configCurrent.language.title),
-                        textAlign = TextAlign.Center,
+                        textAlign = Center,
                         maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
+                        overflow = Ellipsis
                     )
                 }
             }
@@ -269,7 +308,7 @@ private fun LanguageSection(
                             expanded = false
                             onChangeLanguage.invoke(language)
                         },
-                        contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
+                        contentPadding = ItemContentPadding
                     )
                 }
             }
@@ -289,33 +328,33 @@ private fun WelcomeMessage(
     ) {
         Surface(
             modifier = Modifier.size(150.dp),
-            color = Color.Transparent,
-            shape = MaterialTheme.shapes.medium
-        ) { Image(imageVector = ImageVector.vectorResource(id = CustomIcons.App.app), contentDescription = null) }
+            color = Transparent,
+            shape = shapes.medium
+        ) { Image(imageVector = ImageVector.vectorResource(id = app), contentDescription = null) }
         Text(
             modifier = Modifier.fillMaxWidth(),
-            text = stringResource(id = R.string.app_name),
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.titleLarge,
-            color = MaterialTheme.colorScheme.onSurface,
+            text = stringResource(id = app_name),
+            textAlign = Center,
+            style = typography.titleLarge,
+            color = colorScheme.onSurface,
             maxLines = 1,
-            overflow = TextOverflow.Ellipsis
+            overflow = Ellipsis
         )
         Text(
             modifier = Modifier.fillMaxWidth(),
-            text = "${BuildConfig.VERSION_NAME} - ${BuildConfig.BUILD_TYPE}",
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.labelMedium,
-            color = MaterialTheme.colorScheme.onSurface,
+            text = "$VERSION_NAME - $BUILD_TYPE",
+            textAlign = Center,
+            style = typography.labelMedium,
+            color = colorScheme.onSurface,
             maxLines = 1,
-            overflow = TextOverflow.Ellipsis
+            overflow = Ellipsis
         )
     }
     Surface(
         modifier = Modifier.fillMaxWidth().padding(16.dp),
-        shape = MaterialTheme.shapes.medium,
-        color = MaterialTheme.colorScheme.primaryContainer,
-        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+        shape = shapes.medium,
+        color = colorScheme.primaryContainer,
+        contentColor = colorScheme.onPrimaryContainer,
     ) {
         Column(
             modifier = Modifier.fillMaxWidth(),
@@ -324,15 +363,15 @@ private fun WelcomeMessage(
         ) {
             Text(
                 modifier = Modifier.fillMaxWidth().padding(16.dp),
-                text = stringResource(R.string.str_init_welcome_message),
-                style = MaterialTheme.typography.labelLarge,
-                textAlign = TextAlign.Justify
+                text = stringResource(str_init_welcome_message),
+                style = typography.labelLarge,
+                textAlign = Justify
             )
             AppIconButton(
                 modifier = Modifier.fillMaxWidth(),
                 onClick = { onInitBizProfileManual.invoke() },
-                icon = ImageVector.vectorResource(id = CustomIcons.Emotion.happy),
-                text = stringResource(R.string.str_init_setup_yes)
+                icon = ImageVector.vectorResource(id = happy),
+                text = stringResource(str_init_setup_yes)
             )
         }
     }
@@ -341,7 +380,7 @@ private fun WelcomeMessage(
             onInitBizProfileDefault.invoke(
                 BizProfileSummary(
                     seqId = 0,
-                    genId = ULID.randomULID(),
+                    genId = randomULID(),
                     bizName = BizName(
                         legalName = "My-Company Corp",
                         commonName = "My Company"
@@ -353,9 +392,9 @@ private fun WelcomeMessage(
         }
     ) {
         Text(
-            text = stringResource(R.string.str_init_setup_no),
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.titleMedium
+            text = stringResource(str_init_setup_no),
+            textAlign = Center,
+            style = typography.titleMedium
         )
     }
 }
@@ -370,8 +409,8 @@ private fun InputManualForm(
 ) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
-        shape = MaterialTheme.shapes.medium,
-        color = MaterialTheme.colorScheme.surfaceContainerHighest
+        shape = shapes.medium,
+        color = colorScheme.surfaceContainerHighest
     ){
         Column(
             modifier = Modifier.fillMaxWidth().padding(12.dp),
@@ -380,31 +419,31 @@ private fun InputManualForm(
         ) {
             Text(
                 modifier = Modifier.fillMaxWidth(),
-                text = stringResource(id = R.string.str_business_profile),
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.onSurface,
+                text = stringResource(id = str_business_profile),
+                textAlign = Center,
+                style = typography.titleLarge,
+                color = colorScheme.onSurface,
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                overflow = Ellipsis
             )
             Text(
                 modifier = Modifier.fillMaxWidth(),
-                text = stringResource(id = R.string.str_business_profile_desc),
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.onSurface,
+                text = stringResource(id = str_business_profile_desc),
+                textAlign = Center,
+                style = typography.labelMedium,
+                color = colorScheme.onSurface,
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                overflow = Ellipsis
             )
             HorizontalDivider(
                 thickness = 2.dp,
-                color = MaterialTheme.colorScheme.onSurface
+                color = colorScheme.onSurface
             )
             TextInput(
                 value = initializationUiFormState.uiFormLegalName,
                 onValueChange = { onUiFormLegalNameChanged(it) },
-                label = stringResource(R.string.str_company_legal_name),
-                placeholder = stringResource(R.string.str_company_legal_name),
+                label = stringResource(str_company_legal_name),
+                placeholder = stringResource(str_company_legal_name),
                 singleLine = true,
                 isError = initializationUiFormState.uiFormLegalNameError != null,
                 errorMessage = initializationUiFormState.uiFormLegalNameError
@@ -412,8 +451,8 @@ private fun InputManualForm(
             TextInput(
                 value = initializationUiFormState.uiFormCommonName,
                 onValueChange = { onUiFormCommonNameChanged(it) },
-                label = stringResource(R.string.str_company_common_name),
-                placeholder = stringResource(R.string.str_company_common_name),
+                label = stringResource(str_company_common_name),
+                placeholder = stringResource(str_company_common_name),
                 singleLine = true,
                 isError = initializationUiFormState.uiFormCommonNameError != null,
                 errorMessage = initializationUiFormState.uiFormCommonNameError
@@ -430,7 +469,7 @@ private fun InputManualForm(
                             onUiFormSubmitInitManual.invoke(
                                 BizProfileSummary(
                                     seqId = 0,
-                                    genId = ULID.randomULID(),
+                                    genId = randomULID(),
                                     bizName = BizName(
                                         legalName = initializationUiFormState.uiFormLegalName,
                                         commonName = initializationUiFormState.uiFormCommonName,
@@ -440,15 +479,15 @@ private fun InputManualForm(
                                 )
                             )
                         },
-                        icon = ImageVector.vectorResource(id = CustomIcons.Emotion.neutral),
-                        text = stringResource(id = R.string.str_save)
+                        icon = ImageVector.vectorResource(id = neutral),
+                        text = stringResource(id = str_save)
                     )
                 }
                 AppIconButton(
                     modifier = Modifier.weight(if(initializationUiFormState.uiFormEnableSubmitBtn){0.5f}else{1.0f}),
                     onClick = onUiFormCancelInitManual,
-                    icon = ImageVector.vectorResource(id = CustomIcons.Emotion.neutral),
-                    text = stringResource(id = R.string.str_cancel)
+                    icon = ImageVector.vectorResource(id = neutral),
+                    text = stringResource(id = str_cancel)
                 )
             }
         }
