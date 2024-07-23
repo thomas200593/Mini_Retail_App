@@ -1,6 +1,6 @@
 package com.thomas200593.mini_retail_app.core.design_system.util
 
-import com.thomas200593.mini_retail_app.features.app_conf._gen_timezone.entity.Timezone
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_timezone.entity.Timezone
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.time.Instant

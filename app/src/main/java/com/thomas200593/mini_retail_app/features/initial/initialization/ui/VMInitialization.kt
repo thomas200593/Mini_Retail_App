@@ -10,7 +10,7 @@ import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Error
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Loading
 import com.thomas200593.mini_retail_app.core.ui.component.CustomForm.Component.UseCase.InputFieldValidation.RegularTextValidation
-import com.thomas200593.mini_retail_app.features.app_conf._gen_language.repository.RepoConfGenLanguage
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_language.repository.RepoConfGenLanguage
 import com.thomas200593.mini_retail_app.features.initial.initialization.domain.UCGetInitializationData
 import com.thomas200593.mini_retail_app.features.initial.initialization.domain.UCSetDefaultInitialBizProfile
 import com.thomas200593.mini_retail_app.features.initial.initialization.entity.InitializationUiFormState

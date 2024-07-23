@@ -1,7 +1,7 @@
 package com.thomas200593.mini_retail_app.core.data.local.database.entity_common
 
 import androidx.room.TypeConverter
-import com.thomas200593.mini_retail_app.features.app_conf._gen_country.entity.Country
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.entity.Country
 import kotlinx.serialization.*
 import kotlinx.serialization.json.Json
 import ulid.ULID.Companion.randomULID

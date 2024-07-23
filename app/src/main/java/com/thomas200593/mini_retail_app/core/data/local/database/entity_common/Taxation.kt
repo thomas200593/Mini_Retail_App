@@ -1,6 +1,6 @@
 package com.thomas200593.mini_retail_app.core.data.local.database.entity_common
 
-import com.thomas200593.mini_retail_app.features.app_conf._gen_country.entity.Country
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.entity.Country
 import kotlinx.serialization.Serializable
 
 @Serializable

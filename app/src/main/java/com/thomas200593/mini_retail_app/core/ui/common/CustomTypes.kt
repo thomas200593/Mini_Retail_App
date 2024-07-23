@@ -5,7 +5,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import com.thomas200593.mini_retail_app.features.app_conf._gen_font_size.entity.FontSize
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_font_size.entity.FontSize
 
 object CustomTypes{
     private const val LINE_HEIGHT_MULTIPLIER = 1.15

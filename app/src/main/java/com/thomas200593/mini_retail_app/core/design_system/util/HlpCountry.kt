@@ -1,6 +1,6 @@
 package com.thomas200593.mini_retail_app.core.design_system.util
 
-import com.thomas200593.mini_retail_app.features.app_conf._gen_country.entity.Country
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.entity.Country
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.Locale
