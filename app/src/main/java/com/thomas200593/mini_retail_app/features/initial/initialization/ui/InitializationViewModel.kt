@@ -10,8 +10,8 @@ import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
 import com.thomas200593.mini_retail_app.core.ui.component.CustomForm.Component.UseCase.InputFieldValidation
 import com.thomas200593.mini_retail_app.features.app_conf._g_language.repository.RepositoryAppCfgGeneralLanguage
-import com.thomas200593.mini_retail_app.features.initial.initialization.domain.GetInitializationDataUseCase
-import com.thomas200593.mini_retail_app.features.initial.initialization.domain.SetDefaultInitialBizProfileUseCase
+import com.thomas200593.mini_retail_app.features.initial.initialization.domain.UCGetInitializationData
+import com.thomas200593.mini_retail_app.features.initial.initialization.domain.UCSetDefaultInitialBizProfile
 import com.thomas200593.mini_retail_app.features.initial.initialization.entity.InitializationUiFormState
 import com.thomas200593.mini_retail_app.features.initial.initialization.entity.InitializationUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,9 +25,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class InitializationViewModel @Inject constructor(
-    private val getInitializationDataUseCase: GetInitializationDataUseCase,
+    private val UCGetInitializationData: UCGetInitializationData,
     private val repositoryAppCfgGeneralLanguage: RepositoryAppCfgGeneralLanguage,
-    private val setDefaultUseCase: SetDefaultInitialBizProfileUseCase,
+    private val setDefaultUseCase: UCSetDefaultInitialBizProfile,
     @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
 ): ViewModel(){
     var uiState = mutableStateOf(
@@ -42,7 +42,7 @@ class InitializationViewModel @Inject constructor(
         when(event){
             InitializationUiEvent.OnOpen -> viewModelScope.launch(ioDispatcher) {
                 uiState.value = uiState.value.copy(initializationData = ResourceState.Loading)
-                getInitializationDataUseCase.invoke().flowOn(ioDispatcher)
+                UCGetInitializationData.invoke().flowOn(ioDispatcher)
                     .catch { error -> uiState.value = uiState.value.copy(initializationData = ResourceState.Error(error)) }
                     .collectLatest{ initializationData -> uiState.value = uiState.value.copy(initializationData = initializationData) }
             }

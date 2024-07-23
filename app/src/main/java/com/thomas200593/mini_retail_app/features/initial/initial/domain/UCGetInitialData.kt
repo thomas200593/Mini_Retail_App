@@ -1,7 +1,7 @@
 package com.thomas200593.mini_retail_app.features.initial.initial.domain
 
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatcher
-import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers
+import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers.Dispatchers.IO
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Error
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Success
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.repository.RepoAppConf
@@ -17,13 +17,13 @@ import javax.inject.Inject
 
 class UCGetInitialData @Inject constructor(
     private val repoAuth: RepoAuth,
-    private val appCfgRepository: RepoAppConf,
-    @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
+    private val repoAppConf: RepoAppConf,
+    @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
 ){
     operator fun invoke(): Flow<Success<Initial>> = combine(
         flow = repoAuth.authSessionToken,
-        flow2 = appCfgRepository.configCurrent,
-        flow3 = appCfgRepository.firstTimeStatus
+        flow2 = repoAppConf.configCurrent,
+        flow3 = repoAppConf.firstTimeStatus
     ){ authSession, configCurrent, firstTimeStatus ->
         Success(
             data = Initial(
