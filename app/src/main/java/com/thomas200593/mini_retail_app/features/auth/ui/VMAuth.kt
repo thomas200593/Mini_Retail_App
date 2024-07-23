@@ -37,11 +37,8 @@ class VMAuth @Inject constructor(
     fun verifyAndSaveAuthSession(authSessionToken: AuthSessionToken) = viewModelScope.launch(ioDispatcher) {
         updateAuthSIWGButtonState(true)
         _authSessionTokenState.value = Loading
-        if(ucValidateAuthSession.invoke(authSessionToken)){
-            _authSessionTokenState.value = Success(authSessionToken)
-        }else{
-            clearAuthSessionToken()
-        }
+        if(ucValidateAuthSession.invoke(authSessionToken)) { _authSessionTokenState.value = Success(authSessionToken) }
+        else { clearAuthSessionToken() }
     }
 
     fun updateAuthSIWGButtonState(authState: Boolean) =

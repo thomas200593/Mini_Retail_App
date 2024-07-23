@@ -8,7 +8,7 @@ import com.thomas200593.mini_retail_app.app.navigation.NavGraph
 import com.thomas200593.mini_retail_app.app.navigation.NavGraph.G_AUTH
 import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs.Auth
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.navigation.navGraphAppConfig
-import com.thomas200593.mini_retail_app.features.auth.ui.AuthScreen
+import com.thomas200593.mini_retail_app.features.auth.ui.ScrAuth
 import com.thomas200593.mini_retail_app.features.dashboard.navigation.navGraphDashboard
 
 fun NavGraphBuilder.navGraphAuth() {
@@ -18,7 +18,7 @@ fun NavGraphBuilder.navGraphAuth() {
     ){
         composable(
             route = Auth.route
-        ){ AuthScreen() }
+        ){ ScrAuth() }
         navGraphAppConfig()
         navGraphDashboard()
     }
