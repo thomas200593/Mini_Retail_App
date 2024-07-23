@@ -22,6 +22,7 @@ import com.thomas200593.mini_retail_app.core.design_system.util.HlpTimezone.TIME
 import com.thomas200593.mini_retail_app.features.app_conf._g_dynamic_color.entity.DynamicColor
 import com.thomas200593.mini_retail_app.features.app_conf._g_dynamic_color.entity.DynamicColor.DISABLED
 import com.thomas200593.mini_retail_app.features.app_conf._g_font_size.entity.FontSize
+import com.thomas200593.mini_retail_app.features.app_conf._g_font_size.entity.FontSize.MEDIUM
 import com.thomas200593.mini_retail_app.features.app_conf._g_language.entity.Language
 import com.thomas200593.mini_retail_app.features.app_conf._g_language.entity.Language.EN
 import com.thomas200593.mini_retail_app.features.app_conf._g_theme.entity.Theme
@@ -90,7 +91,7 @@ class DataStorePreferences @Inject constructor(
             dynamicColor = data[dsKeyDynamicColor]
                 ?.let { dynamicColor -> DynamicColor.valueOf(dynamicColor) } ?: DISABLED,
             fontSize = data[dsKeyFontSize]
-                ?.let { fontSize -> FontSize.valueOf(fontSize) } ?: FontSize.MEDIUM,
+                ?.let { fontSize -> FontSize.valueOf(fontSize) } ?: MEDIUM,
             language = data[dsKeyLanguage]
                 ?.let { language -> Language.valueOf(language) } ?: EN,
             timezone = data[dsKeyTimezone]
