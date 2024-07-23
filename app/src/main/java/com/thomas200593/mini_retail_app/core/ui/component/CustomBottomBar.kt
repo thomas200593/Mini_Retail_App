@@ -10,7 +10,7 @@ import androidx.compose.material3.NavigationBarItemColors
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.Transparent
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -18,8 +18,11 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import com.thomas200593.mini_retail_app.app.navigation.DestTopLevel
+import com.thomas200593.mini_retail_app.core.ui.component.CustomBottomBar.BottomNavigationBarDefaults.navigationContentColor
+import com.thomas200593.mini_retail_app.core.ui.component.CustomBottomBar.BottomNavigationBarDefaults.navigationIndicatorColor
+import com.thomas200593.mini_retail_app.core.ui.component.CustomBottomBar.BottomNavigationBarDefaults.navigationSelectedItemColor
 
-object BottomBar {
+object CustomBottomBar {
     @Composable
     fun BottomBar(
         destinations: List<DestTopLevel>,
@@ -61,7 +64,7 @@ object BottomBar {
     ) {
         NavigationBar(
             modifier = modifier,
-            contentColor = BottomNavigationBarDefaults.navigationContentColor(),
+            contentColor = navigationContentColor(),
             tonalElevation = 0.dp,
             content = content
         )
@@ -87,13 +90,13 @@ object BottomBar {
             label = label,
             alwaysShowLabel = alwaysShowLabel,
             colors = NavigationBarItemColors(
-                selectedIconColor = BottomNavigationBarDefaults.navigationSelectedItemColor(),
-                unselectedIconColor = BottomNavigationBarDefaults.navigationContentColor(),
-                selectedTextColor = BottomNavigationBarDefaults.navigationSelectedItemColor(),
-                unselectedTextColor = BottomNavigationBarDefaults.navigationContentColor(),
-                selectedIndicatorColor = BottomNavigationBarDefaults.navigationIndicatorColor(),
-                disabledIconColor = Color.Transparent,
-                disabledTextColor = Color.Transparent
+                selectedIconColor = navigationSelectedItemColor(),
+                unselectedIconColor = navigationContentColor(),
+                selectedTextColor = navigationSelectedItemColor(),
+                unselectedTextColor = navigationContentColor(),
+                selectedIndicatorColor = navigationIndicatorColor(),
+                disabledIconColor = Transparent,
+                disabledTextColor = Transparent
             )
         )
     }

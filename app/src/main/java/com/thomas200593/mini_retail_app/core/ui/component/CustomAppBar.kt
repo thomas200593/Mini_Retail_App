@@ -21,16 +21,14 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.LocalOwnersProvider
 import kotlinx.coroutines.flow.filterNot
 
-object AppBar {
+object CustomAppBar {
     @Composable
     fun TopAppBar(navController: NavController){ AppBar(navController = navController) }
 
     @Composable
     fun ProvideTopAppBarAction(actions: @Composable RowScope.() -> Unit){
-        if(
-            LocalViewModelStoreOwner.current == null ||
-            LocalViewModelStoreOwner.current !is NavBackStackEntry
-        ){ return }
+        if(LocalViewModelStoreOwner.current == null ||
+            LocalViewModelStoreOwner.current !is NavBackStackEntry) { return }
         val actionViewModel = viewModel(initializer = { TopAppBarViewModel() })
         DisposableEffect(key1 = Unit) {
             actionViewModel.actionState = actions

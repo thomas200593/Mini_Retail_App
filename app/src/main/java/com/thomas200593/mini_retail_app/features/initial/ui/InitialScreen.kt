@@ -15,8 +15,8 @@ import com.thomas200593.mini_retail_app.app.navigation.NavGraph
 import com.thomas200593.mini_retail_app.app.ui.StateApp
 import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
-import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.ErrorScreen
-import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.LoadingScreen
+import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.ErrorScreen
+import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.LoadingScreen
 import com.thomas200593.mini_retail_app.features.onboarding.entity.OnboardingStatus
 import com.thomas200593.mini_retail_app.features.auth.entity.OAuth2UserMetadata
 import com.thomas200593.mini_retail_app.features.auth.entity.OAuthProvider

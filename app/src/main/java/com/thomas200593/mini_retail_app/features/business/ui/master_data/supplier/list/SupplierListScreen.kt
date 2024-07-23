@@ -53,8 +53,8 @@ import com.thomas200593.mini_retail_app.app.ui.StateApp
 import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
 import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.App.app
 import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.Data.master_data
-import com.thomas200593.mini_retail_app.core.ui.component.AppBar
-import com.thomas200593.mini_retail_app.core.ui.component.Searching.SearchToolBar
+import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar
+import com.thomas200593.mini_retail_app.core.ui.component.CustomSearching.SearchToolBar
 import com.thomas200593.mini_retail_app.features.business.entity.supplier.Supplier
 import com.thomas200593.mini_retail_app.features.business.entity.supplier.dto.SortSupplier
 
@@ -89,7 +89,7 @@ private fun TopAppBar(
     onNavigateBack: () -> Unit,
     testGen: () -> Unit
 ) {
-    AppBar.ProvideTopAppBarNavigationIcon {
+    CustomAppBar.ProvideTopAppBarNavigationIcon {
         Surface(
             onClick = onNavigateBack,
             modifier = Modifier
@@ -101,7 +101,7 @@ private fun TopAppBar(
             )
         }
     }
-    AppBar.ProvideTopAppBarTitle {
+    CustomAppBar.ProvideTopAppBarTitle {
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
@@ -119,7 +119,7 @@ private fun TopAppBar(
             )
         }
     }
-    AppBar.ProvideTopAppBarAction {
+    CustomAppBar.ProvideTopAppBarAction {
         Row(
             modifier = Modifier.padding(end = 20.dp),
             verticalAlignment = Alignment.CenterVertically,

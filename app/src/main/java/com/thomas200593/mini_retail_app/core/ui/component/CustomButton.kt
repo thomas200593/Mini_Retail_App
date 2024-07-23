@@ -16,7 +16,8 @@ import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ButtonDefaults.IconSize
+import androidx.compose.material3.ButtonDefaults.buttonColors
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -35,9 +36,9 @@ import androidx.compose.ui.graphics.Color.Companion.Unspecified
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.font.FontWeight.Companion.Bold
+import androidx.compose.ui.text.style.TextAlign.Companion.Center
+import androidx.compose.ui.text.style.TextOverflow.Companion.Ellipsis
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.credentials.ClearCredentialStateRequest
@@ -52,20 +53,16 @@ import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential.Co
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential.Companion.createFrom
 import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
 import com.thomas200593.mini_retail_app.BuildConfig
-import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.Google.google_logo
-import com.thomas200593.mini_retail_app.core.design_system.util.HlpJwt
+import com.thomas200593.mini_retail_app.core.design_system.util.HlpJwt.GoogleOAuth2
 import com.thomas200593.mini_retail_app.core.design_system.util.HlpJwt.GoogleOAuth2.validateToken
+import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.Google.google_logo
 import com.thomas200593.mini_retail_app.features.auth.entity.AuthSessionToken
 import com.thomas200593.mini_retail_app.features.auth.entity.OAuthProvider.GOOGLE
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-object Button {
-    private val TAG_COMMON = Common::class.simpleName
+object CustomButton {
     object Common{
-        @Composable
-        fun AppButton(){}
-
         @Composable
         fun AppIconButton(
             modifier: Modifier = Modifier,
@@ -74,17 +71,15 @@ object Button {
             text: String = String(),
             shape: Shape = MaterialTheme.shapes.medium,
             padding: Dp = 8.dp,
-            containerColor: Color = ButtonDefaults.buttonColors().containerColor,
-            contentColor: Color = ButtonDefaults.buttonColors().contentColor,
-            disabledContainerColor: Color = ButtonDefaults.buttonColors().disabledContainerColor,
-            disabledContentColor: Color = ButtonDefaults.buttonColors().disabledContentColor
+            containerColor: Color = buttonColors().containerColor,
+            contentColor: Color = buttonColors().contentColor,
+            disabledContainerColor: Color = buttonColors().disabledContainerColor,
+            disabledContentColor: Color = buttonColors().disabledContentColor
         ){
             Button(
                 onClick = onClick,
                 shape = shape,
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(padding),
+                modifier = modifier.fillMaxWidth().padding(padding),
                 colors = ButtonColors(
                     containerColor = containerColor,
                     contentColor = contentColor,
@@ -98,36 +93,23 @@ object Button {
                     horizontalArrangement = Arrangement.Center
                 ) {
                     Icon(
-                        modifier = Modifier.sizeIn(maxWidth = ButtonDefaults.IconSize),
+                        modifier = Modifier.sizeIn(maxWidth = IconSize),
                         imageVector = icon,
                         contentDescription = null
                     )
                     Text(
                         modifier = Modifier.fillMaxWidth(),
                         text = text,
-                        textAlign = TextAlign.Center,
-                        fontWeight = FontWeight.Bold,
+                        textAlign = Center,
+                        fontWeight = Bold,
                         maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
+                        overflow = Ellipsis
                     )
                 }
             }
         }
-
-        @Composable
-        fun AppOutlinedButton(){}
-
-        @Composable
-        fun AppOutlinedIconButton(){}
-
-        @Composable
-        fun AppTextButton(){}
-
-        @Composable
-        fun AppTextIconButton(){}
     }
 
-    private val TAG_GOOGLE = Google::class.simpleName
     object Google{
         @Composable
         fun SignInWithGoogle(
@@ -159,23 +141,19 @@ object Button {
                 shadowElevation = btnShadowElevation
             ) {
                 Row(
-                    modifier = Modifier
-                        .padding(10.dp)
-                        .animateContentSize(
-                            animationSpec = tween(
-                                durationMillis = 300,
-                                easing = LinearOutSlowInEasing
-                            )
-                        ),
+                    modifier = Modifier.padding(10.dp).animateContentSize(
+                        animationSpec = tween(
+                            durationMillis = 300,
+                            easing = LinearOutSlowInEasing
+                        )
+                    ),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center
                 ){
                     Icon(
                         imageVector = ImageVector.vectorResource(id = googleIcon),
                         contentDescription = null,
-                        modifier = Modifier
-                            .size(20.dp)
-                            .padding(start = 2.dp),
+                        modifier = Modifier.size(20.dp).padding(start = 2.dp),
                         tint = Unspecified
                     )
                     Text(
@@ -205,7 +183,7 @@ object Button {
                 val credentialManager = create(activityContext)
                 val googleIdOptions = GetGoogleIdOption.Builder()
                     .setFilterByAuthorizedAccounts(false)
-                    .setNonce(HlpJwt.GoogleOAuth2.generateTokenNonce())
+                    .setNonce(GoogleOAuth2.generateTokenNonce())
                     .setAutoSelectEnabled(false)
                     .setServerClientId(BuildConfig.GOOGLE_AUTH_WEB_ID)
                     .build()

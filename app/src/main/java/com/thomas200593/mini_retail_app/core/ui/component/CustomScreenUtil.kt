@@ -7,7 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.platform.LocalContext
 
-object ScreenUtil {
+object CustomScreenUtil {
     @Composable
     fun LockScreenOrientation(orientation: Int){
         val context = LocalContext.current

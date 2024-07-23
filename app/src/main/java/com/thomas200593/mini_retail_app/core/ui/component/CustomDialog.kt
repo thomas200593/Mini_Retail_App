@@ -2,15 +2,16 @@ package com.thomas200593.mini_retail_app.core.ui.component
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.Icons.Default
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.AlertDialogDefaults
+import androidx.compose.material3.AlertDialogDefaults.TonalElevation
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -22,9 +23,15 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.window.SecureFlagPolicy
-import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.Emotion
+import androidx.compose.ui.window.SecureFlagPolicy.Inherit
+import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.Emotion.sad
+import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AlertDialogContext.CONFIRMATION
+import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AlertDialogContext.ERROR
+import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AlertDialogContext.INFORMATION
+import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AlertDialogContext.SUCCESS
+import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AlertDialogContext.WARNING
 
-object Dialog {
+object CustomDialog {
     /**
      * Enum class that defines different contexts for the [AppAlertDialog].
      * Each context specifies the purpose of the dialog and affects the icon and color scheme used.
@@ -64,7 +71,7 @@ object Dialog {
     fun AppAlertDialog(
         modifier: Modifier = Modifier,
         showDialog: MutableState<Boolean>,
-        dialogContext: AlertDialogContext = AlertDialogContext.INFORMATION,
+        dialogContext: AlertDialogContext = INFORMATION,
         useConfirmButton: Boolean = false,
         confirmButton: (@Composable (()->Unit))? = null,
         useDismissButton: Boolean = false,
@@ -79,9 +86,9 @@ object Dialog {
         dlgPropDismissOnBackPress: Boolean = false,
         dlgPropDecorFitsSysWindows: Boolean = true,
         dlgPropUsePlatformDefaultWidth: Boolean = true,
-        dlgPropSecureFlagPolicy: SecureFlagPolicy = SecureFlagPolicy.Inherit,
+        dlgPropSecureFlagPolicy: SecureFlagPolicy = Inherit,
         dlgBoxShape: Shape = MaterialTheme.shapes.medium,
-        dlgBoxTonalElev: Dp = AlertDialogDefaults.TonalElevation
+        dlgBoxTonalElev: Dp = TonalElevation
     ){
         if(showDialog.value){
             AlertDialog(
@@ -96,69 +103,69 @@ object Dialog {
                 shape = dlgBoxShape,
                 onDismissRequest = { showDialog.value = false },
                 titleContentColor = when(dialogContext){
-                    AlertDialogContext.INFORMATION -> { MaterialTheme.colorScheme.onPrimaryContainer }
-                    AlertDialogContext.WARNING -> { MaterialTheme.colorScheme.onSurface }
-                    AlertDialogContext.ERROR -> { MaterialTheme.colorScheme.onErrorContainer }
-                    AlertDialogContext.SUCCESS -> { MaterialTheme.colorScheme.onTertiaryContainer }
-                    AlertDialogContext.CONFIRMATION -> { MaterialTheme.colorScheme.onSecondaryContainer }
+                    INFORMATION -> { colorScheme.onPrimaryContainer }
+                    WARNING -> { colorScheme.onSurface }
+                    ERROR -> { colorScheme.onErrorContainer }
+                    SUCCESS -> { colorScheme.onTertiaryContainer }
+                    CONFIRMATION -> { colorScheme.onSecondaryContainer }
                 },
                 icon = {
                     if(showIcon){
                         Surface(
                             color = when(dialogContext){
-                                AlertDialogContext.INFORMATION -> { MaterialTheme.colorScheme.primaryContainer }
-                                AlertDialogContext.WARNING -> { MaterialTheme.colorScheme.surfaceContainerHighest }
-                                AlertDialogContext.ERROR -> { MaterialTheme.colorScheme.errorContainer }
-                                AlertDialogContext.SUCCESS -> { MaterialTheme.colorScheme.tertiaryContainer }
-                                AlertDialogContext.CONFIRMATION -> { MaterialTheme.colorScheme.secondaryContainer }
+                                INFORMATION -> { colorScheme.primaryContainer }
+                                WARNING -> { colorScheme.surfaceContainerHighest }
+                                ERROR -> { colorScheme.errorContainer }
+                                SUCCESS -> { colorScheme.tertiaryContainer }
+                                CONFIRMATION -> { colorScheme.secondaryContainer }
                             },
                             contentColor = when(dialogContext){
-                                AlertDialogContext.INFORMATION -> { MaterialTheme.colorScheme.onPrimaryContainer }
-                                AlertDialogContext.WARNING -> { MaterialTheme.colorScheme.onSurface }
-                                AlertDialogContext.ERROR -> { MaterialTheme.colorScheme.onErrorContainer }
-                                AlertDialogContext.SUCCESS -> { MaterialTheme.colorScheme.onTertiaryContainer }
-                                AlertDialogContext.CONFIRMATION -> { MaterialTheme.colorScheme.onSecondaryContainer }
+                                INFORMATION -> { colorScheme.onPrimaryContainer }
+                                WARNING -> { colorScheme.onSurface }
+                                ERROR -> { colorScheme.onErrorContainer }
+                                SUCCESS -> { colorScheme.onTertiaryContainer }
+                                CONFIRMATION -> { colorScheme.onSecondaryContainer }
                             },
                             modifier = Modifier.size(48.dp)
                         ) {
                             if(icon != null){ Image(imageVector = icon, contentDescription = null) }
                             else{
                                 when(dialogContext){
-                                    AlertDialogContext.INFORMATION -> 
-                                        { Icon(imageVector = Icons.Default.Info, contentDescription = null) }
-                                    AlertDialogContext.WARNING ->
-                                        { Icon(imageVector = Icons.Default.Warning, contentDescription = null) }
-                                    AlertDialogContext.ERROR ->
-                                        { Icon(imageVector = ImageVector.vectorResource(id = Emotion.sad), contentDescription = null) }
-                                    AlertDialogContext.SUCCESS ->
-                                        { Icon(imageVector = Icons.Default.CheckCircle, contentDescription = null) }
-                                    AlertDialogContext.CONFIRMATION ->
-                                        { Icon(imageVector = Icons.Default.Create, contentDescription = null) }
+                                    INFORMATION ->
+                                        { Icon(imageVector = Default.Info, contentDescription = null) }
+                                    WARNING ->
+                                        { Icon(imageVector = Default.Warning, contentDescription = null) }
+                                    ERROR ->
+                                        { Icon(imageVector = ImageVector.vectorResource(id = sad), contentDescription = null) }
+                                    SUCCESS ->
+                                        { Icon(imageVector = Default.CheckCircle, contentDescription = null) }
+                                    CONFIRMATION ->
+                                        { Icon(imageVector = Default.Create, contentDescription = null) }
                                 }
                             }
                         }
                     }
                 },
                 containerColor = when(dialogContext){
-                    AlertDialogContext.INFORMATION -> { MaterialTheme.colorScheme.primaryContainer }
-                    AlertDialogContext.WARNING -> { MaterialTheme.colorScheme.surfaceContainerHighest }
-                    AlertDialogContext.ERROR -> { MaterialTheme.colorScheme.errorContainer }
-                    AlertDialogContext.SUCCESS -> { MaterialTheme.colorScheme.tertiaryContainer }
-                    AlertDialogContext.CONFIRMATION -> { MaterialTheme.colorScheme.secondaryContainer }
+                    INFORMATION -> { colorScheme.primaryContainer }
+                    WARNING -> { colorScheme.surfaceContainerHighest }
+                    ERROR -> { colorScheme.errorContainer }
+                    SUCCESS -> { colorScheme.tertiaryContainer }
+                    CONFIRMATION -> { colorScheme.secondaryContainer }
                 },
                 iconContentColor = when(dialogContext){
-                    AlertDialogContext.INFORMATION -> { MaterialTheme.colorScheme.onPrimaryContainer }
-                    AlertDialogContext.WARNING -> { MaterialTheme.colorScheme.onSurface }
-                    AlertDialogContext.ERROR -> { MaterialTheme.colorScheme.onErrorContainer }
-                    AlertDialogContext.SUCCESS -> { MaterialTheme.colorScheme.onTertiaryContainer }
-                    AlertDialogContext.CONFIRMATION -> { MaterialTheme.colorScheme.onSecondaryContainer }
+                    INFORMATION -> { colorScheme.onPrimaryContainer }
+                    WARNING -> { colorScheme.onSurface }
+                    ERROR -> { colorScheme.onErrorContainer }
+                    SUCCESS -> { colorScheme.onTertiaryContainer }
+                    CONFIRMATION -> { colorScheme.onSecondaryContainer }
                 },
                 textContentColor = when(dialogContext){
-                    AlertDialogContext.INFORMATION -> { MaterialTheme.colorScheme.onPrimaryContainer }
-                    AlertDialogContext.WARNING -> { MaterialTheme.colorScheme.onSurface }
-                    AlertDialogContext.ERROR -> { MaterialTheme.colorScheme.onErrorContainer }
-                    AlertDialogContext.SUCCESS -> { MaterialTheme.colorScheme.onTertiaryContainer }
-                    AlertDialogContext.CONFIRMATION -> { MaterialTheme.colorScheme.onSecondaryContainer }
+                    INFORMATION -> { colorScheme.onPrimaryContainer }
+                    WARNING -> { colorScheme.onSurface }
+                    ERROR -> { colorScheme.onErrorContainer }
+                    SUCCESS -> { colorScheme.onTertiaryContainer }
+                    CONFIRMATION -> { colorScheme.onSecondaryContainer }
                 },
                 tonalElevation = dlgBoxTonalElev,
                 title = { if(showTitle && (title != null)) { title() } },

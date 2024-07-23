@@ -7,7 +7,7 @@ import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen
 
 
-object Splashscreen {
+object CustomSplashscreen {
     fun setupSplashscreen(splashscreen: SplashScreen) {
         splashscreen.setOnExitAnimationListener { splashScreenView ->
             val slideBack = ofFloat(

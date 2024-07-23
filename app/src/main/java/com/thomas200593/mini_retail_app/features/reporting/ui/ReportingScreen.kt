@@ -19,7 +19,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons
-import com.thomas200593.mini_retail_app.core.ui.component.AppBar
+import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar
 import timber.log.Timber
 
 private const val TAG = "ReportingScreen"
@@ -34,7 +34,7 @@ fun ReportingScreen(){
 
 @Composable
 private fun TopAppBar() {
-    AppBar.ProvideTopAppBarTitle {
+    CustomAppBar.ProvideTopAppBarTitle {
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
@@ -53,7 +53,7 @@ private fun TopAppBar() {
             )
         }
     }
-    AppBar.ProvideTopAppBarAction {
+    CustomAppBar.ProvideTopAppBarAction {
         Row(
             modifier = Modifier.padding(end = 20.dp),
             verticalAlignment = Alignment.CenterVertically,

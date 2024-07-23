@@ -42,10 +42,10 @@ import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
 import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons
 import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.Setting.settings
-import com.thomas200593.mini_retail_app.core.ui.component.Button
-import com.thomas200593.mini_retail_app.core.ui.component.Button.Google.SignInWithGoogle
-import com.thomas200593.mini_retail_app.core.ui.component.Button.Google.handleClearCredential
-import com.thomas200593.mini_retail_app.core.ui.component.ScreenUtil
+import com.thomas200593.mini_retail_app.core.ui.component.CustomButton
+import com.thomas200593.mini_retail_app.core.ui.component.CustomButton.Google.SignInWithGoogle
+import com.thomas200593.mini_retail_app.core.ui.component.CustomButton.Google.handleClearCredential
+import com.thomas200593.mini_retail_app.core.ui.component.CustomScreenUtil
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.navigation.navigateToAppConfig
 import com.thomas200593.mini_retail_app.features.initial.navigation.navigateToInitial
 import com.thomas200593.mini_retail_app.work.workers.session_monitor.manager.ManagerWorkSessionMonitor
@@ -56,7 +56,7 @@ fun AuthScreen(
     viewModel: AuthViewModel = hiltViewModel(),
     stateApp: StateApp = LocalStateApp.current
 ){
-    ScreenUtil.LockScreenOrientation(orientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
+    CustomScreenUtil.LockScreenOrientation(orientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
     val activityContext = (LocalContext.current as Activity)
     val appContext = LocalContext.current.applicationContext
     val coroutineScope = rememberCoroutineScope()
@@ -96,7 +96,7 @@ fun AuthScreen(
         onSignInWithGoogleButton = {
             coroutineScope.launch {
                 viewModel.updateAuthSIWGButtonState(true)
-                Button.Google.handleSignIn(
+                CustomButton.Google.handleSignIn(
                     activityContext = activityContext,
                     coroutineScope = coroutineScope,
                     onResultReceived = { viewModel.verifyAndSaveAuthSession(it) },

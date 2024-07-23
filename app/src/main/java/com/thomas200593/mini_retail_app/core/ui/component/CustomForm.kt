@@ -17,7 +17,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
@@ -32,22 +33,26 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.ImeAction.Companion.Done
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.KeyboardType.Companion.NumberPassword
+import androidx.compose.ui.text.input.KeyboardType.Companion.Password
+import androidx.compose.ui.text.input.KeyboardType.Companion.Text
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.input.VisualTransformation.Companion.None
+import androidx.compose.ui.text.style.TextAlign.Companion.Start
 import androidx.compose.ui.unit.dp
 import com.thomas200593.mini_retail_app.R
+import com.thomas200593.mini_retail_app.core.ui.component.CustomForm.Component.UseCase.UiText
+import com.thomas200593.mini_retail_app.core.ui.component.CustomForm.Component.UseCase.UiText.DynamicString
+import com.thomas200593.mini_retail_app.core.ui.component.CustomForm.Component.UseCase.UiText.StringResource
 
-object Form{
+object CustomForm{
     object Component{
         object UseCase{
             sealed class UiText{
                 data class DynamicString(val value: String): UiText()
-                class StringResource(
-                    @StringRes val resId: Int,
-                    vararg val args: Any
-                ): UiText()
+                class StringResource(@StringRes val resId: Int, vararg val args: Any): UiText()
 
                 @Composable
                 fun asString(): String = when(this){
@@ -84,40 +89,25 @@ object Form{
                     ): ValidationResult {
                         required?.let {
                             if (it && input.isEmpty()) {
-                                return ValidationResult(
-                                    isSuccess = false,
-                                    errorMessage = UiText.StringResource(R.string.str_field_required)
-                                )
+                                return ValidationResult(isSuccess = false, errorMessage = StringResource(R.string.str_field_required))
                             }
                         }
                         minLength?.let {
                             if (input.length < it) {
-                                return ValidationResult(
-                                    isSuccess = false,
-                                    errorMessage = UiText.DynamicString("Min: $minLength char")
-                                )
+                                return ValidationResult(isSuccess = false, errorMessage = DynamicString("Min: $minLength char"))
                             }
                         }
                         maxLength?.let {
                             if (input.length > it) {
-                                return ValidationResult(
-                                    isSuccess = false,
-                                    errorMessage = UiText.DynamicString("Max: $maxLength char")
-                                )
+                                return ValidationResult(isSuccess = false, errorMessage = DynamicString("Max: $maxLength char"))
                             }
                         }
                         regex?.let {
                             if (!input.matches(it)) {
-                                return ValidationResult(
-                                    isSuccess = false,
-                                    errorMessage = UiText.DynamicString("Invalid format")
-                                )
+                                return ValidationResult(isSuccess = false, errorMessage = DynamicString("Invalid format"))
                             }
                         }
-                        return ValidationResult(
-                            isSuccess = true,
-                            errorMessage = null
-                        )
+                        return ValidationResult(isSuccess = true, errorMessage = null)
                     }
                 }
                 class NumberTextValidation: BaseValidation<String, ValidationResult>{
@@ -130,47 +120,29 @@ object Form{
                     ): ValidationResult {
                         required?.let {
                             if (it && input.isEmpty()) {
-                                return ValidationResult(
-                                    isSuccess = false,
-                                    errorMessage = UiText.StringResource(R.string.str_field_required)
-                                )
+                                return ValidationResult(isSuccess = false, errorMessage = StringResource(R.string.str_field_required))
                             }
                         }
                         val numberRegex = "^[0-9]+(\\.[0-9]+)?\$".toRegex()
                         if (!input.matches(numberRegex)) {
-                            return ValidationResult(
-                                isSuccess = false,
-                                errorMessage = UiText.StringResource(R.string.str_field_invalid_number)
-                            )
+                            return ValidationResult(isSuccess = false, errorMessage = StringResource(R.string.str_field_invalid_number))
                         }
                         minLength?.let {
                             if (input.length < it) {
-                                return ValidationResult(
-                                    isSuccess = false,
-                                    errorMessage = UiText.DynamicString("Min: $minLength char")
-                                )
+                                return ValidationResult(isSuccess = false, errorMessage = DynamicString("Min: $minLength char"))
                             }
                         }
                         maxLength?.let {
                             if (input.length > it) {
-                                return ValidationResult(
-                                    isSuccess = false,
-                                    errorMessage = UiText.DynamicString("Max: $maxLength char")
-                                )
+                                return ValidationResult(isSuccess = false, errorMessage = DynamicString("Max: $maxLength char"))
                             }
                         }
                         regex?.let {
                             if (!input.matches(it)) {
-                                return ValidationResult(
-                                    isSuccess = false,
-                                    errorMessage = UiText.DynamicString("Invalid format")
-                                )
+                                return ValidationResult(isSuccess = false, errorMessage = DynamicString("Invalid format"))
                             }
                         }
-                        return ValidationResult(
-                            isSuccess = true,
-                            errorMessage = null
-                        )
+                        return ValidationResult(isSuccess = true, errorMessage = null)
                     }
                 }
             }
@@ -179,15 +151,15 @@ object Form{
         @Composable
         fun TextInput(
             modifier: Modifier = Modifier,
-            keyboardType: KeyboardType = KeyboardType.Text,
-            imeAction: ImeAction = ImeAction.Done,
+            keyboardType: KeyboardType = Text,
+            imeAction: ImeAction = Done,
             label: String? = String(),
             placeholder: String? = String(),
             value: String,
             onValueChange: (String) -> Unit,
             singleLine: (Boolean) = true,
             maxLines: Int = 1,
-            errorMessage: UseCase.UiText? = null,
+            errorMessage: UiText? = null,
             isError: Boolean = false,
             isVisible: Boolean = false,
             leadingIcon: @Composable (() -> Unit)? = null,
@@ -197,23 +169,18 @@ object Form{
             val interactionSource = remember { MutableInteractionSource() }
             val isFocused by interactionSource.collectIsFocusedAsState()
             val focusRequester = remember { FocusRequester() }
-            val isTypePassword =
-                (
-                    keyboardType == KeyboardType.Password ||
-                    keyboardType == KeyboardType.NumberPassword
-                )
+            val isTypePassword = (keyboardType == Password || keyboardType == NumberPassword)
             val visualTransformation by rememberUpdatedState(
                 newValue = if(isTypePassword){
                     if(isVisible) { PasswordVisualTransformation() }
-                    else { VisualTransformation.None }
-                }
-                else{ VisualTransformation.None }
+                    else { None }
+                } else{ None }
             )
             val colorBorder by rememberUpdatedState(
                 newValue = when{
-                    isError -> { MaterialTheme.colorScheme.error }
-                    isFocused -> { MaterialTheme.colorScheme.primary }
-                    else -> { MaterialTheme.colorScheme.primary.copy(alpha = 0.3f) }
+                    isError -> { colorScheme.error }
+                    isFocused -> { colorScheme.primary }
+                    else -> { colorScheme.primary.copy(alpha = 0.3f) }
                 }
             )
             val shouldShowLabel by remember(value) { derivedStateOf { value.isNotEmpty() && !label.isNullOrBlank() } }
@@ -231,29 +198,23 @@ object Form{
                 ) {
                     Text(
                         text = labelText,
-                        color = MaterialTheme.colorScheme.primary,
-                        style = MaterialTheme.typography.labelSmall,
-                        textAlign = TextAlign.Start,
+                        color = colorScheme.primary,
+                        style = typography.labelSmall,
+                        textAlign = Start,
                         modifier = Modifier.fillMaxWidth()
                     )
                 }
                 BasicTextField(
                     modifier = modifier.fillMaxWidth(),
                     value = value,
-                    onValueChange = { newValue ->
-                        onValueChange(newValue)
-                    },
-                    textStyle = MaterialTheme.typography.bodySmall.copy(
-                        color = MaterialTheme.colorScheme.onSurface
-                    ),
+                    onValueChange = { newValue -> onValueChange(newValue) },
+                    textStyle = typography.bodySmall.copy(color = colorScheme.onSurface),
                     maxLines = maxLines,
                     singleLine = singleLine,
                     interactionSource = interactionSource,
                     visualTransformation = visualTransformation,
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = keyboardType, imeAction = imeAction
-                    ),
-                    cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
+                    keyboardOptions = KeyboardOptions(keyboardType = keyboardType, imeAction = imeAction),
+                    cursorBrush = SolidColor(colorScheme.primary),
                     decorationBox = { innerTextField ->
                         Row(verticalAlignment = Alignment.CenterVertically, modifier = modifier
                             .border(
@@ -262,20 +223,18 @@ object Form{
                                 color = colorBorder
                             )
                             .background(
-                                color = MaterialTheme.colorScheme.surface,
+                                color = colorScheme.surface,
                                 shape = RoundedCornerShape(8.dp)
                             )
                             .focusRequester(focusRequester)) {
                             if (leadingIcon != null) { leadingIcon() }
                             else { Spacer(modifier = Modifier.padding(8.dp)) }
-                            Box(modifier = Modifier
-                                .weight(1.0f)
-                                .padding(vertical = 16.dp)) {
+                            Box(modifier = Modifier.weight(1.0f).padding(vertical = 16.dp)) {
                                 if (value.isEmpty()) {
                                     Text(
                                         text = placeholderText,
-                                        style = MaterialTheme.typography.bodySmall,
-                                        color = MaterialTheme.colorScheme.inversePrimary,
+                                        style = typography.bodySmall,
+                                        color = colorScheme.inversePrimary,
                                     )
                                 }
                                 Box(modifier = Modifier.fillMaxWidth()) { innerTextField() }
@@ -288,9 +247,9 @@ object Form{
                 AnimatedVisibility(visible = isError) {
                     Text(
                         text = if (isError) { errorMessage!!.asString(context) } else { String() },
-                        color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.bodySmall,
-                        textAlign = TextAlign.Start,
+                        color = colorScheme.error,
+                        style = typography.bodySmall,
+                        textAlign = Start,
                         modifier = modifier.fillMaxWidth()
                     )
                 }

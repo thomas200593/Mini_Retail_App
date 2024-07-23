@@ -4,7 +4,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
-import com.thomas200593.mini_retail_app.core.ui.component.Form.Component.UseCase.UiText
+import com.thomas200593.mini_retail_app.core.ui.component.CustomForm.Component.UseCase.UiText
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.entity.AppConfig
 import com.thomas200593.mini_retail_app.features.app_conf._g_language.entity.Language
 import com.thomas200593.mini_retail_app.features.initial.ui.initialization.InitializationUiEvent

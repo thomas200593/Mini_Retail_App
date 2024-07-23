@@ -29,7 +29,7 @@ import com.thomas200593.mini_retail_app.core.ui.common.CustomThemes.ApplicationT
 import com.thomas200593.mini_retail_app.core.ui.common.CustomThemes.calculateInitialFontSize
 import com.thomas200593.mini_retail_app.core.ui.common.CustomThemes.shouldUseDarkTheme
 import com.thomas200593.mini_retail_app.core.ui.common.CustomThemes.shouldUseDynamicColor
-import com.thomas200593.mini_retail_app.core.ui.component.Splashscreen.setupSplashscreen
+import com.thomas200593.mini_retail_app.core.ui.component.CustomSplashscreen.setupSplashscreen
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach

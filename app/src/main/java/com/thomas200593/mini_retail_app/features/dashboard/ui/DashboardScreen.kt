@@ -31,8 +31,8 @@ import com.thomas200593.mini_retail_app.app.ui.StateApp
 import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
 import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
 import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons
-import com.thomas200593.mini_retail_app.core.ui.component.AppBar
-import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.LoadingScreen
+import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar
+import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.LoadingScreen
 import com.thomas200593.mini_retail_app.features.initial.navigation.navigateToInitial
 import timber.log.Timber
 
@@ -69,7 +69,7 @@ fun DashboardScreen(
 
 @Composable
 private fun TopAppBar() {
-    AppBar.ProvideTopAppBarTitle {
+    CustomAppBar.ProvideTopAppBarTitle {
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
@@ -88,7 +88,7 @@ private fun TopAppBar() {
             )
         }
     }
-    AppBar.ProvideTopAppBarAction {
+    CustomAppBar.ProvideTopAppBarAction {
         Row(
             modifier = Modifier.padding(end = 20.dp),
             verticalAlignment = Alignment.CenterVertically,

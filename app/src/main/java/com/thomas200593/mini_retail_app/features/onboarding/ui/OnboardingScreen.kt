@@ -37,10 +37,10 @@ import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.app.ui.StateApp
 import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
-import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.EmptyScreen
-import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.ErrorScreen
-import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.LoadingScreen
-import com.thomas200593.mini_retail_app.core.ui.component.ScreenUtil
+import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.EmptyScreen
+import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.ErrorScreen
+import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.LoadingScreen
+import com.thomas200593.mini_retail_app.core.ui.component.CustomScreenUtil
 import com.thomas200593.mini_retail_app.features.initial.navigation.navigateToInitial
 import com.thomas200593.mini_retail_app.features.onboarding.entity.Onboarding
 import com.thomas200593.mini_retail_app.features.onboarding.entity.Onboarding.Tags.TAG_ONBOARD_SCREEN_IMAGE_VIEW
@@ -56,7 +56,7 @@ fun OnboardingScreen(
     stateApp: StateApp = LocalStateApp.current
 ){
     Timber.d("Called: %s", TAG)
-    ScreenUtil.LockScreenOrientation(orientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
+    CustomScreenUtil.LockScreenOrientation(orientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
     val onboardingPages by viewModel.onboardingPages
     val currentPage by viewModel.currentPage.collectAsStateWithLifecycle()
     val isOnboardingFinished by viewModel.isOnboardingFinished.collectAsStateWithLifecycle()

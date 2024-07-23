@@ -8,7 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers.Dispatchers.IO
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
-import com.thomas200593.mini_retail_app.core.ui.component.Form.Component.UseCase.InputFieldValidation
+import com.thomas200593.mini_retail_app.core.ui.component.CustomForm.Component.UseCase.InputFieldValidation
 import com.thomas200593.mini_retail_app.features.app_conf._g_language.repository.RepositoryAppCfgGeneralLanguage
 import com.thomas200593.mini_retail_app.features.initial.domain.GetInitializationDataUseCase
 import com.thomas200593.mini_retail_app.features.initial.domain.SetDefaultInitialBizProfileUseCase

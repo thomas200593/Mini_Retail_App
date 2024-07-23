@@ -44,13 +44,13 @@ import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.AuditTrail
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
 import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons
-import com.thomas200593.mini_retail_app.core.ui.component.Button.Common.AppIconButton
-import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.EmptyScreen
-import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.ErrorScreen
-import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.LoadingScreen
-import com.thomas200593.mini_retail_app.core.ui.component.Dialog
-import com.thomas200593.mini_retail_app.core.ui.component.Dialog.AppAlertDialog
-import com.thomas200593.mini_retail_app.core.ui.component.Form.Component.TextInput
+import com.thomas200593.mini_retail_app.core.ui.component.CustomButton.Common.AppIconButton
+import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.EmptyScreen
+import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.ErrorScreen
+import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.LoadingScreen
+import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog
+import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AppAlertDialog
+import com.thomas200593.mini_retail_app.core.ui.component.CustomForm.Component.TextInput
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.entity.AppConfig
 import com.thomas200593.mini_retail_app.features.app_conf._g_language.entity.Language
 import com.thomas200593.mini_retail_app.features.business.entity.business_profile.BizName
@@ -74,7 +74,7 @@ fun InitializationScreen(
 
     AppAlertDialog(
         showDialog = uiState.value.uiEnableLoadingDialog,
-        dialogContext = Dialog.AlertDialogContext.INFORMATION,
+        dialogContext = CustomDialog.AlertDialogContext.INFORMATION,
         showIcon = true,
         showTitle = true,
         title = { Text(stringResource(id = R.string.str_loading)) },
@@ -84,7 +84,7 @@ fun InitializationScreen(
 
     AppAlertDialog(
         showDialog = uiState.value.uiEnableSuccessDialog,
-        dialogContext = Dialog.AlertDialogContext.SUCCESS,
+        dialogContext = CustomDialog.AlertDialogContext.SUCCESS,
         showIcon = true,
         showTitle = true,
         title = { Text(stringResource(id = R.string.str_success)) },
@@ -99,7 +99,7 @@ fun InitializationScreen(
 
     AppAlertDialog(
         showDialog = uiState.value.uiEnableErrorDialog,
-        dialogContext = Dialog.AlertDialogContext.ERROR,
+        dialogContext = CustomDialog.AlertDialogContext.ERROR,
         showIcon = true,
         showTitle = true,
         title = { Text(stringResource(id = R.string.str_error)) },

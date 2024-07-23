@@ -38,11 +38,11 @@ import com.thomas200593.mini_retail_app.app.ui.StateApp
 import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
 import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.Currency.currency
-import com.thomas200593.mini_retail_app.core.ui.component.AppBar
-import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.EmptyScreen
-import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.ErrorScreen
-import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.LoadingScreen
-import com.thomas200593.mini_retail_app.core.ui.component.CommonMessagePanel.ThreeRowCardItem
+import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar
+import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.EmptyScreen
+import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.ErrorScreen
+import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.LoadingScreen
+import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.ThreeRowCardItem
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.entity.AppConfig
 import com.thomas200593.mini_retail_app.features.app_conf._gen_country.entity.Country
 
@@ -59,7 +59,7 @@ fun ScrConfGenCountry(
 
 @Composable
 private fun TopAppBar(onNavBack: () -> Unit) {
-    AppBar.ProvideTopAppBarNavigationIcon {
+    CustomAppBar.ProvideTopAppBarNavigationIcon {
         Surface(
             onClick =  onNavBack,
             modifier = Modifier
@@ -71,7 +71,7 @@ private fun TopAppBar(onNavBack: () -> Unit) {
             )
         }
     }
-    AppBar.ProvideTopAppBarTitle {
+    CustomAppBar.ProvideTopAppBarTitle {
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
@@ -89,7 +89,7 @@ private fun TopAppBar(onNavBack: () -> Unit) {
             )
         }
     }
-    AppBar.ProvideTopAppBarAction {
+    CustomAppBar.ProvideTopAppBarAction {
         Row(
             modifier = Modifier.padding(end = 20.dp),
             verticalAlignment = Alignment.CenterVertically,
