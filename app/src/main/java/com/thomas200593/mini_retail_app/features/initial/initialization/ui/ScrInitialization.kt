@@ -90,19 +90,19 @@ import com.thomas200593.mini_retail_app.features.initial.initial.navigation.navT
 import com.thomas200593.mini_retail_app.features.initial.initialization.entity.Initialization
 import com.thomas200593.mini_retail_app.features.initial.initialization.entity.InitializationUiFormState
 import com.thomas200593.mini_retail_app.features.initial.initialization.entity.InitializationUiState
-import com.thomas200593.mini_retail_app.features.initial.initialization.ui.InitializationUiEvent.BeginInitBizProfileDefault
-import com.thomas200593.mini_retail_app.features.initial.initialization.ui.InitializationUiEvent.BeginInitBizProfileManual
-import com.thomas200593.mini_retail_app.features.initial.initialization.ui.InitializationUiEvent.OnChangeLanguage
-import com.thomas200593.mini_retail_app.features.initial.initialization.ui.InitializationUiEvent.OnOpen
-import com.thomas200593.mini_retail_app.features.initial.initialization.ui.InitializationUiEvent.OnUiFormCancelInitManual
-import com.thomas200593.mini_retail_app.features.initial.initialization.ui.InitializationUiEvent.OnUiFormCommonNameChanged
-import com.thomas200593.mini_retail_app.features.initial.initialization.ui.InitializationUiEvent.OnUiFormLegalNameChanged
-import com.thomas200593.mini_retail_app.features.initial.initialization.ui.InitializationUiEvent.OnUiFormSubmitInitManual
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.UiEventInitialization.BeginInitBizProfileDefault
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.UiEventInitialization.BeginInitBizProfileManual
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.UiEventInitialization.OnChangeLanguage
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.UiEventInitialization.OnOpen
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.UiEventInitialization.OnUiFormCancelInitManual
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.UiEventInitialization.OnUiFormCommonNameChanged
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.UiEventInitialization.OnUiFormLegalNameChanged
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.UiEventInitialization.OnUiFormSubmitInitManual
 import kotlinx.coroutines.launch
 import ulid.ULID.Companion.randomULID
 
 @Composable
-fun InitializationScreen(
+fun ScrInitialization(
     vm: VMInitialization = hiltViewModel(),
     stateApp: StateApp = LocalStateApp.current
 ){

@@ -9,7 +9,7 @@ import com.thomas200593.mini_retail_app.core.ui.component.CustomForm.Component.U
 import com.thomas200593.mini_retail_app.core.ui.component.CustomForm.Component.UseCase.UiText.StringResource
 import com.thomas200593.mini_retail_app.features.app_conf._g_language.entity.Language
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.entity.AppConfig.ConfigCurrent
-import com.thomas200593.mini_retail_app.features.initial.initialization.ui.InitializationUiEvent.InitBizProfileResult
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.UiEventInitialization.InitBizProfileResult
 
 data class Initialization(val configCurrent: ConfigCurrent, val languages: Set<Language>)
 

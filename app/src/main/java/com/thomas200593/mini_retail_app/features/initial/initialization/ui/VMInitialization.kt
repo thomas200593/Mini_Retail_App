@@ -15,16 +15,16 @@ import com.thomas200593.mini_retail_app.features.initial.initialization.domain.U
 import com.thomas200593.mini_retail_app.features.initial.initialization.domain.UCSetDefaultInitialBizProfile
 import com.thomas200593.mini_retail_app.features.initial.initialization.entity.InitializationUiFormState
 import com.thomas200593.mini_retail_app.features.initial.initialization.entity.InitializationUiState
-import com.thomas200593.mini_retail_app.features.initial.initialization.ui.InitializationUiEvent.BeginInitBizProfileDefault
-import com.thomas200593.mini_retail_app.features.initial.initialization.ui.InitializationUiEvent.BeginInitBizProfileManual
-import com.thomas200593.mini_retail_app.features.initial.initialization.ui.InitializationUiEvent.InitBizProfileResult
-import com.thomas200593.mini_retail_app.features.initial.initialization.ui.InitializationUiEvent.InitBizProfileResult.Idle
-import com.thomas200593.mini_retail_app.features.initial.initialization.ui.InitializationUiEvent.OnChangeLanguage
-import com.thomas200593.mini_retail_app.features.initial.initialization.ui.InitializationUiEvent.OnOpen
-import com.thomas200593.mini_retail_app.features.initial.initialization.ui.InitializationUiEvent.OnUiFormCancelInitManual
-import com.thomas200593.mini_retail_app.features.initial.initialization.ui.InitializationUiEvent.OnUiFormCommonNameChanged
-import com.thomas200593.mini_retail_app.features.initial.initialization.ui.InitializationUiEvent.OnUiFormLegalNameChanged
-import com.thomas200593.mini_retail_app.features.initial.initialization.ui.InitializationUiEvent.OnUiFormSubmitInitManual
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.UiEventInitialization.BeginInitBizProfileDefault
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.UiEventInitialization.BeginInitBizProfileManual
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.UiEventInitialization.InitBizProfileResult
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.UiEventInitialization.InitBizProfileResult.Idle
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.UiEventInitialization.OnChangeLanguage
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.UiEventInitialization.OnOpen
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.UiEventInitialization.OnUiFormCancelInitManual
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.UiEventInitialization.OnUiFormCommonNameChanged
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.UiEventInitialization.OnUiFormLegalNameChanged
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.UiEventInitialization.OnUiFormSubmitInitManual
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.catch
@@ -47,7 +47,7 @@ class VMInitialization @Inject constructor(
         )
     );  private set
 
-    fun onEvent(event: InitializationUiEvent){
+    fun onEvent(event: UiEventInitialization){
         when(event){
             OnOpen -> viewModelScope.launch(ioDispatcher) {
                 uiState.value = uiState.value.copy(initializationData = Loading)

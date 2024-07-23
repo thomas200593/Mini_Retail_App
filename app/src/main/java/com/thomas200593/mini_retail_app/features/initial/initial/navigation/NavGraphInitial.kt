@@ -9,7 +9,7 @@ import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs.Initial
 import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs.Initialization
 import com.thomas200593.mini_retail_app.features.auth.navigation.navGraphAuth
 import com.thomas200593.mini_retail_app.features.initial.initial.ui.ScrInitial
-import com.thomas200593.mini_retail_app.features.initial.initialization.ui.InitializationScreen
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.ScrInitialization
 import com.thomas200593.mini_retail_app.features.onboarding.navigation.navGraphOnboarding
 
 fun NavGraphBuilder.navGraphInitial() {
@@ -25,7 +25,7 @@ fun NavGraphBuilder.navGraphInitial() {
         composable(
             route = Initialization.route
         ){
-            InitializationScreen()
+            ScrInitialization()
         }
         navGraphOnboarding()
         navGraphAuth()

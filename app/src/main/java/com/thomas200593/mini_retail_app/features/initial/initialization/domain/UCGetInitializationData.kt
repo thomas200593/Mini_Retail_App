@@ -15,8 +15,7 @@ class UCGetInitializationData @Inject constructor(
     private val ucGetConfGenLanguage: UCGetConfGenLanguage,
     @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
 ){
-    operator fun invoke() = ucGetConfGenLanguage.invoke().flowOn(ioDispatcher)
-        .catch { t -> Error(t) }
+    operator fun invoke() = ucGetConfGenLanguage.invoke().flowOn(ioDispatcher).catch { t -> Error(t) }
         .map { langConfig ->
             Success(
                 data = Initialization(
