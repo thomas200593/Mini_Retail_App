@@ -1,4 +1,4 @@
-package com.thomas200593.mini_retail_app.features.initial.initial.domain
+package com.thomas200593.mini_retail_app.features.initial.initialization.domain
 
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.repository.RepoAppConf
 import com.thomas200593.mini_retail_app.features.business.entity.business_profile.dto.BusinessProfileSummary

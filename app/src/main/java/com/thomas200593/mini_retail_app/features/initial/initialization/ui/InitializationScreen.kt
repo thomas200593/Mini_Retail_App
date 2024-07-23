@@ -1,4 +1,4 @@
-package com.thomas200593.mini_retail_app.features.initial.initial.ui.initialization
+package com.thomas200593.mini_retail_app.features.initial.initialization.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement

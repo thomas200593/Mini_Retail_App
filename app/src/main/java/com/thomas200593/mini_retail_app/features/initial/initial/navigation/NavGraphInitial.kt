@@ -9,7 +9,7 @@ import com.thomas200593.mini_retail_app.features.initial.initial.ui.InitialScree
 import com.thomas200593.mini_retail_app.features.onboarding.navigation.navGraphOnboarding
 import com.thomas200593.mini_retail_app.app.navigation.NavGraph.G_INITIAL
 import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs
-import com.thomas200593.mini_retail_app.features.initial.initial.ui.initialization.InitializationScreen
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.InitializationScreen
 import timber.log.Timber
 
 private val TAG_NAV_GRAPH_BUILDER = NavGraphBuilder::class.simpleName

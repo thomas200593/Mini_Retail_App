@@ -1,4 +1,4 @@
-package com.thomas200593.mini_retail_app.features.initial.initial.ui.initialization
+package com.thomas200593.mini_retail_app.features.initial.initialization.ui
 
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.runtime.mutableStateOf
@@ -10,8 +10,8 @@ import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
 import com.thomas200593.mini_retail_app.core.ui.component.CustomForm.Component.UseCase.InputFieldValidation
 import com.thomas200593.mini_retail_app.features.app_conf._g_language.repository.RepositoryAppCfgGeneralLanguage
-import com.thomas200593.mini_retail_app.features.initial.initial.domain.GetInitializationDataUseCase
-import com.thomas200593.mini_retail_app.features.initial.initial.domain.SetDefaultInitialBizProfileUseCase
+import com.thomas200593.mini_retail_app.features.initial.initialization.domain.GetInitializationDataUseCase
+import com.thomas200593.mini_retail_app.features.initial.initialization.domain.SetDefaultInitialBizProfileUseCase
 import com.thomas200593.mini_retail_app.features.initial.initial.entity.InitializationUiFormState
 import com.thomas200593.mini_retail_app.features.initial.initial.entity.InitializationUiState
 import dagger.hilt.android.lifecycle.HiltViewModel

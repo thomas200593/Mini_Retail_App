@@ -1,4 +1,4 @@
-package com.thomas200593.mini_retail_app.features.initial.initial.ui.initialization
+package com.thomas200593.mini_retail_app.features.initial.initialization.ui
 
 import com.thomas200593.mini_retail_app.features.app_conf._g_language.entity.Language
 import com.thomas200593.mini_retail_app.features.business.entity.business_profile.dto.BusinessProfileSummary
