@@ -5,8 +5,5 @@ import androidx.work.ListenableWorker
 import androidx.work.WorkerParameters
 
 interface FactoryCustomWorker {
-    fun create(
-        appContext: Context,
-        params: WorkerParameters
-    ): ListenableWorker
+    fun create(appContext: Context, params: WorkerParameters): ListenableWorker
 }

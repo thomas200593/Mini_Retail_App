@@ -1,4 +1,4 @@
-package com.thomas200593.mini_retail_app.features.initial.ui
+package com.thomas200593.mini_retail_app.features.initial.initial.ui
 
 import android.widget.Toast
 import androidx.compose.runtime.Composable
@@ -23,9 +23,9 @@ import com.thomas200593.mini_retail_app.features.auth.entity.OAuthProvider
 import com.thomas200593.mini_retail_app.features.auth.entity.UserData
 import com.thomas200593.mini_retail_app.features.auth.navigation.navigateToAuth
 import com.thomas200593.mini_retail_app.features.dashboard.navigation.navigateToDashboard
-import com.thomas200593.mini_retail_app.features.initial.entity.FirstTimeStatus
-import com.thomas200593.mini_retail_app.features.initial.entity.Initial
-import com.thomas200593.mini_retail_app.features.initial.navigation.navigateToInitialization
+import com.thomas200593.mini_retail_app.features.initial.initial.entity.FirstTimeStatus
+import com.thomas200593.mini_retail_app.features.initial.initial.entity.Initial
+import com.thomas200593.mini_retail_app.features.initial.initial.navigation.navigateToInitialization
 import com.thomas200593.mini_retail_app.features.onboarding.navigation.navigateToOnboarding
 import kotlinx.coroutines.launch
 

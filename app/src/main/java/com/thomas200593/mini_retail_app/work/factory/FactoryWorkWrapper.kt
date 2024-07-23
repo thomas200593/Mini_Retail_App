@@ -16,9 +16,8 @@ class FactoryWorkWrapper @Inject constructor(
         workerClassName: String,
         workerParameters: WorkerParameters
     ): ListenableWorker {
-        val entries = workerFactory.entries.find {
-            Class.forName(workerClassName).isAssignableFrom(it.key)
-        }
+        val entries = workerFactory.entries
+            .find { Class.forName(workerClassName).isAssignableFrom(it.key) }
         val factoryProvider = entries?.value ?: throw IllegalArgumentException("Unknown Worker Class: $workerClassName")
         return factoryProvider.get().create(appContext, workerParameters)
     }

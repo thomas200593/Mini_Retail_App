@@ -1,4 +1,4 @@
-package com.thomas200593.mini_retail_app.features.initial.entity
+package com.thomas200593.mini_retail_app.features.initial.initial.entity
 
 enum class FirstTimeStatus(
     val code: String,

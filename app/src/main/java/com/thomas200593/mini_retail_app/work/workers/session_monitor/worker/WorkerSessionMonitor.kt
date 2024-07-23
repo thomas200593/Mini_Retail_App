@@ -2,13 +2,13 @@ package com.thomas200593.mini_retail_app.work.workers.session_monitor.worker
 
 import android.content.Context
 import androidx.hilt.work.HiltWorker
-import androidx.work.Constraints
+import androidx.work.Constraints.Builder
 import androidx.work.CoroutineWorker
 import androidx.work.ListenableWorker.Result.success
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkerParameters
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatcher
-import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers
+import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers.Dispatchers.IO
 import com.thomas200593.mini_retail_app.features.auth.domain.ValidateAuthSessionUseCase
 import com.thomas200593.mini_retail_app.features.auth.repository.RepoAuth
 import dagger.assisted.Assisted
@@ -25,7 +25,7 @@ class WorkerSessionMonitor @AssistedInject constructor(
     @Assisted workerParameters: WorkerParameters,
     private val repoAuth: RepoAuth,
     private val validateAuthSessionUseCase: ValidateAuthSessionUseCase,
-    @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
+    @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
 ): CoroutineWorker(context, workerParameters) {
 
     override suspend fun doWork(): Result {
@@ -40,11 +40,10 @@ class WorkerSessionMonitor @AssistedInject constructor(
 
     companion object {
         private val WorkerConstraint
-            get() = Constraints.Builder().build()
+            get() = Builder().build()
 
         fun startUpWork() = PeriodicWorkRequestBuilder<WorkerSessionMonitor>(
-            repeatInterval = 15,
-            repeatIntervalTimeUnit = MINUTES
+            repeatInterval = 15, repeatIntervalTimeUnit = MINUTES
         ).setConstraints(WorkerConstraint).build()
     }
 }

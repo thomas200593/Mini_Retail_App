@@ -6,7 +6,7 @@ import androidx.navigation.compose.NavHost
 import com.thomas200593.mini_retail_app.app.navigation.NavGraph.G_INITIAL
 import com.thomas200593.mini_retail_app.app.navigation.NavGraph.G_ROOT
 import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
-import com.thomas200593.mini_retail_app.features.initial.navigation.navGraphInitial
+import com.thomas200593.mini_retail_app.features.initial.initial.navigation.navGraphInitial
 
 object NavHost{
     @Composable

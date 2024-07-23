@@ -1,10 +1,10 @@
-package com.thomas200593.mini_retail_app.features.initial.domain
+package com.thomas200593.mini_retail_app.features.initial.initial.domain
 
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.repository.RepoAppConf
 import com.thomas200593.mini_retail_app.features.business.entity.business_profile.dto.BusinessProfileSummary
 import com.thomas200593.mini_retail_app.features.business.repository.BusinessProfileRepository
 import com.thomas200593.mini_retail_app.features.business.util.BusinessExtFn
-import com.thomas200593.mini_retail_app.features.initial.entity.FirstTimeStatus
+import com.thomas200593.mini_retail_app.features.initial.initial.entity.FirstTimeStatus
 import javax.inject.Inject
 
 class SetDefaultInitialBizProfileUseCase @Inject constructor(

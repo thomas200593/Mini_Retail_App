@@ -1,4 +1,4 @@
-package com.thomas200593.mini_retail_app.features.initial.ui.initialization
+package com.thomas200593.mini_retail_app.features.initial.initial.ui.initialization
 
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.runtime.mutableStateOf
@@ -10,10 +10,10 @@ import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
 import com.thomas200593.mini_retail_app.core.ui.component.CustomForm.Component.UseCase.InputFieldValidation
 import com.thomas200593.mini_retail_app.features.app_conf._g_language.repository.RepositoryAppCfgGeneralLanguage
-import com.thomas200593.mini_retail_app.features.initial.domain.GetInitializationDataUseCase
-import com.thomas200593.mini_retail_app.features.initial.domain.SetDefaultInitialBizProfileUseCase
-import com.thomas200593.mini_retail_app.features.initial.entity.InitializationUiFormState
-import com.thomas200593.mini_retail_app.features.initial.entity.InitializationUiState
+import com.thomas200593.mini_retail_app.features.initial.initial.domain.GetInitializationDataUseCase
+import com.thomas200593.mini_retail_app.features.initial.initial.domain.SetDefaultInitialBizProfileUseCase
+import com.thomas200593.mini_retail_app.features.initial.initial.entity.InitializationUiFormState
+import com.thomas200593.mini_retail_app.features.initial.initial.entity.InitializationUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.catch
@@ -69,7 +69,9 @@ class InitializationViewModel @Inject constructor(
                             uiEnableEmptyDialog = mutableStateOf(false),
                             uiEnableErrorDialog = mutableStateOf(false),
                             initializationUiFormState = uiState.value.initializationUiFormState.copy(
-                                initBizProfileResult = InitializationUiEvent.InitBizProfileResult.Success(result)
+                                initBizProfileResult = InitializationUiEvent.InitBizProfileResult.Success(
+                                    result
+                                )
                             )
                         )
                     }
@@ -91,7 +93,9 @@ class InitializationViewModel @Inject constructor(
                         uiEnableEmptyDialog = mutableStateOf(false),
                         uiEnableErrorDialog = mutableStateOf(true),
                         initializationUiFormState = uiState.value.initializationUiFormState.copy(
-                            initBizProfileResult = InitializationUiEvent.InitBizProfileResult.Error(e),
+                            initBizProfileResult = InitializationUiEvent.InitBizProfileResult.Error(
+                                e
+                            ),
                         )
                     )
                 }
@@ -132,7 +136,9 @@ class InitializationViewModel @Inject constructor(
                             uiEnableEmptyDialog = mutableStateOf(false),
                             uiEnableErrorDialog = mutableStateOf(false),
                             initializationUiFormState = uiState.value.initializationUiFormState.copy(
-                                initBizProfileResult = InitializationUiEvent.InitBizProfileResult.Success(result),
+                                initBizProfileResult = InitializationUiEvent.InitBizProfileResult.Success(
+                                    result
+                                ),
                             )
                         )
                     }
@@ -154,7 +160,9 @@ class InitializationViewModel @Inject constructor(
                         uiEnableEmptyDialog = mutableStateOf(false),
                         uiEnableErrorDialog = mutableStateOf(true),
                         initializationUiFormState = uiState.value.initializationUiFormState.copy(
-                            initBizProfileResult = InitializationUiEvent.InitBizProfileResult.Error(e),
+                            initBizProfileResult = InitializationUiEvent.InitBizProfileResult.Error(
+                                e
+                            ),
                         )
                     )
                 }

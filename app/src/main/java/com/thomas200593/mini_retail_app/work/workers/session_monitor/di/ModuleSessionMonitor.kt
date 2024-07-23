@@ -16,7 +16,5 @@ abstract class ModuleSessionMonitor{
     @Binds
     @IntoMap
     @WorkerKey(WorkerSessionMonitor::class)
-    abstract fun binsImplementation(
-        factory: FactoryWorkerSessionMonitor
-    ): FactoryCustomWorker
+    abstract fun binsImplementation(factory: FactoryWorkerSessionMonitor): FactoryCustomWorker
 }

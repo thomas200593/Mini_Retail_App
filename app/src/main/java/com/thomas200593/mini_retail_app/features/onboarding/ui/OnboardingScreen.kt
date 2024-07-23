@@ -41,7 +41,7 @@ import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.EmptyScree
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.ErrorScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.LoadingScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CustomScreenUtil
-import com.thomas200593.mini_retail_app.features.initial.navigation.navigateToInitial
+import com.thomas200593.mini_retail_app.features.initial.initial.navigation.navigateToInitial
 import com.thomas200593.mini_retail_app.features.onboarding.entity.Onboarding
 import com.thomas200593.mini_retail_app.features.onboarding.entity.Onboarding.Tags.TAG_ONBOARD_SCREEN_IMAGE_VIEW
 import com.thomas200593.mini_retail_app.features.onboarding.entity.Onboarding.Tags.TAG_ONBOARD_SCREEN_NAV_BUTTON

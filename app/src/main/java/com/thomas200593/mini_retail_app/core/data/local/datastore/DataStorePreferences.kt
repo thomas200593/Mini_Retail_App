@@ -33,8 +33,8 @@ import com.thomas200593.mini_retail_app.features.app_conf.app_config.entity.AppC
 import com.thomas200593.mini_retail_app.features.auth.entity.AuthSessionToken
 import com.thomas200593.mini_retail_app.features.auth.entity.OAuthProvider
 import com.thomas200593.mini_retail_app.features.auth.entity.OAuthProvider.GOOGLE
-import com.thomas200593.mini_retail_app.features.initial.entity.FirstTimeStatus
-import com.thomas200593.mini_retail_app.features.initial.entity.FirstTimeStatus.YES
+import com.thomas200593.mini_retail_app.features.initial.initial.entity.FirstTimeStatus
+import com.thomas200593.mini_retail_app.features.initial.initial.entity.FirstTimeStatus.YES
 import com.thomas200593.mini_retail_app.features.onboarding.entity.OnboardingStatus
 import com.thomas200593.mini_retail_app.features.onboarding.entity.OnboardingStatus.HIDE
 import com.thomas200593.mini_retail_app.features.onboarding.entity.OnboardingStatus.SHOW

@@ -1,4 +1,4 @@
-package com.thomas200593.mini_retail_app.features.initial.entity
+package com.thomas200593.mini_retail_app.features.initial.initial.entity
 
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.entity.AppConfig
 import com.thomas200593.mini_retail_app.features.auth.entity.UserData

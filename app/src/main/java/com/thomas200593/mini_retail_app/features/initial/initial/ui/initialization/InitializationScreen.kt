@@ -1,4 +1,4 @@
-package com.thomas200593.mini_retail_app.features.initial.ui.initialization
+package com.thomas200593.mini_retail_app.features.initial.initial.ui.initialization
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -55,10 +55,10 @@ import com.thomas200593.mini_retail_app.features.app_conf.app_config.entity.AppC
 import com.thomas200593.mini_retail_app.features.app_conf._g_language.entity.Language
 import com.thomas200593.mini_retail_app.features.business.entity.business_profile.BizName
 import com.thomas200593.mini_retail_app.features.business.entity.business_profile.dto.BusinessProfileSummary
-import com.thomas200593.mini_retail_app.features.initial.entity.InitializationUiFormState
-import com.thomas200593.mini_retail_app.features.initial.entity.Initialization
-import com.thomas200593.mini_retail_app.features.initial.entity.InitializationUiState
-import com.thomas200593.mini_retail_app.features.initial.navigation.navigateToInitial
+import com.thomas200593.mini_retail_app.features.initial.initial.entity.InitializationUiFormState
+import com.thomas200593.mini_retail_app.features.initial.initial.entity.Initialization
+import com.thomas200593.mini_retail_app.features.initial.initial.entity.InitializationUiState
+import com.thomas200593.mini_retail_app.features.initial.initial.navigation.navigateToInitial
 import kotlinx.coroutines.launch
 import ulid.ULID
 

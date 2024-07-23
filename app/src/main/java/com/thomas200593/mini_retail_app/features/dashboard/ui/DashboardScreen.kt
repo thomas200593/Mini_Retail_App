@@ -33,7 +33,7 @@ import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
 import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons
 import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.LoadingScreen
-import com.thomas200593.mini_retail_app.features.initial.navigation.navigateToInitial
+import com.thomas200593.mini_retail_app.features.initial.initial.navigation.navigateToInitial
 import timber.log.Timber
 
 private const val TAG = "DashboardScreen"
