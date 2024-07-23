@@ -1,4 +1,4 @@
-package com.thomas200593.mini_retail_app.features.initial.initial.entity
+package com.thomas200593.mini_retail_app.features.initial.initialization.entity
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf

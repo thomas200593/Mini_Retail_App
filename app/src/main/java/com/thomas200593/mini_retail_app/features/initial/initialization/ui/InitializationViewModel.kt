@@ -12,8 +12,8 @@ import com.thomas200593.mini_retail_app.core.ui.component.CustomForm.Component.U
 import com.thomas200593.mini_retail_app.features.app_conf._g_language.repository.RepositoryAppCfgGeneralLanguage
 import com.thomas200593.mini_retail_app.features.initial.initialization.domain.GetInitializationDataUseCase
 import com.thomas200593.mini_retail_app.features.initial.initialization.domain.SetDefaultInitialBizProfileUseCase
-import com.thomas200593.mini_retail_app.features.initial.initial.entity.InitializationUiFormState
-import com.thomas200593.mini_retail_app.features.initial.initial.entity.InitializationUiState
+import com.thomas200593.mini_retail_app.features.initial.initialization.entity.InitializationUiFormState
+import com.thomas200593.mini_retail_app.features.initial.initialization.entity.InitializationUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.catch

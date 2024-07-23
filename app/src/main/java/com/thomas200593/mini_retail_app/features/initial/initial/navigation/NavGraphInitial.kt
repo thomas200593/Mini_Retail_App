@@ -4,30 +4,26 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.thomas200593.mini_retail_app.features.auth.navigation.navGraphAuth
-import com.thomas200593.mini_retail_app.features.initial.initial.ui.InitialScreen
-import com.thomas200593.mini_retail_app.features.onboarding.navigation.navGraphOnboarding
 import com.thomas200593.mini_retail_app.app.navigation.NavGraph.G_INITIAL
-import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs
+import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs.Initial
+import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs.Initialization
+import com.thomas200593.mini_retail_app.features.auth.navigation.navGraphAuth
+import com.thomas200593.mini_retail_app.features.initial.initial.ui.ScrInitial
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.InitializationScreen
-import timber.log.Timber
-
-private val TAG_NAV_GRAPH_BUILDER = NavGraphBuilder::class.simpleName
-private val TAG_NAV_CONTROLLER = NavController::class.simpleName
+import com.thomas200593.mini_retail_app.features.onboarding.navigation.navGraphOnboarding
 
 fun NavGraphBuilder.navGraphInitial() {
-    Timber.d("Called : fun $TAG_NAV_GRAPH_BUILDER.initialNavGraph()")
     navigation(
         route = G_INITIAL,
-        startDestination = ScrGraphs.Initial.route
+        startDestination = Initial.route
     ){
         composable(
-            route = ScrGraphs.Initial.route
+            route = Initial.route
         ){
-            InitialScreen()
+            ScrInitial()
         }
         composable(
-            route = ScrGraphs.Initialization.route
+            route = Initialization.route
         ){
             InitializationScreen()
         }
@@ -36,27 +32,11 @@ fun NavGraphBuilder.navGraphInitial() {
     }
 }
 
-fun NavController.navigateToInitial(){
-    Timber.d("Called : fun $TAG_NAV_CONTROLLER.navigateToInitial()")
+fun NavController.navToInitial(){
     this.navigate(
         route = G_INITIAL
     ){
-        launchSingleTop = true
-        restoreState = true
-        popUpTo(G_INITIAL){
-            inclusive = true
-        }
-    }
-}
-
-fun NavController.navigateToInitialization(){
-    this.navigate(
-        route = ScrGraphs.Initialization.route
-    ){
-        launchSingleTop = true
-        restoreState = true
-        popUpTo(G_INITIAL){
-            inclusive = true
-        }
+        launchSingleTop = true; restoreState = true
+        popUpTo(G_INITIAL){ inclusive = true }
     }
 }

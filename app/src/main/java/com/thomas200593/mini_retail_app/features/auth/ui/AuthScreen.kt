@@ -47,7 +47,7 @@ import com.thomas200593.mini_retail_app.core.ui.component.CustomButton.Google.Si
 import com.thomas200593.mini_retail_app.core.ui.component.CustomButton.Google.handleClearCredential
 import com.thomas200593.mini_retail_app.core.ui.component.CustomScreenUtil
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.navigation.navigateToAppConfig
-import com.thomas200593.mini_retail_app.features.initial.initial.navigation.navigateToInitial
+import com.thomas200593.mini_retail_app.features.initial.initial.navigation.navToInitial
 import com.thomas200593.mini_retail_app.work.workers.session_monitor.manager.ManagerWorkSessionMonitor
 import kotlinx.coroutines.launch
 
@@ -75,7 +75,7 @@ fun AuthScreen(
         when(authSessionTokenState){
             is ResourceState.Success -> {
                 ManagerWorkSessionMonitor.initialize(appContext)
-                stateApp.navController.navigateToInitial()
+                stateApp.navController.navToInitial()
             }
             is ResourceState.Error -> {
                 handleClearCredential(

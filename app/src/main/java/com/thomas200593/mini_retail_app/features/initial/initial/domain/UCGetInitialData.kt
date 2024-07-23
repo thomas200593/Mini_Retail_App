@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class GetInitialDataUseCase @Inject constructor(
+class UCGetInitialData @Inject constructor(
     private val repoAuth: RepoAuth,
     private val appCfgRepository: RepoAppConf,
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher

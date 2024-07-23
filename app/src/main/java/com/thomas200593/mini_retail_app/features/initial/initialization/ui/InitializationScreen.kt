@@ -55,10 +55,10 @@ import com.thomas200593.mini_retail_app.features.app_conf.app_config.entity.AppC
 import com.thomas200593.mini_retail_app.features.app_conf._g_language.entity.Language
 import com.thomas200593.mini_retail_app.features.business.entity.business_profile.BizName
 import com.thomas200593.mini_retail_app.features.business.entity.business_profile.dto.BusinessProfileSummary
-import com.thomas200593.mini_retail_app.features.initial.initial.entity.InitializationUiFormState
-import com.thomas200593.mini_retail_app.features.initial.initial.entity.Initialization
-import com.thomas200593.mini_retail_app.features.initial.initial.entity.InitializationUiState
-import com.thomas200593.mini_retail_app.features.initial.initial.navigation.navigateToInitial
+import com.thomas200593.mini_retail_app.features.initial.initialization.entity.InitializationUiFormState
+import com.thomas200593.mini_retail_app.features.initial.initialization.entity.Initialization
+import com.thomas200593.mini_retail_app.features.initial.initialization.entity.InitializationUiState
+import com.thomas200593.mini_retail_app.features.initial.initial.navigation.navToInitial
 import kotlinx.coroutines.launch
 import ulid.ULID
 
@@ -92,7 +92,7 @@ fun InitializationScreen(
         body = { Text(stringResource(R.string.str_biz_profile_init_success)) },
         useConfirmButton = true,
         confirmButton = {
-            TextButton(onClick = { coroutineScope.launch { stateApp.navController.navigateToInitial() } })
+            TextButton(onClick = { coroutineScope.launch { stateApp.navController.navToInitial() } })
             { Text(stringResource(id = R.string.str_ok)) }
         }
     )
@@ -107,7 +107,7 @@ fun InitializationScreen(
         body = { Text(stringResource(R.string.str_biz_profile_init_failed)) },
         useDismissButton = true,
         dismissButton = {
-            TextButton(onClick = { coroutineScope.launch { stateApp.navController.navigateToInitial() } })
+            TextButton(onClick = { coroutineScope.launch { stateApp.navController.navToInitial() } })
             { Text(stringResource(id = R.string.str_ok)) }
         }
     )
