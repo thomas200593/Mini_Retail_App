@@ -3,7 +3,7 @@ package com.thomas200593.mini_retail_app.features.initial.initialization.domain
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers.Dispatchers.IO
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.*
-import com.thomas200593.mini_retail_app.features.app_conf._g_language.domain.UCGetConfGenLanguage
+import com.thomas200593.mini_retail_app.features.app_conf._gen_language.domain.UCGetConfGenLanguage
 import com.thomas200593.mini_retail_app.features.initial.initialization.entity.Initialization
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.catch

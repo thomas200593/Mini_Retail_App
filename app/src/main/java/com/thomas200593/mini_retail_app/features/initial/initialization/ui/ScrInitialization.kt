@@ -82,7 +82,7 @@ import com.thomas200593.mini_retail_app.core.ui.component.CustomForm.Component.T
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.EmptyScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.ErrorScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.LoadingScreen
-import com.thomas200593.mini_retail_app.features.app_conf._g_language.entity.Language
+import com.thomas200593.mini_retail_app.features.app_conf._gen_language.entity.Language
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.entity.AppConfig
 import com.thomas200593.mini_retail_app.features.business.entity.business_profile.BizName
 import com.thomas200593.mini_retail_app.features.business.entity.business_profile.dto.BizProfileSummary

@@ -1,22 +1,23 @@
-package com.thomas200593.mini_retail_app.features.app_conf._gen_country.ui
+package com.thomas200593.mini_retail_app.features.app_conf._gen_language.ui
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.Icons.AutoMirrored.Default
+import androidx.compose.material.icons.Icons.AutoMirrored
 import androidx.compose.material.icons.Icons.AutoMirrored.Outlined
+import androidx.compose.material.icons.Icons.Default
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
-import androidx.compose.material.icons.automirrored.outlined.*
+import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowRight
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.ButtonDefaults.IconSize
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Surface
@@ -36,8 +37,11 @@ import androidx.compose.ui.text.style.TextOverflow.Companion.Ellipsis
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.thomas200593.mini_retail_app.R
-import com.thomas200593.mini_retail_app.R.string.str_country
+import com.thomas200593.mini_retail_app.R.string.str_empty_message
+import com.thomas200593.mini_retail_app.R.string.str_empty_message_title
+import com.thomas200593.mini_retail_app.R.string.str_error
+import com.thomas200593.mini_retail_app.R.string.str_error_fetching_preferences
+import com.thomas200593.mini_retail_app.R.string.str_lang
 import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
 import com.thomas200593.mini_retail_app.app.ui.StateApp
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
@@ -46,7 +50,7 @@ import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Er
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Idle
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Loading
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Success
-import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.Currency.currency
+import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.Language.language
 import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar.ProvideTopAppBarAction
 import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar.ProvideTopAppBarNavigationIcon
 import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar.ProvideTopAppBarTitle
@@ -54,27 +58,26 @@ import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.EmptyScree
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.ErrorScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.LoadingScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.ThreeRowCardItem
-import com.thomas200593.mini_retail_app.features.app_conf._gen_country.entity.ConfigCountry
-import com.thomas200593.mini_retail_app.features.app_conf._gen_country.entity.Country
+import com.thomas200593.mini_retail_app.features.app_conf._gen_language.entity.ConfigLanguages
+import com.thomas200593.mini_retail_app.features.app_conf._gen_language.entity.Language
 
 @Composable
-fun ScrConfGenCountry(
-    vm: VMConfGenCountry = hiltViewModel(),
+fun ScrConfGenLanguage(
+    viewModel: VMConfGenLanguage = hiltViewModel(),
     stateApp: StateApp = LocalStateApp.current
-){
-    val confData by vm.confData.collectAsStateWithLifecycle()
-
-    TopAppBar(onNavBack = stateApp::onNavUp)
-    ScreenContent(confData = confData, onSaveSelectedCountry = vm::setCountry)
+) {
+    val configData by viewModel.configData.collectAsStateWithLifecycle()
+    TopAppBar(onNavigateBack = stateApp::onNavUp)
+    ScreenContent(configData = configData, onSaveSelectedLanguage = viewModel::setLanguage)
 }
 
 @Composable
-private fun TopAppBar(onNavBack: () -> Unit) {
+private fun TopAppBar(onNavigateBack: () -> Unit) {
     ProvideTopAppBarNavigationIcon {
-        Surface(onClick =  onNavBack, modifier = Modifier) {
+        Surface(onClick = onNavigateBack, modifier = Modifier) {
             Icon(
                 modifier = Modifier,
-                imageVector = Default.KeyboardArrowLeft,
+                imageVector = AutoMirrored.Default.KeyboardArrowLeft,
                 contentDescription = null
             )
         }
@@ -87,11 +90,11 @@ private fun TopAppBar(onNavBack: () -> Unit) {
         ){
             Icon(
                 modifier = Modifier.sizeIn(maxHeight = IconSize),
-                imageVector = ImageVector.vectorResource(id = currency),
+                imageVector = ImageVector.vectorResource(id = language),
                 contentDescription = null
             )
             Text(
-                text = stringResource(id = str_country),
+                text = stringResource(id = str_lang),
                 maxLines = 1,
                 overflow = Ellipsis
             )
@@ -105,7 +108,7 @@ private fun TopAppBar(onNavBack: () -> Unit) {
         ){
             Icon(
                 modifier = Modifier.sizeIn(maxHeight = IconSize),
-                imageVector = Icons.Default.Info,
+                imageVector = Default.Info,
                 contentDescription = null
             )
         }
@@ -114,35 +117,36 @@ private fun TopAppBar(onNavBack: () -> Unit) {
 
 @Composable
 private fun ScreenContent(
-    confData: ResourceState<ConfigCountry>,
-    onSaveSelectedCountry: (Country) -> Unit,
+    configData: ResourceState<ConfigLanguages>,
+    onSaveSelectedLanguage: (Language) -> Unit,
 ) {
-    when(confData){
+    when(configData){
         Idle, Loading -> { LoadingScreen() }
         Empty -> {
             EmptyScreen(
-                title = stringResource(id = R.string.str_empty_message_title),
-                emptyMessage = stringResource(id = R.string.str_empty_message),
+                title = stringResource(id = str_empty_message_title),
+                emptyMessage = stringResource(id = str_empty_message),
                 showIcon = true
             )
         }
         is Error -> {
             ErrorScreen(
-                title = stringResource(id = R.string.str_error),
-                errorMessage = stringResource(id = R.string.str_error_fetching_preferences),
+                title = stringResource(id = str_error),
+                errorMessage = stringResource(id = str_error_fetching_preferences),
                 showIcon = true
             )
         }
         is Success -> {
-            val currentData = confData.data.configCurrent.country
-            val preferencesList = confData.data.countries
+            val currentData = configData.data.configCurrent.language
+            val preferencesList = configData.data.languages
+
             Column(
                 modifier = Modifier.fillMaxSize().padding(4.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "${stringResource(id = str_country)} : ${currentData.displayName}",
+                    text = "${stringResource(id = str_lang)} : ${stringResource(id = currentData.title)}",
                     modifier = Modifier.fillMaxWidth().padding(4.dp),
                     fontWeight = Bold,
                     maxLines = 1,
@@ -150,35 +154,25 @@ private fun ScreenContent(
                     textAlign = Center,
                 )
                 LazyColumn(
-                    modifier = Modifier.fillMaxSize().padding(8.dp),
+                    modifier = Modifier.fillMaxSize().padding(4.dp),
                     verticalArrangement = Arrangement.spacedBy(10.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     items(count = preferencesList.count()){ index ->
-                        val data = preferencesList[index]
+                        val data = preferencesList.elementAt(index)
                         ThreeRowCardItem(
                             firstRowContent = {
-                                Text(
-                                    text = data.isoCode,
-                                    modifier = Modifier.fillMaxWidth(),
-                                    textAlign = Center,
-                                    fontWeight = Bold,
-                                    maxLines = 1,
-                                    overflow = Ellipsis
-                                )
-                                HorizontalDivider()
-                                Text(
-                                    text = data.iso03Country,
-                                    modifier = Modifier.fillMaxWidth(),
-                                    textAlign = Center,
-                                    fontWeight = Bold,
-                                    maxLines = 1,
-                                    overflow = Ellipsis
-                                )
+                                Surface(modifier = Modifier.fillMaxWidth()) {
+                                    Image(
+                                        modifier = Modifier.height(20.dp),
+                                        imageVector = ImageVector.vectorResource(data.iconRes),
+                                        contentDescription = null
+                                    )
+                                }
                             },
                             secondRowContent = {
                                 Text(
-                                    text = data.displayName,
+                                    text = stringResource(id = data.title),
                                     modifier = Modifier.fillMaxWidth(),
                                     textAlign = Start,
                                     fontWeight = Bold,
@@ -189,14 +183,12 @@ private fun ScreenContent(
                             thirdRowContent = {
                                 Surface(
                                     modifier = Modifier.fillMaxWidth(),
-                                    onClick = { onSaveSelectedCountry(data) }
+                                    onClick = { onSaveSelectedLanguage(data) }
                                 ) {
                                     Icon(
-                                        imageVector = if (data == currentData) { Icons.Default.CheckCircle }
-                                        else { Outlined.KeyboardArrowRight },
+                                        imageVector = if (data == currentData) Default.CheckCircle else Outlined.KeyboardArrowRight,
                                         contentDescription = null,
-                                        tint = if (data == currentData) { Green }
-                                        else { colorScheme.onTertiaryContainer }
+                                        tint = if (data == currentData) Green else colorScheme.onTertiaryContainer
                                     )
                                 }
                             }

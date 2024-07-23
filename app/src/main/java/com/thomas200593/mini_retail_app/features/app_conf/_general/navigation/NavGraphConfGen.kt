@@ -10,9 +10,9 @@ import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs
 import com.thomas200593.mini_retail_app.features.app_conf._general.ui.ScrConfGen
 import com.thomas200593.mini_retail_app.features.app_conf._gen_country.ui.ScrConfGenCountry
 import com.thomas200593.mini_retail_app.features.app_conf._gen_currency.ui.ScrConfGenCurrency
-import com.thomas200593.mini_retail_app.features.app_conf._g_dynamic_color.ui.DynamicColorScreen
-import com.thomas200593.mini_retail_app.features.app_conf._g_font_size.ui.FontSizeScreen
-import com.thomas200593.mini_retail_app.features.app_conf._g_language.ui.LanguageScreen
+import com.thomas200593.mini_retail_app.features.app_conf._gen_dynamic_color.ui.ScrConfGenDynamicColor
+import com.thomas200593.mini_retail_app.features.app_conf._gen_font_size.ui.ScrConfGenFontSize
+import com.thomas200593.mini_retail_app.features.app_conf._gen_language.ui.ScrConfGenLanguage
 import com.thomas200593.mini_retail_app.features.app_conf._g_theme.ui.ThemeScreen
 import com.thomas200593.mini_retail_app.features.app_conf._g_timezone.ui.TimezoneScreen
 
@@ -31,7 +31,7 @@ fun NavGraphBuilder.navGraphConfGen() {
 
         composable(
             route = ScrGraphs.Language.route
-        ){ LanguageScreen() }
+        ){ ScrConfGenLanguage() }
 
         composable(
             route = ScrGraphs.Timezone.route
@@ -43,11 +43,11 @@ fun NavGraphBuilder.navGraphConfGen() {
 
         composable(
             route = ScrGraphs.DynamicColor.route
-        ){ DynamicColorScreen() }
+        ){ ScrConfGenDynamicColor() }
 
         composable(
             route = ScrGraphs.FontSize.route
-        ){ FontSizeScreen() }
+        ){ ScrConfGenFontSize() }
 
         composable(
             route = ScrGraphs.Currency.route
