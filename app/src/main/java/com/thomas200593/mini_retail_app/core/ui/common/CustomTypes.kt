@@ -7,7 +7,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.thomas200593.mini_retail_app.features.app_conf._g_font_size.entity.FontSize
 
-object Types{
+object CustomTypes{
     private const val LINE_HEIGHT_MULTIPLIER = 1.15
     fun personalizedTypography(fontSize: FontSize): Typography {
         return Typography(

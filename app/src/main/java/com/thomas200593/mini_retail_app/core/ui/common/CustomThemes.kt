@@ -13,11 +13,21 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
-import androidx.core.view.WindowCompat
+import androidx.core.view.WindowCompat.getInsetsController
 import com.thomas200593.mini_retail_app.app.UiStateMain
-import com.thomas200593.mini_retail_app.features.app_conf._g_dynamic_color.entity.DynamicColor
+import com.thomas200593.mini_retail_app.app.UiStateMain.Loading
+import com.thomas200593.mini_retail_app.app.UiStateMain.Success
+import com.thomas200593.mini_retail_app.core.ui.common.CustomTypes.personalizedTypography
+import com.thomas200593.mini_retail_app.features.app_conf._g_dynamic_color.entity.DynamicColor.DISABLED
+import com.thomas200593.mini_retail_app.features.app_conf._g_dynamic_color.entity.DynamicColor.ENABLED
 import com.thomas200593.mini_retail_app.features.app_conf._g_font_size.entity.FontSize
-import com.thomas200593.mini_retail_app.features.app_conf._g_theme.entity.Theme
+import com.thomas200593.mini_retail_app.features.app_conf._g_font_size.entity.FontSize.EXTRA_LARGE
+import com.thomas200593.mini_retail_app.features.app_conf._g_font_size.entity.FontSize.LARGE
+import com.thomas200593.mini_retail_app.features.app_conf._g_font_size.entity.FontSize.MEDIUM
+import com.thomas200593.mini_retail_app.features.app_conf._g_font_size.entity.FontSize.SMALL
+import com.thomas200593.mini_retail_app.features.app_conf._g_theme.entity.Theme.DARK
+import com.thomas200593.mini_retail_app.features.app_conf._g_theme.entity.Theme.LIGHT
+import com.thomas200593.mini_retail_app.features.app_conf._g_theme.entity.Theme.SYSTEM
 
 object CustomThemes{
     private val lightScheme = CustomColors.lightScheme
@@ -29,16 +39,15 @@ object CustomThemes{
      * current system context.
      */
     @Composable
-    fun shouldUseDarkTheme(uiState: UiStateMain): Boolean {
-        return when(uiState){
-            UiStateMain.Loading -> isSystemInDarkTheme()
-            is UiStateMain.Success -> when(uiState.confCurrent.theme){
-                Theme.SYSTEM -> isSystemInDarkTheme()
-                Theme.LIGHT -> false
-                Theme.DARK -> true
+    fun shouldUseDarkTheme(uiState: UiStateMain): Boolean =
+        when(uiState){
+            Loading -> isSystemInDarkTheme()
+            is Success -> when(uiState.confCurrent.theme){
+                SYSTEM -> isSystemInDarkTheme()
+                LIGHT -> false
+                DARK -> true
             }
         }
-    }
 
     /**
      * Returns `true` if the dynamic color is enabled, as a function of the [uiState].
@@ -46,10 +55,10 @@ object CustomThemes{
     @Composable
     fun shouldUseDynamicColor(uiState: UiStateMain): Boolean {
         return when (uiState) {
-            UiStateMain.Loading -> false
-            is UiStateMain.Success -> when(uiState.confCurrent.dynamicColor){
-                DynamicColor.ENABLED -> true
-                DynamicColor.DISABLED -> false
+            Loading -> false
+            is Success -> when(uiState.confCurrent.dynamicColor){
+                ENABLED -> true
+                DISABLED -> false
             }
         }
     }
@@ -57,12 +66,12 @@ object CustomThemes{
     @Composable
     fun calculateInitialFontSize(uiState: UiStateMain): FontSize {
         return when(uiState) {
-            UiStateMain.Loading -> FontSize.MEDIUM
-            is UiStateMain.Success -> when(uiState.confCurrent.fontSize){
-                FontSize.MEDIUM -> FontSize.MEDIUM
-                FontSize.SMALL -> FontSize.SMALL
-                FontSize.LARGE -> FontSize.LARGE
-                FontSize.EXTRA_LARGE -> FontSize.EXTRA_LARGE
+            Loading -> MEDIUM
+            is Success -> when(uiState.confCurrent.fontSize){
+                MEDIUM -> MEDIUM
+                SMALL -> SMALL
+                LARGE -> LARGE
+                EXTRA_LARGE -> EXTRA_LARGE
             }
         }
     }
@@ -72,7 +81,7 @@ object CustomThemes{
         darkTheme: Boolean = isSystemInDarkTheme(),
         // Dynamic color is available on Android 12+
         dynamicColor: Boolean = false,
-        fontSize: FontSize = FontSize.MEDIUM,
+        fontSize: FontSize = MEDIUM,
         content: @Composable () -> Unit
     ) {
         val colorScheme = when {
@@ -88,13 +97,13 @@ object CustomThemes{
             SideEffect {
                 val window = (view.context as Activity).window
                 window.statusBarColor = colorScheme.primary.toArgb()
-                WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
+                getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
             }
         }
 
         MaterialTheme(
             colorScheme = colorScheme,
-            typography = Types.personalizedTypography(fontSize),
+            typography = personalizedTypography(fontSize),
             shapes = shapes,
             content = content
         )
