@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration.Indefinite
 import androidx.compose.material3.SnackbarDuration.Short
@@ -59,8 +59,8 @@ internal fun ScrApp(
 ){
     Scaffold(
         modifier = modifier.semantics { testTagsAsResourceId = true },
-        containerColor = MaterialTheme.colorScheme.background,
-        contentColor = MaterialTheme.colorScheme.onBackground,
+        containerColor = colorScheme.background,
+        contentColor = colorScheme.onBackground,
         snackbarHost = { SnackbarHost(snackBarHostState) },
         topBar = {
             if(stateApp.shouldShowTopBar)

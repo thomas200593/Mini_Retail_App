@@ -25,9 +25,9 @@ import com.thomas200593.mini_retail_app.features.app_conf._gen_font_size.entity.
 import com.thomas200593.mini_retail_app.features.app_conf._gen_font_size.entity.FontSize.MEDIUM
 import com.thomas200593.mini_retail_app.features.app_conf._gen_language.entity.Language
 import com.thomas200593.mini_retail_app.features.app_conf._gen_language.entity.Language.EN
-import com.thomas200593.mini_retail_app.features.app_conf._g_theme.entity.Theme
-import com.thomas200593.mini_retail_app.features.app_conf._g_theme.entity.Theme.SYSTEM
-import com.thomas200593.mini_retail_app.features.app_conf._g_timezone.entity.Timezone
+import com.thomas200593.mini_retail_app.features.app_conf._gen_theme.entity.Theme
+import com.thomas200593.mini_retail_app.features.app_conf._gen_theme.entity.Theme.SYSTEM
+import com.thomas200593.mini_retail_app.features.app_conf._gen_timezone.entity.Timezone
 import com.thomas200593.mini_retail_app.features.app_conf._gen_country.entity.Country
 import com.thomas200593.mini_retail_app.features.app_conf._gen_currency.entity.Currency
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.entity.AppConfig.ConfigCurrent

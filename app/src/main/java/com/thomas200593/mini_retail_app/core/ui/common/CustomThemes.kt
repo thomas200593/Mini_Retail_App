@@ -25,9 +25,9 @@ import com.thomas200593.mini_retail_app.features.app_conf._gen_font_size.entity.
 import com.thomas200593.mini_retail_app.features.app_conf._gen_font_size.entity.FontSize.LARGE
 import com.thomas200593.mini_retail_app.features.app_conf._gen_font_size.entity.FontSize.MEDIUM
 import com.thomas200593.mini_retail_app.features.app_conf._gen_font_size.entity.FontSize.SMALL
-import com.thomas200593.mini_retail_app.features.app_conf._g_theme.entity.Theme.DARK
-import com.thomas200593.mini_retail_app.features.app_conf._g_theme.entity.Theme.LIGHT
-import com.thomas200593.mini_retail_app.features.app_conf._g_theme.entity.Theme.SYSTEM
+import com.thomas200593.mini_retail_app.features.app_conf._gen_theme.entity.Theme.DARK
+import com.thomas200593.mini_retail_app.features.app_conf._gen_theme.entity.Theme.LIGHT
+import com.thomas200593.mini_retail_app.features.app_conf._gen_theme.entity.Theme.SYSTEM
 
 object CustomThemes{
     private val lightScheme = CustomColors.lightScheme

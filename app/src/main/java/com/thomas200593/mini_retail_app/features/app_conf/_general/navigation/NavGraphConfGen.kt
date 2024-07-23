@@ -13,8 +13,8 @@ import com.thomas200593.mini_retail_app.features.app_conf._gen_currency.ui.ScrCo
 import com.thomas200593.mini_retail_app.features.app_conf._gen_dynamic_color.ui.ScrConfGenDynamicColor
 import com.thomas200593.mini_retail_app.features.app_conf._gen_font_size.ui.ScrConfGenFontSize
 import com.thomas200593.mini_retail_app.features.app_conf._gen_language.ui.ScrConfGenLanguage
-import com.thomas200593.mini_retail_app.features.app_conf._g_theme.ui.ThemeScreen
-import com.thomas200593.mini_retail_app.features.app_conf._g_timezone.ui.TimezoneScreen
+import com.thomas200593.mini_retail_app.features.app_conf._gen_theme.ui.ScrConfGenTheme
+import com.thomas200593.mini_retail_app.features.app_conf._gen_timezone.ui.ScrConfGenTimezone
 
 fun NavGraphBuilder.navGraphConfGen() {
     navigation(
@@ -35,11 +35,11 @@ fun NavGraphBuilder.navGraphConfGen() {
 
         composable(
             route = ScrGraphs.Timezone.route
-        ){ TimezoneScreen() }
+        ){ ScrConfGenTimezone() }
 
         composable(
             route = ScrGraphs.Theme.route
-        ){ ThemeScreen() }
+        ){ ScrConfGenTheme() }
 
         composable(
             route = ScrGraphs.DynamicColor.route
