@@ -6,9 +6,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatcher
-import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers
+import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers.Dispatchers.IO
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
-import com.thomas200593.mini_retail_app.features.app_conf.app_config.navigation.DestinationAppConfig
+import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.*
+import com.thomas200593.mini_retail_app.features.app_conf.app_config.navigation.DestAppConfig
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.repository.RepoAppConf
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -16,20 +17,19 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class AppConfigViewModel @Inject constructor(
+class VMAppConfig @Inject constructor(
     private val appCfgRepository: RepoAppConf,
-    @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
+    @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
 ): ViewModel(){
-    private val _menuData: MutableState<ResourceState<Set<DestinationAppConfig>>> = mutableStateOf(ResourceState.Idle)
+    private val _menuData: MutableState<ResourceState<Set<DestAppConfig>>> = mutableStateOf(Idle)
     val menuData = _menuData
 
-    fun onOpen(sessionState: SessionState) = viewModelScope.launch(ioDispatcher) {
-        getMenuData(sessionState)
-    }
+    fun onOpen(sessionState: SessionState) =
+        viewModelScope.launch(ioDispatcher) { getMenuData(sessionState) }
 
     private suspend fun getMenuData(sessionState: SessionState) = viewModelScope.launch(ioDispatcher){
-        _menuData.value = ResourceState.Loading
-        _menuData.value = try { ResourceState.Success(appCfgRepository.getMenuData(sessionState)) }
-        catch (e: Throwable){ ResourceState.Error(e) }
+        _menuData.value = Loading
+        _menuData.value = try { Success(appCfgRepository.getMenuData(sessionState)) }
+        catch (e: Throwable){ Error(e) }
     }
 }

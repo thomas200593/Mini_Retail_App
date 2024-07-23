@@ -3,9 +3,9 @@ package com.thomas200593.mini_retail_app.features.app_conf._g_timezone.domain
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
-import com.thomas200593.mini_retail_app.features.app_conf.app_config.entity.AppConfig
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.repository.RepoAppConf
 import com.thomas200593.mini_retail_app.features.app_conf._g_timezone.repository.RepositoryAppCfgGeneralTimezone
+import com.thomas200593.mini_retail_app.features.app_conf._g_timezone.entity.ConfigTimezones
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
@@ -23,7 +23,7 @@ class GetTimezoneConfigUseCase @Inject constructor(
         appCfgRepository.configCurrent, flow { emit(repositoryAppCfgGeneralTimezone.getTimezones()) }
     ){ configCurrent, timezones ->
         ResourceState.Success(
-            data = AppConfig.ConfigTimezones(configCurrent = configCurrent, timezones = timezones)
+            data = ConfigTimezones(configCurrent = configCurrent, timezones = timezones)
         )
     }.flowOn(ioDispatcher).catch { t -> ResourceState.Error(t) }.map { it }
 }

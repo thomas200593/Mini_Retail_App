@@ -2,9 +2,33 @@ package com.thomas200593.mini_retail_app.features.app_conf._general.navigation
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import com.thomas200593.mini_retail_app.R
-import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs
-import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons
+import com.thomas200593.mini_retail_app.R.string.str_country
+import com.thomas200593.mini_retail_app.R.string.str_country_desc
+import com.thomas200593.mini_retail_app.R.string.str_currency
+import com.thomas200593.mini_retail_app.R.string.str_currency_desc
+import com.thomas200593.mini_retail_app.R.string.str_dynamic_color
+import com.thomas200593.mini_retail_app.R.string.str_dynamic_color_desc
+import com.thomas200593.mini_retail_app.R.string.str_lang
+import com.thomas200593.mini_retail_app.R.string.str_lang_desc
+import com.thomas200593.mini_retail_app.R.string.str_size_font
+import com.thomas200593.mini_retail_app.R.string.str_size_font_desc
+import com.thomas200593.mini_retail_app.R.string.str_theme
+import com.thomas200593.mini_retail_app.R.string.str_theme_desc
+import com.thomas200593.mini_retail_app.R.string.str_timezone
+import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs.Country
+import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs.Currency
+import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs.DynamicColor
+import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs.FontSize
+import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs.Language
+import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs.Theme
+import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs.Timezone
+import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.Country.country
+import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.Currency.currency
+import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.DynamicColor.dynamic_color
+import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.Font.font
+import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.Language.language
+import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.Theme.theme
+import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.Timezone.timezone
 
 enum class DestConfGen(
     val route: String,
@@ -14,52 +38,52 @@ enum class DestConfGen(
     val usesAuth: Boolean
 ){
     THEME(
-        route = ScrGraphs.Theme.route,
-        iconRes = CustomIcons.Theme.theme,
-        title = R.string.str_theme,
-        description = R.string.str_theme_desc,
+        route = Theme.route,
+        iconRes = theme,
+        title = str_theme,
+        description = str_theme_desc,
         usesAuth = false
     ),
     DYNAMIC_COLOR(
-        route = ScrGraphs.DynamicColor.route,
-        iconRes = CustomIcons.DynamicColor.dynamic_color,
-        title = R.string.str_dynamic_color,
-        description = R.string.str_dynamic_color_desc,
+        route = DynamicColor.route,
+        iconRes = dynamic_color,
+        title = str_dynamic_color,
+        description = str_dynamic_color_desc,
         usesAuth = false
     ),
     FONT_SIZE(
-        route = ScrGraphs.FontSize.route,
-        iconRes = CustomIcons.Font.font,
-        title = R.string.str_size_font,
-        description = R.string.str_size_font_desc,
+        route = FontSize.route,
+        iconRes = font,
+        title = str_size_font,
+        description = str_size_font_desc,
         usesAuth = false
     ),
     COUNTRY(
-        route = ScrGraphs.Country.route,
-        iconRes = CustomIcons.Country.country,
-        title = R.string.str_country,
-        description = R.string.str_country_desc,
+        route = Country.route,
+        iconRes = country,
+        title = str_country,
+        description = str_country_desc,
         usesAuth = true
     ),
     LANGUAGE(
-        route = ScrGraphs.Language.route,
-        iconRes = CustomIcons.Language.language,
-        title = R.string.str_lang,
-        description = R.string.str_lang_desc,
+        route = Language.route,
+        iconRes = language,
+        title = str_lang,
+        description = str_lang_desc,
         usesAuth = false
     ),
     TIMEZONE(
-        route = ScrGraphs.Timezone.route,
-        iconRes = CustomIcons.Timezone.timezone,
-        title = R.string.str_timezone,
-        description = R.string.str_timezone,
+        route = Timezone.route,
+        iconRes = timezone,
+        title = str_timezone,
+        description = str_timezone,
         usesAuth = false
     ),
     CURRENCY(
-        route = ScrGraphs.Currency.route,
-        iconRes = CustomIcons.Currency.currency,
-        title = R.string.str_currency,
-        description = R.string.str_currency_desc,
+        route = Currency.route,
+        iconRes = currency,
+        title = str_currency,
+        description = str_currency_desc,
         usesAuth = false
     )
 }

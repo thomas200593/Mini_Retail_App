@@ -46,7 +46,7 @@ import com.thomas200593.mini_retail_app.core.ui.component.CustomButton
 import com.thomas200593.mini_retail_app.core.ui.component.CustomButton.Google.SignInWithGoogle
 import com.thomas200593.mini_retail_app.core.ui.component.CustomButton.Google.handleClearCredential
 import com.thomas200593.mini_retail_app.core.ui.component.CustomScreenUtil
-import com.thomas200593.mini_retail_app.features.app_conf.app_config.navigation.navigateToAppConfig
+import com.thomas200593.mini_retail_app.features.app_conf.app_config.navigation.navToAppConfig
 import com.thomas200593.mini_retail_app.features.initial.initial.navigation.navToInitial
 import com.thomas200593.mini_retail_app.work.workers.session_monitor.manager.ManagerWorkSessionMonitor
 import kotlinx.coroutines.launch
@@ -91,7 +91,7 @@ fun AuthScreen(
     //TODO revert to Column Row
     ScreenContent(
         onNavigateToAppConfigScreen = {
-            stateApp.navController.navigateToAppConfig(destinationAppConfig = null)
+            stateApp.navController.navToAppConfig(destAppConfig = null)
         },
         onSignInWithGoogleButton = {
             coroutineScope.launch {

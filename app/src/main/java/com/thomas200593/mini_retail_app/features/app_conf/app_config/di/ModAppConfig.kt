@@ -9,9 +9,7 @@ import dagger.hilt.components.SingletonComponent
 
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class AppConfigModule {
+abstract class ModAppConfig {
     @Binds
-    internal abstract fun bindsRepository(
-        impl: RepoAppConfImpl
-    ): RepoAppConf
+    internal abstract fun bindsRepository(impl: RepoAppConfImpl): RepoAppConf
 }

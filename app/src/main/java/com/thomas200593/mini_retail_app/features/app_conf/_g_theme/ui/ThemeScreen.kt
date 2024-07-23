@@ -42,8 +42,8 @@ import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.EmptyScree
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.ErrorScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.LoadingScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.ThreeRowCardItem
-import com.thomas200593.mini_retail_app.features.app_conf.app_config.entity.AppConfig
 import com.thomas200593.mini_retail_app.features.app_conf._g_theme.entity.Theme
+import com.thomas200593.mini_retail_app.features.app_conf._g_theme.entity.ConfigThemes
 
 @Composable
 fun ThemeScreen(
@@ -108,7 +108,7 @@ private fun TopAppBar(onNavigateBack: () -> Unit) {
 
 @Composable
 private fun ScreenContent(
-    configData: ResourceState<AppConfig.ConfigThemes>,
+    configData: ResourceState<ConfigThemes>,
     onSaveSelectedTheme: (Theme) -> Unit
 ) {
     when(configData){

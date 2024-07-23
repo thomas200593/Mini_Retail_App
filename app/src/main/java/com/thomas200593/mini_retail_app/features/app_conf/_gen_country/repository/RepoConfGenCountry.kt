@@ -2,8 +2,8 @@ package com.thomas200593.mini_retail_app.features.app_conf._gen_country.reposito
 
 import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStorePreferences
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatcher
-import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers
-import com.thomas200593.mini_retail_app.core.design_system.util.HlpCountry
+import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers.Dispatchers.IO
+import com.thomas200593.mini_retail_app.core.design_system.util.HlpCountry.getCountryList
 import com.thomas200593.mini_retail_app.features.app_conf._gen_country.entity.Country
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
@@ -16,10 +16,8 @@ interface RepoConfGenCountry {
 
 internal class RepoImplConfGenCountry @Inject constructor(
     private val dataStore: DataStorePreferences,
-    @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
+    @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
 ): RepoConfGenCountry{
-    override suspend fun getCountries(): List<Country> =
-        withContext(ioDispatcher){ HlpCountry.getCountryList() }
-    override suspend fun setCountry(country: Country)
-    { dataStore.setCountry(country) }
+    override suspend fun getCountries(): List<Country> = withContext(ioDispatcher){ getCountryList() }
+    override suspend fun setCountry(country: Country) { dataStore.setCountry(country) }
 }

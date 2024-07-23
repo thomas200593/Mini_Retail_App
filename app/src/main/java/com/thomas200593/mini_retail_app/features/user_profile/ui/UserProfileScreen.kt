@@ -62,7 +62,7 @@ import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.ErrorPanel
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.LoadingPanelCircularIndicator
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.LoadingScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.TextContentWithIcon
-import com.thomas200593.mini_retail_app.features.app_conf.app_config.navigation.navigateToAppConfig
+import com.thomas200593.mini_retail_app.features.app_conf.app_config.navigation.navToAppConfig
 import com.thomas200593.mini_retail_app.features.auth.entity.OAuth2UserMetadata
 import com.thomas200593.mini_retail_app.features.auth.entity.OAuthProvider
 import com.thomas200593.mini_retail_app.features.auth.entity.UserData
@@ -106,7 +106,7 @@ fun UserProfileScreen(
         userData = userData,
         businessProfileSummaryData = businessProfileSummaryData,
         onNavigateToConfig = {
-            stateApp.navController.navigateToAppConfig(null)
+            stateApp.navController.navToAppConfig(null)
         },
         onSignedOut = {
             viewModel.handleSignOut()

@@ -23,61 +23,42 @@ fun NavGraphBuilder.navGraphConfGen() {
     ){
         composable(
             route = ScrGraphs.ConfigGeneral.route
-        ){
-            ScrConfGen()
-        }
+        ){ ScrConfGen() }
 
         composable(
             route = ScrGraphs.Country.route
-        ){
-            ScrConfGenCountry()
-        }
+        ){ ScrConfGenCountry() }
 
         composable(
             route = ScrGraphs.Language.route
-        ){
-            LanguageScreen()
-        }
+        ){ LanguageScreen() }
 
         composable(
             route = ScrGraphs.Timezone.route
-        ){
-            TimezoneScreen()
-        }
+        ){ TimezoneScreen() }
 
         composable(
             route = ScrGraphs.Theme.route
-        ){
-            ThemeScreen()
-        }
+        ){ ThemeScreen() }
 
         composable(
             route = ScrGraphs.DynamicColor.route
-        ){
-            DynamicColorScreen()
-        }
+        ){ DynamicColorScreen() }
 
         composable(
             route = ScrGraphs.FontSize.route
-        ){
-            FontSizeScreen()
-        }
+        ){ FontSizeScreen() }
 
         composable(
             route = ScrGraphs.Currency.route
-        ){
-            ScrConfGenCurrency()
-        }
+        ){ ScrConfGenCurrency() }
     }
 }
 
 fun NavController.navToConfGen(
     destConfGen: DestConfGen?
 ) {
-    val navOptions = navOptions {
-        launchSingleTop = true
-        restoreState = true
-    }
+    val navOptions = navOptions { launchSingleTop = true; restoreState = true }
     this.navigate(
         route = destConfGen?.route?: NavGraph.G_CONFIG_GENERAL,
         navOptions = navOptions

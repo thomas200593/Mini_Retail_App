@@ -44,8 +44,8 @@ import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.EmptyScree
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.ErrorScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.LoadingScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.ThreeRowCardItem
-import com.thomas200593.mini_retail_app.features.app_conf.app_config.entity.AppConfig
 import com.thomas200593.mini_retail_app.features.app_conf._g_language.entity.Language
+import com.thomas200593.mini_retail_app.features.app_conf._g_language.entity.ConfigLanguages
 import kotlinx.coroutines.Job
 import kotlin.reflect.KFunction1
 
@@ -112,7 +112,7 @@ private fun TopAppBar(onNavigateBack: () -> Unit) {
 
 @Composable
 private fun ScreenContent(
-    configData: ResourceState<AppConfig.ConfigLanguages>,
+    configData: ResourceState<ConfigLanguages>,
     onSaveSelectedLanguage: KFunction1<Language, Job>
 ) {
     when(configData){

@@ -3,9 +3,9 @@ package com.thomas200593.mini_retail_app.features.app_conf._g_font_size.domain
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
-import com.thomas200593.mini_retail_app.features.app_conf.app_config.entity.AppConfig
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.repository.RepoAppConf
 import com.thomas200593.mini_retail_app.features.app_conf._g_font_size.repository.RepositoryAppCfgGeneralFontSize
+import com.thomas200593.mini_retail_app.features.app_conf._g_font_size.entity.ConfigFontSizes
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
@@ -23,7 +23,7 @@ class GetFontSizeConfigUseCase @Inject constructor(
         appCfgRepository.configCurrent, flow { emit(repositoryAppCfgGeneralFontSize.getFontSizes()) }
     ){ configCurrent, fontSizes ->
         ResourceState.Success(
-            data = AppConfig.ConfigFontSizes(configCurrent = configCurrent, fontSizes = fontSizes)
+            data = ConfigFontSizes(configCurrent = configCurrent, fontSizes = fontSizes)
         )
     }.flowOn(ioDispatcher).catch { t -> ResourceState.Error(t) }.map { it }
 }
