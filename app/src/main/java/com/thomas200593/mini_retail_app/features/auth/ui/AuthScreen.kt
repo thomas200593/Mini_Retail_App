@@ -53,7 +53,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun AuthScreen(
-    viewModel: AuthViewModel = hiltViewModel(),
+    viewModel: VMAuth = hiltViewModel(),
     stateApp: StateApp = LocalStateApp.current
 ){
     CustomScreenUtil.LockScreenOrientation(orientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)

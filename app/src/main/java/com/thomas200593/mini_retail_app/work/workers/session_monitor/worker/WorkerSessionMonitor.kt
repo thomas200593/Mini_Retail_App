@@ -9,7 +9,7 @@ import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkerParameters
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers.Dispatchers.IO
-import com.thomas200593.mini_retail_app.features.auth.domain.ValidateAuthSessionUseCase
+import com.thomas200593.mini_retail_app.features.auth.domain.UCValidateAuthSession
 import com.thomas200593.mini_retail_app.features.auth.repository.RepoAuth
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
@@ -24,12 +24,12 @@ class WorkerSessionMonitor @AssistedInject constructor(
     @Assisted context: Context,
     @Assisted workerParameters: WorkerParameters,
     private val repoAuth: RepoAuth,
-    private val validateAuthSessionUseCase: ValidateAuthSessionUseCase,
+    private val ucValidateAuthSession: UCValidateAuthSession,
     @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
 ): CoroutineWorker(context, workerParameters) {
 
     override suspend fun doWork(): Result {
-        if(validateAuthSessionUseCase.invoke(repoAuth.authSessionToken.flowOn(ioDispatcher).first())){
+        if(ucValidateAuthSession.invoke(repoAuth.authSessionToken.flowOn(ioDispatcher).first())){
             Timber.d("fun doWork() returned : SessionValid")
             return success()
         }else{

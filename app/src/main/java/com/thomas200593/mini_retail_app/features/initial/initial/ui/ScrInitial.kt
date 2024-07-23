@@ -26,7 +26,7 @@ import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.LoadingScr
 import com.thomas200593.mini_retail_app.features.auth.entity.OAuth2UserMetadata.Google
 import com.thomas200593.mini_retail_app.features.auth.entity.OAuthProvider.GOOGLE
 import com.thomas200593.mini_retail_app.features.auth.entity.UserData
-import com.thomas200593.mini_retail_app.features.auth.navigation.navigateToAuth
+import com.thomas200593.mini_retail_app.features.auth.navigation.navToAuth
 import com.thomas200593.mini_retail_app.features.dashboard.navigation.navigateToDashboard
 import com.thomas200593.mini_retail_app.features.initial.initial.entity.FirstTimeStatus.NO
 import com.thomas200593.mini_retail_app.features.initial.initial.entity.FirstTimeStatus.YES
@@ -64,7 +64,7 @@ fun ScrInitial(
             }
             coroutineScope.launch { stateApp.navController.navigateToDashboard(navOptions) }
         },
-        onNavigateToAuth = { coroutineScope.launch { stateApp.navController.navigateToAuth() } }
+        onNavigateToAuth = { coroutineScope.launch { stateApp.navController.navToAuth() } }
     )
 }
 

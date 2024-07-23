@@ -5,7 +5,7 @@ import androidx.work.ListenableWorker
 import androidx.work.WorkerParameters
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers
-import com.thomas200593.mini_retail_app.features.auth.domain.ValidateAuthSessionUseCase
+import com.thomas200593.mini_retail_app.features.auth.domain.UCValidateAuthSession
 import com.thomas200593.mini_retail_app.features.auth.repository.RepoAuth
 import com.thomas200593.mini_retail_app.work.factory.FactoryCustomWorker
 import com.thomas200593.mini_retail_app.work.workers.session_monitor.worker.WorkerSessionMonitor
@@ -14,7 +14,7 @@ import javax.inject.Inject
 
 class FactoryWorkerSessionMonitor @Inject constructor(
     private val repoAuth: RepoAuth,
-    private val validateAuthSessionUseCase: ValidateAuthSessionUseCase,
+    private val ucValidateAuthSession: UCValidateAuthSession,
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ): FactoryCustomWorker{
     override fun create(appContext: Context, params: WorkerParameters): ListenableWorker {
@@ -22,7 +22,7 @@ class FactoryWorkerSessionMonitor @Inject constructor(
             context = appContext,
             workerParameters = params,
             repoAuth = repoAuth,
-            validateAuthSessionUseCase = validateAuthSessionUseCase,
+            ucValidateAuthSession = ucValidateAuthSession,
             ioDispatcher = ioDispatcher
         )
     }
