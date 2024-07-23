@@ -47,7 +47,6 @@ fun ScrApp(
             )
         }
     }
-
     ScrApp(snackBarHostState = snackBarHostState)
 }
 

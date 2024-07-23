@@ -11,8 +11,11 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
 import com.thomas200593.mini_retail_app.app.navigation.DestTopLevel
-import com.thomas200593.mini_retail_app.app.navigation.DestTopLevel.*
-import com.thomas200593.mini_retail_app.app.navigation.DestWithTopAppBar
+import com.thomas200593.mini_retail_app.app.navigation.DestTopLevel.BUSINESS
+import com.thomas200593.mini_retail_app.app.navigation.DestTopLevel.DASHBOARD
+import com.thomas200593.mini_retail_app.app.navigation.DestTopLevel.REPORTING
+import com.thomas200593.mini_retail_app.app.navigation.DestTopLevel.USER_PROFILE
+import com.thomas200593.mini_retail_app.app.navigation.DestWithTopAppBar.destWithTopAppBar
 import com.thomas200593.mini_retail_app.core.data.local.session.Session
 import com.thomas200593.mini_retail_app.core.data.local.session.SessionState.Loading
 import com.thomas200593.mini_retail_app.core.design_system.network_monitor.NetworkMonitor
@@ -70,7 +73,7 @@ class StateApp(
         @Composable get() = destCurrent?.route in destTopLevels.map { it.route }
 
     val shouldShowTopBar: Boolean
-        @Composable get() = destCurrent?.route in DestWithTopAppBar.destWithTopAppBar()
+        @Composable get() = destCurrent?.route in destWithTopAppBar()
 
     fun navToDestTopLevel(destTopLevel: DestTopLevel){
         val destTopLevelNavOptions = navOptions {
