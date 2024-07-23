@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class GetLanguageConfigUseCase @Inject constructor(
+class UCGetConfGenLanguage @Inject constructor(
     private val appCfgRepository: RepoAppConf,
     private val repositoryAppCfgGeneralLanguage: RepositoryAppCfgGeneralLanguage,
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher,

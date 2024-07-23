@@ -6,7 +6,7 @@ import com.thomas200593.mini_retail_app.features.business.entity.business_profil
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class BusinessProfileSummary(
+data class BizProfileSummary(
     val seqId: Int,
     val genId: String,
     val bizName: BizName?,

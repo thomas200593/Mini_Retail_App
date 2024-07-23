@@ -11,7 +11,7 @@ import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
 import com.thomas200593.mini_retail_app.features.auth.entity.UserData
 import com.thomas200593.mini_retail_app.features.auth.repository.RepoAuth
 import com.thomas200593.mini_retail_app.features.business.domain.GetBizProfileSummaryUseCase
-import com.thomas200593.mini_retail_app.features.business.entity.business_profile.dto.BusinessProfileSummary
+import com.thomas200593.mini_retail_app.features.business.entity.business_profile.dto.BizProfileSummary
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
@@ -30,7 +30,7 @@ class UserProfileViewModel @Inject constructor(
     private val _currentSessionUserData: MutableState<ResourceState<UserData>> = mutableStateOf(ResourceState.Idle)
     val currentSessionUserData = _currentSessionUserData
 
-    private val _businessProfileSummary: MutableState<ResourceState<BusinessProfileSummary>> = mutableStateOf(ResourceState.Idle)
+    private val _businessProfileSummary: MutableState<ResourceState<BizProfileSummary>> = mutableStateOf(ResourceState.Idle)
     val businessProfileSummary = _businessProfileSummary
 
     fun onOpen(validSession: SessionState.Valid) = viewModelScope.launch(ioDispatcher){

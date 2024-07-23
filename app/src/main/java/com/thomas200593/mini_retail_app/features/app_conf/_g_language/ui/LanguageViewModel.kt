@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
-import com.thomas200593.mini_retail_app.features.app_conf._g_language.domain.GetLanguageConfigUseCase
+import com.thomas200593.mini_retail_app.features.app_conf._g_language.domain.UCGetConfGenLanguage
 import com.thomas200593.mini_retail_app.features.app_conf._g_language.entity.Language
 import com.thomas200593.mini_retail_app.features.app_conf._g_language.repository.RepositoryAppCfgGeneralLanguage
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,11 +22,11 @@ import javax.inject.Inject
 @HiltViewModel
 class LanguageViewModel @Inject constructor(
     private val repositoryAppCfgGeneralLanguage: RepositoryAppCfgGeneralLanguage,
-    getLanguageConfigUseCase: GetLanguageConfigUseCase,
+    UCGetConfGenLanguage: UCGetConfGenLanguage,
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ): ViewModel(){
 
-    val configData = getLanguageConfigUseCase.invoke().flowOn(ioDispatcher)
+    val configData = UCGetConfGenLanguage.invoke().flowOn(ioDispatcher)
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.Eagerly,

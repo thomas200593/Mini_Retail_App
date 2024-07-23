@@ -2,7 +2,7 @@ package com.thomas200593.mini_retail_app.features.business.di
 
 import com.thomas200593.mini_retail_app.features.business.dao.BusinessProfileDao
 import com.thomas200593.mini_retail_app.features.business.dao.BusinessProfileDaoImpl
-import com.thomas200593.mini_retail_app.features.business.repository.BusinessProfileRepository
+import com.thomas200593.mini_retail_app.features.business.repository.RepoBizProfile
 import com.thomas200593.mini_retail_app.features.business.repository.BusinessProfileRepositoryImpl
 import dagger.Binds
 import dagger.Module
@@ -15,7 +15,7 @@ abstract class BusinessProfileModule {
     @Binds
     internal abstract fun bindsRepository(
         impl: BusinessProfileRepositoryImpl
-    ): BusinessProfileRepository
+    ): RepoBizProfile
 
     @Binds
     internal abstract fun bindsDao(

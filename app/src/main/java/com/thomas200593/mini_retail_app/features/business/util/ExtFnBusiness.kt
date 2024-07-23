@@ -4,23 +4,23 @@ import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers.Dispatchers.IO
 import com.thomas200593.mini_retail_app.features.business.entity.business_profile.BizIdentity
 import com.thomas200593.mini_retail_app.features.business.entity.business_profile.BusinessProfile
-import com.thomas200593.mini_retail_app.features.business.entity.business_profile.dto.BusinessProfileSummary
+import com.thomas200593.mini_retail_app.features.business.entity.business_profile.dto.BizProfileSummary
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-interface BusinessExtFn{
-    suspend fun bizProfileToBizProfileSummary(businessProfile: BusinessProfile): BusinessProfileSummary
-    suspend fun bizProfileSummaryToBusinessProfile(businessProfileSummary: BusinessProfileSummary): BusinessProfile
+interface ExtFnBusiness{
+    suspend fun bizProfileToBizProfileSummary(businessProfile: BusinessProfile): BizProfileSummary
+    suspend fun bizProfileSummaryToBusinessProfile(businessProfileSummary: BizProfileSummary): BusinessProfile
 }
 
 class BusinessExtFnImpl @Inject constructor(
     @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
-): BusinessExtFn {
+): ExtFnBusiness {
     override suspend fun bizProfileToBizProfileSummary(
         businessProfile: BusinessProfile
-    ): BusinessProfileSummary = withContext(ioDispatcher){
-        BusinessProfileSummary(
+    ): BizProfileSummary = withContext(ioDispatcher){
+        BizProfileSummary(
             seqId = businessProfile.seqId,
             genId = businessProfile.genId,
             auditTrail = businessProfile.auditTrail,
@@ -30,7 +30,7 @@ class BusinessExtFnImpl @Inject constructor(
     }
 
     override suspend fun bizProfileSummaryToBusinessProfile(
-        businessProfileSummary: BusinessProfileSummary
+        businessProfileSummary: BizProfileSummary
     ): BusinessProfile = withContext(ioDispatcher){
         BusinessProfile(
             seqId = businessProfileSummary.seqId,

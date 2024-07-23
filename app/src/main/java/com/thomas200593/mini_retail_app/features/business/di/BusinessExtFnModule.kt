@@ -1,6 +1,6 @@
 package com.thomas200593.mini_retail_app.features.business.di
 
-import com.thomas200593.mini_retail_app.features.business.util.BusinessExtFn
+import com.thomas200593.mini_retail_app.features.business.util.ExtFnBusiness
 import com.thomas200593.mini_retail_app.features.business.util.BusinessExtFnImpl
 import dagger.Binds
 import dagger.Module
@@ -13,5 +13,5 @@ abstract class BusinessExtFnModule {
     @Binds
     abstract fun bindsImplementation(
         impl: BusinessExtFnImpl
-    ): BusinessExtFn
+    ): ExtFnBusiness
 }

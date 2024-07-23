@@ -1,7 +1,7 @@
 package com.thomas200593.mini_retail_app.features.business.ui.master_data.supplier.add_update
 
 import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
-import com.thomas200593.mini_retail_app.features.business.entity.business_profile.dto.BusinessProfileSummary
+import com.thomas200593.mini_retail_app.features.business.entity.business_profile.dto.BizProfileSummary
 
 sealed class SupplierAddUpdateUiEvent {
     data object OnSessionCheckLoading: SupplierAddUpdateUiEvent()
@@ -10,7 +10,7 @@ sealed class SupplierAddUpdateUiEvent {
     sealed class SupplierAddUpdateResult {
         data object Idle: SupplierAddUpdateResult()
         data object Loading: SupplierAddUpdateResult()
-        data class Success(val bizProfileSummary: BusinessProfileSummary): SupplierAddUpdateResult()
+        data class Success(val bizProfileSummary: BizProfileSummary): SupplierAddUpdateResult()
         data class Error(val t: Throwable?): SupplierAddUpdateResult()
     }
 }

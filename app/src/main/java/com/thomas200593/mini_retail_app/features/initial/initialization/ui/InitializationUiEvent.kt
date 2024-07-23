@@ -1,7 +1,7 @@
 package com.thomas200593.mini_retail_app.features.initial.initialization.ui
 
 import com.thomas200593.mini_retail_app.features.app_conf._g_language.entity.Language
-import com.thomas200593.mini_retail_app.features.business.entity.business_profile.dto.BusinessProfileSummary
+import com.thomas200593.mini_retail_app.features.business.entity.business_profile.dto.BizProfileSummary
 
 sealed class InitializationUiEvent{
     data object OnOpen: InitializationUiEvent()
@@ -9,14 +9,14 @@ sealed class InitializationUiEvent{
     data object BeginInitBizProfileManual: InitializationUiEvent()
     data class OnUiFormLegalNameChanged(val legalName: String): InitializationUiEvent()
     data class OnUiFormCommonNameChanged(val commonName: String): InitializationUiEvent()
-    data class OnUiFormSubmitInitManual(val bizProfile: BusinessProfileSummary): InitializationUiEvent()
+    data class OnUiFormSubmitInitManual(val bizProfile: BizProfileSummary): InitializationUiEvent()
     data object OnUiFormCancelInitManual: InitializationUiEvent()
-    data class BeginInitBizProfileDefault(val bizProfile: BusinessProfileSummary): InitializationUiEvent()
+    data class BeginInitBizProfileDefault(val bizProfile: BizProfileSummary): InitializationUiEvent()
     sealed class InitBizProfileResult {
         data object Idle: InitBizProfileResult()
         data object Loading: InitBizProfileResult()
         data object Empty: InitBizProfileResult()
-        data class Success(val bizProfileSummary: BusinessProfileSummary): InitBizProfileResult()
+        data class Success(val bizProfileSummary: BizProfileSummary): InitBizProfileResult()
         data class Error(val t: Throwable?): InitBizProfileResult()
     }
 }

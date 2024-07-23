@@ -12,7 +12,7 @@ import javax.inject.Inject
 class BusinessProfileRepositoryImpl @Inject constructor(
     private val dao: BusinessProfileDao,
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
-): BusinessProfileRepository {
+): RepoBizProfile {
     override fun getBusinessProfile(): Flow<BusinessProfile?> =
         dao.getBusinessProfile().flowOn(ioDispatcher)
     override suspend fun setBusinessProfile(businessProfile: BusinessProfile): Long =
