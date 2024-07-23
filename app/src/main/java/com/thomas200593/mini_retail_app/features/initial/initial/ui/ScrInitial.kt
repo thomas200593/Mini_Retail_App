@@ -56,7 +56,7 @@ fun ScrInitial(
         { coroutineScope.launch { stateApp.navController.navToInitialization() } },
         onNavigateToDashboard = { userData ->
             val navOptions = Builder().setPopUpTo(route = G_INITIAL, inclusive = true, saveState = true)
-                    .setLaunchSingleTop(true).setRestoreState(true).build()
+                .setLaunchSingleTop(true).setRestoreState(true).build()
             when(userData.authSessionToken?.authProvider){
                 GOOGLE ->
                     { Toast.makeText(context, "Welcome back! ${(userData.oAuth2UserMetadata as Google).name}", LENGTH_SHORT).show() }

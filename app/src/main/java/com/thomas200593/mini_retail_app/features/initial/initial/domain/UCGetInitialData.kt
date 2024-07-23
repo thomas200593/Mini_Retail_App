@@ -2,7 +2,8 @@ package com.thomas200593.mini_retail_app.features.initial.initial.domain
 
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
+import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Error
+import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Success
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.repository.RepoAppConf
 import com.thomas200593.mini_retail_app.features.auth.repository.RepoAuth
 import com.thomas200593.mini_retail_app.features.initial.initial.entity.Initial
@@ -19,17 +20,17 @@ class UCGetInitialData @Inject constructor(
     private val appCfgRepository: RepoAppConf,
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ){
-    operator fun invoke(): Flow<ResourceState.Success<Initial>> = combine(
+    operator fun invoke(): Flow<Success<Initial>> = combine(
         flow = repoAuth.authSessionToken,
         flow2 = appCfgRepository.configCurrent,
         flow3 = appCfgRepository.firstTimeStatus
     ){ authSession, configCurrent, firstTimeStatus ->
-        ResourceState.Success(
+        Success(
             data = Initial(
                 isFirstTime = firstTimeStatus,
                 configCurrent = configCurrent,
                 session = repoAuth.mapAuthSessionTokenToUserData(authSession)
             )
         )
-    }.flowOn(ioDispatcher).catch { throwable -> ResourceState.Error(throwable) }.map { it }
+    }.flowOn(ioDispatcher).catch { throwable -> Error(throwable) }.map { it }
 }
