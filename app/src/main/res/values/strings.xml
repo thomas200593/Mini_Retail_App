@@ -5,7 +5,7 @@
     <string name="str_configuration">Settings</string>
     <string name="str_configuration_general">General Settings</string>
     <string name="str_configuration_data">Data Settings</string>
-<!-- Themes -->
+<!-- CustomThemes -->
     <string name="str_theme">Themes</string>
     <string name="str_theme_desc">Pick your favorite theme</string>
     <string name="str_theme_system">System Theme</string>
@@ -16,7 +16,7 @@
     <string name="str_theme_dark_desc">Theme with dark color scheme</string>
 <!-- Timezone -->
     <string name="str_timezone">Timezone</string>
-<!-- Dynamic Colors -->
+<!-- Dynamic CustomColors -->
     <string name="str_dynamic_color">Dynamic Colors</string>
     <string name="str_dynamic_color_desc">Use dynamic colors for your theme</string>
     <string name="str_dynamic_color_enabled">On</string>

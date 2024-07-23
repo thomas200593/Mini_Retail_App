@@ -3,137 +3,139 @@ package com.thomas200593.mini_retail_app.core.data.local.datastore
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
+import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStoreKeys.AppConfigKeys.dsKeyCountry
+import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStoreKeys.AppConfigKeys.dsKeyCurrency
+import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStoreKeys.AppConfigKeys.dsKeyDynamicColor
+import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStoreKeys.AppConfigKeys.dsKeyFirstTimeStatus
+import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStoreKeys.AppConfigKeys.dsKeyFontSize
+import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStoreKeys.AppConfigKeys.dsKeyLanguage
+import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStoreKeys.AppConfigKeys.dsKeyOnboardingStatus
+import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStoreKeys.AppConfigKeys.dsKeyTheme
+import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStoreKeys.AppConfigKeys.dsKeyTimezone
+import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStoreKeys.AuthKeys.dsKeyAuthProvider
+import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStoreKeys.AuthKeys.dsKeyAuthSessionToken
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatcher
-import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers
-import com.thomas200593.mini_retail_app.core.design_system.util.HlpCountry
-import com.thomas200593.mini_retail_app.core.design_system.util.HlpCurrency
-import com.thomas200593.mini_retail_app.core.design_system.util.HlpTimezone
-import com.thomas200593.mini_retail_app.features.app_conf.app_config.entity.AppConfig
-import com.thomas200593.mini_retail_app.features.app_conf._gen_country.entity.Country
-import com.thomas200593.mini_retail_app.features.app_conf._gen_currency.entity.Currency
+import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers.Dispatchers.IO
+import com.thomas200593.mini_retail_app.core.design_system.util.HlpCountry.COUNTRY_DEFAULT
+import com.thomas200593.mini_retail_app.core.design_system.util.HlpCurrency.CURRENCY_DEFAULT
+import com.thomas200593.mini_retail_app.core.design_system.util.HlpTimezone.TIMEZONE_DEFAULT
 import com.thomas200593.mini_retail_app.features.app_conf._g_dynamic_color.entity.DynamicColor
+import com.thomas200593.mini_retail_app.features.app_conf._g_dynamic_color.entity.DynamicColor.DISABLED
 import com.thomas200593.mini_retail_app.features.app_conf._g_font_size.entity.FontSize
 import com.thomas200593.mini_retail_app.features.app_conf._g_language.entity.Language
-import com.thomas200593.mini_retail_app.features.onboarding.entity.OnboardingStatus
+import com.thomas200593.mini_retail_app.features.app_conf._g_language.entity.Language.EN
 import com.thomas200593.mini_retail_app.features.app_conf._g_theme.entity.Theme
+import com.thomas200593.mini_retail_app.features.app_conf._g_theme.entity.Theme.SYSTEM
 import com.thomas200593.mini_retail_app.features.app_conf._g_timezone.entity.Timezone
+import com.thomas200593.mini_retail_app.features.app_conf._gen_country.entity.Country
+import com.thomas200593.mini_retail_app.features.app_conf._gen_currency.entity.Currency
+import com.thomas200593.mini_retail_app.features.app_conf.app_config.entity.AppConfig.ConfigCurrent
 import com.thomas200593.mini_retail_app.features.auth.entity.AuthSessionToken
 import com.thomas200593.mini_retail_app.features.auth.entity.OAuthProvider
+import com.thomas200593.mini_retail_app.features.auth.entity.OAuthProvider.GOOGLE
 import com.thomas200593.mini_retail_app.features.initial.entity.FirstTimeStatus
+import com.thomas200593.mini_retail_app.features.initial.entity.FirstTimeStatus.YES
+import com.thomas200593.mini_retail_app.features.onboarding.entity.OnboardingStatus
+import com.thomas200593.mini_retail_app.features.onboarding.entity.OnboardingStatus.HIDE
+import com.thomas200593.mini_retail_app.features.onboarding.entity.OnboardingStatus.SHOW
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
-import org.joda.money.CurrencyUnit
+import org.joda.money.CurrencyUnit.of
 import java.util.Locale
 import javax.inject.Inject
 
 class DataStorePreferences @Inject constructor(
     private val datastore: DataStore<Preferences>,
-    @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
+    @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
 ){
     //Onboarding
-    suspend fun hideOnboarding() = withContext(ioDispatcher){ datastore
-        .edit { it[DataStoreKeys.AppConfigKeys.dsKeyOnboardingStatus] = OnboardingStatus.HIDE.name }
-    }
+    suspend fun hideOnboarding() = withContext(ioDispatcher)
+    { datastore.edit { it[dsKeyOnboardingStatus] = HIDE.name } }
 
     //Auth
     val authSessionToken = datastore.data.flowOn(ioDispatcher).map { data ->
         AuthSessionToken(
-            authProvider = data[DataStoreKeys.AuthKeys.dsKeyAuthProvider] ?.let { oAuthProvider ->
-                OAuthProvider.valueOf(oAuthProvider)
-            } ?: OAuthProvider.GOOGLE,
-            idToken = data[DataStoreKeys.AuthKeys.dsKeyAuthSessionToken]
+            authProvider = data[dsKeyAuthProvider]
+                ?.let { oAuthProvider -> OAuthProvider.valueOf(oAuthProvider) } ?: GOOGLE,
+            idToken = data[dsKeyAuthSessionToken]
         )
     }
 
     suspend fun clearAuthSessionToken() = withContext((ioDispatcher))
-    { datastore.edit { it.remove(DataStoreKeys.AuthKeys.dsKeyAuthSessionToken) } }
+    { datastore.edit { it.remove(dsKeyAuthSessionToken) } }
 
     suspend fun saveAuthSessionToken(authSessionToken: AuthSessionToken) =
-        withContext(ioDispatcher){ datastore.edit {
-            it[DataStoreKeys.AuthKeys.dsKeyAuthSessionToken] = authSessionToken.idToken!!
-            it[DataStoreKeys.AuthKeys.dsKeyAuthProvider] = authSessionToken.authProvider?.name!!
+        withContext(ioDispatcher) { datastore
+            .edit {
+                it[dsKeyAuthSessionToken] = authSessionToken.idToken!!
+                it[dsKeyAuthProvider] = authSessionToken.authProvider?.name!!
+            }
         }
-    }
 
     //First Time Status
     val firstTimeStatus = datastore.data.map { data ->
-        data[DataStoreKeys.AppConfigKeys.dsKeyFirstTimeStatus]
-            ?.let { firstTimeStatus -> FirstTimeStatus.valueOf(firstTimeStatus) }
-            ?: FirstTimeStatus.YES
+        data[dsKeyFirstTimeStatus]
+            ?.let { firstTimeStatus -> FirstTimeStatus.valueOf(firstTimeStatus) } ?: YES
     }
 
     //App Config
     val configCurrent = datastore.data.map { data ->
-        AppConfig.ConfigCurrent(
-            onboardingStatus = data[DataStoreKeys.AppConfigKeys.dsKeyOnboardingStatus]
-                ?.let { onboardingStatus -> OnboardingStatus.valueOf(onboardingStatus) }
-                ?: OnboardingStatus.SHOW,
-            theme = data[DataStoreKeys.AppConfigKeys.dsKeyTheme]
-                ?.let { theme -> Theme.valueOf(theme) }
-                ?: Theme.SYSTEM,
-            dynamicColor = data[DataStoreKeys.AppConfigKeys.dsKeyDynamicColor]
-                ?.let { dynamicColor -> DynamicColor.valueOf(dynamicColor) }
-                ?: DynamicColor.DISABLED,
-            fontSize = data[DataStoreKeys.AppConfigKeys.dsKeyFontSize]
-                ?.let { fontSize -> FontSize.valueOf(fontSize) }
-                ?: FontSize.MEDIUM,
-            language = data[DataStoreKeys.AppConfigKeys.dsKeyLanguage]
-                ?.let { language -> Language.valueOf(language) }
-                ?: Language.EN,
-            timezone = data[DataStoreKeys.AppConfigKeys.dsKeyTimezone]
-                ?.let { offset -> Timezone(offset) }
-                ?: HlpTimezone.TIMEZONE_DEFAULT,
-            currency = data[DataStoreKeys.AppConfigKeys.dsKeyCurrency]
+        ConfigCurrent(
+            onboardingStatus = data[dsKeyOnboardingStatus]
+                ?.let { onboardingStatus -> OnboardingStatus.valueOf(onboardingStatus) } ?: SHOW,
+            theme = data[dsKeyTheme]
+                ?.let { theme -> Theme.valueOf(theme) } ?: SYSTEM,
+            dynamicColor = data[dsKeyDynamicColor]
+                ?.let { dynamicColor -> DynamicColor.valueOf(dynamicColor) } ?: DISABLED,
+            fontSize = data[dsKeyFontSize]
+                ?.let { fontSize -> FontSize.valueOf(fontSize) } ?: FontSize.MEDIUM,
+            language = data[dsKeyLanguage]
+                ?.let { language -> Language.valueOf(language) } ?: EN,
+            timezone = data[dsKeyTimezone]
+                ?.let { offset -> Timezone(offset) } ?: TIMEZONE_DEFAULT,
+            currency = data[dsKeyCurrency]
                 ?.let { currency ->
                     Currency(
                         code = currency,
-                        displayName = CurrencyUnit.of(currency).toCurrency().displayName,
-                        symbol = CurrencyUnit.of(currency).symbol,
-                        defaultFractionDigits = CurrencyUnit.of(currency).toCurrency().defaultFractionDigits,
-                        decimalPlaces = CurrencyUnit.of(currency).decimalPlaces
+                        displayName = of(currency).toCurrency().displayName,
+                        symbol = of(currency).symbol,
+                        defaultFractionDigits = of(currency).toCurrency().defaultFractionDigits,
+                        decimalPlaces = of(currency).decimalPlaces
                     )
-                } ?: HlpCurrency.CURRENCY_DEFAULT,
-            country = data[DataStoreKeys.AppConfigKeys.dsKeyCountry] ?.let{ country ->
+                } ?: CURRENCY_DEFAULT,
+            country = data[dsKeyCountry] ?.let{ country ->
                 Country(
                     isoCode = country,
                     iso03Country = Locale("", country).isO3Country,
                     displayName = Locale("", country).displayName
                 )
-            } ?: HlpCountry.COUNTRY_DEFAULT
+            } ?: COUNTRY_DEFAULT
         )
     }
 
-    suspend fun setFirstTimeStatus(firstTimeStatus: FirstTimeStatus) = withContext(ioDispatcher){
-        datastore.edit { it[DataStoreKeys.AppConfigKeys.dsKeyFirstTimeStatus] = firstTimeStatus.name }
-    }
+    suspend fun setFirstTimeStatus(firstTimeStatus: FirstTimeStatus) =
+        withContext(ioDispatcher){ datastore.edit { it[dsKeyFirstTimeStatus] = firstTimeStatus.name } }
 
-    suspend fun setTheme(theme: Theme) = withContext(ioDispatcher){
-        datastore.edit { it[DataStoreKeys.AppConfigKeys.dsKeyTheme] = theme.name }
-    }
+    suspend fun setTheme(theme: Theme) =
+        withContext(ioDispatcher){ datastore.edit { it[dsKeyTheme] = theme.name } }
 
-    suspend fun setDynamicColor(dynamicColor: DynamicColor) = withContext(ioDispatcher){
-        datastore.edit { it[DataStoreKeys.AppConfigKeys.dsKeyDynamicColor] = dynamicColor.name }
-    }
+    suspend fun setDynamicColor(dynamicColor: DynamicColor) =
+        withContext(ioDispatcher){ datastore.edit { it[dsKeyDynamicColor] = dynamicColor.name } }
 
-    suspend fun setLanguage(language: Language) = withContext(ioDispatcher){
-        datastore.edit { it[DataStoreKeys.AppConfigKeys.dsKeyLanguage] = language.name }
-    }
+    suspend fun setLanguage(language: Language) =
+        withContext(ioDispatcher){ datastore.edit { it[dsKeyLanguage] = language.name } }
 
-    suspend fun setTimezone(timezone: Timezone) = withContext(ioDispatcher){
-        datastore.edit { it[DataStoreKeys.AppConfigKeys.dsKeyTimezone] = timezone.timezoneOffset }
-    }
+    suspend fun setTimezone(timezone: Timezone) =
+        withContext(ioDispatcher){ datastore.edit { it[dsKeyTimezone] = timezone.timezoneOffset } }
 
-    suspend fun setCurrency(currency: Currency) = withContext(ioDispatcher){
-        datastore.edit { it[DataStoreKeys.AppConfigKeys.dsKeyCurrency] = currency.code }
-    }
+    suspend fun setCurrency(currency: Currency) =
+        withContext(ioDispatcher){ datastore.edit { it[dsKeyCurrency] = currency.code } }
 
-    suspend fun setFontSize(fontSize: FontSize) = withContext(ioDispatcher){
-        datastore.edit { it[DataStoreKeys.AppConfigKeys.dsKeyFontSize] = fontSize.name }
-    }
+    suspend fun setFontSize(fontSize: FontSize) =
+        withContext(ioDispatcher){ datastore.edit { it[dsKeyFontSize] = fontSize.name } }
 
-    suspend fun setCountry(country: Country) = withContext(ioDispatcher){
-        datastore.edit { it[DataStoreKeys.AppConfigKeys.dsKeyCountry] = country.isoCode }
-    }
+    suspend fun setCountry(country: Country) =
+        withContext(ioDispatcher){ datastore.edit { it[dsKeyCountry] = country.isoCode } }
 }

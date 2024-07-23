@@ -1,12 +1,12 @@
 package com.thomas200593.mini_retail_app.core.design_system.util
 
-import java.time.Instant
+import java.time.Instant.now
 
 object Constants {
     //System
     const val SYSTEM: String = "System"
     //Current UNIX Epoch Seconds
-    val NOW_EPOCH_SECOND: Long = Instant.now().epochSecond
+    val NOW_EPOCH_SECOND: Long = now().epochSecond
     /**
      * System Notification Constants
      */

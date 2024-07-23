@@ -1,9 +1,9 @@
 package com.thomas200593.mini_retail_app.core.data.local.datastore.di
 
 import android.content.Context
-import androidx.datastore.preferences.core.PreferenceDataStoreFactory
+import androidx.datastore.preferences.core.PreferenceDataStoreFactory.create
 import androidx.datastore.preferences.preferencesDataStoreFile
-import com.thomas200593.mini_retail_app.BuildConfig
+import com.thomas200593.mini_retail_app.BuildConfig.APP_LOCAL_DATASTORE_FILENAME
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -17,9 +17,5 @@ object ModDataStorePref {
     @Provides
     @Singleton
     fun providesDataStorePreferences(@ApplicationContext context: Context) =
-        PreferenceDataStoreFactory.create(
-            produceFile = {
-                context.preferencesDataStoreFile(BuildConfig.APP_LOCAL_DATASTORE_FILENAME)
-            }
-        )
+        create(produceFile = { context.preferencesDataStoreFile(APP_LOCAL_DATASTORE_FILENAME) })
 }

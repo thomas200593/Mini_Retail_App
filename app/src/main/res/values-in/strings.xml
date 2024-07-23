@@ -4,7 +4,7 @@
     <string name="str_configuration">Pengaturan</string>
     <string name="str_configuration_general">Pengaturan Umum</string>
     <string name="str_configuration_data">Pengaturan Data</string>
-<!-- Themes -->
+<!-- CustomThemes -->
     <string name="str_theme">Tema</string>
     <string name="str_theme_desc">Pilih tema favoritmu</string>
     <string name="str_theme_system">Tema Sistem</string>
@@ -15,7 +15,7 @@
     <string name="str_theme_dark_desc">Tema dengan skema warna gelap</string>
 <!-- Timezone -->
     <string name="str_timezone">Zona waktu</string>
-<!-- Dynamic Colors -->
+<!-- Dynamic CustomColors -->
     <string name="str_dynamic_color">Warna Dinamis</string>
     <string name="str_dynamic_color_desc">Gunakan warna dinamis untuk tema kamu</string>
     <string name="str_dynamic_color_enabled">Hidup</string>

@@ -4,11 +4,11 @@ import androidx.room.TypeConverter
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import ulid.ULID
+import ulid.ULID.Companion.randomULID
 
 @Serializable
 data class Link(
-    val genId: String = ULID.randomULID(),
+    val genId: String = randomULID(),
     val identifierKey: Int,
     val uri: String? = null,
     val label: String? = null,

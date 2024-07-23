@@ -19,9 +19,9 @@ import com.thomas200593.mini_retail_app.features.app_conf._g_dynamic_color.entit
 import com.thomas200593.mini_retail_app.features.app_conf._g_font_size.entity.FontSize
 import com.thomas200593.mini_retail_app.features.app_conf._g_theme.entity.Theme
 
-object Themes{
-    private val lightScheme = Colors.lightScheme
-    private val darkScheme = Colors.darkScheme
+object CustomThemes{
+    private val lightScheme = CustomColors.lightScheme
+    private val darkScheme = CustomColors.darkScheme
     private val shapes = Shapes()
 
     /**

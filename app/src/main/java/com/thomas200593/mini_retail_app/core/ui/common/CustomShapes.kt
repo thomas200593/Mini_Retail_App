@@ -2,7 +2,7 @@ package com.thomas200593.mini_retail_app.core.ui.common
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearOutSlowInEasing
-import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.RepeatMode.Restart
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.keyframes
 import androidx.compose.foundation.background
@@ -11,7 +11,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -23,12 +23,12 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
 
-object Shapes {
+object CustomShapes {
     @Composable
     fun DotsLoadingAnimation(
         modifier: Modifier = Modifier,
         circleSize: Dp = 16.dp,
-        circleColor: Color = MaterialTheme.colorScheme.onSurface,
+        circleColor: Color = colorScheme.onSurface,
         spaceBetween: Dp = 10.dp,
         travelDistance: Dp = 20.dp
     ) {
@@ -51,7 +51,7 @@ object Shapes {
                             0.0f at 600 using LinearOutSlowInEasing
                             0.0f at 1200 using LinearOutSlowInEasing
                         },
-                        repeatMode = RepeatMode.Restart
+                        repeatMode = Restart
                     )
                 )
             }
@@ -65,13 +65,8 @@ object Shapes {
             horizontalArrangement = Arrangement.spacedBy(spaceBetween)
         ) {
             circleValues.forEach { value ->
-                Box(modifier = Modifier
-                    .size(circleSize)
-                    .graphicsLayer { translationY = -value * distance }
-                    .background(
-                        color = circleColor,
-                        shape = CircleShape
-                    )
+                Box(modifier = Modifier.graphicsLayer { translationY = -value * distance }
+                    .size(circleSize).background(color = circleColor, shape = CircleShape)
                 )
             }
         }

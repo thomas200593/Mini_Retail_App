@@ -42,7 +42,7 @@ import androidx.constraintlayout.compose.Dimension
 import com.thomas200593.mini_retail_app.BuildConfig
 import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons
-import com.thomas200593.mini_retail_app.core.ui.common.Shapes
+import com.thomas200593.mini_retail_app.core.ui.common.CustomShapes
 import kotlin.Int.Companion.MAX_VALUE
 
 object CommonMessagePanel{
@@ -134,7 +134,7 @@ object CommonMessagePanel{
                         verticalArrangement = Arrangement.spacedBy(20.dp, Alignment.CenterVertically),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ){
-                        Shapes.DotsLoadingAnimation()
+                        CustomShapes.DotsLoadingAnimation()
                         Text(
                             text = stringResource(id = R.string.str_loading),
                             fontWeight = FontWeight.SemiBold,

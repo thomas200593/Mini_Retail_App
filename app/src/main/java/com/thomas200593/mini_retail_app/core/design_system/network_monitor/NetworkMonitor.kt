@@ -4,12 +4,12 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.ConnectivityManager.NetworkCallback
 import android.net.Network
-import android.net.NetworkCapabilities
-import android.net.NetworkRequest
+import android.net.NetworkCapabilities.NET_CAPABILITY_INTERNET
+import android.net.NetworkRequest.Builder
 import androidx.compose.ui.util.trace
 import androidx.core.content.getSystemService
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatcher
-import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers
+import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers.Dispatchers.IO
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.channels.awaitClose
@@ -25,7 +25,7 @@ interface NetworkMonitor {
 
 internal class NetworkMonitorImpl @Inject constructor(
     @ApplicationContext private val context: Context,
-    @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
+    @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
 ) : NetworkMonitor {
     override val isNetworkOnline: Flow<Boolean> = callbackFlow {
         trace("NetworkMonitor.callbackFlow"){
@@ -47,7 +47,7 @@ internal class NetworkMonitorImpl @Inject constructor(
                 }
             }
             trace("NetworkMonitor.registerNetworkCallback"){
-                val request = NetworkRequest.Builder().addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET).build()
+                val request = Builder().addCapability(NET_CAPABILITY_INTERNET).build()
                 connectivityManager.registerNetworkCallback(request, callback)
             }
             channel.trySend(connectivityManager.isCurrentlyConnected())
@@ -57,5 +57,5 @@ internal class NetworkMonitorImpl @Inject constructor(
 
     private fun ConnectivityManager.isCurrentlyConnected() = activeNetwork
         ?.let(::getNetworkCapabilities)
-        ?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) ?: false
+        ?.hasCapability(NET_CAPABILITY_INTERNET) ?: false
 }
