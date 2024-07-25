@@ -23,7 +23,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,17 +39,14 @@ import androidx.compose.ui.text.style.TextAlign.Companion.Justify
 import androidx.compose.ui.text.style.TextOverflow.Companion.Ellipsis
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.thomas200593.mini_retail_app.BuildConfig.BUILD_TYPE
 import com.thomas200593.mini_retail_app.BuildConfig.VERSION_NAME
+import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.R.string.app_name
 import com.thomas200593.mini_retail_app.R.string.str_biz_profile_init_failed
 import com.thomas200593.mini_retail_app.R.string.str_biz_profile_init_loading
 import com.thomas200593.mini_retail_app.R.string.str_biz_profile_init_success
-import com.thomas200593.mini_retail_app.R.string.str_business_profile
-import com.thomas200593.mini_retail_app.R.string.str_business_profile_desc
-import com.thomas200593.mini_retail_app.R.string.str_cancel
-import com.thomas200593.mini_retail_app.R.string.str_company_common_name
-import com.thomas200593.mini_retail_app.R.string.str_company_legal_name
 import com.thomas200593.mini_retail_app.R.string.str_empty_message
 import com.thomas200593.mini_retail_app.R.string.str_empty_message_title
 import com.thomas200593.mini_retail_app.R.string.str_error
@@ -60,7 +56,6 @@ import com.thomas200593.mini_retail_app.R.string.str_init_setup_yes
 import com.thomas200593.mini_retail_app.R.string.str_init_welcome_message
 import com.thomas200593.mini_retail_app.R.string.str_loading
 import com.thomas200593.mini_retail_app.R.string.str_ok
-import com.thomas200593.mini_retail_app.R.string.str_save
 import com.thomas200593.mini_retail_app.R.string.str_success
 import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
 import com.thomas200593.mini_retail_app.app.ui.StateApp
@@ -82,22 +77,22 @@ import com.thomas200593.mini_retail_app.core.ui.component.CustomForm.Component.T
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.EmptyScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.ErrorScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.LoadingScreen
+import com.thomas200593.mini_retail_app.features.app_conf.app_config.entity.AppConfig.ConfigCurrent
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_language.entity.Language
-import com.thomas200593.mini_retail_app.features.app_conf.app_config.entity.AppConfig
 import com.thomas200593.mini_retail_app.features.business.entity.business_profile.BizName
 import com.thomas200593.mini_retail_app.features.business.entity.business_profile.dto.BizProfileSummary
 import com.thomas200593.mini_retail_app.features.initial.initial.navigation.navToInitial
 import com.thomas200593.mini_retail_app.features.initial.initialization.entity.Initialization
-import com.thomas200593.mini_retail_app.features.initial.initialization.entity.InitializationUiFormState
-import com.thomas200593.mini_retail_app.features.initial.initialization.entity.InitializationUiState
-import com.thomas200593.mini_retail_app.features.initial.initialization.ui.UiEventInitialization.BeginInitBizProfileDefault
-import com.thomas200593.mini_retail_app.features.initial.initialization.ui.UiEventInitialization.BeginInitBizProfileManual
-import com.thomas200593.mini_retail_app.features.initial.initialization.ui.UiEventInitialization.OnChangeLanguage
-import com.thomas200593.mini_retail_app.features.initial.initialization.ui.UiEventInitialization.OnOpen
-import com.thomas200593.mini_retail_app.features.initial.initialization.ui.UiEventInitialization.OnUiFormCancelInitManual
-import com.thomas200593.mini_retail_app.features.initial.initialization.ui.UiEventInitialization.OnUiFormCommonNameChanged
-import com.thomas200593.mini_retail_app.features.initial.initialization.ui.UiEventInitialization.OnUiFormLegalNameChanged
-import com.thomas200593.mini_retail_app.features.initial.initialization.ui.UiEventInitialization.OnUiFormSubmitInitManual
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.FormState
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.ButtonEvents.OnBeginDefaultInitBizProfile
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.ButtonEvents.OnBeginManualInitBizProfile
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.FormEvents.OnFormCancel
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.FormEvents.OnFormCommonNameChanged
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.FormEvents.OnFormLegalNameChanged
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.FormEvents.OnFormSubmit
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.LanguageSelectionEvents.OnChangeLanguage
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.ScreenEvents.OnOpen
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiState
 import kotlinx.coroutines.launch
 import ulid.ULID.Companion.randomULID
 
@@ -106,13 +101,22 @@ fun ScrInitialization(
     vm: VMInitialization = hiltViewModel(),
     stateApp: StateApp = LocalStateApp.current
 ){
-    val uiState = vm.uiState
     val coroutineScope = rememberCoroutineScope()
+    val uiState by vm.uiState.collectAsStateWithLifecycle()
 
-    LaunchedEffect(Unit) { vm.onEvent(OnOpen) }
-
+    LaunchedEffect(Unit) {vm.onEvent(OnOpen)}
+    ScreenContent(
+        uiState = uiState,
+        onChangeLanguage = { vm.onEvent(OnChangeLanguage(it)) },
+        onInitBizProfileDefault = { vm.onEvent(OnBeginDefaultInitBizProfile(it)) },
+        onInitBizProfileManual = { vm.onEvent(OnBeginManualInitBizProfile) },
+        onLegalNameChanged = { vm.onEvent(OnFormLegalNameChanged(it)) },
+        onCommonNameChanged = { vm.onEvent(OnFormCommonNameChanged(it)) },
+        onFormSubmit = { vm.onEvent(OnFormSubmit(it)) },
+        onFormCancel = { vm.onEvent(OnFormCancel) }
+    )
     AppAlertDialog(
-        showDialog = uiState.value.uiEnableLoadingDialog,
+        showDialog = uiState.dialogState.uiEnableLoadingDialog,
         dialogContext = INFORMATION,
         showIcon = true,
         showTitle = true,
@@ -120,9 +124,8 @@ fun ScrInitialization(
         showBody = true,
         body = { Text(stringResource(str_biz_profile_init_loading)) }
     )
-
     AppAlertDialog(
-        showDialog = uiState.value.uiEnableSuccessDialog,
+        showDialog = uiState.dialogState.uiEnableSuccessDialog,
         dialogContext = SUCCESS,
         showIcon = true,
         showTitle = true,
@@ -135,9 +138,8 @@ fun ScrInitialization(
             { Text(stringResource(id = str_ok)) }
         }
     )
-
     AppAlertDialog(
-        showDialog = uiState.value.uiEnableErrorDialog,
+        showDialog = uiState.dialogState.uiEnableErrorDialog,
         dialogContext = ERROR,
         showIcon = true,
         showTitle = true,
@@ -150,31 +152,20 @@ fun ScrInitialization(
             { Text(stringResource(id = str_ok)) }
         }
     )
-
-    ScreenContent(
-        uiState = uiState,
-        onChangeLanguage = { vm.onEvent(OnChangeLanguage(it)) },
-        onInitBizProfileDefault = { vm.onEvent(BeginInitBizProfileDefault(it)) },
-        onInitBizProfileManual = { vm.onEvent(BeginInitBizProfileManual) },
-        onUiFormLegalNameChanged = { vm.onEvent(OnUiFormLegalNameChanged(it)) },
-        onUiFormCommonNameChanged = { vm.onEvent(OnUiFormCommonNameChanged(it))},
-        onUiFormSubmitInitManual = { vm.onEvent(OnUiFormSubmitInitManual(it)) },
-        onUiFormCancelInitManual = { vm.onEvent(OnUiFormCancelInitManual) }
-    )
 }
 
 @Composable
 private fun ScreenContent(
-    uiState: MutableState<InitializationUiState>,
+    uiState: UiState,
     onChangeLanguage: (Language) -> Unit,
     onInitBizProfileDefault: (BizProfileSummary) -> Unit,
     onInitBizProfileManual: () -> Unit,
-    onUiFormLegalNameChanged: (String) -> Unit,
-    onUiFormCommonNameChanged: (String) -> Unit,
-    onUiFormSubmitInitManual: (BizProfileSummary) -> Unit,
-    onUiFormCancelInitManual: () -> Unit
+    onLegalNameChanged: (String) -> Unit,
+    onCommonNameChanged: (String) -> Unit,
+    onFormSubmit: (BizProfileSummary) -> Unit,
+    onFormCancel: () -> Unit
 ) {
-    when(uiState.value.initializationData){
+    when(uiState.initDataState){
         Idle, Loading -> { LoadingScreen() }
         Empty -> {
             EmptyScreen(
@@ -191,21 +182,18 @@ private fun ScreenContent(
             )
         }
         is Success -> {
-            val initializationData = (uiState.value.initializationData as Success<Initialization>).data
-            val initUiPropertiesState = uiState.value.initializationUiFormState
-            val uiStateInitialization = uiState.value
-
             SuccessSection(
-                initializationData = initializationData,
+                initData = uiState.initDataState.data,
+                uiEnableWelcomeMessage = uiState.ui.uiEnableWelcomeMessage,
+                uiEnableInitManualForm = uiState.ui.uiEnableInitManualForm,
                 onChangeLanguage = onChangeLanguage,
-                uiStateInitialization = uiStateInitialization,
-                initializationUiFormState = initUiPropertiesState,
                 onInitBizProfileDefault = onInitBizProfileDefault,
                 onInitBizProfileManual = onInitBizProfileManual,
-                onUiFormLegalNameChanged = onUiFormLegalNameChanged,
-                onUiFormCommonNameChanged = onUiFormCommonNameChanged,
-                onUiFormSubmitInitManual = onUiFormSubmitInitManual,
-                onUiFormCancelInitManual = onUiFormCancelInitManual
+                formState = uiState.formState,
+                onLegalNameChanged = onLegalNameChanged,
+                onCommonNameChanged = onCommonNameChanged,
+                onFormSubmit = onFormSubmit,
+                onFormCancel = onFormCancel
             )
         }
     }
@@ -213,16 +201,17 @@ private fun ScreenContent(
 
 @Composable
 private fun SuccessSection(
-    initializationData: Initialization,
-    initializationUiFormState: InitializationUiFormState,
+    initData: Initialization,
+    uiEnableWelcomeMessage: Boolean,
+    uiEnableInitManualForm: Boolean,
     onChangeLanguage: (Language) -> Unit,
     onInitBizProfileDefault: (BizProfileSummary) -> Unit,
     onInitBizProfileManual: () -> Unit,
-    onUiFormLegalNameChanged: (String) -> Unit,
-    onUiFormCommonNameChanged: (String) -> Unit,
-    onUiFormSubmitInitManual: (BizProfileSummary) -> Unit,
-    onUiFormCancelInitManual: () -> Unit,
-    uiStateInitialization: InitializationUiState
+    formState: FormState,
+    onLegalNameChanged: (String) -> Unit,
+    onCommonNameChanged: (String) -> Unit,
+    onFormSubmit: (BizProfileSummary) -> Unit,
+    onFormCancel: () -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxSize().padding(8.dp).verticalScroll(rememberScrollState()),
@@ -230,23 +219,23 @@ private fun SuccessSection(
         verticalArrangement = Arrangement.spacedBy(30.dp, Alignment.Top)
     ) {
         LanguageSection(
-            languages = initializationData.languages,
-            configCurrent = initializationData.configCurrent,
+            languages = initData.languages,
+            configCurrent = initData.configCurrent,
             onChangeLanguage = onChangeLanguage
         )
-        if(uiStateInitialization.uiEnableWelcomeMessage){
+        if(uiEnableWelcomeMessage){
             WelcomeMessage(
                 onInitBizProfileDefault = onInitBizProfileDefault,
                 onInitBizProfileManual = onInitBizProfileManual
             )
         }
-        if(uiStateInitialization.uiEnableInitManualForm){
-            InputManualForm(
-                initializationUiFormState = initializationUiFormState,
-                onUiFormLegalNameChanged = onUiFormLegalNameChanged,
-                onUiFormCommonNameChanged = onUiFormCommonNameChanged,
-                onUiFormSubmitInitManual = onUiFormSubmitInitManual,
-                onUiFormCancelInitManual = onUiFormCancelInitManual
+        if(uiEnableInitManualForm){
+            InitManualForm(
+                formState = formState,
+                onLegalNameChanged = onLegalNameChanged,
+                onCommonNameChanged = onCommonNameChanged,
+                onFormSubmit = onFormSubmit,
+                onFormCancel = onFormCancel
             )
         }
     }
@@ -256,7 +245,7 @@ private fun SuccessSection(
 @Composable
 private fun LanguageSection(
     languages: Set<Language>,
-    configCurrent: AppConfig.ConfigCurrent,
+    configCurrent: ConfigCurrent,
     onChangeLanguage: (Language) -> Unit
 ) {
     Row(
@@ -319,8 +308,8 @@ private fun LanguageSection(
 @Composable
 private fun WelcomeMessage(
     onInitBizProfileDefault: (BizProfileSummary) -> Unit,
-    onInitBizProfileManual: () -> Unit
-){
+    onInitBizProfileManual: () -> Unit,
+) {
     Column(
         modifier = Modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -400,12 +389,12 @@ private fun WelcomeMessage(
 }
 
 @Composable
-private fun InputManualForm(
-    onUiFormSubmitInitManual: (BizProfileSummary) -> Unit,
-    onUiFormCancelInitManual: () -> Unit,
-    initializationUiFormState: InitializationUiFormState,
-    onUiFormLegalNameChanged: (String) -> Unit,
-    onUiFormCommonNameChanged: (String) -> Unit,
+fun InitManualForm(
+    formState: FormState,
+    onLegalNameChanged: (String) -> Unit,
+    onCommonNameChanged: (String) -> Unit,
+    onFormSubmit: (BizProfileSummary) -> Unit,
+    onFormCancel: () -> Unit,
 ) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
@@ -419,7 +408,7 @@ private fun InputManualForm(
         ) {
             Text(
                 modifier = Modifier.fillMaxWidth(),
-                text = stringResource(id = str_business_profile),
+                text = stringResource(id = R.string.str_business_profile),
                 textAlign = Center,
                 style = typography.titleLarge,
                 color = colorScheme.onSurface,
@@ -428,7 +417,7 @@ private fun InputManualForm(
             )
             Text(
                 modifier = Modifier.fillMaxWidth(),
-                text = stringResource(id = str_business_profile_desc),
+                text = stringResource(id = R.string.str_business_profile_desc),
                 textAlign = Center,
                 style = typography.labelMedium,
                 color = colorScheme.onSurface,
@@ -440,39 +429,39 @@ private fun InputManualForm(
                 color = colorScheme.onSurface
             )
             TextInput(
-                value = initializationUiFormState.uiFormLegalName,
-                onValueChange = { onUiFormLegalNameChanged(it) },
-                label = stringResource(str_company_legal_name),
-                placeholder = stringResource(str_company_legal_name),
+                value = formState.uiFormLegalName,
+                onValueChange = { onLegalNameChanged(it) },
+                label = stringResource(R.string.str_company_legal_name),
+                placeholder = stringResource(R.string.str_company_legal_name),
                 singleLine = true,
-                isError = initializationUiFormState.uiFormLegalNameError != null,
-                errorMessage = initializationUiFormState.uiFormLegalNameError
+                isError = formState.uiFormLegalNameError != null,
+                errorMessage = formState.uiFormLegalNameError
             )
             TextInput(
-                value = initializationUiFormState.uiFormCommonName,
-                onValueChange = { onUiFormCommonNameChanged(it) },
-                label = stringResource(str_company_common_name),
-                placeholder = stringResource(str_company_common_name),
+                value = formState.uiFormCommonName,
+                onValueChange = { onCommonNameChanged(it) },
+                label = stringResource(R.string.str_company_common_name),
+                placeholder = stringResource(R.string.str_company_common_name),
                 singleLine = true,
-                isError = initializationUiFormState.uiFormCommonNameError != null,
-                errorMessage = initializationUiFormState.uiFormCommonNameError
+                isError = formState.uiFormCommonNameError != null,
+                errorMessage = formState.uiFormCommonNameError
             )
             Row(
                 modifier = Modifier.fillMaxWidth(1.0f),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                if(initializationUiFormState.uiFormEnableSubmitBtn){
+                if(formState.uiFormEnableSubmitBtn){
                     AppIconButton(
                         modifier = Modifier.weight(0.5f),
                         onClick = {
-                            onUiFormSubmitInitManual.invoke(
+                            onFormSubmit.invoke(
                                 BizProfileSummary(
                                     seqId = 0,
                                     genId = randomULID(),
                                     bizName = BizName(
-                                        legalName = initializationUiFormState.uiFormLegalName,
-                                        commonName = initializationUiFormState.uiFormCommonName,
+                                        legalName = formState.uiFormLegalName,
+                                        commonName = formState.uiFormCommonName,
                                     ),
                                     bizIndustry = null,
                                     auditTrail = AuditTrail()
@@ -480,14 +469,14 @@ private fun InputManualForm(
                             )
                         },
                         icon = ImageVector.vectorResource(id = neutral),
-                        text = stringResource(id = str_save)
+                        text = stringResource(id = R.string.str_save)
                     )
                 }
                 AppIconButton(
-                    modifier = Modifier.weight(if(initializationUiFormState.uiFormEnableSubmitBtn){0.5f}else{1.0f}),
-                    onClick = onUiFormCancelInitManual,
+                    modifier = Modifier.weight(if(formState.uiFormEnableSubmitBtn){0.5f}else{1.0f}),
+                    onClick = onFormCancel,
                     icon = ImageVector.vectorResource(id = neutral),
-                    text = stringResource(id = str_cancel)
+                    text = stringResource(id = R.string.str_cancel)
                 )
             }
         }

@@ -7,7 +7,7 @@ import com.thomas200593.mini_retail_app.features.business.util.ExtFnBusiness
 import com.thomas200593.mini_retail_app.features.initial.initial.entity.FirstTimeStatus.NO
 import javax.inject.Inject
 
-class UCSetDefaultInitialBizProfile @Inject constructor(
+class UCSetInitialBizProfile @Inject constructor(
     private val repoAppConf: RepoAppConf,
     private val repoBizProfile: RepoBizProfile,
     private val extFnBusiness: ExtFnBusiness
