@@ -175,33 +175,14 @@ class VMInitialization @Inject constructor(
                 }
             }
             OnBeginManualInitBizProfile -> viewModelScope.launch(ioDispatcher) {
-                _uiState.update { prev ->
-                    prev.copy(
-                        ui = prev.ui.copy(
-                            uiEnableInitManualForm = true,
-                            uiEnableWelcomeMessage = false
-                        )
-                    )
-                }
+                _uiState.update { prev -> prev.copy(ui = prev.ui.copy(uiEnableInitManualForm = true, uiEnableWelcomeMessage = false)) }
             }
             is OnFormLegalNameChanged -> viewModelScope.launch(ioDispatcher) {
-                _uiState.update { prev ->
-                    prev.copy(
-                        formState = prev.formState.copy(
-                            uiFormLegalName = events.legalName
-                        )
-                    )
-                }
+                _uiState.update { prev -> prev.copy(formState = prev.formState.copy(uiFormLegalName = events.legalName)) }
                 enableFormSubmitButton()
             }
             is OnFormCommonNameChanged -> viewModelScope.launch(ioDispatcher) {
-                _uiState.update { prev ->
-                    prev.copy(
-                        formState = prev.formState.copy(
-                            uiFormCommonName = events.commonName
-                        )
-                    )
-                }
+                _uiState.update { prev -> prev.copy(formState = prev.formState.copy(uiFormCommonName = events.commonName)) }
                 enableFormSubmitButton()
             }
             is UiEvents.FormEvents.OnFormSubmit -> viewModelScope.launch(ioDispatcher) {
@@ -262,10 +243,7 @@ class VMInitialization @Inject constructor(
                 _uiState.update { prev ->
                     prev.copy(
                         formState = FormState(),
-                        ui = prev.ui.copy(
-                            uiEnableInitManualForm = false,
-                            uiEnableWelcomeMessage = true
-                        )
+                        ui = prev.ui.copy(uiEnableInitManualForm = false, uiEnableWelcomeMessage = true)
                     )
                 }
             }
@@ -291,12 +269,6 @@ class VMInitialization @Inject constructor(
     }
     private fun enableFormSubmitButton() {
         val result = formValidateLegalName() && formValidateCommonName()
-        _uiState.update { prev ->
-            prev.copy(
-                formState = prev.formState.copy(
-                    uiFormEnableSubmitBtn = result
-                )
-            )
-        }
+        _uiState.update { prev -> prev.copy(formState = prev.formState.copy(uiFormEnableSubmitBtn = result)) }
     }
 }
