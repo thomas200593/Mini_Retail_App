@@ -42,11 +42,15 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.thomas200593.mini_retail_app.BuildConfig.BUILD_TYPE
 import com.thomas200593.mini_retail_app.BuildConfig.VERSION_NAME
-import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.R.string.app_name
 import com.thomas200593.mini_retail_app.R.string.str_biz_profile_init_failed
 import com.thomas200593.mini_retail_app.R.string.str_biz_profile_init_loading
 import com.thomas200593.mini_retail_app.R.string.str_biz_profile_init_success
+import com.thomas200593.mini_retail_app.R.string.str_business_profile
+import com.thomas200593.mini_retail_app.R.string.str_business_profile_desc
+import com.thomas200593.mini_retail_app.R.string.str_cancel
+import com.thomas200593.mini_retail_app.R.string.str_company_common_name
+import com.thomas200593.mini_retail_app.R.string.str_company_legal_name
 import com.thomas200593.mini_retail_app.R.string.str_empty_message
 import com.thomas200593.mini_retail_app.R.string.str_empty_message_title
 import com.thomas200593.mini_retail_app.R.string.str_error
@@ -56,6 +60,7 @@ import com.thomas200593.mini_retail_app.R.string.str_init_setup_yes
 import com.thomas200593.mini_retail_app.R.string.str_init_welcome_message
 import com.thomas200593.mini_retail_app.R.string.str_loading
 import com.thomas200593.mini_retail_app.R.string.str_ok
+import com.thomas200593.mini_retail_app.R.string.str_save
 import com.thomas200593.mini_retail_app.R.string.str_success
 import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
 import com.thomas200593.mini_retail_app.app.ui.StateApp
@@ -408,7 +413,7 @@ fun InitManualForm(
         ) {
             Text(
                 modifier = Modifier.fillMaxWidth(),
-                text = stringResource(id = R.string.str_business_profile),
+                text = stringResource(id = str_business_profile),
                 textAlign = Center,
                 style = typography.titleLarge,
                 color = colorScheme.onSurface,
@@ -417,7 +422,7 @@ fun InitManualForm(
             )
             Text(
                 modifier = Modifier.fillMaxWidth(),
-                text = stringResource(id = R.string.str_business_profile_desc),
+                text = stringResource(id = str_business_profile_desc),
                 textAlign = Center,
                 style = typography.labelMedium,
                 color = colorScheme.onSurface,
@@ -431,8 +436,8 @@ fun InitManualForm(
             TextInput(
                 value = formState.uiFormLegalName,
                 onValueChange = { onLegalNameChanged(it) },
-                label = stringResource(R.string.str_company_legal_name),
-                placeholder = stringResource(R.string.str_company_legal_name),
+                label = stringResource(str_company_legal_name),
+                placeholder = stringResource(str_company_legal_name),
                 singleLine = true,
                 isError = formState.uiFormLegalNameError != null,
                 errorMessage = formState.uiFormLegalNameError
@@ -440,8 +445,8 @@ fun InitManualForm(
             TextInput(
                 value = formState.uiFormCommonName,
                 onValueChange = { onCommonNameChanged(it) },
-                label = stringResource(R.string.str_company_common_name),
-                placeholder = stringResource(R.string.str_company_common_name),
+                label = stringResource(str_company_common_name),
+                placeholder = stringResource(str_company_common_name),
                 singleLine = true,
                 isError = formState.uiFormCommonNameError != null,
                 errorMessage = formState.uiFormCommonNameError
@@ -469,14 +474,14 @@ fun InitManualForm(
                             )
                         },
                         icon = ImageVector.vectorResource(id = neutral),
-                        text = stringResource(id = R.string.str_save)
+                        text = stringResource(id = str_save)
                     )
                 }
                 AppIconButton(
                     modifier = Modifier.weight(if(formState.uiFormEnableSubmitBtn){0.5f}else{1.0f}),
                     onClick = onFormCancel,
                     icon = ImageVector.vectorResource(id = neutral),
-                    text = stringResource(id = R.string.str_cancel)
+                    text = stringResource(id = str_cancel)
                 )
             }
         }
