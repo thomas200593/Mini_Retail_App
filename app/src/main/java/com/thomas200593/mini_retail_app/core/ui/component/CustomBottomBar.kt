@@ -3,7 +3,7 @@ package com.thomas200593.mini_retail_app.core.ui.component
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemColors
@@ -30,9 +30,7 @@ object CustomBottomBar {
         currentDestination: NavDestination?,
         modifier: Modifier = Modifier
     ) {
-        BottomNavBar(
-            modifier = modifier
-        ){
+        BottomNavBar(modifier = modifier){
             destinations.forEach { destination ->
                 val selected = currentDestination.isDestinationTopLevelInHierarchy(destination)
                 BottomNavigationBarItems(
@@ -58,10 +56,7 @@ object CustomBottomBar {
     }
 
     @Composable
-    private fun BottomNavBar(
-        modifier: Modifier = Modifier,
-        content: @Composable RowScope.() -> Unit
-    ) {
+    private fun BottomNavBar(modifier: Modifier = Modifier, content: @Composable RowScope.() -> Unit) {
         NavigationBar(
             modifier = modifier,
             contentColor = navigationContentColor(),
@@ -103,11 +98,11 @@ object CustomBottomBar {
 
     private object BottomNavigationBarDefaults{
         @Composable
-        fun navigationContentColor() = MaterialTheme.colorScheme.onSurfaceVariant
+        fun navigationContentColor() = colorScheme.onSurfaceVariant
         @Composable
-        fun navigationSelectedItemColor() = MaterialTheme.colorScheme.onPrimaryContainer
+        fun navigationSelectedItemColor() = colorScheme.onPrimaryContainer
         @Composable
-        fun navigationIndicatorColor() = MaterialTheme.colorScheme.primaryContainer
+        fun navigationIndicatorColor() = colorScheme.primaryContainer
     }
 
     private fun NavDestination?.isDestinationTopLevelInHierarchy(destination: DestTopLevel) =
