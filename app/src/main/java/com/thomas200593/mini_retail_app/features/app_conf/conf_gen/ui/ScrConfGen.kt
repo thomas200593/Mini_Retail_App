@@ -7,11 +7,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons.AutoMirrored
-import androidx.compose.material.icons.Icons.Default
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.Icons.AutoMirrored.Filled
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.Info
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ButtonDefaults.IconSize
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -30,9 +30,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
 import com.thomas200593.mini_retail_app.app.ui.StateApp
-import com.thomas200593.mini_retail_app.core.data.local.session.SessionState.Invalid
-import com.thomas200593.mini_retail_app.core.data.local.session.SessionState.Loading
-import com.thomas200593.mini_retail_app.core.data.local.session.SessionState.Valid
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Empty
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Error
@@ -47,7 +44,6 @@ import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.EmptyScree
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.ErrorScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.LoadingScreen
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen.navigation.DestConfGen
-import com.thomas200593.mini_retail_app.features.app_conf.conf_gen.navigation.navToConfGen
 
 @Composable
 fun ScrConfGen(
@@ -55,17 +51,7 @@ fun ScrConfGen(
     stateApp: StateApp = LocalStateApp.current
 ) {
     val sessionState by stateApp.isSessionValid.collectAsStateWithLifecycle()
-    val menuData by vm.menuData
-    when(sessionState){
-        Loading -> { LoadingScreen() }
-        is Invalid -> { LaunchedEffect(Unit) { vm.onOpen(sessionState) } }
-        is Valid -> { LaunchedEffect(Unit) { vm.onOpen(sessionState) } }
-    }
-    TopAppBar(onNavigateBack = stateApp::onNavUp)
-    ScreenContent(
-        appConfigGeneralMenuPreferences = menuData,
-        onNavigateToMenu = { menu -> stateApp.navController.navToConfGen(menu) }
-    )
+    LaunchedEffect(Unit) { /*TODO*/ }
 }
 
 @Composable
@@ -74,7 +60,7 @@ private fun TopAppBar(onNavigateBack: () -> Unit){
         Surface(onClick =  onNavigateBack, modifier = Modifier) {
             Icon(
                 modifier = Modifier,
-                imageVector = AutoMirrored.Default.KeyboardArrowLeft,
+                imageVector = Filled.KeyboardArrowLeft,
                 contentDescription = null
             )
         }
@@ -86,7 +72,7 @@ private fun TopAppBar(onNavigateBack: () -> Unit){
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ){
             Icon(
-                modifier = Modifier.sizeIn(maxHeight = ButtonDefaults.IconSize),
+                modifier = Modifier.sizeIn(maxHeight = IconSize),
                 imageVector = ImageVector.vectorResource(id = settings_general),
                 contentDescription = null
             )
@@ -104,8 +90,8 @@ private fun TopAppBar(onNavigateBack: () -> Unit){
             horizontalArrangement = Arrangement.Center
         ){
             Icon(
-                modifier = Modifier.sizeIn(maxHeight = ButtonDefaults.IconSize),
-                imageVector = Default.Info,
+                modifier = Modifier.sizeIn(maxHeight = IconSize),
+                imageVector = Icons.Default.Info,
                 contentDescription = null
             )
         }
@@ -136,7 +122,9 @@ private fun ScreenContent(
         is Success -> {
             val menuPreferences = appConfigGeneralMenuPreferences.data
             LazyColumn(
-                modifier = Modifier.fillMaxSize().padding(8.dp),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(8.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
