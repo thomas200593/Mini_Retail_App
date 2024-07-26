@@ -15,6 +15,7 @@ import androidx.compose.material3.ButtonDefaults.IconSize
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -28,22 +29,38 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.thomas200593.mini_retail_app.R
+import com.thomas200593.mini_retail_app.R.string.str_empty_message
+import com.thomas200593.mini_retail_app.R.string.str_empty_message_title
+import com.thomas200593.mini_retail_app.R.string.str_error
+import com.thomas200593.mini_retail_app.R.string.str_error_fetching_preferences
+import com.thomas200593.mini_retail_app.R.string.str_loading
+import com.thomas200593.mini_retail_app.R.string.str_ok
 import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
 import com.thomas200593.mini_retail_app.app.ui.StateApp
+import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
+import com.thomas200593.mini_retail_app.core.data.local.session.SessionState.Invalid
+import com.thomas200593.mini_retail_app.core.data.local.session.SessionState.Valid
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Empty
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Error
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Idle
+import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Loading
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Success
 import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.Setting.settings_general
 import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar.ProvideTopAppBarAction
 import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar.ProvideTopAppBarNavigationIcon
 import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar.ProvideTopAppBarTitle
+import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AlertDialogContext.ERROR
+import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AlertDialogContext.INFORMATION
+import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AppAlertDialog
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.ClickableCardItem
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.EmptyScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.ErrorScreen
-import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.LoadingScreen
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen.navigation.DestConfGen
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen.navigation.navToConfGen
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen.ui.VMConfGen.UiEvents.MenuBtnEvents.OnAllow
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen.ui.VMConfGen.UiEvents.MenuBtnEvents.OnDeny
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen.ui.VMConfGen.UiEvents.ScreenEvents
 
 @Composable
 fun ScrConfGen(
@@ -51,7 +68,47 @@ fun ScrConfGen(
     stateApp: StateApp = LocalStateApp.current
 ) {
     val sessionState by stateApp.isSessionValid.collectAsStateWithLifecycle()
-    LaunchedEffect(Unit) { /*TODO*/ }
+    val uiState by vm.uiState.collectAsStateWithLifecycle()
+    LaunchedEffect(Unit) { vm.onEvent(ScreenEvents.OnOpen(sessionState)) }
+    TopAppBar(onNavigateBack = { vm.onEvent(ScreenEvents.OnNavigateUp); stateApp.onNavUp() })
+    ScreenContent(
+        menuData = uiState.menuData,
+        sessionState = sessionState,
+        allowAccessMenu = { vm.onEvent(OnAllow); stateApp.navController.navToConfGen(it) },
+        denyAccessMenu = { vm.onEvent(OnDeny) }
+    )
+    AppAlertDialog(
+        showDialog = uiState.dialogState.uiEnableLoadAuthDlg,
+        dialogContext = INFORMATION,
+        showIcon = true,
+        showTitle = true,
+        title = { Text(stringResource(id = str_loading)) },
+        showBody = true,
+        body = { Text(stringResource(str_loading)) }
+    )
+    AppAlertDialog(
+        showDialog = uiState.dialogState.uiEnableLoadGetMenuDlg,
+        dialogContext = INFORMATION,
+        showIcon = true,
+        showTitle = true,
+        title = { Text(stringResource(id = str_loading)) },
+        showBody = true,
+        body = { Text("Get menu data") }
+    )
+    AppAlertDialog(
+        showDialog = uiState.dialogState.uiEnableDenyAcsMenuDlg,
+        dialogContext = ERROR,
+        showIcon = true,
+        showTitle = true,
+        title = { Text(stringResource(id = str_error)) },
+        showBody = true,
+        body = { Text("Forbidden Access") },
+        useDismissButton = true,
+        dismissButton = {
+            TextButton(onClick = { stateApp.onNavUp() })
+            { Text(stringResource(id = str_ok)) }
+        }
+    )
 }
 
 @Composable
@@ -100,44 +157,51 @@ private fun TopAppBar(onNavigateBack: () -> Unit){
 
 @Composable
 private fun ScreenContent(
-    appConfigGeneralMenuPreferences: ResourceState<Set<DestConfGen>>,
-    onNavigateToMenu: (DestConfGen) -> Unit
+    menuData: ResourceState<Set<DestConfGen>>,
+    sessionState: SessionState,
+    allowAccessMenu: (DestConfGen) -> Unit,
+    denyAccessMenu: () -> Unit
 ) {
-    when(appConfigGeneralMenuPreferences){
-        Idle, ResourceState.Loading -> { LoadingScreen() }
-        is Error -> {
-            ErrorScreen(
-                title = stringResource(id = R.string.str_error),
-                errorMessage = stringResource(id = R.string.str_error_fetching_preferences),
-                showIcon = true
-            )
-        }
-        Empty -> {
-            EmptyScreen(
-                title = stringResource(id = R.string.str_empty_message_title),
-                emptyMessage = stringResource(id = R.string.str_empty_message),
-                showIcon = true
-            )
-        }
-        is Success -> {
-            val menuPreferences = appConfigGeneralMenuPreferences.data
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(8.dp),
-                verticalArrangement = Arrangement.spacedBy(10.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                items(count = menuPreferences.count()){ index ->
-                    val menu = menuPreferences.elementAt(index)
-                    ClickableCardItem(
-                        onClick = { onNavigateToMenu(menu) },
-                        icon = ImageVector.vectorResource(id = menu.iconRes),
-                        title = stringResource(id = menu.title),
-                        subtitle = stringResource(id = menu.description)
-                    )
+    when(menuData){
+        Idle, Loading -> Unit
+        Empty -> EmptyScreen(
+            title = stringResource(id = str_empty_message_title),
+            emptyMessage = stringResource(id = str_empty_message),
+            showIcon = true
+        )
+        is Error -> ErrorScreen(
+            title = stringResource(id = str_error),
+            errorMessage = stringResource(id = str_error_fetching_preferences),
+            showIcon = true
+        )
+        is Success -> SuccessSection(
+            menuPreferences = menuData.data,
+            onNavToMenu = {
+                when(sessionState){
+                    SessionState.Loading -> Unit
+                    is Invalid -> if(it.usesAuth) { denyAccessMenu() } else { allowAccessMenu(it) }
+                    is Valid -> allowAccessMenu(it)
                 }
             }
+        )
+    }
+}
+
+@Composable
+fun SuccessSection(menuPreferences: Set<DestConfGen>, onNavToMenu: (DestConfGen) -> Unit) {
+    LazyColumn(
+        modifier = Modifier.fillMaxSize().padding(8.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        items(count = menuPreferences.count()){ index ->
+            val menu = menuPreferences.elementAt(index)
+            ClickableCardItem(
+                onClick = { onNavToMenu(menu) },
+                icon = ImageVector.vectorResource(id = menu.iconRes),
+                title = stringResource(id = menu.title),
+                subtitle = stringResource(id = menu.description)
+            )
         }
     }
 }

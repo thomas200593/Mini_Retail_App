@@ -58,7 +58,8 @@ import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.EmptyScree
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.ErrorScreen
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.navigation.DestAppConfig
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.navigation.navToAppConfig
-import com.thomas200593.mini_retail_app.features.app_conf.app_config.ui.VMAppConfig.UiEvents.MenuBtnEvents
+import com.thomas200593.mini_retail_app.features.app_conf.app_config.ui.VMAppConfig.UiEvents.MenuBtnEvents.OnAllow
+import com.thomas200593.mini_retail_app.features.app_conf.app_config.ui.VMAppConfig.UiEvents.MenuBtnEvents.OnDeny
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.ui.VMAppConfig.UiEvents.ScreenEvents
 
 @Composable
@@ -73,8 +74,8 @@ fun ScrAppConfig(
     ScreenContent(
         menuData = uiState.menuData,
         sessionState = sessionState,
-        allowAccessMenu = { vm.onEvent(MenuBtnEvents.OnAllow); stateApp.navController.navToAppConfig(it) },
-        denyAccessMenu = { vm.onEvent(MenuBtnEvents.OnDeny) }
+        allowAccessMenu = { vm.onEvent(OnAllow); stateApp.navController.navToAppConfig(it) },
+        denyAccessMenu = { vm.onEvent(OnDeny) }
     )
     AppAlertDialog(
         showDialog = uiState.dialogState.uiEnableLoadAuthDlg,
