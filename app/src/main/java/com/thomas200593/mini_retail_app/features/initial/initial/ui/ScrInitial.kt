@@ -50,19 +50,28 @@ fun ScrInitial(
 
     ScreenContent(
         uiState = uiState,
-        onNavigateToOnboarding =
-        { coroutineScope.launch { stateApp.navController.navigateToOnboarding() } },
-        onNavigateToInitialization =
-        { coroutineScope.launch { stateApp.navController.navToInitialization() } },
+        onNavigateToOnboarding = {
+            coroutineScope.launch { stateApp.navController.navigateToOnboarding() }
+        },
+        onNavigateToInitialization = {
+            coroutineScope.launch { stateApp.navController.navToInitialization() }
+        },
         onNavigateToDashboard = { userData ->
             val navOptions = Builder().setPopUpTo(route = G_INITIAL, inclusive = true, saveState = true)
                 .setLaunchSingleTop(true).setRestoreState(true).build()
             when(userData.authSessionToken?.authProvider){
-                GOOGLE ->
-                    { Toast.makeText(context, "Welcome back! ${(userData.oAuth2UserMetadata as Google).name}", LENGTH_SHORT).show() }
+                GOOGLE -> {
+                    Toast.makeText(
+                        context,
+                        "Welcome back! ${(userData.oAuth2UserMetadata as Google).name}",
+                        LENGTH_SHORT
+                    ).show()
+                }
                 null -> Unit
             }
-            coroutineScope.launch { stateApp.navController.navigateToDashboard(navOptions) }
+            coroutineScope.launch {
+                stateApp.navController.navigateToDashboard(navOptions)
+            }
         },
         onNavigateToAuth = { coroutineScope.launch { stateApp.navController.navToAuth() } }
     )
