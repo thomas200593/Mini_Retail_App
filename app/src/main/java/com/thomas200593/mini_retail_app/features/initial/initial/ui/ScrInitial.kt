@@ -45,9 +45,7 @@ fun ScrInitial(
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
     val uiState by vm.uiState.collectAsStateWithLifecycle()
-
     LaunchedEffect(Unit) { vm.onOpen() }
-
     ScreenContent(
         uiState = uiState,
         onNavigateToOnboarding = {
