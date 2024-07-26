@@ -78,7 +78,7 @@ fun ScrInitial(
 }
 
 @Composable
-fun ScreenContent(
+private fun ScreenContent(
     data: Initial,
     onNavToOnboarding: () -> Unit,
     onNavToInitialization: () -> Unit,

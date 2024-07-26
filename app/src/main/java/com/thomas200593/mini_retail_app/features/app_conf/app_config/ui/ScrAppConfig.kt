@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.Icons.AutoMirrored.Default
+import androidx.compose.material.icons.Icons.AutoMirrored.Filled
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.ButtonDefaults.IconSize
@@ -34,13 +34,11 @@ import com.thomas200593.mini_retail_app.R.string.str_error
 import com.thomas200593.mini_retail_app.R.string.str_error_fetching_preferences
 import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
 import com.thomas200593.mini_retail_app.app.ui.StateApp
-import com.thomas200593.mini_retail_app.core.data.local.session.SessionState.Invalid
-import com.thomas200593.mini_retail_app.core.data.local.session.SessionState.Loading
-import com.thomas200593.mini_retail_app.core.data.local.session.SessionState.Valid
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Empty
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Error
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Idle
+import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Loading
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Success
 import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.Setting.settings
 import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar.ProvideTopAppBarAction
@@ -51,26 +49,20 @@ import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.EmptyScree
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.ErrorScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.LoadingScreen
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.navigation.DestAppConfig
-import com.thomas200593.mini_retail_app.features.app_conf.app_config.navigation.navToAppConfig
+import com.thomas200593.mini_retail_app.features.app_conf.app_config.ui.VMAppConfig.UiEvents.ScreenEvents
 
 @Composable
 fun ScrAppConfig(
     vm: VMAppConfig = hiltViewModel(),
     stateApp: StateApp = LocalStateApp.current
-) {
+){
     val sessionState by stateApp.isSessionValid.collectAsStateWithLifecycle()
-    val menuData by vm.menuData
-
-    when(sessionState){
-        Loading -> { LoadingScreen() }
-        is Invalid -> { LaunchedEffect(Unit) { vm.onOpen(sessionState) } }
-        is Valid -> { LaunchedEffect(Unit) { vm.onOpen(sessionState) } }
-    }
-
-    TopAppBar(onNavigateBack = stateApp::onNavUp)
+    val uiState by vm.uiState.collectAsStateWithLifecycle()
+    LaunchedEffect(Unit) { vm.onEvent(ScreenEvents.OnOpen(sessionState)) }
+    TopAppBar(onNavigateBack = { vm.onEvent(ScreenEvents.OnNavigateUp); stateApp.onNavUp() })
     ScreenContent(
-        appConfigMenuPreferences = menuData,
-        onNavigateToMenu = { menu -> stateApp.navController.navToAppConfig(menu) }
+        menuData = uiState.menuData,
+        onNavToMenu = { vm.onEvent(VMAppConfig.UiEvents.MenuEvents.OnClick(it, sessionState)) }
     )
 }
 
@@ -80,7 +72,7 @@ private fun TopAppBar(onNavigateBack: () -> Unit) {
         Surface(onClick = onNavigateBack, modifier = Modifier) {
             Icon(
                 modifier = Modifier,
-                imageVector = Default.KeyboardArrowLeft,
+                imageVector = Filled.KeyboardArrowLeft,
                 contentDescription = null
             )
         }
@@ -119,43 +111,41 @@ private fun TopAppBar(onNavigateBack: () -> Unit) {
 }
 
 @Composable
-private fun ScreenContent(
-    appConfigMenuPreferences: ResourceState<Set<DestAppConfig>>,
-    onNavigateToMenu: (DestAppConfig) -> Unit
-) {
-    when(appConfigMenuPreferences){
-        Idle, ResourceState.Loading -> { LoadingScreen() }
-        is Error -> {
-            ErrorScreen(
-                title = stringResource(id = str_error),
-                errorMessage = stringResource(id = str_error_fetching_preferences),
-                showIcon = true
+private fun ScreenContent(menuData: ResourceState<Set<DestAppConfig>>, onNavToMenu: (DestAppConfig) -> Unit) {
+    when(menuData){
+        Idle, Loading -> LoadingScreen()
+        Empty -> EmptyScreen(
+            title = stringResource(id = str_empty_message_title),
+            emptyMessage = stringResource(id = str_empty_message),
+            showIcon = true
+        )
+        is Error -> ErrorScreen(
+            title = stringResource(id = str_error),
+            errorMessage = stringResource(id = str_error_fetching_preferences),
+            showIcon = true
+        )
+        is Success -> SuccessSection(
+            menuPreferences = menuData.data,
+            onNavToMenu = onNavToMenu
+        )
+    }
+}
+
+@Composable
+fun SuccessSection(menuPreferences: Set<DestAppConfig>, onNavToMenu: (DestAppConfig) -> Unit) {
+    LazyColumn(
+        modifier = Modifier.fillMaxSize().padding(8.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        items(count = menuPreferences.count()){ index ->
+            val menu = menuPreferences.elementAt(index)
+            ClickableCardItem(
+                onClick = { onNavToMenu(menu) },
+                icon = ImageVector.vectorResource(id = menu.iconRes),
+                title = stringResource(id = menu.title),
+                subtitle = stringResource(id = menu.description)
             )
-        }
-        Empty -> {
-            EmptyScreen(
-                title = stringResource(id = str_empty_message_title),
-                emptyMessage = stringResource(id = str_empty_message),
-                showIcon = true
-            )
-        }
-        is Success -> {
-            val menuPreferences = appConfigMenuPreferences.data
-            LazyColumn(
-                modifier = Modifier.fillMaxSize().padding(8.dp),
-                verticalArrangement = Arrangement.spacedBy(10.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                items(count = menuPreferences.count()){ index ->
-                    val menu = menuPreferences.elementAt(index)
-                    ClickableCardItem(
-                        onClick = { onNavigateToMenu(menu) },
-                        icon = ImageVector.vectorResource(id = menu.iconRes),
-                        title = stringResource(id = menu.title),
-                        subtitle = stringResource(id = menu.description)
-                    )
-                }
-            }
         }
     }
 }
