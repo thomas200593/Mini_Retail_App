@@ -54,7 +54,6 @@ import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AppAlertD
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.ClickableCardItem
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.EmptyScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.ErrorScreen
-import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.LoadingScreen
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.navigation.DestAppConfig
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.navigation.navToAppConfig
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.ui.VMAppConfig.UiEvents.MenuBtnEvents
@@ -161,7 +160,7 @@ private fun ScreenContent(
     allowAccessMenu: (DestAppConfig) -> Unit,
 ) {
     when(menuData){
-        Idle, Loading -> LoadingScreen()
+        Idle, Loading -> Unit
         Empty -> EmptyScreen(
             title = stringResource(id = str_empty_message_title),
             emptyMessage = stringResource(id = str_empty_message),
