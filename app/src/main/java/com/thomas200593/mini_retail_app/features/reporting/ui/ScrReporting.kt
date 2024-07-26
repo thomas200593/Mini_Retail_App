@@ -24,7 +24,7 @@ import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar.ProvideTo
 import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar.ProvideTopAppBarTitle
 
 @Composable
-fun ReportingScreen(){
+fun ScrReporting(){
     TopAppBar()
     ScreenContent()
 }

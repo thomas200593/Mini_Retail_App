@@ -21,7 +21,7 @@ import com.thomas200593.mini_retail_app.core.data.local.session.SessionState.Loa
 import com.thomas200593.mini_retail_app.core.design_system.network_monitor.NetworkMonitor
 import com.thomas200593.mini_retail_app.features.business.navigation.navigateToBusiness
 import com.thomas200593.mini_retail_app.features.dashboard.navigation.navigateToDashboard
-import com.thomas200593.mini_retail_app.features.reporting.navigation.navigateToReporting
+import com.thomas200593.mini_retail_app.features.reporting.navigation.navToReporting
 import com.thomas200593.mini_retail_app.features.user_profile.navigation.navToUserProfile
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.SharingStarted.Companion.Eagerly
@@ -83,7 +83,7 @@ class StateApp(
         when(destTopLevel){
             DASHBOARD -> { navController.navigateToDashboard(navOptions = destTopLevelNavOptions) }
             BUSINESS -> { navController.navigateToBusiness(navOptions = destTopLevelNavOptions) }
-            REPORTING -> { navController.navigateToReporting(navOptions = destTopLevelNavOptions) }
+            REPORTING -> { navController.navToReporting(navOptions = destTopLevelNavOptions) }
             USER_PROFILE -> { navController.navToUserProfile(navOptions = destTopLevelNavOptions) }
         }
     }
