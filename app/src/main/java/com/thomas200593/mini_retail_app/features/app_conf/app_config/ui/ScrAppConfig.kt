@@ -15,6 +15,7 @@ import androidx.compose.material3.ButtonDefaults.IconSize
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -32,8 +33,11 @@ import com.thomas200593.mini_retail_app.R.string.str_empty_message
 import com.thomas200593.mini_retail_app.R.string.str_empty_message_title
 import com.thomas200593.mini_retail_app.R.string.str_error
 import com.thomas200593.mini_retail_app.R.string.str_error_fetching_preferences
+import com.thomas200593.mini_retail_app.R.string.str_loading
+import com.thomas200593.mini_retail_app.R.string.str_ok
 import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
 import com.thomas200593.mini_retail_app.app.ui.StateApp
+import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Empty
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Error
@@ -44,11 +48,16 @@ import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.Setting.setti
 import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar.ProvideTopAppBarAction
 import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar.ProvideTopAppBarNavigationIcon
 import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar.ProvideTopAppBarTitle
+import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AlertDialogContext.ERROR
+import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AlertDialogContext.INFORMATION
+import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AppAlertDialog
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.ClickableCardItem
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.EmptyScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.ErrorScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.LoadingScreen
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.navigation.DestAppConfig
+import com.thomas200593.mini_retail_app.features.app_conf.app_config.navigation.navToAppConfig
+import com.thomas200593.mini_retail_app.features.app_conf.app_config.ui.VMAppConfig.UiEvents.MenuBtnEvents
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.ui.VMAppConfig.UiEvents.ScreenEvents
 
 @Composable
@@ -62,7 +71,44 @@ fun ScrAppConfig(
     TopAppBar(onNavigateBack = { vm.onEvent(ScreenEvents.OnNavigateUp); stateApp.onNavUp() })
     ScreenContent(
         menuData = uiState.menuData,
-        onNavToMenu = { vm.onEvent(VMAppConfig.UiEvents.MenuEvents.OnClick(it, sessionState)) }
+        sessionState = sessionState,
+        allowAccessMenu = {
+            vm.onEvent(MenuBtnEvents.OnAllow)
+            stateApp.navController.navToAppConfig(it)
+        },
+        denyAccessMenu = { vm.onEvent(MenuBtnEvents.OnDeny) }
+    )
+    AppAlertDialog(
+        showDialog = uiState.dialogState.uiEnableLoadAuthDlg,
+        dialogContext = INFORMATION,
+        showIcon = true,
+        showTitle = true,
+        title = { Text(stringResource(id = str_loading)) },
+        showBody = true,
+        body = { Text(stringResource(str_loading)) }
+    )
+    AppAlertDialog(
+        showDialog = uiState.dialogState.uiEnableLoadGetMenuDlg,
+        dialogContext = INFORMATION,
+        showIcon = true,
+        showTitle = true,
+        title = { Text(stringResource(id = str_loading)) },
+        showBody = true,
+        body = { Text("Get menu data") }
+    )
+    AppAlertDialog(
+        showDialog = uiState.dialogState.uiEnableDenyAcsMenuDlg,
+        dialogContext = ERROR,
+        showIcon = true,
+        showTitle = true,
+        title = { Text(stringResource(id = str_error)) },
+        showBody = true,
+        body = { Text("Forbidden Access") },
+        useDismissButton = true,
+        dismissButton = {
+            TextButton(onClick = { stateApp.onNavUp() })
+            { Text(stringResource(id = str_ok)) }
+        }
     )
 }
 
@@ -111,7 +157,12 @@ private fun TopAppBar(onNavigateBack: () -> Unit) {
 }
 
 @Composable
-private fun ScreenContent(menuData: ResourceState<Set<DestAppConfig>>, onNavToMenu: (DestAppConfig) -> Unit) {
+private fun ScreenContent(
+    menuData: ResourceState<Set<DestAppConfig>>,
+    sessionState: SessionState,
+    denyAccessMenu: () -> Unit,
+    allowAccessMenu: (DestAppConfig) -> Unit,
+) {
     when(menuData){
         Idle, Loading -> LoadingScreen()
         Empty -> EmptyScreen(
@@ -126,13 +177,19 @@ private fun ScreenContent(menuData: ResourceState<Set<DestAppConfig>>, onNavToMe
         )
         is Success -> SuccessSection(
             menuPreferences = menuData.data,
-            onNavToMenu = onNavToMenu
+            onNavToMenu = {
+                when(sessionState){
+                    SessionState.Loading -> Unit
+                    is SessionState.Invalid -> if(it.usesAuth) { denyAccessMenu() } else { allowAccessMenu(it) }
+                    is SessionState.Valid -> allowAccessMenu(it)
+                }
+            }
         )
     }
 }
 
 @Composable
-fun SuccessSection(menuPreferences: Set<DestAppConfig>, onNavToMenu: (DestAppConfig) -> Unit) {
+private fun SuccessSection(menuPreferences: Set<DestAppConfig>, onNavToMenu: (DestAppConfig) -> Unit) {
     LazyColumn(
         modifier = Modifier.fillMaxSize().padding(8.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp),

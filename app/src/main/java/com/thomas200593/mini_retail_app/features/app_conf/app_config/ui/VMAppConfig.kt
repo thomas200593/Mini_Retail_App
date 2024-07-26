@@ -16,7 +16,7 @@ import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Id
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Success
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.navigation.DestAppConfig
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.repository.RepoAppConf
-import com.thomas200593.mini_retail_app.features.app_conf.app_config.ui.VMAppConfig.UiEvents.MenuEvents
+import com.thomas200593.mini_retail_app.features.app_conf.app_config.ui.VMAppConfig.UiEvents.MenuBtnEvents
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.ui.VMAppConfig.UiEvents.ScreenEvents
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -31,9 +31,9 @@ class VMAppConfig @Inject constructor(
     @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
 ): ViewModel(){
     data class UiState(
-    val sessionState: SessionState = Loading,
-    val menuData: ResourceState<Set<DestAppConfig>> = Idle,
-    val dialogState: DialogState = DialogState()
+        val sessionState: SessionState = Loading,
+        val menuData: ResourceState<Set<DestAppConfig>> = Idle,
+        val dialogState: DialogState = DialogState()
     )
     data class DialogState(
         val uiEnableLoadAuthDlg : MutableState<Boolean> = mutableStateOf(true),
@@ -45,8 +45,9 @@ class VMAppConfig @Inject constructor(
             data class OnOpen(val sessionState: SessionState) : ScreenEvents()
             data object OnNavigateUp: ScreenEvents()
         }
-        sealed class MenuEvents : UiEvents(){
-            data class OnClick(val destAppConfig: DestAppConfig, val sessionState: SessionState) : MenuEvents()
+        sealed class MenuBtnEvents: UiEvents(){
+            data object OnAllow: MenuBtnEvents()
+            data object OnDeny: MenuBtnEvents()
         }
     }
 
@@ -56,18 +57,13 @@ class VMAppConfig @Inject constructor(
     fun onEvent(events: UiEvents){
         when(events){
             is ScreenEvents.OnOpen -> when(events.sessionState){
-                Loading -> updateDialogState(loadingAuth = true, loadingGetMenu = false)
+                Loading -> updateDialogState(loadingAuth = true, loadingGetMenu = false, denyAccess = false)
                 is Invalid -> getMenuData(events.sessionState)
                 is Valid -> getMenuData(events.sessionState)
             }
-            ScreenEvents.OnNavigateUp -> updateDialogState(loadingAuth = false, loadingGetMenu = true)
-            is MenuEvents.OnClick -> when(events.sessionState){
-                Loading -> updateDialogState(loadingAuth = true, loadingGetMenu = false)
-                is Invalid ->
-                    if(events.destAppConfig.usesAuth){ updateDialogState(denyAccess = true) }
-                    else{ updateDialogState(loadingAuth = false, loadingGetMenu = false, denyAccess = false) }
-                is Valid -> updateDialogState(loadingAuth = false, loadingGetMenu = false, denyAccess = false)
-            }
+            ScreenEvents.OnNavigateUp -> updateDialogState(loadingAuth = false, loadingGetMenu = true, denyAccess = false)
+            MenuBtnEvents.OnAllow -> updateDialogState(loadingAuth = true, loadingGetMenu = false, denyAccess = false)
+            MenuBtnEvents.OnDeny -> updateDialogState(loadingAuth = false, loadingGetMenu = false, denyAccess = true)
         }
     }
     private fun getMenuData(sessionState: SessionState) = viewModelScope.launch(ioDispatcher) {
