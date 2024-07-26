@@ -56,19 +56,22 @@ class VMAppConfig @Inject constructor(
 
     fun onEvent(events: UiEvents){
         when(events){
-            is ScreenEvents.OnOpen -> when(events.sessionState){
-                Loading -> updateDialogState(loadingAuth = true, loadingGetMenu = false, denyAccess = false)
-                is Invalid -> getMenuData(events.sessionState)
-                is Valid -> getMenuData(events.sessionState)
-            }
+            is ScreenEvents.OnOpen -> handleOnOpen(events.sessionState)
             ScreenEvents.OnNavigateUp -> updateDialogState(loadingAuth = false, loadingGetMenu = true, denyAccess = false)
             MenuBtnEvents.OnAllow -> updateDialogState(loadingAuth = true, loadingGetMenu = false, denyAccess = false)
             MenuBtnEvents.OnDeny -> updateDialogState(loadingAuth = false, loadingGetMenu = false, denyAccess = true)
         }
     }
+    private fun handleOnOpen(sessionState: SessionState) {
+        when(sessionState){
+            Loading -> updateDialogState(loadingAuth = true, loadingGetMenu = false, denyAccess = false)
+            is Invalid, is Valid -> getMenuData(sessionState)
+        }
+    }
     private fun getMenuData(sessionState: SessionState) = viewModelScope.launch(ioDispatcher) {
         updateDialogState(loadingAuth = false, loadingGetMenu = true, denyAccess = false)
-        _uiState.update { it.copy(menuData = Success(repoAppConf.getMenuData(sessionState = sessionState))) }
+        val menuData = repoAppConf.getMenuData(sessionState)
+        _uiState.update { it.copy(menuData = Success(menuData)) }
         updateDialogState(loadingAuth = false, loadingGetMenu = false, denyAccess = false)
     }
     private fun updateDialogState(
