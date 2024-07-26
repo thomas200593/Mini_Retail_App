@@ -1,8 +1,10 @@
 package com.thomas200593.mini_retail_app.features.onboarding.entity
 
 import androidx.annotation.DrawableRes
-import com.thomas200593.mini_retail_app.R
-import kotlinx.coroutines.Dispatchers
+import com.thomas200593.mini_retail_app.R.drawable.onboard_image_1
+import com.thomas200593.mini_retail_app.R.drawable.onboard_image_2
+import com.thomas200593.mini_retail_app.R.drawable.onboard_image_3
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.withContext
 
 object Onboarding{
@@ -12,20 +14,20 @@ object Onboarding{
         val description: String
     )
 
-    suspend fun getOnboardingPages() = withContext(Dispatchers.IO){
+    suspend fun getOnboardingPages() = withContext(IO){
         listOf(
             OnboardingPage(
-                imageRes = R.drawable.onboard_image_1,
+                imageRes = onboard_image_1,
                 title = "Welcome to Mini Retail Application",
                 description = "Welcome to Mini Retail Application, explore our feature within application."
             ),
             OnboardingPage(
-                imageRes = R.drawable.onboard_image_2,
+                imageRes = onboard_image_2,
                 title = "One-Solution for Your SME",
                 description = "From registering items, categories, employees, and shift management in one app."
             ),
             OnboardingPage(
-                imageRes = R.drawable.onboard_image_3,
+                imageRes = onboard_image_3,
                 title = "Get Started",
                 description = "Begin explore our app."
             )

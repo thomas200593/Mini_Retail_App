@@ -1,6 +1,6 @@
 package com.thomas200593.mini_retail_app.features.onboarding.ui
 
-import android.content.pm.ActivityInfo
+import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -13,7 +13,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
@@ -22,52 +23,55 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Brush.Companion.verticalGradient
+import androidx.compose.ui.graphics.Color.Companion.LightGray
+import androidx.compose.ui.graphics.Color.Companion.Transparent
+import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.ContentScale.Companion.FillWidth
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextAlign.Companion.Center
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.thomas200593.mini_retail_app.R
+import com.thomas200593.mini_retail_app.R.string.str_empty_message
+import com.thomas200593.mini_retail_app.R.string.str_empty_message_title
+import com.thomas200593.mini_retail_app.R.string.str_error
+import com.thomas200593.mini_retail_app.R.string.str_error_fetching_preferences
+import com.thomas200593.mini_retail_app.R.string.str_onboarding_get_started
+import com.thomas200593.mini_retail_app.R.string.str_onboarding_next
 import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
 import com.thomas200593.mini_retail_app.app.ui.StateApp
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
+import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Empty
+import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Error
+import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Idle
+import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Loading
+import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Success
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.EmptyScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.ErrorScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.LoadingScreen
-import com.thomas200593.mini_retail_app.core.ui.component.CustomScreenUtil
+import com.thomas200593.mini_retail_app.core.ui.component.CustomScreenUtil.LockScreenOrientation
 import com.thomas200593.mini_retail_app.features.initial.initial.navigation.navToInitial
-import com.thomas200593.mini_retail_app.features.onboarding.entity.Onboarding
+import com.thomas200593.mini_retail_app.features.onboarding.entity.Onboarding.OnboardingPage
+import com.thomas200593.mini_retail_app.features.onboarding.entity.Onboarding.Tags
 import com.thomas200593.mini_retail_app.features.onboarding.entity.Onboarding.Tags.TAG_ONBOARD_SCREEN_IMAGE_VIEW
 import com.thomas200593.mini_retail_app.features.onboarding.entity.Onboarding.Tags.TAG_ONBOARD_SCREEN_NAV_BUTTON
 import com.thomas200593.mini_retail_app.features.onboarding.entity.Onboarding.Tags.TAG_ONBOARD_TAG_ROW
-import timber.log.Timber
-
-private const val TAG = "OnboardingScreen"
 
 @Composable
-fun OnboardingScreen(
-    viewModel: OnboardingViewModel = hiltViewModel(),
+fun ScrOnboarding(
+    viewModel: VMOnboarding = hiltViewModel(),
     stateApp: StateApp = LocalStateApp.current
 ){
-    Timber.d("Called: %s", TAG)
-    CustomScreenUtil.LockScreenOrientation(orientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
+    LockScreenOrientation(orientation = SCREEN_ORIENTATION_PORTRAIT)
     val onboardingPages by viewModel.onboardingPages
     val currentPage by viewModel.currentPage.collectAsStateWithLifecycle()
     val isOnboardingFinished by viewModel.isOnboardingFinished.collectAsStateWithLifecycle()
-
-    LaunchedEffect(Unit) {
-        viewModel.onOpen()
-    }
-    LaunchedEffect(isOnboardingFinished) {
-        if(isOnboardingFinished){ stateApp.navController.navToInitial() }
-    }
-
+    LaunchedEffect(Unit) { viewModel.onOpen() }
+    LaunchedEffect(isOnboardingFinished) { if(isOnboardingFinished){ stateApp.navController.navToInitial() } }
     ScreenContent(
         onboardingPages = onboardingPages,
         currentPage = currentPage,
@@ -79,35 +83,32 @@ fun OnboardingScreen(
 
 @Composable
 private fun ScreenContent(
-    onboardingPages: ResourceState<List<Onboarding.OnboardingPage>>,
+    onboardingPages: ResourceState<List<OnboardingPage>>,
     currentPage: Int,
     onTabSelected: (Int) -> Unit,
     onNextClicked: () -> Unit,
     onFinishedOnboarding: () -> Unit,
 ) {
     when(onboardingPages){
-        ResourceState.Idle -> Unit
-        ResourceState.Loading -> { LoadingScreen() }
-        is ResourceState.Error -> {
+        Idle -> Unit
+        Loading -> { LoadingScreen() }
+        is Error -> {
             ErrorScreen(
-                title = stringResource(id = R.string.str_error),
-                errorMessage = stringResource(id = R.string.str_error_fetching_preferences),
+                title = stringResource(id = str_error),
+                errorMessage = stringResource(id = str_error_fetching_preferences),
                 showIcon = true
             )
         }
-        ResourceState.Empty -> {
+        Empty -> {
             EmptyScreen(
-                title = stringResource(id = R.string.str_empty_message_title),
-                emptyMessage = stringResource(id = R.string.str_empty_message),
+                title = stringResource(id = str_empty_message_title),
+                emptyMessage = stringResource(id = str_empty_message),
                 showIcon = true
             )
         }
-        is ResourceState.Success -> {
+        is Success -> {
             val onboardingPagesData = onboardingPages.data
-
-            Column(
-                modifier = Modifier.fillMaxSize().testTag(Onboarding.Tags.TAG_ONBOARD_SCREEN)
-            ) {
+            Column(modifier = Modifier.fillMaxSize().testTag(Tags.TAG_ONBOARD_SCREEN)) {
                 OnboardingImageView(
                     modifier = Modifier.weight(1.0f).fillMaxWidth(),
                     currentPage = onboardingPagesData[currentPage]
@@ -138,24 +139,18 @@ private fun ScreenContent(
 @Composable
 fun OnboardingImageView(
     modifier: Modifier,
-    currentPage: Onboarding.OnboardingPage
+    currentPage: OnboardingPage
 ) {
     val imageRes = currentPage.imageRes
-    Box(
-        modifier = modifier.testTag(TAG_ONBOARD_SCREEN_IMAGE_VIEW + currentPage.title)
-    ){
+    Box(modifier = modifier.testTag(TAG_ONBOARD_SCREEN_IMAGE_VIEW + currentPage.title)){
         Image(
             painter = painterResource(id = imageRes),
             contentDescription = null,
             modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.FillWidth
+            contentScale = FillWidth
         )
         Box(modifier = Modifier.fillMaxSize().align(Alignment.BottomCenter).graphicsLayer { alpha = 0.6f }
-            .background(
-                Brush.verticalGradient(
-                    colorStops = arrayOf(Pair(0.8f, Color.Transparent), Pair(1f, Color.White))
-                )
-            )
+            .background(verticalGradient(colorStops = arrayOf(Pair(0.8f, Transparent), Pair(1f, White))))
         )
     }
 }
@@ -163,20 +158,20 @@ fun OnboardingImageView(
 @Composable
 fun OnboardingDetails(
     modifier: Modifier,
-    currentPage: Onboarding.OnboardingPage
+    currentPage: OnboardingPage
 ) {
     Column(modifier = modifier) {
         Text(
             text = currentPage.title,
-            style = MaterialTheme.typography.displaySmall,
-            textAlign = TextAlign.Center,
+            style = typography.displaySmall,
+            textAlign = Center,
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
             text = currentPage.description,
-            style = MaterialTheme.typography.bodyMedium,
-            textAlign = TextAlign.Center,
+            style = typography.bodyMedium,
+            textAlign = Center,
             modifier = Modifier.fillMaxWidth()
         )
     }
@@ -198,8 +193,8 @@ fun OnboardNavButton(
         },
         content = {
             Text(
-                text = if (currentPage < onboardingPagesSize - 1) { stringResource(id = R.string.str_onboarding_next) }
-                else { stringResource(id = R.string.str_onboarding_get_started) }
+                text = if (currentPage < onboardingPagesSize - 1) { stringResource(id = str_onboarding_next) }
+                else { stringResource(id = str_onboarding_get_started) }
             )
         }
     )
@@ -208,30 +203,25 @@ fun OnboardNavButton(
 @Composable
 fun TabSelector(
     modifier: Modifier,
-    onboardingPagesData: List<Onboarding.OnboardingPage>,
+    onboardingPagesData: List<OnboardingPage>,
     currentPage: Int,
     onTabSelected: (Int) -> Unit
 ) {
     TabRow(
         selectedTabIndex = currentPage,
-        modifier = modifier
-            .fillMaxWidth().background(MaterialTheme.colorScheme.primary).testTag(TAG_ONBOARD_TAG_ROW)
+        modifier = modifier.fillMaxWidth().background(colorScheme.primary).testTag(TAG_ONBOARD_TAG_ROW)
     ) {
         onboardingPagesData.forEachIndexed { index, _ ->
             Tab(
                 modifier = Modifier.padding(16.dp),
                 selected = index == currentPage,
-                onClick = {
-                    onTabSelected(index)
-                }
+                onClick = { onTabSelected.invoke(index) }
             ) {
                 Box(
-                    modifier = Modifier
-                        .testTag("$TAG_ONBOARD_TAG_ROW$index")
-                        .size(8.dp)
+                    modifier = Modifier.testTag("$TAG_ONBOARD_TAG_ROW$index").size(8.dp)
                         .background(
-                            color = if (index == currentPage) MaterialTheme.colorScheme.onPrimary
-                            else Color.LightGray, shape = RoundedCornerShape(4.dp)
+                            color = if (index == currentPage) colorScheme.onPrimary else LightGray,
+                            shape = RoundedCornerShape(4.dp)
                         )
                 )
             }
