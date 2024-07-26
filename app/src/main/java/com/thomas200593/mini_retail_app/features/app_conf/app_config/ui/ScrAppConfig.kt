@@ -38,6 +38,8 @@ import com.thomas200593.mini_retail_app.R.string.str_ok
 import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
 import com.thomas200593.mini_retail_app.app.ui.StateApp
 import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
+import com.thomas200593.mini_retail_app.core.data.local.session.SessionState.Invalid
+import com.thomas200593.mini_retail_app.core.data.local.session.SessionState.Valid
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Empty
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Error
@@ -176,8 +178,8 @@ private fun ScreenContent(
             onNavToMenu = {
                 when(sessionState){
                     SessionState.Loading -> Unit
-                    is SessionState.Invalid -> if(it.usesAuth) { denyAccessMenu() } else { allowAccessMenu(it) }
-                    is SessionState.Valid -> allowAccessMenu(it)
+                    is Invalid -> if(it.usesAuth) { denyAccessMenu() } else { allowAccessMenu(it) }
+                    is Valid -> allowAccessMenu(it)
                 }
             }
         )
