@@ -22,7 +22,7 @@ import com.thomas200593.mini_retail_app.core.design_system.network_monitor.Netwo
 import com.thomas200593.mini_retail_app.features.business.navigation.navigateToBusiness
 import com.thomas200593.mini_retail_app.features.dashboard.navigation.navigateToDashboard
 import com.thomas200593.mini_retail_app.features.reporting.navigation.navigateToReporting
-import com.thomas200593.mini_retail_app.features.user_profile.navigation.navigateToUserProfile
+import com.thomas200593.mini_retail_app.features.user_profile.navigation.navToUserProfile
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.SharingStarted.Companion.Eagerly
 import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
@@ -84,7 +84,7 @@ class StateApp(
             DASHBOARD -> { navController.navigateToDashboard(navOptions = destTopLevelNavOptions) }
             BUSINESS -> { navController.navigateToBusiness(navOptions = destTopLevelNavOptions) }
             REPORTING -> { navController.navigateToReporting(navOptions = destTopLevelNavOptions) }
-            USER_PROFILE -> { navController.navigateToUserProfile(navOptions = destTopLevelNavOptions) }
+            USER_PROFILE -> { navController.navToUserProfile(navOptions = destTopLevelNavOptions) }
         }
     }
 

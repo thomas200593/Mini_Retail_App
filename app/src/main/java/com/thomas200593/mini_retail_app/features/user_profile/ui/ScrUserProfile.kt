@@ -49,8 +49,8 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import coil.transform.CircleCropTransformation
 import com.thomas200593.mini_retail_app.R
-import com.thomas200593.mini_retail_app.app.ui.StateApp
 import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
+import com.thomas200593.mini_retail_app.app.ui.StateApp
 import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
 import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.Auth.session_expire
@@ -72,19 +72,15 @@ import com.thomas200593.mini_retail_app.work.workers.session_monitor.manager.Man
 import timber.log.Timber
 import java.time.Instant
 
-private const val TAG = "UserProfileScreen"
-
 @Composable
-fun UserProfileScreen(
-    viewModel: UserProfileViewModel = hiltViewModel(),
+fun ScrUserProfile(
+    vm: VMUserProfile = hiltViewModel(),
     stateApp: StateApp = LocalStateApp.current
 ){
-    Timber.d("Called : fun $TAG()")
-
     val applicationContext = LocalContext.current.applicationContext
     val sessionState by stateApp.isSessionValid.collectAsStateWithLifecycle()
-    val userData by viewModel.currentSessionUserData
-    val businessProfileSummaryData by viewModel.businessProfileSummary
+    val userData by vm.currentSessionUserData
+    val businessProfileSummaryData by vm.businessProfileSummary
 
     when(sessionState){
         SessionState.Loading -> {
@@ -97,7 +93,7 @@ fun UserProfileScreen(
         }
         is SessionState.Valid -> {
             LaunchedEffect(Unit) {
-                viewModel.onOpen(sessionState as SessionState.Valid)
+                vm.onOpen(sessionState as SessionState.Valid)
             }
         }
     }
@@ -109,7 +105,7 @@ fun UserProfileScreen(
             stateApp.navController.navToAppConfig(null)
         },
         onSignedOut = {
-            viewModel.handleSignOut()
+            vm.handleSignOut()
             ManagerWorkSessionMonitor.terminate(applicationContext)
         },
         onNavigateToBusinessProfile = {

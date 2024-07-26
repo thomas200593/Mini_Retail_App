@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatcher
-import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers
+import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers.Dispatchers.IO
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
 import com.thomas200593.mini_retail_app.features.auth.entity.UserData
 import com.thomas200593.mini_retail_app.features.auth.repository.RepoAuth
@@ -18,13 +18,13 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
-private val TAG = UserProfileViewModel::class.simpleName
+private val TAG = VMUserProfile::class.simpleName
 
 @HiltViewModel
-class UserProfileViewModel @Inject constructor(
+class VMUserProfile @Inject constructor(
     private val repoAuth: RepoAuth,
-    private val useCase: GetBizProfileSummaryUseCase,
-    @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
+    private val ucGetBizProfileSummary: GetBizProfileSummaryUseCase,
+    @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
 ): ViewModel(){
 
     private val _currentSessionUserData: MutableState<ResourceState<UserData>> = mutableStateOf(ResourceState.Idle)
@@ -52,7 +52,7 @@ class UserProfileViewModel @Inject constructor(
     private fun getBusinessProfileSummary() = viewModelScope.launch(ioDispatcher){
         Timber.d("Called : fun $TAG.getBusinessProfile()")
         _businessProfileSummary.value = ResourceState.Loading
-        useCase.invoke().collect{ bps ->
+        ucGetBizProfileSummary.invoke().collect{ bps ->
             _businessProfileSummary.value = bps
         }
     }
