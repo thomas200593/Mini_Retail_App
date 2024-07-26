@@ -72,10 +72,7 @@ fun ScrAppConfig(
     ScreenContent(
         menuData = uiState.menuData,
         sessionState = sessionState,
-        allowAccessMenu = {
-            vm.onEvent(MenuBtnEvents.OnAllow)
-            stateApp.navController.navToAppConfig(it)
-        },
+        allowAccessMenu = { vm.onEvent(MenuBtnEvents.OnAllow); stateApp.navController.navToAppConfig(it) },
         denyAccessMenu = { vm.onEvent(MenuBtnEvents.OnDeny) }
     )
     AppAlertDialog(
