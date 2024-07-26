@@ -85,9 +85,7 @@ class VMAuth @Inject constructor(
         _uiState.update { it.copy(authBtnGoogleState = AuthBtnGoogleState(), authVldState = Idle, dialogState = DialogState()) }
         repoAuth.clearAuthSessionToken()
     }
-    private fun handleGoogleButtonClick() {
-        _uiState.update { it.copy(authBtnGoogleState = it.authBtnGoogleState.copy(uiInProgress = true)) }
-    }
+    private fun handleGoogleButtonClick() { _uiState.update { it.copy(authBtnGoogleState = it.authBtnGoogleState.copy(uiInProgress = true)) } }
     private fun updateDialogState(loading: Boolean = false, success: Boolean = false, error: Boolean = false) {
         _uiState.update { it.copy(
             dialogState = it.dialogState.copy(
