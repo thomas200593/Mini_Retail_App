@@ -27,7 +27,7 @@ import com.thomas200593.mini_retail_app.features.auth.entity.OAuth2UserMetadata.
 import com.thomas200593.mini_retail_app.features.auth.entity.OAuthProvider.GOOGLE
 import com.thomas200593.mini_retail_app.features.auth.entity.UserData
 import com.thomas200593.mini_retail_app.features.auth.navigation.navToAuth
-import com.thomas200593.mini_retail_app.features.dashboard.navigation.navigateToDashboard
+import com.thomas200593.mini_retail_app.features.dashboard.navigation.navToDashboard
 import com.thomas200593.mini_retail_app.features.initial.initial.entity.FirstTimeStatus.NO
 import com.thomas200593.mini_retail_app.features.initial.initial.entity.FirstTimeStatus.YES
 import com.thomas200593.mini_retail_app.features.initial.initial.entity.Initial
@@ -71,7 +71,7 @@ fun ScrInitial(
                     GOOGLE -> Toast.makeText(context, "Welcome! ${(it.oAuth2UserMetadata as Google).name}", LENGTH_SHORT).show()
                     else -> Unit
                 }
-                coroutineScope.launch { stateApp.navController.navigateToDashboard(navOpt) }
+                coroutineScope.launch { stateApp.navController.navToDashboard(navOpt) }
             }
         )
     }

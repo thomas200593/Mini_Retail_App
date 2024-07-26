@@ -27,8 +27,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.thomas200593.mini_retail_app.R
-import com.thomas200593.mini_retail_app.app.ui.StateApp
 import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
+import com.thomas200593.mini_retail_app.app.ui.StateApp
 import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
 import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons
 import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar
@@ -39,8 +39,8 @@ import timber.log.Timber
 private const val TAG = "DashboardScreen"
 
 @Composable
-fun DashboardScreen(
-    viewModel: DashboardViewModel = hiltViewModel(),
+fun ScrDashboard(
+    viewModel: VMDashboard = hiltViewModel(),
     stateApp: StateApp = LocalStateApp.current
 ) {
     Timber.d("Called : fun $TAG()")

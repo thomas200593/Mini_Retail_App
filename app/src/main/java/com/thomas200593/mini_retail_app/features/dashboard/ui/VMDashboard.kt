@@ -5,10 +5,10 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import timber.log.Timber
 import javax.inject.Inject
 
-private val TAG = DashboardViewModel::class.simpleName
+private val TAG = VMDashboard::class.simpleName
 
 @HiltViewModel
-class DashboardViewModel @Inject constructor() : ViewModel() {
+class VMDashboard @Inject constructor() : ViewModel() {
     fun onOpen() {
         Timber.d("Called : fun $TAG.onOpen()")
     }
