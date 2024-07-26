@@ -21,6 +21,7 @@ import androidx.compose.material3.ButtonDefaults.buttonColors
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.shapes
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -58,8 +59,6 @@ import com.thomas200593.mini_retail_app.core.design_system.util.HlpJwt.GoogleOAu
 import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.Google.google_logo
 import com.thomas200593.mini_retail_app.features.auth.entity.AuthSessionToken
 import com.thomas200593.mini_retail_app.features.auth.entity.OAuthProvider.GOOGLE
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 
 object CustomButton {
     object Common{
@@ -69,7 +68,7 @@ object CustomButton {
             onClick: () -> Unit,
             icon: ImageVector,
             text: String = String(),
-            shape: Shape = MaterialTheme.shapes.medium,
+            shape: Shape = shapes.medium,
             padding: Dp = 8.dp,
             containerColor: Color = buttonColors().containerColor,
             contentColor: Color = buttonColors().contentColor,
@@ -118,7 +117,7 @@ object CustomButton {
             secondaryText: String = "Please wait...",
             googleIcon: Int = google_logo,
             btnLoadingState: Boolean = false,
-            btnShape: Shape = MaterialTheme.shapes.medium,
+            btnShape: Shape = shapes.medium,
             btnBorderStrokeWidth: Dp = 1.dp,
             btnBorderColor: Color = Color(0xFF747775),
             btnColor: Color = MaterialTheme.colorScheme.surface,
@@ -127,9 +126,7 @@ object CustomButton {
             onClick: () -> Unit
         ){
             var btnText by remember { mutableStateOf(primaryText) }
-            LaunchedEffect(btnLoadingState) {
-                btnText = if(btnLoadingState) secondaryText else primaryText
-            }
+            LaunchedEffect(btnLoadingState) { btnText = if(btnLoadingState) secondaryText else primaryText }
             Surface(
                 modifier = modifier.clickable(
                     enabled = !btnLoadingState,
@@ -142,10 +139,7 @@ object CustomButton {
             ) {
                 Row(
                     modifier = Modifier.padding(10.dp).animateContentSize(
-                        animationSpec = tween(
-                            durationMillis = 300,
-                            easing = LinearOutSlowInEasing
-                        )
+                        animationSpec = tween(durationMillis = 300, easing = LinearOutSlowInEasing)
                     ),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center
@@ -174,46 +168,37 @@ object CustomButton {
 
         suspend fun handleSignIn(
             activityContext: Activity,
-            coroutineScope: CoroutineScope,
             onResultReceived: (AuthSessionToken) -> Unit,
             onError: (Throwable) -> Unit,
             onDialogDismissed: (Throwable) -> Unit
         ){
-            coroutineScope.launch {
-                val credentialManager = create(activityContext)
-                val googleIdOptions = GetGoogleIdOption.Builder()
-                    .setFilterByAuthorizedAccounts(false)
-                    .setNonce(GoogleOAuth2.generateTokenNonce())
-                    .setAutoSelectEnabled(false)
-                    .setServerClientId(BuildConfig.GOOGLE_AUTH_WEB_ID)
-                    .build()
-                val credentialRequest = GetCredentialRequest.Builder()
-                    .addCredentialOption(googleIdOptions)
-                    .build()
-                try{
-                    val result = credentialManager
-                        .getCredential(context = activityContext, request = credentialRequest)
-                    when(val credential = result.credential){
-                        is CustomCredential -> {
-                            if(credential.type == TYPE_GOOGLE_ID_TOKEN_CREDENTIAL){
-                                val googleIdCredential = createFrom(credential.data)
-                                val authProvider = GOOGLE
-                                val idToken = googleIdCredential.idToken
-                                val authSessionToken = AuthSessionToken(authProvider, idToken)
-                                if(validateToken(authSessionToken)) {
-                                    onResultReceived(authSessionToken)
-                                }
-                                else { onError(Throwable("Token Validation Failed.")) }
-                            }
-                            else{ onError(Throwable("Unexpected type of Credential")) }
+            val credentialManager = create(activityContext)
+            val googleIdOptions = GetGoogleIdOption.Builder().setFilterByAuthorizedAccounts(false)
+                .setNonce(GoogleOAuth2.generateTokenNonce()).setAutoSelectEnabled(false)
+                .setServerClientId(BuildConfig.GOOGLE_AUTH_WEB_ID).build()
+            val credentialRequest = GetCredentialRequest.Builder().addCredentialOption(googleIdOptions)
+                .build()
+            try{
+                val result = credentialManager.getCredential(context = activityContext, request = credentialRequest)
+                when(val credential = result.credential){
+                    is CustomCredential -> {
+                        if(credential.type == TYPE_GOOGLE_ID_TOKEN_CREDENTIAL){
+                            val googleIdCredential = createFrom(credential.data)
+                            val authProvider = GOOGLE
+                            val idToken = googleIdCredential.idToken
+                            val authSessionToken = AuthSessionToken(authProvider, idToken)
+                            if(validateToken(authSessionToken))
+                            { onResultReceived(authSessionToken) }
+                            else { onError(Throwable("Token Validation Failed.")) }
                         }
-                        else -> { onError(Throwable("Unexpected type of Credential")) }
+                        else{ onError(Throwable("Unexpected type of Credential")) }
                     }
+                    else -> { onError(Throwable("Unexpected type of Credential")) }
                 }
-                catch (e: GetCredentialException){ onError(e) }
-                catch (e: GoogleIdTokenParsingException){ onError(e) }
-                catch (e: GetCredentialCancellationException){ onDialogDismissed(e) }
             }
+            catch (e: GetCredentialException){ onError(e) }
+            catch (e: GoogleIdTokenParsingException){ onError(e) }
+            catch (e: GetCredentialCancellationException){ onDialogDismissed(e) }
         }
 
         suspend fun handleClearCredential(
