@@ -4,7 +4,7 @@ import com.thomas200593.mini_retail_app.features.app_conf.app_config.entity.AppC
 import com.thomas200593.mini_retail_app.features.auth.entity.UserData
 
 data class Initial(
-    val isFirstTime: FirstTimeStatus,
+    val firstTimeStatus: FirstTimeStatus,
     val configCurrent: ConfigCurrent,
     val session: UserData?,
 )

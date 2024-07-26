@@ -27,7 +27,7 @@ class UCGetInitialData @Inject constructor(
     ){ authSession, configCurrent, firstTimeStatus ->
         Success(
             data = Initial(
-                isFirstTime = firstTimeStatus,
+                firstTimeStatus = firstTimeStatus,
                 configCurrent = configCurrent,
                 session = repoAuth.mapAuthSessionTokenToUserData(authSession)
             )
