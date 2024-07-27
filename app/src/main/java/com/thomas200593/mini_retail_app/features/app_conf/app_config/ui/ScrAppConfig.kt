@@ -105,9 +105,9 @@ fun ScrAppConfig(
         body = { Text("Forbidden Access") },
         useDismissButton = true,
         dismissButton = {
-            TextButton(onClick = { stateApp.onNavUp() })
-            { Text(stringResource(id = str_ok)) }
-        }
+            TextButton(
+                onClick = { stateApp.onNavUp() }
+            ) { Text(stringResource(id = str_ok)) } }
     )
 }
 

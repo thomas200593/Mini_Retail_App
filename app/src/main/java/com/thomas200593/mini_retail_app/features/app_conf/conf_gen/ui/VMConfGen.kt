@@ -57,14 +57,18 @@ class VMConfGen @Inject constructor(
     fun onEvent(events: UiEvents) = viewModelScope.launch(ioDispatcher) {
         when(events){
             is ScreenEvents.OnOpen -> handleOnOpen(events.sessionState)
-            ScreenEvents.OnNavigateUp -> updateDialogState(loadingAuth = false, loadingGetMenu = true, denyAccess = false)
-            MenuBtnEvents.OnAllow -> updateDialogState(loadingAuth = false, loadingGetMenu = false, denyAccess = false)
-            MenuBtnEvents.OnDeny -> updateDialogState(loadingAuth = false, loadingGetMenu = false, denyAccess = true)
+            ScreenEvents.OnNavigateUp ->
+                updateDialogState(loadingAuth = false, loadingGetMenu = true, denyAccess = false)
+            MenuBtnEvents.OnAllow ->
+                updateDialogState(loadingAuth = false, loadingGetMenu = false, denyAccess = false)
+            MenuBtnEvents.OnDeny ->
+                updateDialogState(loadingAuth = false, loadingGetMenu = false, denyAccess = true)
         }
     }
     private fun handleOnOpen(sessionState: SessionState) = viewModelScope.launch(ioDispatcher) {
         when(sessionState){
-            Loading -> updateDialogState(loadingAuth = true, loadingGetMenu = false, denyAccess = false)
+            Loading ->
+                updateDialogState(loadingAuth = true, loadingGetMenu = false, denyAccess = false)
             is Invalid, is Valid -> getMenuData(sessionState)
         }
     }

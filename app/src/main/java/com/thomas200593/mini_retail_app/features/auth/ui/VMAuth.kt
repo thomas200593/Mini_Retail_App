@@ -43,7 +43,6 @@ class VMAuth @Inject constructor(
         val uiEnableSuccessDialog: MutableState<Boolean> = mutableStateOf(false),
         val uiEnableErrorDialog: MutableState<Boolean> = mutableStateOf(false)
     )
-
     sealed class UiEvents{
         sealed class ScreenEvents: UiEvents() {
             data object OnOpen: ScreenEvents()
@@ -61,38 +60,59 @@ class VMAuth @Inject constructor(
         when(events){
             OnOpen -> initialization()
             BtnAuthWithGoogle.OnClick -> handleGoogleButtonClick()
-            is BtnAuthWithGoogle.OnValidationAuthSession -> handleAuthValidationResult(events.authSessionToken)
+            is BtnAuthWithGoogle.OnValidationAuthSession -> handleAuthVldResult(events.authSessionToken)
         }
     }
-    private fun handleAuthValidationResult(authSessionToken: AuthSessionToken) = viewModelScope.launch(ioDispatcher) {
-        updateDialogState(loading = true, success = false, error = false)
-        _uiState.update { it.copy(authVldState = Loading) }
-        try{
-            if(ucValidateAuthSession.invoke(authSessionToken)) {
-                updateDialogState(loading = false, success = true, error = false)
-                _uiState.update { it.copy(authVldState = Success(authSessionToken)) }
+    private fun handleAuthVldResult(authSessionToken: AuthSessionToken) =
+        viewModelScope.launch(ioDispatcher) {
+            updateDialogState(loading = true, success = false, error = false)
+            _uiState.update { it.copy(authVldState = Loading) }
+            try{
+                if(ucValidateAuthSession.invoke(authSessionToken)) {
+                    updateDialogState(loading = false, success = true, error = false)
+                    _uiState.update { it.copy(authVldState = Success(authSessionToken)) }
+                }
+                else{
+                    updateDialogState(loading = false, success = false, error = true)
+                    _uiState.update {
+                        it.copy(
+                            authVldState = Error(Throwable("Cannot authenticate with Google")),
+                            authBtnGoogleState = AuthBtnGoogleState()
+                        )
+                    }
+                }
+            } catch (e: Throwable) {
+                updateDialogState(loading = false, error = true, success = false)
+                _uiState.update { it.copy(authVldState = Error(e)) }
             }
-            else{
-                updateDialogState(loading = false, success = false, error = true)
-                _uiState.update { it.copy(authVldState = Error(Throwable("Cannot authenticate with Google")), authBtnGoogleState = AuthBtnGoogleState()) }
-            }
-        } catch (e: Throwable) {
-            updateDialogState(loading = false, error = true, success = false)
-            _uiState.update { it.copy(authVldState = Error(e)) }
         }
-    }
     private fun initialization() = viewModelScope.launch(ioDispatcher) {
-        _uiState.update { it.copy(authBtnGoogleState = AuthBtnGoogleState(), authVldState = Idle, dialogState = DialogState()) }
+        _uiState.update {
+            it.copy(
+                authBtnGoogleState = AuthBtnGoogleState(),
+                authVldState = Idle, dialogState = DialogState()
+            )
+        }
         repoAuth.clearAuthSessionToken()
     }
-    private fun handleGoogleButtonClick() = viewModelScope.launch(ioDispatcher) { _uiState.update { it.copy(authBtnGoogleState = it.authBtnGoogleState.copy(uiInProgress = true)) } }
-    private fun updateDialogState(loading: Boolean = false, success: Boolean = false, error: Boolean = false) = viewModelScope.launch(ioDispatcher) {
-        _uiState.update { it.copy(
-            dialogState = it.dialogState.copy(
-                uiEnableLoadingDialog = mutableStateOf(loading),
-                uiEnableSuccessDialog = mutableStateOf(success),
-                uiEnableErrorDialog = mutableStateOf(error)
+    private fun handleGoogleButtonClick() = viewModelScope.launch(ioDispatcher) {
+        _uiState.update {
+            it.copy(authBtnGoogleState = it.authBtnGoogleState.copy(uiInProgress = true))
+        }
+    }
+    private fun updateDialogState(
+        loading: Boolean = false,
+        success: Boolean = false,
+        error: Boolean = false
+    ) = viewModelScope.launch(ioDispatcher) {
+        _uiState.update {
+            it.copy(
+                dialogState = it.dialogState.copy(
+                    uiEnableLoadingDialog = mutableStateOf(loading),
+                    uiEnableSuccessDialog = mutableStateOf(success),
+                    uiEnableErrorDialog = mutableStateOf(error)
+                )
             )
-        ) }
+        }
     }
 }
