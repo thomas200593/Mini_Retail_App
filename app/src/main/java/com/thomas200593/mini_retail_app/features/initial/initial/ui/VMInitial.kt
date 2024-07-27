@@ -34,7 +34,7 @@ class VMInitial @Inject constructor(
     private val _uiState = MutableStateFlow(UiState())
     val uiState = _uiState.asStateFlow()
 
-    fun onEvent(events: UiEvents){
+    fun onEvent(events: UiEvents) = viewModelScope.launch(ioDispatcher) {
         when(events){
             UiEvents.OnOpen -> viewModelScope.launch {
                 _uiState.update { it.copy(initData = Loading) }

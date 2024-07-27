@@ -54,7 +54,7 @@ class VMAppConfig @Inject constructor(
     private val _uiState = MutableStateFlow(UiState())
     val uiState = _uiState.asStateFlow()
 
-    fun onEvent(events: UiEvents){
+    fun onEvent(events: UiEvents) = viewModelScope.launch(ioDispatcher) {
         when(events){
             is ScreenEvents.OnOpen -> handleOnOpen(events.sessionState)
             ScreenEvents.OnNavigateUp -> updateDialogState(loadingAuth = false, loadingGetMenu = true, denyAccess = false)
@@ -62,7 +62,7 @@ class VMAppConfig @Inject constructor(
             MenuBtnEvents.OnDeny -> updateDialogState(loadingAuth = false, loadingGetMenu = false, denyAccess = true)
         }
     }
-    private fun handleOnOpen(sessionState: SessionState) {
+    private fun handleOnOpen(sessionState: SessionState) = viewModelScope.launch(ioDispatcher){
         when(sessionState){
             Loading -> updateDialogState(loadingAuth = true, loadingGetMenu = false, denyAccess = false)
             is Invalid, is Valid -> getMenuData(sessionState)
@@ -78,7 +78,7 @@ class VMAppConfig @Inject constructor(
         loadingAuth: Boolean = true,
         loadingGetMenu: Boolean = false,
         denyAccess: Boolean = false
-    ){
+    ) = viewModelScope.launch(ioDispatcher) {
         _uiState.update {
             it.copy(
                 dialogState = it.dialogState.copy(

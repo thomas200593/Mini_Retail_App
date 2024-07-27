@@ -57,7 +57,7 @@ class VMAuth @Inject constructor(
     private val _uiState = MutableStateFlow(UiState())
     val uiState = _uiState.asStateFlow()
 
-    fun onEvent(events: UiEvents){
+    fun onEvent(events: UiEvents) = viewModelScope.launch(ioDispatcher) {
         when(events){
             OnOpen -> initialization()
             BtnAuthWithGoogle.OnClick -> handleGoogleButtonClick()
@@ -85,8 +85,8 @@ class VMAuth @Inject constructor(
         _uiState.update { it.copy(authBtnGoogleState = AuthBtnGoogleState(), authVldState = Idle, dialogState = DialogState()) }
         repoAuth.clearAuthSessionToken()
     }
-    private fun handleGoogleButtonClick() { _uiState.update { it.copy(authBtnGoogleState = it.authBtnGoogleState.copy(uiInProgress = true)) } }
-    private fun updateDialogState(loading: Boolean = false, success: Boolean = false, error: Boolean = false) {
+    private fun handleGoogleButtonClick() = viewModelScope.launch(ioDispatcher) { _uiState.update { it.copy(authBtnGoogleState = it.authBtnGoogleState.copy(uiInProgress = true)) } }
+    private fun updateDialogState(loading: Boolean = false, success: Boolean = false, error: Boolean = false) = viewModelScope.launch(ioDispatcher) {
         _uiState.update { it.copy(
             dialogState = it.dialogState.copy(
                 uiEnableLoadingDialog = mutableStateOf(loading),
