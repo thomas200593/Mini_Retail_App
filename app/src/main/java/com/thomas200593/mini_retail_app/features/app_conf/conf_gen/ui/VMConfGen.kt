@@ -58,7 +58,7 @@ class VMConfGen @Inject constructor(
         when(events){
             is ScreenEvents.OnOpen -> handleOnOpen(events.sessionState)
             ScreenEvents.OnNavigateUp -> updateDialogState(loadingAuth = false, loadingGetMenu = true, denyAccess = false)
-            MenuBtnEvents.OnAllow -> updateDialogState(loadingAuth = true, loadingGetMenu = false, denyAccess = false)
+            MenuBtnEvents.OnAllow -> updateDialogState(loadingAuth = false, loadingGetMenu = false, denyAccess = false)
             MenuBtnEvents.OnDeny -> updateDialogState(loadingAuth = false, loadingGetMenu = false, denyAccess = true)
         }
     }
