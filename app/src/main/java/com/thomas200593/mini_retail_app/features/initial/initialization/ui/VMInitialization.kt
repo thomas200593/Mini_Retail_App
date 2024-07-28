@@ -52,28 +52,28 @@ class VMInitialization @Inject constructor(
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ): ViewModel(){
     data class UiState(
-        val initDataState: ResourceState<Initialization> = Idle,
-        val ui: UI = UI(),
+        val initialization: ResourceState<Initialization> = Idle,
+        val screenState: ScreenState = ScreenState(),
         val formState: FormState = FormState(),
         val dialogState: DialogState = DialogState(),
         val initBizUiResult: ResourceState<BizProfileSummary> = Idle
     )
-    data class UI(
-        val uiEnableWelcomeMessage: Boolean = true,
-        val uiEnableInitManualForm: Boolean = false,
+    data class ScreenState(
+        val welcomeMessageEnabled: Boolean = true,
+        val initBizProfileManualFormEnabled: Boolean = false,
     )
     data class FormState(
-        val uiFormLegalName: String = "",
-        val uiFormLegalNameError: UiText? = StringResource(str_field_required),
-        val uiFormCommonName: String = "",
-        val uiFormCommonNameError: UiText? = StringResource(str_field_required),
-        val uiFormEnableSubmitBtn: Boolean = false,
+        val fldLegalNameValue: String = "",
+        val fldLegalNameError: UiText? = StringResource(str_field_required),
+        val fldCommonNameValue: String = "",
+        val fldCommonNameError: UiText? = StringResource(str_field_required),
+        val fldSubmitBtnEnabled: Boolean = false,
     )
     data class DialogState(
-        val uiEnableLoadingDialog: MutableState<Boolean> = mutableStateOf(false),
-        val uiEnableEmptyDialog: MutableState<Boolean> = mutableStateOf(false),
-        val uiEnableSuccessDialog: MutableState<Boolean> = mutableStateOf(false),
-        val uiEnableErrorDialog: MutableState<Boolean> = mutableStateOf(false)
+        val dlgLoadingEnabled: MutableState<Boolean> = mutableStateOf(false),
+        val dlgEmptyEnabled: MutableState<Boolean> = mutableStateOf(false),
+        val dlgSuccessEnabled: MutableState<Boolean> = mutableStateOf(false),
+        val dlgErrorEnabled: MutableState<Boolean> = mutableStateOf(false)
     )
     sealed class UiEvents{
         sealed class ScreenEvents: UiEvents(){
@@ -110,38 +110,38 @@ class VMInitialization @Inject constructor(
         }
     }
     private fun fetchInitData() = viewModelScope.launch(ioDispatcher) {
-        _uiState.update { it.copy(initDataState = Loading) }
+        _uiState.update { it.copy(initialization = Loading) }
         ucGetInitializationData.invoke().flowOn(ioDispatcher)
-            .catch { e -> _uiState.update { it.copy(initDataState = Error(e)) } }
-            .collectLatest { data -> _uiState.update { it.copy(initDataState = data) } }
+            .catch { e -> _uiState.update { it.copy(initialization = Error(e)) } }
+            .collectLatest { data -> _uiState.update { it.copy(initialization = data) } }
     }
     private fun changeLanguage(language: Language) = viewModelScope.launch(ioDispatcher) {
         repoConfGenLanguage.setLanguage(language); setApplicationLocales( create(Locale(language.code)) )
     }
     private fun enableManualForm() = viewModelScope.launch(ioDispatcher) {
-        _uiState.update { it.copy(ui = it.ui.copy(uiEnableInitManualForm = true, uiEnableWelcomeMessage = false)) }
+        _uiState.update { it.copy(screenState = it.screenState.copy(initBizProfileManualFormEnabled = true, welcomeMessageEnabled = false)) }
     }
     private fun updateFormLegalName(legalName: String) = viewModelScope.launch(ioDispatcher) {
-        _uiState.update { it.copy(formState = it.formState.copy(uiFormLegalName = legalName)) }
+        _uiState.update { it.copy(formState = it.formState.copy(fldLegalNameValue = legalName)) }
         enableFormSubmitButton()
     }
     private fun formValidateLegalName(): Boolean {
-        val result = RegularTextValidation().execute(input = _uiState.value.formState.uiFormLegalName, required = true, maxLength = 100)
-        _uiState.update { it.copy(formState = it.formState.copy(uiFormLegalNameError = result.errorMessage)) }
+        val result = RegularTextValidation().execute(input = _uiState.value.formState.fldLegalNameValue, required = true, maxLength = 100)
+        _uiState.update { it.copy(formState = it.formState.copy(fldLegalNameError = result.errorMessage)) }
         return result.isSuccess
     }
     private fun updateFormCommonName(commonName: String) = viewModelScope.launch(ioDispatcher) {
-        _uiState.update { it.copy(formState = it.formState.copy(uiFormCommonName = commonName)) }
+        _uiState.update { it.copy(formState = it.formState.copy(fldCommonNameValue = commonName)) }
         enableFormSubmitButton()
     }
     private fun formValidateCommonName(): Boolean {
-        val result = RegularTextValidation().execute(input = _uiState.value.formState.uiFormCommonName, required = true, maxLength = 100)
-        _uiState.update { it.copy(formState = it.formState.copy(uiFormCommonNameError = result.errorMessage)) }
+        val result = RegularTextValidation().execute(input = _uiState.value.formState.fldCommonNameValue, required = true, maxLength = 100)
+        _uiState.update { it.copy(formState = it.formState.copy(fldCommonNameError = result.errorMessage)) }
         return result.isSuccess
     }
     private fun enableFormSubmitButton() = viewModelScope.launch(ioDispatcher) {
         val result = formValidateLegalName() && formValidateCommonName()
-        _uiState.update { it.copy(formState = it.formState.copy(uiFormEnableSubmitBtn = result)) }
+        _uiState.update { it.copy(formState = it.formState.copy(fldSubmitBtnEnabled = result)) }
     }
     private fun handleBizProfileInitialization(bizProfileSummary: BizProfileSummary) = viewModelScope.launch(ioDispatcher) {
         viewModelScope.launch(ioDispatcher) {
@@ -163,7 +163,7 @@ class VMInitialization @Inject constructor(
         }
     }
     private fun resetFormAndUI() = viewModelScope.launch(ioDispatcher)  {
-        _uiState.update { it.copy(formState = FormState(), ui = UI()) }
+        _uiState.update { it.copy(formState = FormState(), screenState = ScreenState()) }
     }
     private fun updateDialogState(
         loading: Boolean = false,
@@ -171,10 +171,10 @@ class VMInitialization @Inject constructor(
         success: Boolean = false, error: Boolean = false) = viewModelScope.launch(ioDispatcher) {
         _uiState.update { it.copy(
             dialogState = it.dialogState.copy(
-                uiEnableLoadingDialog = mutableStateOf(loading),
-                uiEnableEmptyDialog = mutableStateOf(empty),
-                uiEnableSuccessDialog = mutableStateOf(success),
-                uiEnableErrorDialog = mutableStateOf(error)
+                dlgLoadingEnabled = mutableStateOf(loading),
+                dlgEmptyEnabled = mutableStateOf(empty),
+                dlgSuccessEnabled = mutableStateOf(success),
+                dlgErrorEnabled = mutableStateOf(error)
             )
         ) }
     }

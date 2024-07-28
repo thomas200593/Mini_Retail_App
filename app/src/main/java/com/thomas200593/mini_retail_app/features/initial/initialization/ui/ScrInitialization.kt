@@ -121,7 +121,7 @@ fun ScrInitialization(
         onFormCancel = { vm.onEvent(OnFormCancel) }
     )
     AppAlertDialog(
-        showDialog = uiState.dialogState.uiEnableLoadingDialog,
+        showDialog = uiState.dialogState.dlgLoadingEnabled,
         dialogContext = INFORMATION,
         showIcon = true,
         showTitle = true,
@@ -130,7 +130,7 @@ fun ScrInitialization(
         body = { Text(stringResource(str_biz_profile_init_loading)) }
     )
     AppAlertDialog(
-        showDialog = uiState.dialogState.uiEnableSuccessDialog,
+        showDialog = uiState.dialogState.dlgSuccessEnabled,
         dialogContext = SUCCESS,
         showIcon = true,
         showTitle = true,
@@ -144,7 +144,7 @@ fun ScrInitialization(
         }
     )
     AppAlertDialog(
-        showDialog = uiState.dialogState.uiEnableErrorDialog,
+        showDialog = uiState.dialogState.dlgErrorEnabled,
         dialogContext = ERROR,
         showIcon = true,
         showTitle = true,
@@ -170,7 +170,7 @@ private fun ScreenContent(
     onFormSubmit: (BizProfileSummary) -> Unit,
     onFormCancel: () -> Unit
 ) {
-    when(uiState.initDataState){
+    when(uiState.initialization){
         Idle, Loading -> { LoadingScreen() }
         Empty -> {
             EmptyScreen(
@@ -188,9 +188,9 @@ private fun ScreenContent(
         }
         is Success -> {
             SuccessSection(
-                initData = uiState.initDataState.data,
-                uiEnableWelcomeMessage = uiState.ui.uiEnableWelcomeMessage,
-                uiEnableInitManualForm = uiState.ui.uiEnableInitManualForm,
+                initData = uiState.initialization.data,
+                uiEnableWelcomeMessage = uiState.screenState.welcomeMessageEnabled,
+                uiEnableInitManualForm = uiState.screenState.initBizProfileManualFormEnabled,
                 onChangeLanguage = onChangeLanguage,
                 onInitBizProfileDefault = onInitBizProfileDefault,
                 onInitBizProfileManual = onInitBizProfileManual,
@@ -434,29 +434,29 @@ fun InitManualForm(
                 color = colorScheme.onSurface
             )
             TextInput(
-                value = formState.uiFormLegalName,
+                value = formState.fldLegalNameValue,
                 onValueChange = { onLegalNameChanged(it) },
                 label = stringResource(str_company_legal_name),
                 placeholder = stringResource(str_company_legal_name),
                 singleLine = true,
-                isError = formState.uiFormLegalNameError != null,
-                errorMessage = formState.uiFormLegalNameError
+                isError = formState.fldLegalNameError != null,
+                errorMessage = formState.fldLegalNameError
             )
             TextInput(
-                value = formState.uiFormCommonName,
+                value = formState.fldCommonNameValue,
                 onValueChange = { onCommonNameChanged(it) },
                 label = stringResource(str_company_common_name),
                 placeholder = stringResource(str_company_common_name),
                 singleLine = true,
-                isError = formState.uiFormCommonNameError != null,
-                errorMessage = formState.uiFormCommonNameError
+                isError = formState.fldCommonNameError != null,
+                errorMessage = formState.fldCommonNameError
             )
             Row(
                 modifier = Modifier.fillMaxWidth(1.0f),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                if(formState.uiFormEnableSubmitBtn){
+                if(formState.fldSubmitBtnEnabled){
                     AppIconButton(
                         modifier = Modifier.weight(0.5f),
                         onClick = {
@@ -465,8 +465,8 @@ fun InitManualForm(
                                     seqId = 0,
                                     genId = randomULID(),
                                     bizName = BizName(
-                                        legalName = formState.uiFormLegalName,
-                                        commonName = formState.uiFormCommonName,
+                                        legalName = formState.fldLegalNameValue,
+                                        commonName = formState.fldCommonNameValue,
                                     ),
                                     bizIndustry = null,
                                     auditTrail = AuditTrail()
@@ -478,7 +478,7 @@ fun InitManualForm(
                     )
                 }
                 AppIconButton(
-                    modifier = Modifier.weight(if(formState.uiFormEnableSubmitBtn){0.5f}else{1.0f}),
+                    modifier = Modifier.weight(if(formState.fldSubmitBtnEnabled){0.5f}else{1.0f}),
                     onClick = onFormCancel,
                     icon = ImageVector.vectorResource(id = neutral),
                     text = stringResource(id = str_cancel)
