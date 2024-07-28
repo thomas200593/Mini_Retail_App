@@ -11,10 +11,12 @@ import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Id
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Loading
 import com.thomas200593.mini_retail_app.features.initial.initial.domain.UCGetInitialData
 import com.thomas200593.mini_retail_app.features.initial.initial.entity.Initial
+import com.thomas200593.mini_retail_app.features.initial.initial.ui.VMInitial.UiEvents.ScreenEvents
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -25,10 +27,13 @@ class VMInitial @Inject constructor(
     @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
 ): ViewModel() {
     data class UiState(
-        val initData: ResourceState<Initial> = Idle
+        val initial: ResourceState<Initial> = Idle
     )
+
     sealed class UiEvents {
-        data object OnOpen: UiEvents()
+        sealed class ScreenEvents: UiEvents(){
+            data object OnOpen: UiEvents()
+        }
     }
 
     private val _uiState = MutableStateFlow(UiState())
@@ -36,12 +41,14 @@ class VMInitial @Inject constructor(
 
     fun onEvent(events: UiEvents) = viewModelScope.launch(ioDispatcher) {
         when(events){
-            UiEvents.OnOpen -> viewModelScope.launch {
-                _uiState.update { it.copy(initData = Loading) }
-                try { ucGetInitialData.invoke().flowOn(ioDispatcher)
-                    .collect{ data -> _uiState.update { prev -> prev.copy(initData = data) } } }
-                catch (e: Throwable){ _uiState.update { it.copy(initData = Error(e)) } }
-            }
+            ScreenEvents.OnOpen -> onOpen()
         }
+    }
+
+    private fun onOpen() = viewModelScope.launch {
+        _uiState.update { it.copy(initial = Loading) }
+        ucGetInitialData.invoke().flowOn(ioDispatcher)
+            .catch { e -> _uiState.update { prev -> prev.copy(initial = Error(e)) } }
+            .collect{ _uiState.update { prev -> prev.copy(initial = it) } }
     }
 }

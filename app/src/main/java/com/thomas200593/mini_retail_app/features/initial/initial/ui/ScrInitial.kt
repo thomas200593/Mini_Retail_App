@@ -5,14 +5,12 @@ import android.widget.Toast.LENGTH_SHORT
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavOptions.Builder
 import com.thomas200593.mini_retail_app.R.string.str_error
-import com.thomas200593.mini_retail_app.R.string.str_error_fetching_preferences
 import com.thomas200593.mini_retail_app.app.navigation.NavGraph.G_INITIAL
 import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
 import com.thomas200593.mini_retail_app.app.ui.StateApp
@@ -31,39 +29,34 @@ import com.thomas200593.mini_retail_app.features.dashboard.navigation.navToDashb
 import com.thomas200593.mini_retail_app.features.initial.initial.entity.FirstTimeStatus.NO
 import com.thomas200593.mini_retail_app.features.initial.initial.entity.FirstTimeStatus.YES
 import com.thomas200593.mini_retail_app.features.initial.initial.entity.Initial
-import com.thomas200593.mini_retail_app.features.initial.initial.ui.VMInitial.UiEvents.OnOpen
+import com.thomas200593.mini_retail_app.features.initial.initial.ui.VMInitial.UiEvents.ScreenEvents
 import com.thomas200593.mini_retail_app.features.initial.initialization.navigation.navToInitialization
 import com.thomas200593.mini_retail_app.features.onboarding.entity.OnboardingStatus.HIDE
 import com.thomas200593.mini_retail_app.features.onboarding.entity.OnboardingStatus.SHOW
 import com.thomas200593.mini_retail_app.features.onboarding.navigation.navToOnboarding
-import kotlinx.coroutines.launch
 
 @Composable
 fun ScrInitial(
     vm: VMInitial = hiltViewModel(),
     stateApp: StateApp = LocalStateApp.current
 ){
-    val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
     val uiState by vm.uiState.collectAsStateWithLifecycle()
 
-    LaunchedEffect(Unit) { vm.onEvent(OnOpen) }
+    LaunchedEffect(Unit) { vm.onEvent(ScreenEvents.OnOpen) }
 
-    when(uiState.initData){
+    when(uiState.initial){
         Idle, Loading, Empty -> LoadingScreen()
         is Error -> ErrorScreen(
             title = stringResource(id = str_error),
-            errorMessage = stringResource(id = str_error_fetching_preferences),
+            errorMessage = "${(uiState.initial as Error).t.message} : ${(uiState.initial as Error).t.localizedMessage}",
             showIcon = true
         )
         is Success -> ScreenContent(
-            data = (uiState.initData as Success).data,
-            onNavToOnboarding =
-            { coroutineScope.launch { stateApp.navController.navToOnboarding() } },
-            onNavToInitialization =
-            { coroutineScope.launch { stateApp.navController.navToInitialization() } },
-            onNavToAuth =
-            { coroutineScope.launch { stateApp.navController.navToAuth() } },
+            initial = (uiState.initial as Success).data,
+            onNavToOnboarding = { stateApp.navController.navToOnboarding() },
+            onNavToInitialization = { stateApp.navController.navToInitialization() },
+            onNavToAuth = { stateApp.navController.navToAuth() },
             onNavToDashboard = {
                 val navOpt = Builder().setPopUpTo(route = G_INITIAL, inclusive = true, saveState = true)
                     .setLaunchSingleTop(true).setRestoreState(true).build()
@@ -71,7 +64,7 @@ fun ScrInitial(
                     GOOGLE -> Toast.makeText(context, "Welcome! ${(it.oAuth2UserMetadata as Google).name}", LENGTH_SHORT).show()
                     else -> Unit
                 }
-                coroutineScope.launch { stateApp.navController.navToDashboard(navOpt) }
+                stateApp.navController.navToDashboard(navOpt)
             }
         )
     }
@@ -79,22 +72,22 @@ fun ScrInitial(
 
 @Composable
 private fun ScreenContent(
-    data: Initial,
+    initial: Initial,
     onNavToOnboarding: () -> Unit,
     onNavToInitialization: () -> Unit,
     onNavToAuth: () -> Unit,
     onNavToDashboard: (UserData) -> Unit
 ) {
-    when(data.firstTimeStatus){
-        YES -> when(data.configCurrent.onboardingStatus){
+    when(initial.firstTimeStatus){
+        YES -> when(initial.configCurrent.onboardingStatus){
             SHOW -> onNavToOnboarding.invoke()
             HIDE -> onNavToInitialization.invoke()
         }
-        NO -> when(data.configCurrent.onboardingStatus){
+        NO -> when(initial.configCurrent.onboardingStatus){
             SHOW -> onNavToOnboarding.invoke()
-            HIDE -> when(data.session == null){
+            HIDE -> when(initial.session == null){
                 true -> onNavToAuth.invoke()
-                false -> onNavToDashboard.invoke(data.session)
+                false -> onNavToDashboard.invoke(initial.session)
             }
         }
     }
