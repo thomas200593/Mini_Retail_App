@@ -32,13 +32,13 @@ class VMAppConfig @Inject constructor(
 ): ViewModel(){
     data class UiState(
         val sessionState: SessionState = Loading,
-        val menuData: ResourceState<Set<DestAppConfig>> = Idle,
+        val destAppConfig: ResourceState<Set<DestAppConfig>> = Idle,
         val dialogState: DialogState = DialogState()
     )
     data class DialogState(
-        val uiEnableLoadAuthDlg : MutableState<Boolean> = mutableStateOf(true),
-        val uiEnableLoadGetMenuDlg : MutableState<Boolean> = mutableStateOf(false),
-        val uiEnableDenyAcsMenuDlg : MutableState<Boolean> = mutableStateOf(false)
+        val dlgVldAuthUiEnabled : MutableState<Boolean> = mutableStateOf(true),
+        val dlgGetMenuUiEnabled : MutableState<Boolean> = mutableStateOf(false),
+        val dlgDenyAccessUiEnabled : MutableState<Boolean> = mutableStateOf(false)
     )
     sealed class UiEvents {
         sealed class ScreenEvents : UiEvents(){
@@ -57,12 +57,9 @@ class VMAppConfig @Inject constructor(
     fun onEvent(events: UiEvents) = viewModelScope.launch(ioDispatcher) {
         when(events){
             is ScreenEvents.OnOpen -> handleOnOpen(events.sessionState)
-            ScreenEvents.OnNavigateUp ->
-                updateDialogState(loadingAuth = false, loadingGetMenu = true, denyAccess = false)
-            MenuBtnEvents.OnAllow ->
-                updateDialogState(loadingAuth = false, loadingGetMenu = false, denyAccess = false)
-            MenuBtnEvents.OnDeny ->
-                updateDialogState(loadingAuth = false, loadingGetMenu = false, denyAccess = true)
+            ScreenEvents.OnNavigateUp -> handleNavigateUp()
+            MenuBtnEvents.OnAllow -> handleOnAllow()
+            MenuBtnEvents.OnDeny -> handleOnDeny()
         }
     }
     private fun handleOnOpen(sessionState: SessionState) = viewModelScope.launch(ioDispatcher){
@@ -72,10 +69,19 @@ class VMAppConfig @Inject constructor(
             is Invalid, is Valid -> getMenuData(sessionState)
         }
     }
+    private fun handleNavigateUp() = viewModelScope.launch(ioDispatcher) {
+        updateDialogState(loadingAuth = false, loadingGetMenu = true, denyAccess = false)
+    }
+    private fun handleOnAllow() = viewModelScope.launch(ioDispatcher) {
+        updateDialogState(loadingAuth = false, loadingGetMenu = false, denyAccess = false)
+    }
+    private fun handleOnDeny() = viewModelScope.launch(ioDispatcher) {
+        updateDialogState(loadingAuth = false, loadingGetMenu = false, denyAccess = true)
+    }
     private fun getMenuData(sessionState: SessionState) = viewModelScope.launch(ioDispatcher) {
         updateDialogState(loadingAuth = false, loadingGetMenu = true, denyAccess = false)
         val menuData = repoAppConf.getMenuData(sessionState)
-        _uiState.update { it.copy(menuData = Success(menuData)) }
+        _uiState.update { it.copy(destAppConfig = Success(menuData)) }
         updateDialogState(loadingAuth = false, loadingGetMenu = false, denyAccess = false)
     }
     private fun updateDialogState(
@@ -86,9 +92,9 @@ class VMAppConfig @Inject constructor(
         _uiState.update {
             it.copy(
                 dialogState = it.dialogState.copy(
-                    uiEnableLoadAuthDlg = mutableStateOf(loadingAuth),
-                    uiEnableLoadGetMenuDlg = mutableStateOf(loadingGetMenu),
-                    uiEnableDenyAcsMenuDlg = mutableStateOf(denyAccess)
+                    dlgVldAuthUiEnabled = mutableStateOf(loadingAuth),
+                    dlgGetMenuUiEnabled = mutableStateOf(loadingGetMenu),
+                    dlgDenyAccessUiEnabled = mutableStateOf(denyAccess)
                 )
             )
         }

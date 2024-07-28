@@ -69,16 +69,16 @@ fun ScrAppConfig(
 ){
     val sessionState by stateApp.isSessionValid.collectAsStateWithLifecycle()
     val uiState by vm.uiState.collectAsStateWithLifecycle()
-    LaunchedEffect(Unit) { vm.onEvent(ScreenEvents.OnOpen(sessionState)) }
+    LaunchedEffect(sessionState) { vm.onEvent(ScreenEvents.OnOpen(sessionState)) }
     TopAppBar(onNavigateBack = { vm.onEvent(ScreenEvents.OnNavigateUp); stateApp.onNavUp() })
     ScreenContent(
-        menuData = uiState.menuData,
+        destAppConfig = uiState.destAppConfig,
         sessionState = sessionState,
-        allowAccessMenu = { vm.onEvent(OnAllow); stateApp.navController.navToAppConfig(it) },
-        denyAccessMenu = { vm.onEvent(OnDeny) }
+        onEventOnAllow = { vm.onEvent(OnAllow); stateApp.navController.navToAppConfig(it) },
+        onEventOnDeny = { vm.onEvent(OnDeny) }
     )
     AppAlertDialog(
-        showDialog = uiState.dialogState.uiEnableLoadAuthDlg,
+        showDialog = uiState.dialogState.dlgVldAuthUiEnabled,
         dialogContext = INFORMATION,
         showIcon = true,
         showTitle = true,
@@ -87,7 +87,7 @@ fun ScrAppConfig(
         body = { Text(stringResource(str_loading)) }
     )
     AppAlertDialog(
-        showDialog = uiState.dialogState.uiEnableLoadGetMenuDlg,
+        showDialog = uiState.dialogState.dlgGetMenuUiEnabled,
         dialogContext = INFORMATION,
         showIcon = true,
         showTitle = true,
@@ -96,7 +96,7 @@ fun ScrAppConfig(
         body = { Text("Get menu data") }
     )
     AppAlertDialog(
-        showDialog = uiState.dialogState.uiEnableDenyAcsMenuDlg,
+        showDialog = uiState.dialogState.dlgDenyAccessUiEnabled,
         dialogContext = ERROR,
         showIcon = true,
         showTitle = true,
@@ -157,12 +157,12 @@ private fun TopAppBar(onNavigateBack: () -> Unit) {
 
 @Composable
 private fun ScreenContent(
-    menuData: ResourceState<Set<DestAppConfig>>,
+    destAppConfig: ResourceState<Set<DestAppConfig>>,
     sessionState: SessionState,
-    denyAccessMenu: () -> Unit,
-    allowAccessMenu: (DestAppConfig) -> Unit,
+    onEventOnDeny: () -> Unit,
+    onEventOnAllow: (DestAppConfig) -> Unit,
 ) {
-    when(menuData){
+    when(destAppConfig){
         Idle, Loading -> Unit
         Empty -> EmptyScreen(
             title = stringResource(id = str_empty_message_title),
@@ -175,12 +175,12 @@ private fun ScreenContent(
             showIcon = true
         )
         is Success -> SuccessSection(
-            menuPreferences = menuData.data,
+            menuPreferences = destAppConfig.data,
             onNavToMenu = {
                 when(sessionState){
                     SessionState.Loading -> Unit
-                    is Invalid -> if(it.usesAuth) { denyAccessMenu() } else { allowAccessMenu(it) }
-                    is Valid -> allowAccessMenu(it)
+                    is Invalid -> if(it.usesAuth) { onEventOnDeny() } else { onEventOnAllow(it) }
+                    is Valid -> onEventOnAllow(it)
                 }
             }
         )

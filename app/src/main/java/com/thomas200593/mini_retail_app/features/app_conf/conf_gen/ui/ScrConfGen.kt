@@ -69,7 +69,7 @@ fun ScrConfGen(
 ) {
     val sessionState by stateApp.isSessionValid.collectAsStateWithLifecycle()
     val uiState by vm.uiState.collectAsStateWithLifecycle()
-    LaunchedEffect(Unit) { vm.onEvent(ScreenEvents.OnOpen(sessionState)) }
+    LaunchedEffect(sessionState) { vm.onEvent(ScreenEvents.OnOpen(sessionState)) }
     TopAppBar(onNavigateBack = { vm.onEvent(ScreenEvents.OnNavigateUp); stateApp.onNavUp() })
     ScreenContent(
         menuData = uiState.menuData,
@@ -188,7 +188,7 @@ private fun ScreenContent(
 }
 
 @Composable
-fun SuccessSection(menuPreferences: Set<DestConfGen>, onNavToMenu: (DestConfGen) -> Unit) {
+private fun SuccessSection(menuPreferences: Set<DestConfGen>, onNavToMenu: (DestConfGen) -> Unit) {
     LazyColumn(
         modifier = Modifier.fillMaxSize().padding(8.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp),
