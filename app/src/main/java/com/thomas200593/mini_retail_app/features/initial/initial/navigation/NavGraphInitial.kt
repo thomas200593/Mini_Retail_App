@@ -19,14 +19,10 @@ fun NavGraphBuilder.navGraphInitial() {
     ){
         composable(
             route = Initial.route
-        ){
-            ScrInitial()
-        }
+        ){ ScrInitial() }
         composable(
             route = Initialization.route
-        ){
-            ScrInitialization()
-        }
+        ){ ScrInitialization() }
         navGraphOnboarding()
         navGraphAuth()
     }
