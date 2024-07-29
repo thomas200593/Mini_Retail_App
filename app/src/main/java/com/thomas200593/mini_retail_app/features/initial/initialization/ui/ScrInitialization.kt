@@ -66,10 +66,15 @@ import com.thomas200593.mini_retail_app.features.business.entity.business_profil
 import com.thomas200593.mini_retail_app.features.business.entity.business_profile.dto.BizProfileSummary
 import com.thomas200593.mini_retail_app.features.initial.initial.navigation.navToInitial
 import com.thomas200593.mini_retail_app.features.initial.initialization.entity.Initialization
-import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.FormState
-import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.ScreenEvents
-import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.ScreenEvents.ButtonEvents
-import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.ScreenEvents.FormEvents
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.InputFormState
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.ButtonEvents.BtnInitDefaultBizProfile
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.ButtonEvents.BtnInitManualBizProfile
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.DropdownEvents.DDLanguage.OnSelect
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.InputFormEvents.BtnCancel
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.InputFormEvents.BtnSubmit
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.InputFormEvents.CommonName
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.InputFormEvents.LegalName
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.OnOpenEvents
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiState
 import ulid.ULID.Companion.randomULID
 
@@ -80,16 +85,16 @@ fun ScrInitialization(
 ){
     val uiState by vm.uiState.collectAsStateWithLifecycle()
 
-    LaunchedEffect(Unit) {vm.onEvent(ScreenEvents.OnOpen)}
+    LaunchedEffect(Unit) {vm.onEvent(OnOpenEvents)}
     ScreenContent(
         uiState = uiState,
-        onChangeLanguage = { vm.onEvent(ButtonEvents.BtnChangeLanguage.OnSelect(it)) },
-        onInitBizProfileDefault = { vm.onEvent(ButtonEvents.BtnInitDefaultBizProfile.OnClick(it)) },
-        onInitBizProfileManual = { vm.onEvent(ButtonEvents.BtnInitManualBizProfile.OnClick) },
-        onLegalNameChanged = { vm.onEvent(FormEvents.OnFormLegalNameChanged(it)) },
-        onCommonNameChanged = { vm.onEvent(FormEvents.OnFormCommonNameChanged(it)) },
-        onFormSubmit = { vm.onEvent(FormEvents.OnFormSubmit(it)) },
-        onFormCancel = { vm.onEvent(FormEvents.OnFormCancel) }
+        onSelectLanguage = { vm.onEvent(OnSelect(it)) },
+        onInitBizProfileDefaultBtnClicked = { vm.onEvent(BtnInitDefaultBizProfile.OnClick(it)) },
+        onInitBizProfileManualBtnClicked = { vm.onEvent(BtnInitManualBizProfile.OnClick) },
+        onLegalNameValueChanged = { vm.onEvent(LegalName.ValueChanged(it)) },
+        onCommonNameValueChanged = { vm.onEvent(CommonName.ValueChanged(it)) },
+        onFormSubmitBtnClicked = { vm.onEvent(BtnSubmit.OnClick(it)) },
+        onFormCancelBtnClicked = { vm.onEvent(BtnCancel.OnClick) }
     )
     AppAlertDialog(
         showDialog = uiState.dialogState.dlgLoadingEnabled,
@@ -133,13 +138,13 @@ fun ScrInitialization(
 @Composable
 private fun ScreenContent(
     uiState: UiState,
-    onChangeLanguage: (Language) -> Unit,
-    onInitBizProfileDefault: (BizProfileSummary) -> Unit,
-    onInitBizProfileManual: () -> Unit,
-    onLegalNameChanged: (String) -> Unit,
-    onCommonNameChanged: (String) -> Unit,
-    onFormSubmit: (BizProfileSummary) -> Unit,
-    onFormCancel: () -> Unit
+    onSelectLanguage: (Language) -> Unit,
+    onInitBizProfileDefaultBtnClicked: (BizProfileSummary) -> Unit,
+    onInitBizProfileManualBtnClicked: () -> Unit,
+    onLegalNameValueChanged: (String) -> Unit,
+    onCommonNameValueChanged: (String) -> Unit,
+    onFormSubmitBtnClicked: (BizProfileSummary) -> Unit,
+    onFormCancelBtnClicked: () -> Unit
 ) {
     when(uiState.initialization){
         Idle, Loading -> { LoadingScreen() }
@@ -159,17 +164,15 @@ private fun ScreenContent(
         }
         is Success -> {
             SuccessSection(
+                uiState = uiState,
                 initData = uiState.initialization.data,
-                uiEnableWelcomeMessage = uiState.screenState.welcomeMessageEnabled,
-                uiEnableInitManualForm = uiState.screenState.initBizProfileManualFormEnabled,
-                onChangeLanguage = onChangeLanguage,
-                onInitBizProfileDefault = onInitBizProfileDefault,
-                onInitBizProfileManual = onInitBizProfileManual,
-                formState = uiState.formState,
-                onLegalNameChanged = onLegalNameChanged,
-                onCommonNameChanged = onCommonNameChanged,
-                onFormSubmit = onFormSubmit,
-                onFormCancel = onFormCancel
+                onSelectLanguage = onSelectLanguage,
+                onInitBizProfileDefaultBtnClicked = onInitBizProfileDefaultBtnClicked,
+                onInitBizProfileManualBtnClicked = onInitBizProfileManualBtnClicked,
+                onLegalNameValueChanged = onLegalNameValueChanged,
+                onCommonNameValueChanged = onCommonNameValueChanged,
+                onFormSubmitBtnClicked = onFormSubmitBtnClicked,
+                onFormCancelBtnClicked = onFormCancelBtnClicked
             )
         }
     }
@@ -177,17 +180,15 @@ private fun ScreenContent(
 
 @Composable
 private fun SuccessSection(
+    uiState: UiState,
     initData: Initialization,
-    uiEnableWelcomeMessage: Boolean,
-    uiEnableInitManualForm: Boolean,
-    onChangeLanguage: (Language) -> Unit,
-    onInitBizProfileDefault: (BizProfileSummary) -> Unit,
-    onInitBizProfileManual: () -> Unit,
-    formState: FormState,
-    onLegalNameChanged: (String) -> Unit,
-    onCommonNameChanged: (String) -> Unit,
-    onFormSubmit: (BizProfileSummary) -> Unit,
-    onFormCancel: () -> Unit
+    onSelectLanguage: (Language) -> Unit,
+    onInitBizProfileDefaultBtnClicked: (BizProfileSummary) -> Unit,
+    onInitBizProfileManualBtnClicked: () -> Unit,
+    onLegalNameValueChanged: (String) -> Unit,
+    onCommonNameValueChanged: (String) -> Unit,
+    onFormSubmitBtnClicked: (BizProfileSummary) -> Unit,
+    onFormCancelBtnClicked: () -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxSize().padding(8.dp).verticalScroll(rememberScrollState()),
@@ -197,21 +198,21 @@ private fun SuccessSection(
         LanguageSection(
             languages = initData.languages,
             configCurrent = initData.configCurrent,
-            onChangeLanguage = onChangeLanguage
+            onSelectLanguage = onSelectLanguage
         )
-        if(uiEnableWelcomeMessage){
+        if(uiState.welcomePanelState.visible){
             WelcomeMessage(
-                onInitBizProfileDefault = onInitBizProfileDefault,
-                onInitBizProfileManual = onInitBizProfileManual
+                onInitBizProfileDefaultBtnClicked = onInitBizProfileDefaultBtnClicked,
+                onInitBizProfileManualBtnClicked = onInitBizProfileManualBtnClicked
             )
         }
-        if(uiEnableInitManualForm){
+        if(uiState.inputFormState.visible){
             InitManualForm(
-                formState = formState,
-                onLegalNameChanged = onLegalNameChanged,
-                onCommonNameChanged = onCommonNameChanged,
-                onFormSubmit = onFormSubmit,
-                onFormCancel = onFormCancel
+                inputFormState = uiState.inputFormState,
+                onLegalNameValueChanged = onLegalNameValueChanged,
+                onCommonNameValueChanged = onCommonNameValueChanged,
+                onFormSubmitBtnClicked = onFormSubmitBtnClicked,
+                onFormCancelBtnClicked = onFormCancelBtnClicked
             )
         }
     }
@@ -222,7 +223,7 @@ private fun SuccessSection(
 private fun LanguageSection(
     languages: Set<Language>,
     configCurrent: ConfigCurrent,
-    onChangeLanguage: (Language) -> Unit
+    onSelectLanguage: (Language) -> Unit
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(1.0f),
@@ -271,7 +272,7 @@ private fun LanguageSection(
                         text = { Text(modifier = Modifier.fillMaxWidth(), text = stringResource(id = language.title)) },
                         onClick = {
                             expanded = false
-                            onChangeLanguage.invoke(language)
+                            onSelectLanguage.invoke(language)
                         },
                         contentPadding = ItemContentPadding
                     )
@@ -283,8 +284,8 @@ private fun LanguageSection(
 
 @Composable
 private fun WelcomeMessage(
-    onInitBizProfileDefault: (BizProfileSummary) -> Unit,
-    onInitBizProfileManual: () -> Unit,
+    onInitBizProfileDefaultBtnClicked: (BizProfileSummary) -> Unit,
+    onInitBizProfileManualBtnClicked: () -> Unit,
 ) {
     Column(
         modifier = Modifier,
@@ -334,7 +335,7 @@ private fun WelcomeMessage(
             )
             AppIconButton(
                 modifier = Modifier.fillMaxWidth(),
-                onClick = { onInitBizProfileManual.invoke() },
+                onClick = { onInitBizProfileManualBtnClicked.invoke() },
                 icon = ImageVector.vectorResource(id = happy),
                 text = stringResource(R.string.str_init_setup_yes)
             )
@@ -342,7 +343,7 @@ private fun WelcomeMessage(
     }
     TextButton(
         onClick = {
-            onInitBizProfileDefault.invoke(
+            onInitBizProfileDefaultBtnClicked.invoke(
                 BizProfileSummary(
                     seqId = 0,
                     genId = randomULID(),
@@ -366,11 +367,11 @@ private fun WelcomeMessage(
 
 @Composable
 fun InitManualForm(
-    formState: FormState,
-    onLegalNameChanged: (String) -> Unit,
-    onCommonNameChanged: (String) -> Unit,
-    onFormSubmit: (BizProfileSummary) -> Unit,
-    onFormCancel: () -> Unit,
+    inputFormState: InputFormState,
+    onLegalNameValueChanged: (String) -> Unit,
+    onCommonNameValueChanged: (String) -> Unit,
+    onFormSubmitBtnClicked: (BizProfileSummary) -> Unit,
+    onFormCancelBtnClicked: () -> Unit,
 ) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
@@ -405,39 +406,39 @@ fun InitManualForm(
                 color = colorScheme.onSurface
             )
             TextInput(
-                value = formState.fldLegalNameValue,
-                onValueChange = { onLegalNameChanged(it) },
+                value = inputFormState.legalName,
+                onValueChange = { onLegalNameValueChanged(it) },
                 label = stringResource(R.string.str_company_legal_name),
                 placeholder = stringResource(R.string.str_company_legal_name),
                 singleLine = true,
-                isError = formState.fldLegalNameError != null,
-                errorMessage = formState.fldLegalNameError
+                isError = inputFormState.legalNameError != null,
+                errorMessage = inputFormState.legalNameError
             )
             TextInput(
-                value = formState.fldCommonNameValue,
-                onValueChange = { onCommonNameChanged(it) },
+                value = inputFormState.commonName,
+                onValueChange = { onCommonNameValueChanged(it) },
                 label = stringResource(R.string.str_company_common_name),
                 placeholder = stringResource(R.string.str_company_common_name),
                 singleLine = true,
-                isError = formState.fldCommonNameError != null,
-                errorMessage = formState.fldCommonNameError
+                isError = inputFormState.commonNameError != null,
+                errorMessage = inputFormState.commonNameError
             )
             Row(
                 modifier = Modifier.fillMaxWidth(1.0f),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                if(formState.fldSubmitBtnEnabled){
+                if(inputFormState.fldSubmitBtnEnabled){
                     AppIconButton(
                         modifier = Modifier.weight(0.5f),
                         onClick = {
-                            onFormSubmit.invoke(
+                            onFormSubmitBtnClicked.invoke(
                                 BizProfileSummary(
                                     seqId = 0,
                                     genId = randomULID(),
                                     bizName = BizName(
-                                        legalName = formState.fldLegalNameValue,
-                                        commonName = formState.fldCommonNameValue,
+                                        legalName = inputFormState.legalName,
+                                        commonName = inputFormState.commonName,
                                     ),
                                     bizIndustry = null,
                                     auditTrail = AuditTrail()
@@ -449,8 +450,8 @@ fun InitManualForm(
                     )
                 }
                 AppIconButton(
-                    modifier = Modifier.weight(if(formState.fldSubmitBtnEnabled){0.5f}else{1.0f}),
-                    onClick = onFormCancel,
+                    modifier = Modifier.weight(if(inputFormState.fldSubmitBtnEnabled){0.5f}else{1.0f}),
+                    onClick = onFormCancelBtnClicked,
                     icon = ImageVector.vectorResource(id = neutral),
                     text = stringResource(id = R.string.str_cancel)
                 )
