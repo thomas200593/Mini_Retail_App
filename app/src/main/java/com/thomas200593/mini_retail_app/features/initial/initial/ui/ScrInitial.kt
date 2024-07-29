@@ -29,7 +29,7 @@ import com.thomas200593.mini_retail_app.features.dashboard.navigation.navToDashb
 import com.thomas200593.mini_retail_app.features.initial.initial.entity.FirstTimeStatus.NO
 import com.thomas200593.mini_retail_app.features.initial.initial.entity.FirstTimeStatus.YES
 import com.thomas200593.mini_retail_app.features.initial.initial.entity.Initial
-import com.thomas200593.mini_retail_app.features.initial.initial.ui.VMInitial.UiEvents.ScreenEvents
+import com.thomas200593.mini_retail_app.features.initial.initial.ui.VMInitial.UiEvents
 import com.thomas200593.mini_retail_app.features.initial.initialization.navigation.navToInitialization
 import com.thomas200593.mini_retail_app.features.onboarding.entity.OnboardingStatus.HIDE
 import com.thomas200593.mini_retail_app.features.onboarding.entity.OnboardingStatus.SHOW
@@ -43,7 +43,7 @@ fun ScrInitial(
     val context = LocalContext.current
     val uiState by vm.uiState.collectAsStateWithLifecycle()
 
-    LaunchedEffect(Unit) { vm.onEvent(ScreenEvents.OnOpen) }
+    LaunchedEffect(Unit) { vm.onEvent(UiEvents.OnOpen) }
 
     when(uiState.initial){
         Idle, Loading, Empty -> LoadingScreen()

@@ -11,7 +11,6 @@ import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Id
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Loading
 import com.thomas200593.mini_retail_app.features.initial.initial.domain.UCGetInitialData
 import com.thomas200593.mini_retail_app.features.initial.initial.entity.Initial
-import com.thomas200593.mini_retail_app.features.initial.initial.ui.VMInitial.UiEvents.ScreenEvents
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,11 +28,8 @@ class VMInitial @Inject constructor(
     data class UiState(
         val initial: ResourceState<Initial> = Idle
     )
-
     sealed class UiEvents {
-        sealed class ScreenEvents: UiEvents(){
-            data object OnOpen: UiEvents()
-        }
+        data object OnOpen: UiEvents()
     }
 
     private val _uiState = MutableStateFlow(UiState())
@@ -41,10 +37,9 @@ class VMInitial @Inject constructor(
 
     fun onEvent(events: UiEvents) = viewModelScope.launch(ioDispatcher) {
         when(events){
-            ScreenEvents.OnOpen -> onOpen()
+            UiEvents.OnOpen -> onOpen()
         }
     }
-
     private fun onOpen() = viewModelScope.launch {
         _uiState.update { it.copy(initial = Loading) }
         ucGetInitialData.invoke().flowOn(ioDispatcher)
