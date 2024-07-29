@@ -185,43 +185,44 @@ class VMInitialization @Inject constructor(
             )
         }
     }
-    private fun doInitBizProfile(bizProfileSummary: BizProfileSummary) = viewModelScope.launch(ioDispatcher) {
-        updateDialogState(
-            dlgLoadingEnabled = true,
-            dlgEmptyEnabled = false,
-            dlgSuccessEnabled = false,
-            dlgErrorEnabled = false
-        )
-        _uiState.update { it.copy(initBizProfileResult = Loading) }
-        try {
-            val result = ucSetInitBizProfile.invoke(bizProfileSummary)
-            if (result != null) {
+    private fun doInitBizProfile(bizProfileSummary: BizProfileSummary) =
+        viewModelScope.launch(ioDispatcher) {
+            updateDialogState(
+                dlgLoadingEnabled = true,
+                dlgEmptyEnabled = false,
+                dlgSuccessEnabled = false,
+                dlgErrorEnabled = false
+            )
+            _uiState.update { it.copy(initBizProfileResult = Loading) }
+            try {
+                val result = ucSetInitBizProfile.invoke(bizProfileSummary)
+                if (result != null) {
+                    updateDialogState(
+                        dlgLoadingEnabled = false,
+                        dlgEmptyEnabled = false,
+                        dlgSuccessEnabled = true,
+                        dlgErrorEnabled = false
+                    )
+                    _uiState.update { it.copy(initBizProfileResult = Success(data = result)) }
+                } else {
+                    updateDialogState(
+                        dlgLoadingEnabled = false,
+                        dlgEmptyEnabled = true,
+                        dlgSuccessEnabled = false,
+                        dlgErrorEnabled = false
+                    )
+                    _uiState.update { it.copy(initBizProfileResult = Empty) }
+                }
+            } catch (e: Throwable) {
                 updateDialogState(
                     dlgLoadingEnabled = false,
                     dlgEmptyEnabled = false,
-                    dlgSuccessEnabled = true,
-                    dlgErrorEnabled = false
-                )
-                _uiState.update { it.copy(initBizProfileResult = Success(data = result)) }
-            } else {
-                updateDialogState(
-                    dlgLoadingEnabled = false,
-                    dlgEmptyEnabled = true,
                     dlgSuccessEnabled = false,
-                    dlgErrorEnabled = false
+                    dlgErrorEnabled = true
                 )
-                _uiState.update { it.copy(initBizProfileResult = Empty) }
+                _uiState.update { it.copy(initBizProfileResult = Error(e)) }
             }
-        } catch (e: Throwable) {
-            updateDialogState(
-                dlgLoadingEnabled = false,
-                dlgEmptyEnabled = false,
-                dlgSuccessEnabled = false,
-                dlgErrorEnabled = true
-            )
-            _uiState.update { it.copy(initBizProfileResult = Error(e)) }
         }
-    }
     private fun doResetForm() {
         _uiState.update {
             it.copy(

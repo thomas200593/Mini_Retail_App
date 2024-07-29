@@ -453,7 +453,9 @@ fun InitManualForm(
                     modifier = Modifier.weight(if(inputFormState.fldSubmitBtnEnabled){0.5f}else{1.0f}),
                     onClick = onFormCancelBtnClicked,
                     icon = ImageVector.vectorResource(id = neutral),
-                    text = stringResource(id = R.string.str_cancel)
+                    text = stringResource(id = R.string.str_cancel),
+                    containerColor = colorScheme.errorContainer,
+                    contentColor = colorScheme.onErrorContainer
                 )
             }
         }
