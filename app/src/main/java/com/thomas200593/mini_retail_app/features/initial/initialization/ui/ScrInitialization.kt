@@ -26,7 +26,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,26 +41,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.thomas200593.mini_retail_app.BuildConfig.BUILD_TYPE
 import com.thomas200593.mini_retail_app.BuildConfig.VERSION_NAME
-import com.thomas200593.mini_retail_app.R.string.app_name
-import com.thomas200593.mini_retail_app.R.string.str_biz_profile_init_failed
-import com.thomas200593.mini_retail_app.R.string.str_biz_profile_init_loading
-import com.thomas200593.mini_retail_app.R.string.str_biz_profile_init_success
-import com.thomas200593.mini_retail_app.R.string.str_business_profile
-import com.thomas200593.mini_retail_app.R.string.str_business_profile_desc
-import com.thomas200593.mini_retail_app.R.string.str_cancel
-import com.thomas200593.mini_retail_app.R.string.str_company_common_name
-import com.thomas200593.mini_retail_app.R.string.str_company_legal_name
-import com.thomas200593.mini_retail_app.R.string.str_empty_message
-import com.thomas200593.mini_retail_app.R.string.str_empty_message_title
-import com.thomas200593.mini_retail_app.R.string.str_error
-import com.thomas200593.mini_retail_app.R.string.str_error_fetching_preferences
-import com.thomas200593.mini_retail_app.R.string.str_init_setup_no
-import com.thomas200593.mini_retail_app.R.string.str_init_setup_yes
-import com.thomas200593.mini_retail_app.R.string.str_init_welcome_message
-import com.thomas200593.mini_retail_app.R.string.str_loading
-import com.thomas200593.mini_retail_app.R.string.str_ok
-import com.thomas200593.mini_retail_app.R.string.str_save
-import com.thomas200593.mini_retail_app.R.string.str_success
+import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
 import com.thomas200593.mini_retail_app.app.ui.StateApp
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.AuditTrail
@@ -74,9 +54,7 @@ import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.App.app
 import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.Emotion.happy
 import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.Emotion.neutral
 import com.thomas200593.mini_retail_app.core.ui.component.CustomButton.Common.AppIconButton
-import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AlertDialogContext.ERROR
-import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AlertDialogContext.INFORMATION
-import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AlertDialogContext.SUCCESS
+import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AlertDialogContext
 import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AppAlertDialog
 import com.thomas200593.mini_retail_app.core.ui.component.CustomForm.Component.TextInput
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.EmptyScreen
@@ -89,16 +67,10 @@ import com.thomas200593.mini_retail_app.features.business.entity.business_profil
 import com.thomas200593.mini_retail_app.features.initial.initial.navigation.navToInitial
 import com.thomas200593.mini_retail_app.features.initial.initialization.entity.Initialization
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.FormState
-import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.ButtonEvents.OnBeginDefaultInitBizProfile
-import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.ButtonEvents.OnBeginManualInitBizProfile
-import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.FormEvents.OnFormCancel
-import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.FormEvents.OnFormCommonNameChanged
-import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.FormEvents.OnFormLegalNameChanged
-import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.FormEvents.OnFormSubmit
-import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.LanguageSelectionEvents.OnChangeLanguage
-import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.ScreenEvents.OnOpen
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.ScreenEvents
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.ScreenEvents.ButtonEvents
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.ScreenEvents.FormEvents
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiState
-import kotlinx.coroutines.launch
 import ulid.ULID.Companion.randomULID
 
 @Composable
@@ -106,55 +78,54 @@ fun ScrInitialization(
     vm: VMInitialization = hiltViewModel(),
     stateApp: StateApp = LocalStateApp.current
 ){
-    val coroutineScope = rememberCoroutineScope()
     val uiState by vm.uiState.collectAsStateWithLifecycle()
 
-    LaunchedEffect(Unit) {vm.onEvent(OnOpen)}
+    LaunchedEffect(Unit) {vm.onEvent(ScreenEvents.OnOpen)}
     ScreenContent(
         uiState = uiState,
-        onChangeLanguage = { vm.onEvent(OnChangeLanguage(it)) },
-        onInitBizProfileDefault = { vm.onEvent(OnBeginDefaultInitBizProfile(it)) },
-        onInitBizProfileManual = { vm.onEvent(OnBeginManualInitBizProfile) },
-        onLegalNameChanged = { vm.onEvent(OnFormLegalNameChanged(it)) },
-        onCommonNameChanged = { vm.onEvent(OnFormCommonNameChanged(it)) },
-        onFormSubmit = { vm.onEvent(OnFormSubmit(it)) },
-        onFormCancel = { vm.onEvent(OnFormCancel) }
+        onChangeLanguage = { vm.onEvent(ButtonEvents.BtnChangeLanguage.OnSelect(it)) },
+        onInitBizProfileDefault = { vm.onEvent(ButtonEvents.BtnInitDefaultBizProfile.OnClick(it)) },
+        onInitBizProfileManual = { vm.onEvent(ButtonEvents.BtnInitManualBizProfile.OnClick) },
+        onLegalNameChanged = { vm.onEvent(FormEvents.OnFormLegalNameChanged(it)) },
+        onCommonNameChanged = { vm.onEvent(FormEvents.OnFormCommonNameChanged(it)) },
+        onFormSubmit = { vm.onEvent(FormEvents.OnFormSubmit(it)) },
+        onFormCancel = { vm.onEvent(FormEvents.OnFormCancel) }
     )
     AppAlertDialog(
         showDialog = uiState.dialogState.dlgLoadingEnabled,
-        dialogContext = INFORMATION,
+        dialogContext = AlertDialogContext.INFORMATION,
         showIcon = true,
         showTitle = true,
-        title = { Text(stringResource(id = str_loading)) },
+        title = { Text(stringResource(id = R.string.str_loading)) },
         showBody = true,
-        body = { Text(stringResource(str_biz_profile_init_loading)) }
+        body = { Text(stringResource(id = R.string.str_biz_profile_init_loading)) }
     )
     AppAlertDialog(
         showDialog = uiState.dialogState.dlgSuccessEnabled,
-        dialogContext = SUCCESS,
+        dialogContext = AlertDialogContext.SUCCESS,
         showIcon = true,
         showTitle = true,
-        title = { Text(stringResource(id = str_success)) },
+        title = { Text(stringResource(id = R.string.str_success)) },
         showBody = true,
-        body = { Text(stringResource(str_biz_profile_init_success)) },
+        body = { Text(stringResource(id = R.string.str_biz_profile_init_success)) },
         useConfirmButton = true,
         confirmButton = {
-            TextButton(onClick = { coroutineScope.launch { stateApp.navController.navToInitial() } })
-            { Text(stringResource(id = str_ok)) }
+            TextButton(onClick = { stateApp.navController.navToInitial() })
+            { Text(stringResource(id = R.string.str_ok)) }
         }
     )
     AppAlertDialog(
         showDialog = uiState.dialogState.dlgErrorEnabled,
-        dialogContext = ERROR,
+        dialogContext = AlertDialogContext.ERROR,
         showIcon = true,
         showTitle = true,
-        title = { Text(stringResource(id = str_error)) },
+        title = { Text(stringResource(id = R.string.str_error)) },
         showBody = true,
-        body = { Text(stringResource(str_biz_profile_init_failed)) },
+        body = { Text(stringResource(id = R.string.str_biz_profile_init_failed)) },
         useDismissButton = true,
         dismissButton = {
-            TextButton(onClick = { coroutineScope.launch { stateApp.navController.navToInitial() } })
-            { Text(stringResource(id = str_ok)) }
+            TextButton(onClick = { stateApp.navController.navToInitial() })
+            { Text(stringResource(id = R.string.str_ok)) }
         }
     )
 }
@@ -174,15 +145,15 @@ private fun ScreenContent(
         Idle, Loading -> { LoadingScreen() }
         Empty -> {
             EmptyScreen(
-                title = stringResource(id = str_empty_message_title),
-                emptyMessage = stringResource(id = str_empty_message),
+                title = stringResource(id = R.string.str_empty_message_title),
+                emptyMessage = stringResource(id = R.string.str_empty_message),
                 showIcon = true
             )
         }
         is Error -> {
             ErrorScreen(
-                title = stringResource(id = str_error),
-                errorMessage = stringResource(id = str_error_fetching_preferences),
+                title = stringResource(id = R.string.str_error),
+                errorMessage = stringResource(id = R.string.str_error_fetching_preferences),
                 showIcon = true
             )
         }
@@ -327,7 +298,7 @@ private fun WelcomeMessage(
         ) { Image(imageVector = ImageVector.vectorResource(id = app), contentDescription = null) }
         Text(
             modifier = Modifier.fillMaxWidth(),
-            text = stringResource(id = app_name),
+            text = stringResource(id = R.string.app_name),
             textAlign = Center,
             style = typography.titleLarge,
             color = colorScheme.onSurface,
@@ -357,7 +328,7 @@ private fun WelcomeMessage(
         ) {
             Text(
                 modifier = Modifier.fillMaxWidth().padding(16.dp),
-                text = stringResource(str_init_welcome_message),
+                text = stringResource(R.string.str_init_welcome_message),
                 style = typography.labelLarge,
                 textAlign = Justify
             )
@@ -365,7 +336,7 @@ private fun WelcomeMessage(
                 modifier = Modifier.fillMaxWidth(),
                 onClick = { onInitBizProfileManual.invoke() },
                 icon = ImageVector.vectorResource(id = happy),
-                text = stringResource(str_init_setup_yes)
+                text = stringResource(R.string.str_init_setup_yes)
             )
         }
     }
@@ -386,7 +357,7 @@ private fun WelcomeMessage(
         }
     ) {
         Text(
-            text = stringResource(str_init_setup_no),
+            text = stringResource(R.string.str_init_setup_no),
             textAlign = Center,
             style = typography.titleMedium
         )
@@ -413,7 +384,7 @@ fun InitManualForm(
         ) {
             Text(
                 modifier = Modifier.fillMaxWidth(),
-                text = stringResource(id = str_business_profile),
+                text = stringResource(id = R.string.str_business_profile),
                 textAlign = Center,
                 style = typography.titleLarge,
                 color = colorScheme.onSurface,
@@ -422,7 +393,7 @@ fun InitManualForm(
             )
             Text(
                 modifier = Modifier.fillMaxWidth(),
-                text = stringResource(id = str_business_profile_desc),
+                text = stringResource(id = R.string.str_business_profile_desc),
                 textAlign = Center,
                 style = typography.labelMedium,
                 color = colorScheme.onSurface,
@@ -436,8 +407,8 @@ fun InitManualForm(
             TextInput(
                 value = formState.fldLegalNameValue,
                 onValueChange = { onLegalNameChanged(it) },
-                label = stringResource(str_company_legal_name),
-                placeholder = stringResource(str_company_legal_name),
+                label = stringResource(R.string.str_company_legal_name),
+                placeholder = stringResource(R.string.str_company_legal_name),
                 singleLine = true,
                 isError = formState.fldLegalNameError != null,
                 errorMessage = formState.fldLegalNameError
@@ -445,8 +416,8 @@ fun InitManualForm(
             TextInput(
                 value = formState.fldCommonNameValue,
                 onValueChange = { onCommonNameChanged(it) },
-                label = stringResource(str_company_common_name),
-                placeholder = stringResource(str_company_common_name),
+                label = stringResource(R.string.str_company_common_name),
+                placeholder = stringResource(R.string.str_company_common_name),
                 singleLine = true,
                 isError = formState.fldCommonNameError != null,
                 errorMessage = formState.fldCommonNameError
@@ -474,14 +445,14 @@ fun InitManualForm(
                             )
                         },
                         icon = ImageVector.vectorResource(id = neutral),
-                        text = stringResource(id = str_save)
+                        text = stringResource(id = R.string.str_save)
                     )
                 }
                 AppIconButton(
                     modifier = Modifier.weight(if(formState.fldSubmitBtnEnabled){0.5f}else{1.0f}),
                     onClick = onFormCancel,
                     icon = ImageVector.vectorResource(id = neutral),
-                    text = stringResource(id = str_cancel)
+                    text = stringResource(id = R.string.str_cancel)
                 )
             }
         }
