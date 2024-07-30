@@ -29,7 +29,7 @@ class VMInitial @Inject constructor(
         val initial: ResourceState<Initial> = Idle
     )
     sealed class UiEvents {
-        data object OnOpen: UiEvents()
+        data object OnOpenEvents: UiEvents()
     }
 
     private val _uiState = MutableStateFlow(UiState())
@@ -37,10 +37,10 @@ class VMInitial @Inject constructor(
 
     fun onEvent(events: UiEvents) = viewModelScope.launch(ioDispatcher) {
         when(events){
-            UiEvents.OnOpen -> onOpen()
+            UiEvents.OnOpenEvents -> onOpenEvent()
         }
     }
-    private fun onOpen() = viewModelScope.launch {
+    private fun onOpenEvent() = viewModelScope.launch {
         _uiState.update { it.copy(initial = Loading) }
         ucGetInitialData.invoke().flowOn(ioDispatcher)
             .catch { e -> _uiState.update { prev -> prev.copy(initial = Error(e)) } }

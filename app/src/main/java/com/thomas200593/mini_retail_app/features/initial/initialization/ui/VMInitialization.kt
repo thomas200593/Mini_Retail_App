@@ -46,7 +46,7 @@ class VMInitialization @Inject constructor(
     private val ucSetInitBizProfile: UCSetInitialBizProfile,
     private val repoConfGenLanguage: RepoConfGenLanguage,
     @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
-): ViewModel(){
+): ViewModel() {
     data class UiState(
         val initialization: ResourceState<Initialization> = Idle,
         val welcomePanelState: WelcomePanelState = WelcomePanelState(),
@@ -72,17 +72,17 @@ class VMInitialization @Inject constructor(
     sealed class UiEvents{
         data object OnOpenEvents: UiEvents()
         sealed class InputFormEvents: UiEvents() {
-            sealed class LegalName: InputFormEvents() {
-                data class ValueChanged(val legalName: String): LegalName()
+            sealed class LegalNameEvents: InputFormEvents() {
+                data class ValueChanged(val legalName: String): LegalNameEvents()
             }
-            sealed class CommonName: InputFormEvents(){
-                data class ValueChanged(val commonName: String): CommonName()
+            sealed class CommonNameEvents: InputFormEvents(){
+                data class ValueChanged(val commonName: String): CommonNameEvents()
             }
-            sealed class BtnSubmit: InputFormEvents(){
-                data class OnClick(val bizProfileSummary: BizProfileSummary): BtnSubmit()
+            sealed class BtnSubmitEvents: InputFormEvents(){
+                data class OnClick(val bizProfileSummary: BizProfileSummary): BtnSubmitEvents()
             }
-            sealed class BtnCancel: InputFormEvents(){
-                data object OnClick: BtnCancel()
+            sealed class BtnCancelEvents: InputFormEvents(){
+                data object OnClick: BtnCancelEvents()
             }
         }
         sealed class DropdownEvents: UiEvents(){
@@ -91,11 +91,11 @@ class VMInitialization @Inject constructor(
             }
         }
         sealed class ButtonEvents: UiEvents(){
-            sealed class BtnInitDefaultBizProfile: ButtonEvents(){
-                data class OnClick(val bizProfileSummary: BizProfileSummary): BtnInitDefaultBizProfile()
+            sealed class BtnInitDefaultBizProfileEvents: ButtonEvents(){
+                data class OnClick(val bizProfileSummary: BizProfileSummary): BtnInitDefaultBizProfileEvents()
             }
-            sealed class BtnInitManualBizProfile: ButtonEvents(){
-                data object OnClick: BtnInitManualBizProfile()
+            sealed class BtnInitManualBizProfileEvents: ButtonEvents(){
+                data object OnClick: BtnInitManualBizProfileEvents()
             }
         }
     }
@@ -107,12 +107,12 @@ class VMInitialization @Inject constructor(
         when(events){
             OnOpenEvents -> onOpenEvent()
             is DropdownEvents.DDLanguage.OnSelect -> onSelectLanguageEvent(events.language)
-            is ButtonEvents.BtnInitDefaultBizProfile.OnClick -> doInitBizProfile(events.bizProfileSummary)
-            ButtonEvents.BtnInitManualBizProfile.OnClick -> doShowForm()
-            is InputFormEvents.LegalName.ValueChanged -> formLegalNameValueChanged(events.legalName)
-            is InputFormEvents.CommonName.ValueChanged -> formCommonNameValueChanged(events.commonName)
-            is InputFormEvents.BtnSubmit.OnClick -> doInitBizProfile(events.bizProfileSummary)
-            InputFormEvents.BtnCancel.OnClick -> doResetForm()
+            is ButtonEvents.BtnInitDefaultBizProfileEvents.OnClick -> doInitBizProfile(events.bizProfileSummary)
+            ButtonEvents.BtnInitManualBizProfileEvents.OnClick -> doShowForm()
+            is InputFormEvents.LegalNameEvents.ValueChanged -> formLegalNameValueChanged(events.legalName)
+            is InputFormEvents.CommonNameEvents.ValueChanged -> formCommonNameValueChanged(events.commonName)
+            is InputFormEvents.BtnSubmitEvents.OnClick -> doInitBizProfile(events.bizProfileSummary)
+            InputFormEvents.BtnCancelEvents.OnClick -> doResetForm()
         }
     }
     private fun onOpenEvent() = viewModelScope.launch(ioDispatcher) {

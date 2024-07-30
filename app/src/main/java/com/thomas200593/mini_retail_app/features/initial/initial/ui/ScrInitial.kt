@@ -43,7 +43,7 @@ fun ScrInitial(
     val context = LocalContext.current
     val uiState by vm.uiState.collectAsStateWithLifecycle()
 
-    LaunchedEffect(Unit) { vm.onEvent(UiEvents.OnOpen) }
+    LaunchedEffect(Unit) { vm.onEvent(UiEvents.OnOpenEvents) }
 
     when(uiState.initial){
         Idle, Loading, Empty -> LoadingScreen()

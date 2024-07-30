@@ -67,13 +67,13 @@ import com.thomas200593.mini_retail_app.features.business.entity.business_profil
 import com.thomas200593.mini_retail_app.features.initial.initial.navigation.navToInitial
 import com.thomas200593.mini_retail_app.features.initial.initialization.entity.Initialization
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.InputFormState
-import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.ButtonEvents.BtnInitDefaultBizProfile
-import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.ButtonEvents.BtnInitManualBizProfile
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.ButtonEvents.BtnInitDefaultBizProfileEvents
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.ButtonEvents.BtnInitManualBizProfileEvents
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.DropdownEvents.DDLanguage.OnSelect
-import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.InputFormEvents.BtnCancel
-import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.InputFormEvents.BtnSubmit
-import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.InputFormEvents.CommonName
-import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.InputFormEvents.LegalName
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.InputFormEvents.BtnCancelEvents
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.InputFormEvents.BtnSubmitEvents
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.InputFormEvents.CommonNameEvents
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.InputFormEvents.LegalNameEvents
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.OnOpenEvents
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiState
 import ulid.ULID.Companion.randomULID
@@ -89,12 +89,12 @@ fun ScrInitialization(
     ScreenContent(
         uiState = uiState,
         onSelectLanguage = { vm.onEvent(OnSelect(it)) },
-        onInitBizProfileDefaultBtnClicked = { vm.onEvent(BtnInitDefaultBizProfile.OnClick(it)) },
-        onInitBizProfileManualBtnClicked = { vm.onEvent(BtnInitManualBizProfile.OnClick) },
-        onLegalNameValueChanged = { vm.onEvent(LegalName.ValueChanged(it)) },
-        onCommonNameValueChanged = { vm.onEvent(CommonName.ValueChanged(it)) },
-        onFormSubmitBtnClicked = { vm.onEvent(BtnSubmit.OnClick(it)) },
-        onFormCancelBtnClicked = { vm.onEvent(BtnCancel.OnClick) }
+        onInitBizProfileDefaultBtnClicked = { vm.onEvent(BtnInitDefaultBizProfileEvents.OnClick(it)) },
+        onInitBizProfileManualBtnClicked = { vm.onEvent(BtnInitManualBizProfileEvents.OnClick) },
+        onLegalNameValueChanged = { vm.onEvent(LegalNameEvents.ValueChanged(it)) },
+        onCommonNameValueChanged = { vm.onEvent(CommonNameEvents.ValueChanged(it)) },
+        onFormSubmitBtnClicked = { vm.onEvent(BtnSubmitEvents.OnClick(it)) },
+        onFormCancelBtnClicked = { vm.onEvent(BtnCancelEvents.OnClick) }
     )
     AppAlertDialog(
         showDialog = uiState.dialogState.dlgLoadingEnabled,
