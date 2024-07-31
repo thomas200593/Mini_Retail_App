@@ -54,6 +54,7 @@ import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.ClickableC
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.EmptyScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.ErrorScreen
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.navigation.DestAppConfig
+import com.thomas200593.mini_retail_app.features.app_conf.app_config.navigation.navToAppConfig
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.ui.VMAppConfig.UiEvents.ButtonEvents.BtnMenuEvents.OnAllow
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.ui.VMAppConfig.UiEvents.ButtonEvents.BtnMenuEvents.OnDeny
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.ui.VMAppConfig.UiEvents.ButtonEvents.BtnNavBackEvents
@@ -84,19 +85,14 @@ fun ScrAppConfig(
         is Success -> ScreenContent(
             menuPreferences = (uiState.destAppConfig as Success).data,
             onNavToMenu =
-            {
+            { menu ->
                 when(sessionState){
                     SessionState.Loading -> Unit
                     is SessionState.Invalid ->
-                        if(it.usesAuth) {
-                            vm.onEvent(OnDeny)
-                        }
-                        else {
-                            vm.onEvent(OnAllow)
-                        }
-                    is SessionState.Valid -> {
-                        vm.onEvent(OnAllow)
-                    }
+                        if(menu.usesAuth) vm.onEvent(OnDeny)
+                        else vm.onEvent(OnAllow).also { stateApp.navController.navToAppConfig(menu) }
+                    is SessionState.Valid ->
+                        vm.onEvent(OnAllow).also { stateApp.navController.navToAppConfig(menu) }
                 }
             }
         )

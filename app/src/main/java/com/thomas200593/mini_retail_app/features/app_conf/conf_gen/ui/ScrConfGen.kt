@@ -33,14 +33,10 @@ import com.thomas200593.mini_retail_app.R.string.str_empty_message
 import com.thomas200593.mini_retail_app.R.string.str_empty_message_title
 import com.thomas200593.mini_retail_app.R.string.str_error
 import com.thomas200593.mini_retail_app.R.string.str_error_fetching_preferences
-import com.thomas200593.mini_retail_app.R.string.str_loading
 import com.thomas200593.mini_retail_app.R.string.str_ok
 import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
 import com.thomas200593.mini_retail_app.app.ui.StateApp
 import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
-import com.thomas200593.mini_retail_app.core.data.local.session.SessionState.Invalid
-import com.thomas200593.mini_retail_app.core.data.local.session.SessionState.Valid
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Empty
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Error
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Idle
@@ -58,9 +54,10 @@ import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.EmptyScree
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.ErrorScreen
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen.navigation.DestConfGen
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen.navigation.navToConfGen
-import com.thomas200593.mini_retail_app.features.app_conf.conf_gen.ui.VMConfGen.UiEvents.MenuBtnEvents.OnAllow
-import com.thomas200593.mini_retail_app.features.app_conf.conf_gen.ui.VMConfGen.UiEvents.MenuBtnEvents.OnDeny
-import com.thomas200593.mini_retail_app.features.app_conf.conf_gen.ui.VMConfGen.UiEvents.ScreenEvents
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen.ui.VMConfGen.UiEvents.ButtonEvents.BtnMenuEvents.OnAllow
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen.ui.VMConfGen.UiEvents.ButtonEvents.BtnMenuEvents.OnDeny
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen.ui.VMConfGen.UiEvents.OnOpenEvents
+import com.thomas200593.mini_retail_app.features.auth.navigation.navToAuth
 
 @Composable
 fun ScrConfGen(
@@ -69,43 +66,63 @@ fun ScrConfGen(
 ) {
     val sessionState by stateApp.isSessionValid.collectAsStateWithLifecycle()
     val uiState by vm.uiState.collectAsStateWithLifecycle()
-    LaunchedEffect(sessionState) { vm.onEvent(ScreenEvents.OnOpen(sessionState)) }
-    TopAppBar(onNavigateBack = { vm.onEvent(ScreenEvents.OnNavigateUp); stateApp.onNavUp() })
-    ScreenContent(
-        menuData = uiState.menuData,
-        sessionState = sessionState,
-        allowAccessMenu = { vm.onEvent(OnAllow); stateApp.navController.navToConfGen(it) },
-        denyAccessMenu = { vm.onEvent(OnDeny) }
-    )
+    LaunchedEffect(sessionState) { vm.onEvent(OnOpenEvents(sessionState)) }
+    TopAppBar(onNavigateBack = { vm.onEvent(VMConfGen.UiEvents.ButtonEvents.BtnNavBackEvents.OnClick).also { stateApp.onNavUp()  }})
+    when(uiState.destConfGen){
+        Idle, Loading -> Unit
+        Empty -> EmptyScreen(
+            title = stringResource(id = str_empty_message_title),
+            emptyMessage = stringResource(id = str_empty_message),
+            showIcon = true
+        )
+        is Error -> ErrorScreen(
+            title = stringResource(id = str_error),
+            errorMessage = stringResource(id = str_error_fetching_preferences),
+            showIcon = true
+        )
+        is Success -> ScreenContent(
+            menuPreferences = (uiState.destConfGen as Success).data,
+            onNavToMenu =
+            { menu ->
+                when(sessionState){
+                    SessionState.Loading -> Unit
+                    is SessionState.Invalid ->
+                        if(menu.usesAuth) vm.onEvent(OnDeny)
+                        else vm.onEvent(OnAllow).also { stateApp.navController.navToConfGen(menu) }
+                    is SessionState.Valid ->
+                        vm.onEvent(OnAllow).also { stateApp.navController.navToConfGen(menu) }
+                }
+            }
+        )
+    }
     AppAlertDialog(
-        showDialog = uiState.dialogState.uiEnableLoadAuthDlg,
+        showDialog = uiState.dialogState.dlgVldAuthEnabled,
         dialogContext = INFORMATION,
         showIcon = true,
         showTitle = true,
-        title = { Text(stringResource(id = str_loading)) },
+        title = { Text(text = stringResource(id = R.string.str_loading))},
         showBody = true,
-        body = { Text(stringResource(str_loading)) }
+        body = { Text(text = stringResource(id = R.string.str_loading))},
     )
     AppAlertDialog(
-        showDialog = uiState.dialogState.uiEnableLoadGetMenuDlg,
+        showDialog = uiState.dialogState.dlgLoadMenuEnabled,
         dialogContext = INFORMATION,
         showIcon = true,
         showTitle = true,
-        title = { Text(stringResource(id = str_loading)) },
+        title = { Text(text = stringResource(id = R.string.str_loading))},
         showBody = true,
-        body = { Text("Get menu data") }
+        body = { Text(text = stringResource(id = R.string.str_loading))},
     )
     AppAlertDialog(
-        showDialog = uiState.dialogState.uiEnableDenyAcsMenuDlg,
+        showDialog = uiState.dialogState.dlgDenyAccessMenuEnabled,
         dialogContext = ERROR,
         showIcon = true,
         showTitle = true,
-        title = { Text(stringResource(id = str_error)) },
+        title = { Text(text = stringResource(id = str_error))},
         showBody = true,
         body = { Text("Forbidden Access") },
-        useDismissButton = true,
         dismissButton = {
-            TextButton(onClick = { stateApp.onNavUp() })
+            TextButton(onClick = { stateApp.navController.navToAuth() })
             { Text(stringResource(id = str_ok)) }
         }
     )
@@ -156,39 +173,7 @@ private fun TopAppBar(onNavigateBack: () -> Unit){
 }
 
 @Composable
-private fun ScreenContent(
-    menuData: ResourceState<Set<DestConfGen>>,
-    sessionState: SessionState,
-    allowAccessMenu: (DestConfGen) -> Unit,
-    denyAccessMenu: () -> Unit
-) {
-    when(menuData){
-        Idle, Loading -> Unit
-        Empty -> EmptyScreen(
-            title = stringResource(id = str_empty_message_title),
-            emptyMessage = stringResource(id = str_empty_message),
-            showIcon = true
-        )
-        is Error -> ErrorScreen(
-            title = stringResource(id = str_error),
-            errorMessage = stringResource(id = str_error_fetching_preferences),
-            showIcon = true
-        )
-        is Success -> SuccessSection(
-            menuPreferences = menuData.data,
-            onNavToMenu = {
-                when(sessionState){
-                    SessionState.Loading -> Unit
-                    is Invalid -> if(it.usesAuth) { denyAccessMenu() } else { allowAccessMenu(it) }
-                    is Valid -> allowAccessMenu(it)
-                }
-            }
-        )
-    }
-}
-
-@Composable
-private fun SuccessSection(menuPreferences: Set<DestConfGen>, onNavToMenu: (DestConfGen) -> Unit) {
+private fun ScreenContent(menuPreferences: Set<DestConfGen>, onNavToMenu: (DestConfGen) -> Unit) {
     LazyColumn(
         modifier = Modifier.fillMaxSize().padding(8.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp),
