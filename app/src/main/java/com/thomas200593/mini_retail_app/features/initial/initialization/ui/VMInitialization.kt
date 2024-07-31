@@ -25,9 +25,13 @@ import com.thomas200593.mini_retail_app.features.business.entity.business_profil
 import com.thomas200593.mini_retail_app.features.initial.initialization.domain.UCGetInitializationData
 import com.thomas200593.mini_retail_app.features.initial.initialization.domain.UCSetInitialBizProfile
 import com.thomas200593.mini_retail_app.features.initial.initialization.entity.Initialization
-import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.ButtonEvents
-import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.DropdownEvents
-import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.InputFormEvents
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.ButtonEvents.BtnInitDefaultBizProfileEvents
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.ButtonEvents.BtnInitManualBizProfileEvents
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.DropdownEvents.DDLanguage
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.InputFormEvents.BtnCancelEvents
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.InputFormEvents.BtnSubmitEvents
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.InputFormEvents.CommonNameEvents
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.InputFormEvents.LegalNameEvents
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.OnOpenEvents
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -106,13 +110,13 @@ class VMInitialization @Inject constructor(
     fun onEvent(events: UiEvents) {
         when(events){
             OnOpenEvents -> onOpenEvent()
-            is DropdownEvents.DDLanguage.OnSelect -> onSelectLanguageEvent(events.language)
-            is ButtonEvents.BtnInitDefaultBizProfileEvents.OnClick -> doInitBizProfile(events.bizProfileSummary)
-            ButtonEvents.BtnInitManualBizProfileEvents.OnClick -> doShowForm()
-            is InputFormEvents.LegalNameEvents.ValueChanged -> formLegalNameValueChanged(events.legalName)
-            is InputFormEvents.CommonNameEvents.ValueChanged -> formCommonNameValueChanged(events.commonName)
-            is InputFormEvents.BtnSubmitEvents.OnClick -> doInitBizProfile(events.bizProfileSummary)
-            InputFormEvents.BtnCancelEvents.OnClick -> doResetForm()
+            is DDLanguage.OnSelect -> onSelectLanguageEvent(events.language)
+            is BtnInitDefaultBizProfileEvents.OnClick -> doInitBizProfile(events.bizProfileSummary)
+            BtnInitManualBizProfileEvents.OnClick -> doShowForm()
+            is LegalNameEvents.ValueChanged -> formLegalNameValueChanged(events.legalName)
+            is CommonNameEvents.ValueChanged -> formCommonNameValueChanged(events.commonName)
+            is BtnSubmitEvents.OnClick -> doInitBizProfile(events.bizProfileSummary)
+            BtnCancelEvents.OnClick -> doResetForm()
         }
     }
     private fun onOpenEvent() = viewModelScope.launch(ioDispatcher) {
@@ -165,7 +169,9 @@ class VMInitialization @Inject constructor(
     }
     private fun formCommonNameValidation(): Boolean {
         val result = RegularTextValidation()
-            .execute(input = _uiState.value.inputFormState.commonName, required = true, maxLength = 100)
+            .execute(
+                input = _uiState.value.inputFormState.commonName, required = true, maxLength = 100
+            )
         _uiState.update {
             it.copy(
                 inputFormState = it.inputFormState.copy(

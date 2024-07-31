@@ -28,19 +28,16 @@ import androidx.compose.ui.text.style.TextOverflow.Companion.Ellipsis
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.R.string.str_configuration
 import com.thomas200593.mini_retail_app.R.string.str_empty_message
 import com.thomas200593.mini_retail_app.R.string.str_empty_message_title
 import com.thomas200593.mini_retail_app.R.string.str_error
 import com.thomas200593.mini_retail_app.R.string.str_error_fetching_preferences
-import com.thomas200593.mini_retail_app.R.string.str_loading
 import com.thomas200593.mini_retail_app.R.string.str_ok
 import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
 import com.thomas200593.mini_retail_app.app.ui.StateApp
 import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
-import com.thomas200593.mini_retail_app.core.data.local.session.SessionState.Invalid
-import com.thomas200593.mini_retail_app.core.data.local.session.SessionState.Valid
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Empty
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Error
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Idle
@@ -57,10 +54,11 @@ import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.ClickableC
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.EmptyScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.ErrorScreen
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.navigation.DestAppConfig
-import com.thomas200593.mini_retail_app.features.app_conf.app_config.navigation.navToAppConfig
-import com.thomas200593.mini_retail_app.features.app_conf.app_config.ui.VMAppConfig.UiEvents.MenuBtnEvents.OnAllow
-import com.thomas200593.mini_retail_app.features.app_conf.app_config.ui.VMAppConfig.UiEvents.MenuBtnEvents.OnDeny
-import com.thomas200593.mini_retail_app.features.app_conf.app_config.ui.VMAppConfig.UiEvents.ScreenEvents
+import com.thomas200593.mini_retail_app.features.app_conf.app_config.ui.VMAppConfig.UiEvents.ButtonEvents.BtnMenuEvents.OnAllow
+import com.thomas200593.mini_retail_app.features.app_conf.app_config.ui.VMAppConfig.UiEvents.ButtonEvents.BtnMenuEvents.OnDeny
+import com.thomas200593.mini_retail_app.features.app_conf.app_config.ui.VMAppConfig.UiEvents.ButtonEvents.BtnNavBackEvents
+import com.thomas200593.mini_retail_app.features.app_conf.app_config.ui.VMAppConfig.UiEvents.OnOpenEvents
+import com.thomas200593.mini_retail_app.features.auth.navigation.navToAuth
 
 @Composable
 fun ScrAppConfig(
@@ -69,45 +67,70 @@ fun ScrAppConfig(
 ){
     val sessionState by stateApp.isSessionValid.collectAsStateWithLifecycle()
     val uiState by vm.uiState.collectAsStateWithLifecycle()
-    LaunchedEffect(sessionState) { vm.onEvent(ScreenEvents.OnOpen(sessionState)) }
-    TopAppBar(onNavigateBack = { vm.onEvent(ScreenEvents.OnNavigateUp); stateApp.onNavUp() })
-    ScreenContent(
-        destAppConfig = uiState.destAppConfig,
-        sessionState = sessionState,
-        onEventOnAllow = { vm.onEvent(OnAllow); stateApp.navController.navToAppConfig(it) },
-        onEventOnDeny = { vm.onEvent(OnDeny) }
-    )
+    LaunchedEffect(sessionState) { vm.onEvent(OnOpenEvents(sessionState)) }
+    TopAppBar(onNavigateBack = { vm.onEvent(BtnNavBackEvents.OnClick); stateApp.onNavUp() })
+    when(uiState.destAppConfig) {
+        Idle, Loading -> Unit
+        Empty -> EmptyScreen(
+            title = stringResource(id = str_empty_message_title),
+            emptyMessage = stringResource(id = str_empty_message),
+            showIcon = true
+        )
+        is Error -> ErrorScreen(
+            title = stringResource(id = str_error),
+            errorMessage = stringResource(id = str_error_fetching_preferences),
+            showIcon = true
+        )
+        is Success -> ScreenContent(
+            menuPreferences = (uiState.destAppConfig as Success).data,
+            onNavToMenu =
+            {
+                when(sessionState){
+                    SessionState.Loading -> Unit
+                    is SessionState.Invalid ->
+                        if(it.usesAuth) {
+                            vm.onEvent(OnDeny)
+                        }
+                        else {
+                            vm.onEvent(OnAllow)
+                        }
+                    is SessionState.Valid -> {
+                        vm.onEvent(OnAllow)
+                    }
+                }
+            }
+        )
+    }
     AppAlertDialog(
-        showDialog = uiState.dialogState.dlgVldAuthUiEnabled,
+        showDialog = uiState.dialogState.dlgVldAuthEnabled,
         dialogContext = INFORMATION,
         showIcon = true,
         showTitle = true,
-        title = { Text(stringResource(id = str_loading)) },
+        title = { Text(text = stringResource(id = R.string.str_loading))},
         showBody = true,
-        body = { Text(stringResource(str_loading)) }
+        body = { Text(text = stringResource(id = R.string.str_loading))},
     )
     AppAlertDialog(
-        showDialog = uiState.dialogState.dlgGetMenuUiEnabled,
+        showDialog = uiState.dialogState.dlgLoadMenuEnabled,
         dialogContext = INFORMATION,
         showIcon = true,
         showTitle = true,
-        title = { Text(stringResource(id = str_loading)) },
+        title = { Text(text = stringResource(id = R.string.str_loading))},
         showBody = true,
-        body = { Text("Get menu data") }
+        body = { Text(text = stringResource(id = R.string.str_loading))},
     )
     AppAlertDialog(
-        showDialog = uiState.dialogState.dlgDenyAccessUiEnabled,
+        showDialog = uiState.dialogState.dlgDenyAccessMenuEnabled,
         dialogContext = ERROR,
         showIcon = true,
         showTitle = true,
-        title = { Text(stringResource(id = str_error)) },
+        title = { Text(text = stringResource(id = str_error))},
         showBody = true,
         body = { Text("Forbidden Access") },
-        useDismissButton = true,
         dismissButton = {
-            TextButton(
-                onClick = { stateApp.onNavUp() }
-            ) { Text(stringResource(id = str_ok)) } }
+            TextButton(onClick = { stateApp.navController.navToAuth() })
+            { Text(stringResource(id = str_ok)) }
+        }
     )
 }
 
@@ -156,46 +179,16 @@ private fun TopAppBar(onNavigateBack: () -> Unit) {
 }
 
 @Composable
-private fun ScreenContent(
-    destAppConfig: ResourceState<Set<DestAppConfig>>,
-    sessionState: SessionState,
-    onEventOnDeny: () -> Unit,
-    onEventOnAllow: (DestAppConfig) -> Unit,
-) {
-    when(destAppConfig){
-        Idle, Loading -> Unit
-        Empty -> EmptyScreen(
-            title = stringResource(id = str_empty_message_title),
-            emptyMessage = stringResource(id = str_empty_message),
-            showIcon = true
-        )
-        is Error -> ErrorScreen(
-            title = stringResource(id = str_error),
-            errorMessage = stringResource(id = str_error_fetching_preferences),
-            showIcon = true
-        )
-        is Success -> SuccessSection(
-            menuPreferences = destAppConfig.data,
-            onNavToMenu = {
-                when(sessionState){
-                    SessionState.Loading -> Unit
-                    is Invalid -> if(it.usesAuth) { onEventOnDeny() } else { onEventOnAllow(it) }
-                    is Valid -> onEventOnAllow(it)
-                }
-            }
-        )
-    }
-}
-
-@Composable
-private fun SuccessSection(menuPreferences: Set<DestAppConfig>, onNavToMenu: (DestAppConfig) -> Unit) {
+private fun ScreenContent(menuPreferences: Set<DestAppConfig>, onNavToMenu: (DestAppConfig)->Unit) {
     LazyColumn(
-        modifier = Modifier.fillMaxSize().padding(8.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(8.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        items(count = menuPreferences.count()){ index ->
-            val menu = menuPreferences.elementAt(index)
+        items(count = menuPreferences.count()){
+            val menu = menuPreferences.elementAt(it)
             ClickableCardItem(
                 onClick = { onNavToMenu(menu) },
                 icon = ImageVector.vectorResource(id = menu.iconRes),

@@ -5,23 +5,22 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
-import com.thomas200593.mini_retail_app.core.data.local.session.SessionState.Invalid
-import com.thomas200593.mini_retail_app.core.data.local.session.SessionState.Loading
-import com.thomas200593.mini_retail_app.core.data.local.session.SessionState.Valid
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers.Dispatchers.IO
-import com.thomas200593.mini_retail_app.core.design_system.util.HlpStateFlow.update
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Idle
+import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Loading
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Success
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.navigation.DestAppConfig
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.repository.RepoAppConf
-import com.thomas200593.mini_retail_app.features.app_conf.app_config.ui.VMAppConfig.UiEvents.MenuBtnEvents
-import com.thomas200593.mini_retail_app.features.app_conf.app_config.ui.VMAppConfig.UiEvents.ScreenEvents
+import com.thomas200593.mini_retail_app.features.app_conf.app_config.ui.VMAppConfig.UiEvents.ButtonEvents.BtnMenuEvents
+import com.thomas200593.mini_retail_app.features.app_conf.app_config.ui.VMAppConfig.UiEvents.ButtonEvents.BtnNavBackEvents
+import com.thomas200593.mini_retail_app.features.app_conf.app_config.ui.VMAppConfig.UiEvents.OnOpenEvents
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -31,23 +30,24 @@ class VMAppConfig @Inject constructor(
     @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
 ): ViewModel(){
     data class UiState(
-        val sessionState: SessionState = Loading,
         val destAppConfig: ResourceState<Set<DestAppConfig>> = Idle,
         val dialogState: DialogState = DialogState()
     )
     data class DialogState(
-        val dlgVldAuthUiEnabled : MutableState<Boolean> = mutableStateOf(true),
-        val dlgGetMenuUiEnabled : MutableState<Boolean> = mutableStateOf(false),
-        val dlgDenyAccessUiEnabled : MutableState<Boolean> = mutableStateOf(false)
+        val dlgVldAuthEnabled: MutableState<Boolean> = mutableStateOf(false),
+        val dlgLoadMenuEnabled: MutableState<Boolean> = mutableStateOf(false),
+        val dlgDenyAccessMenuEnabled: MutableState<Boolean> = mutableStateOf(false)
     )
     sealed class UiEvents {
-        sealed class ScreenEvents : UiEvents(){
-            data class OnOpen(val sessionState: SessionState) : ScreenEvents()
-            data object OnNavigateUp: ScreenEvents()
-        }
-        sealed class MenuBtnEvents: UiEvents(){
-            data object OnAllow: MenuBtnEvents()
-            data object OnDeny: MenuBtnEvents()
+        data class OnOpenEvents(val sessionState: SessionState) : UiEvents()
+        sealed class ButtonEvents : UiEvents(){
+            sealed class BtnNavBackEvents: ButtonEvents(){
+                data object OnClick: ButtonEvents()
+            }
+            sealed class BtnMenuEvents: ButtonEvents(){
+                data object OnAllow: BtnMenuEvents()
+                data object OnDeny: BtnMenuEvents()
+            }
         }
     }
 
@@ -56,45 +56,82 @@ class VMAppConfig @Inject constructor(
 
     fun onEvent(events: UiEvents) = viewModelScope.launch(ioDispatcher) {
         when(events){
-            is ScreenEvents.OnOpen -> handleOnOpen(events.sessionState)
-            ScreenEvents.OnNavigateUp -> handleNavigateUp()
-            MenuBtnEvents.OnAllow -> handleOnAllow()
-            MenuBtnEvents.OnDeny -> handleOnDeny()
+            is OnOpenEvents -> onOpenEvent(events.sessionState)
+            BtnNavBackEvents.OnClick -> onBtnNavBackClicked()
+            BtnMenuEvents.OnAllow -> onAllowAccessMenu()
+            BtnMenuEvents.OnDeny -> onDenyAccessMenu()
         }
     }
-    private fun handleOnOpen(sessionState: SessionState) = viewModelScope.launch(ioDispatcher){
+    private fun onOpenEvent(sessionState: SessionState) {
         when(sessionState){
-            Loading ->
-                updateDialogState(loadingAuth = true, loadingGetMenu = false, denyAccess = false)
-            is Invalid, is Valid -> getMenuData(sessionState)
+            SessionState.Loading -> {
+                updateDialogState(
+                    dlgVldAuthEnabled = true,
+                    dlgLoadMenuEnabled = false,
+                    dlgDenyAccessMenuEnabled = false
+                )
+                _uiState.update { it.copy(destAppConfig = Loading) }
+            }
+            is SessionState.Invalid -> viewModelScope.launch(ioDispatcher) {
+                updateDialogState(
+                    dlgVldAuthEnabled = false,
+                    dlgLoadMenuEnabled = true,
+                    dlgDenyAccessMenuEnabled = false
+                )
+                _uiState.update {
+                    it.copy(destAppConfig = Success(repoAppConf.getMenuData(sessionState)))
+                }
+                updateDialogState(
+                    dlgVldAuthEnabled = false,
+                    dlgLoadMenuEnabled = false,
+                    dlgDenyAccessMenuEnabled = false
+                )
+            }
+            is SessionState.Valid -> viewModelScope.launch(ioDispatcher) {
+                updateDialogState(
+                    dlgVldAuthEnabled = false,
+                    dlgLoadMenuEnabled = true,
+                    dlgDenyAccessMenuEnabled = false
+                )
+                _uiState.update {
+                    it.copy(destAppConfig = Success(repoAppConf.getMenuData(sessionState)))
+                }
+                updateDialogState(
+                    dlgVldAuthEnabled = false,
+                    dlgLoadMenuEnabled = false,
+                    dlgDenyAccessMenuEnabled = false
+                )
+            }
         }
     }
-    private fun handleNavigateUp() = viewModelScope.launch(ioDispatcher) {
-        updateDialogState(loadingAuth = false, loadingGetMenu = true, denyAccess = false)
+    private fun onBtnNavBackClicked() {
+        _uiState.update { it.copy(dialogState = DialogState()) }
     }
-    private fun handleOnAllow() = viewModelScope.launch(ioDispatcher) {
-        updateDialogState(loadingAuth = false, loadingGetMenu = false, denyAccess = false)
+    private fun onAllowAccessMenu() {
+        updateDialogState(
+            dlgVldAuthEnabled = false,
+            dlgLoadMenuEnabled = false,
+            dlgDenyAccessMenuEnabled = false
+        )
     }
-    private fun handleOnDeny() = viewModelScope.launch(ioDispatcher) {
-        updateDialogState(loadingAuth = false, loadingGetMenu = false, denyAccess = true)
-    }
-    private fun getMenuData(sessionState: SessionState) = viewModelScope.launch(ioDispatcher) {
-        updateDialogState(loadingAuth = false, loadingGetMenu = true, denyAccess = false)
-        val menuData = repoAppConf.getMenuData(sessionState)
-        _uiState.update { it.copy(destAppConfig = Success(menuData)) }
-        updateDialogState(loadingAuth = false, loadingGetMenu = false, denyAccess = false)
+    private fun onDenyAccessMenu() {
+        updateDialogState(
+            dlgVldAuthEnabled = false,
+            dlgLoadMenuEnabled = false,
+            dlgDenyAccessMenuEnabled = true
+        )
     }
     private fun updateDialogState(
-        loadingAuth: Boolean = true,
-        loadingGetMenu: Boolean = false,
-        denyAccess: Boolean = false
-    ) = viewModelScope.launch(ioDispatcher) {
+        dlgVldAuthEnabled: Boolean = false,
+        dlgLoadMenuEnabled: Boolean = false,
+        dlgDenyAccessMenuEnabled: Boolean = false
+    ){
         _uiState.update {
             it.copy(
                 dialogState = it.dialogState.copy(
-                    dlgVldAuthUiEnabled = mutableStateOf(loadingAuth),
-                    dlgGetMenuUiEnabled = mutableStateOf(loadingGetMenu),
-                    dlgDenyAccessUiEnabled = mutableStateOf(denyAccess)
+                    dlgVldAuthEnabled = mutableStateOf(dlgVldAuthEnabled),
+                    dlgLoadMenuEnabled = mutableStateOf(dlgLoadMenuEnabled),
+                    dlgDenyAccessMenuEnabled = mutableStateOf(dlgDenyAccessMenuEnabled)
                 )
             )
         }
