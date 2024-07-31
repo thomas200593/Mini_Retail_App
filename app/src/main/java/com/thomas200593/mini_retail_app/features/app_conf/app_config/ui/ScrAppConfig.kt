@@ -181,9 +181,7 @@ private fun TopAppBar(onNavigateBack: () -> Unit) {
 @Composable
 private fun ScreenContent(menuPreferences: Set<DestAppConfig>, onNavToMenu: (DestAppConfig)->Unit) {
     LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(8.dp),
+        modifier = Modifier.fillMaxSize().padding(8.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
