@@ -96,7 +96,9 @@ class VMInitialization @Inject constructor(
         }
         sealed class ButtonEvents: UiEvents(){
             sealed class BtnInitDefaultBizProfileEvents: ButtonEvents(){
-                data class OnClick(val bizProfileSummary: BizProfileSummary): BtnInitDefaultBizProfileEvents()
+                data class OnClick(
+                    val bizProfileSummary: BizProfileSummary
+                ): BtnInitDefaultBizProfileEvents()
             }
             sealed class BtnInitManualBizProfileEvents: ButtonEvents(){
                 data object OnClick: BtnInitManualBizProfileEvents()

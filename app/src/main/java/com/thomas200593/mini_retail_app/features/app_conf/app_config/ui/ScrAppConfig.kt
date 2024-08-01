@@ -59,7 +59,6 @@ import com.thomas200593.mini_retail_app.features.app_conf.app_config.ui.VMAppCon
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.ui.VMAppConfig.UiEvents.ButtonEvents.BtnMenuEvents.OnDeny
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.ui.VMAppConfig.UiEvents.ButtonEvents.BtnNavBackEvents
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.ui.VMAppConfig.UiEvents.OnOpenEvents
-import com.thomas200593.mini_retail_app.features.auth.navigation.navToAuth
 
 @Composable
 fun ScrAppConfig(
@@ -123,8 +122,9 @@ fun ScrAppConfig(
         title = { Text(text = stringResource(id = str_error))},
         showBody = true,
         body = { Text("Forbidden Access") },
-        dismissButton = {
-            TextButton(onClick = { stateApp.navController.navToAuth() })
+        useConfirmButton = true,
+        confirmButton = {
+            TextButton(onClick = { vm.onEvent(OnOpenEvents(sessionState)) })
             { Text(stringResource(id = str_ok)) }
         }
     )
