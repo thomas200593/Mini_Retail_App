@@ -56,8 +56,8 @@ import com.thomas200593.mini_retail_app.features.app_conf.conf_gen.navigation.De
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen.navigation.navToConfGen
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen.ui.VMConfGen.UiEvents.ButtonEvents.BtnMenuEvents.OnAllow
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen.ui.VMConfGen.UiEvents.ButtonEvents.BtnMenuEvents.OnDeny
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen.ui.VMConfGen.UiEvents.ButtonEvents.BtnNavBackEvents
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen.ui.VMConfGen.UiEvents.OnOpenEvents
-import com.thomas200593.mini_retail_app.features.auth.navigation.navToAuth
 
 @Composable
 fun ScrConfGen(
@@ -67,7 +67,7 @@ fun ScrConfGen(
     val sessionState by stateApp.isSessionValid.collectAsStateWithLifecycle()
     val uiState by vm.uiState.collectAsStateWithLifecycle()
     LaunchedEffect(sessionState) { vm.onEvent(OnOpenEvents(sessionState)) }
-    TopAppBar(onNavigateBack = { vm.onEvent(VMConfGen.UiEvents.ButtonEvents.BtnNavBackEvents.OnClick).also { stateApp.onNavUp()  }})
+    TopAppBar(onNavigateBack = { vm.onEvent(BtnNavBackEvents.OnClick).also { stateApp.onNavUp() } })
     when(uiState.destConfGen){
         Idle, Loading -> Unit
         Empty -> EmptyScreen(
@@ -121,8 +121,9 @@ fun ScrConfGen(
         title = { Text(text = stringResource(id = str_error))},
         showBody = true,
         body = { Text("Forbidden Access") },
-        dismissButton = {
-            TextButton(onClick = { stateApp.navController.navToAuth() })
+        useConfirmButton = true,
+        confirmButton = {
+            TextButton(onClick = { vm.onEvent(OnOpenEvents(sessionState)) })
             { Text(stringResource(id = str_ok)) }
         }
     )

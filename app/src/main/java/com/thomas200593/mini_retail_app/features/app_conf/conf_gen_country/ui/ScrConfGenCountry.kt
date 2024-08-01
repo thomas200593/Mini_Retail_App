@@ -60,8 +60,6 @@ import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.ErrorScree
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.ThreeRowCardItem
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.entity.ConfigCountry
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.entity.Country
-import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.ui.VMConfGenCountry.UiEvents.MenuBtnEvents.OnAllow
-import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.ui.VMConfGenCountry.UiEvents.MenuBtnEvents.OnDeny
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.ui.VMConfGenCountry.UiEvents.ScreenEvents.OnNavigateUp
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.ui.VMConfGenCountry.UiEvents.ScreenEvents.OnOpen
 
@@ -74,12 +72,12 @@ fun ScrConfGenCountry(
     val uiState by vm.uiState.collectAsStateWithLifecycle()
     LaunchedEffect(sessionState) { vm.onEvent(OnOpen(sessionState)) }
     TopAppBar(onNavigateBack = { vm.onEvent(OnNavigateUp); stateApp.onNavUp() })
-    ScreenContent(
+    /*ScreenContent(
         configCountry = uiState.configCountry,
         sessionState = sessionState,
         onAllowSaveSelectedCountry = { vm.onEvent(OnAllow) },
         onDenySaveSelectedCountry = { vm.onEvent(OnDeny) }
-    )
+    )*/
 }
 
 @Composable
