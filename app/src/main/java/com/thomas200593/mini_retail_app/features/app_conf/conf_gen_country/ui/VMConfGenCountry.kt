@@ -60,7 +60,6 @@ class VMConfGenCountry @Inject constructor(
             is BtnSelectCountryEvents.OnClick -> TODO()
         }
     }
-
     private fun updateDialogState(
         dlgVldAuthEnabled: Boolean = true,
         dlgLoadDataEnabled: Boolean = false,
