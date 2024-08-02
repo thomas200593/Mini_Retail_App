@@ -1,4 +1,4 @@
-package com.thomas200593.mini_retail_app.features.business.ui.master_data
+package com.thomas200593.mini_retail_app.features.business.biz_master_data.ui
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
@@ -34,8 +34,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.navOptions
 import com.thomas200593.mini_retail_app.R
-import com.thomas200593.mini_retail_app.app.ui.StateApp
 import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
+import com.thomas200593.mini_retail_app.app.ui.StateApp
 import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
 import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.Data.master_data
@@ -43,8 +43,8 @@ import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.EmptyScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.ErrorScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.LoadingScreen
-import com.thomas200593.mini_retail_app.features.business.navigation.DestinationMasterData
-import com.thomas200593.mini_retail_app.features.business.navigation.navigateToMasterData
+import com.thomas200593.mini_retail_app.features.business.biz_master_data.navigation.DestinationMasterData
+import com.thomas200593.mini_retail_app.features.business.biz_master_data.navigation.navigateToMasterData
 
 @Composable
 fun MasterDataScreen(

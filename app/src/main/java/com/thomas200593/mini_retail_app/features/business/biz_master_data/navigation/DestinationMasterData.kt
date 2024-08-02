@@ -1,4 +1,4 @@
-package com.thomas200593.mini_retail_app.features.business.navigation
+package com.thomas200593.mini_retail_app.features.business.biz_master_data.navigation
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes

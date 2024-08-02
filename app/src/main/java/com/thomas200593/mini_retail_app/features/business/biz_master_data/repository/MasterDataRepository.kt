@@ -1,9 +1,9 @@
-package com.thomas200593.mini_retail_app.features.business.repository
+package com.thomas200593.mini_retail_app.features.business.biz_master_data.repository
 
 import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers
-import com.thomas200593.mini_retail_app.features.business.navigation.DestinationMasterData
+import com.thomas200593.mini_retail_app.features.business.biz_master_data.navigation.DestinationMasterData
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
