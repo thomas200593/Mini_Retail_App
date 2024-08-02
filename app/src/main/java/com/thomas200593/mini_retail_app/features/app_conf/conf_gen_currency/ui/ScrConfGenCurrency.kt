@@ -187,6 +187,7 @@ private fun ScreenContent(
             overflow = Ellipsis,
             textAlign = Center,
         )
+        /*TODO Add Searchbar*/
         LazyColumn(
             modifier = Modifier.fillMaxSize().padding(8.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp),
