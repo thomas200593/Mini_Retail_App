@@ -1,7 +1,7 @@
 package com.thomas200593.mini_retail_app.features.business.di
 
-import com.thomas200593.mini_retail_app.features.business.repository.BusinessRepository
-import com.thomas200593.mini_retail_app.features.business.repository.BusinessRepositoryImpl
+import com.thomas200593.mini_retail_app.features.business.business.repository.BusinessRepository
+import com.thomas200593.mini_retail_app.features.business.business.repository.BusinessRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

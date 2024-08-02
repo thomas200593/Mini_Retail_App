@@ -1,4 +1,4 @@
-package com.thomas200593.mini_retail_app.features.business.ui
+package com.thomas200593.mini_retail_app.features.business.business.ui
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
@@ -33,8 +33,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.navOptions
 import com.thomas200593.mini_retail_app.R
-import com.thomas200593.mini_retail_app.app.ui.StateApp
 import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
+import com.thomas200593.mini_retail_app.app.ui.StateApp
 import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
 import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons
@@ -46,17 +46,17 @@ import com.thomas200593.mini_retail_app.features.business.navigation.Destination
 import com.thomas200593.mini_retail_app.features.business.navigation.navigateToBusiness
 
 @Composable
-fun BusinessScreen(
-    viewModel: BusinessViewModel = hiltViewModel(),
+fun ScrBusiness(
+    vm: VMBusiness = hiltViewModel(),
     stateApp: StateApp = LocalStateApp.current
 ){
     val sessionState by stateApp.isSessionValid.collectAsStateWithLifecycle()
-    val menuData by viewModel.menuData
+    val menuData by vm.menuData
 
     when(sessionState){
         SessionState.Loading -> { LoadingScreen() }
-        is SessionState.Invalid -> { LaunchedEffect(Unit) { viewModel.onOpen(sessionState) } }
-        is SessionState.Valid -> { LaunchedEffect(Unit) { viewModel.onOpen(sessionState) } }
+        is SessionState.Invalid -> { LaunchedEffect(Unit) { vm.onOpen(sessionState) } }
+        is SessionState.Valid -> { LaunchedEffect(Unit) { vm.onOpen(sessionState) } }
     }
 
     TopAppBar()

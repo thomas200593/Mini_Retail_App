@@ -1,4 +1,4 @@
-package com.thomas200593.mini_retail_app.features.business.repository
+package com.thomas200593.mini_retail_app.features.business.business.repository
 
 import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatcher
