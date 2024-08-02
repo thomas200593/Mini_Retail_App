@@ -1,4 +1,4 @@
-package com.thomas200593.mini_retail_app.features.business.business.ui
+package com.thomas200593.mini_retail_app.features.business.biz.ui
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -8,8 +8,8 @@ import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers.Dispatchers.IO
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
-import com.thomas200593.mini_retail_app.features.business.business.navigation.DestinationBusiness
-import com.thomas200593.mini_retail_app.features.business.business.repository.RepoBusiness
+import com.thomas200593.mini_retail_app.features.business.biz.navigation.DestinationBusiness
+import com.thomas200593.mini_retail_app.features.business.biz.repository.RepoBusiness
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch

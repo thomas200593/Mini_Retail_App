@@ -7,7 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.thomas200593.mini_retail_app.app.navigation.NavGraph.G_DASHBOARD
 import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs
-import com.thomas200593.mini_retail_app.features.business.business.navigation.navGraphBusiness
+import com.thomas200593.mini_retail_app.features.business.biz.navigation.navGraphBusiness
 import com.thomas200593.mini_retail_app.features.dashboard.ui.ScrDashboard
 import com.thomas200593.mini_retail_app.features.reporting.navigation.navGraphReporting
 import com.thomas200593.mini_retail_app.features.user_profile.navigation.navGraphUserProfile

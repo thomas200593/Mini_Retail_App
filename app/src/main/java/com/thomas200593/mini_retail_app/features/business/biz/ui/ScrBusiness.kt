@@ -1,4 +1,4 @@
-package com.thomas200593.mini_retail_app.features.business.business.ui
+package com.thomas200593.mini_retail_app.features.business.biz.ui
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
@@ -42,8 +42,8 @@ import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.EmptyScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.ErrorScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.LoadingScreen
-import com.thomas200593.mini_retail_app.features.business.business.navigation.DestinationBusiness
-import com.thomas200593.mini_retail_app.features.business.business.navigation.navigateToBusiness
+import com.thomas200593.mini_retail_app.features.business.biz.navigation.DestinationBusiness
+import com.thomas200593.mini_retail_app.features.business.biz.navigation.navigateToBusiness
 
 @Composable
 fun ScrBusiness(
