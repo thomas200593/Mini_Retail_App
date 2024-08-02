@@ -7,10 +7,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.thomas200593.mini_retail_app.app.navigation.NavGraph
 import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs
-import com.thomas200593.mini_retail_app.features.business.biz_m_data.ui.ScrMData
+import com.thomas200593.mini_retail_app.features.business.biz_m_data.ui.ScrMasterData
 import com.thomas200593.mini_retail_app.features.business.navigation.navGraphSupplier
 
-fun NavGraphBuilder.navGraphMData() {
+fun NavGraphBuilder.navGraphMasterData() {
     navigation(
         route = NavGraph.G_MASTER_DATA,
         startDestination = ScrGraphs.MasterData.route
@@ -18,7 +18,7 @@ fun NavGraphBuilder.navGraphMData() {
         composable(
             route = ScrGraphs.MasterData.route
         ){
-            ScrMData()
+            ScrMasterData()
         }
 
         /**
@@ -29,12 +29,12 @@ fun NavGraphBuilder.navGraphMData() {
     }
 }
 
-fun NavController.navToMData(
+fun NavController.navToMasterData(
     navOptions: NavOptions?,
-    destMData: DestMData? = null
+    destMasterData: DestMasterData? = null
 ){
     this.navigate(
-        route = destMData?.route?: NavGraph.G_MASTER_DATA,
+        route = destMasterData?.route?: NavGraph.G_MASTER_DATA,
         navOptions
     )
 }

@@ -43,12 +43,12 @@ import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.EmptyScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.ErrorScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.LoadingScreen
-import com.thomas200593.mini_retail_app.features.business.biz_m_data.navigation.DestMData
-import com.thomas200593.mini_retail_app.features.business.biz_m_data.navigation.navToMData
+import com.thomas200593.mini_retail_app.features.business.biz_m_data.navigation.DestMasterData
+import com.thomas200593.mini_retail_app.features.business.biz_m_data.navigation.navToMasterData
 
 @Composable
-fun ScrMData(
-    viewModel: VMMData = hiltViewModel(),
+fun ScrMasterData(
+    viewModel: VMMasterData = hiltViewModel(),
     stateApp: StateApp = LocalStateApp.current
 ){
     val sessionState by stateApp.isSessionValid.collectAsStateWithLifecycle()
@@ -66,12 +66,12 @@ fun ScrMData(
     ScreenContent(
         menuData = menuData,
         onNavigateToMenu = { menu ->
-            stateApp.navController.navToMData(
+            stateApp.navController.navToMasterData(
                 navOptions = navOptions {
                     launchSingleTop = true
                     restoreState = true
                 },
-                destMData = menu
+                destMasterData = menu
             )
         }
     )
@@ -128,8 +128,8 @@ private fun TopAppBar(
 
 @Composable
 private fun ScreenContent(
-    menuData: ResourceState<Set<DestMData>>,
-    onNavigateToMenu: (DestMData) -> Unit
+    menuData: ResourceState<Set<DestMasterData>>,
+    onNavigateToMenu: (DestMasterData) -> Unit
 ) {
     when(menuData){
         ResourceState.Idle, ResourceState.Loading -> { LoadingScreen() }

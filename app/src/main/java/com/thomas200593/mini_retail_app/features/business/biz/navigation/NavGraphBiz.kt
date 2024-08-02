@@ -8,7 +8,7 @@ import androidx.navigation.navigation
 import com.thomas200593.mini_retail_app.app.navigation.NavGraph.G_BUSINESS
 import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs.Business
 import com.thomas200593.mini_retail_app.features.business.biz.ui.ScrBiz
-import com.thomas200593.mini_retail_app.features.business.biz_m_data.navigation.navGraphMData
+import com.thomas200593.mini_retail_app.features.business.biz_m_data.navigation.navGraphMasterData
 
 fun NavGraphBuilder.navGraphBiz(){
     navigation(
@@ -24,7 +24,7 @@ fun NavGraphBuilder.navGraphBiz(){
         /**
          * - Master Data
          */
-        navGraphMData()
+        navGraphMasterData()
 //        navGraphBusinessConfiguration()
     }
 }
