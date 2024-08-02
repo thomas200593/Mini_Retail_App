@@ -1,4 +1,4 @@
-package com.thomas200593.mini_retail_app.features.business.biz_master_data.ui
+package com.thomas200593.mini_retail_app.features.business.biz_m_data.ui
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -8,19 +8,19 @@ import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
-import com.thomas200593.mini_retail_app.features.business.biz_master_data.navigation.DestinationMasterData
-import com.thomas200593.mini_retail_app.features.business.biz_master_data.repository.MasterDataRepository
+import com.thomas200593.mini_retail_app.features.business.biz_m_data.navigation.DestMData
+import com.thomas200593.mini_retail_app.features.business.biz_m_data.repository.RepoMData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MasterDataViewModel @Inject constructor(
-    private val repository: MasterDataRepository,
+class VMMData @Inject constructor(
+    private val repository: RepoMData,
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ): ViewModel() {
-    private val _menuData: MutableState<ResourceState<Set<DestinationMasterData>>> = mutableStateOf(ResourceState.Idle)
+    private val _menuData: MutableState<ResourceState<Set<DestMData>>> = mutableStateOf(ResourceState.Idle)
     val menuData = _menuData
 
     fun onOpen(sessionState: SessionState) = viewModelScope.launch(ioDispatcher){

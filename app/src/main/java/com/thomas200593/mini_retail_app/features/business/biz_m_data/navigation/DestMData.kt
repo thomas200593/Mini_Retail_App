@@ -1,4 +1,4 @@
-package com.thomas200593.mini_retail_app.features.business.biz_master_data.navigation
+package com.thomas200593.mini_retail_app.features.business.biz_m_data.navigation
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
@@ -6,7 +6,7 @@ import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs
 import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons
 
-enum class DestinationMasterData(
+enum class DestMData(
     val route: String,
     @DrawableRes val iconRes: Int,
     @StringRes val title: Int,

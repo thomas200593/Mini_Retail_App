@@ -1,4 +1,4 @@
-package com.thomas200593.mini_retail_app.features.business.biz_master_data.ui
+package com.thomas200593.mini_retail_app.features.business.biz_m_data.ui
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
@@ -43,12 +43,12 @@ import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.EmptyScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.ErrorScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.LoadingScreen
-import com.thomas200593.mini_retail_app.features.business.biz_master_data.navigation.DestinationMasterData
-import com.thomas200593.mini_retail_app.features.business.biz_master_data.navigation.navigateToMasterData
+import com.thomas200593.mini_retail_app.features.business.biz_m_data.navigation.DestMData
+import com.thomas200593.mini_retail_app.features.business.biz_m_data.navigation.navToMData
 
 @Composable
-fun MasterDataScreen(
-    viewModel: MasterDataViewModel = hiltViewModel(),
+fun ScrMData(
+    viewModel: VMMData = hiltViewModel(),
     stateApp: StateApp = LocalStateApp.current
 ){
     val sessionState by stateApp.isSessionValid.collectAsStateWithLifecycle()
@@ -66,12 +66,12 @@ fun MasterDataScreen(
     ScreenContent(
         menuData = menuData,
         onNavigateToMenu = { menu ->
-            stateApp.navController.navigateToMasterData(
+            stateApp.navController.navToMData(
                 navOptions = navOptions {
                     launchSingleTop = true
                     restoreState = true
                 },
-                destinationMasterData = menu
+                destMData = menu
             )
         }
     )
@@ -128,8 +128,8 @@ private fun TopAppBar(
 
 @Composable
 private fun ScreenContent(
-    menuData: ResourceState<Set<DestinationMasterData>>,
-    onNavigateToMenu: (DestinationMasterData) -> Unit
+    menuData: ResourceState<Set<DestMData>>,
+    onNavigateToMenu: (DestMData) -> Unit
 ) {
     when(menuData){
         ResourceState.Idle, ResourceState.Loading -> { LoadingScreen() }
