@@ -42,12 +42,12 @@ import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.EmptyScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.ErrorScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.LoadingScreen
-import com.thomas200593.mini_retail_app.features.business.biz.navigation.DestinationBusiness
-import com.thomas200593.mini_retail_app.features.business.biz.navigation.navigateToBusiness
+import com.thomas200593.mini_retail_app.features.business.biz.navigation.DestBiz
+import com.thomas200593.mini_retail_app.features.business.biz.navigation.navigateToBiz
 
 @Composable
-fun ScrBusiness(
-    vm: VMBusiness = hiltViewModel(),
+fun ScrBiz(
+    vm: VMBiz = hiltViewModel(),
     stateApp: StateApp = LocalStateApp.current
 ){
     val sessionState by stateApp.isSessionValid.collectAsStateWithLifecycle()
@@ -63,12 +63,12 @@ fun ScrBusiness(
     ScreenContent(
         menuData = menuData,
         onNavigateToMenu = { menu ->
-            stateApp.navController.navigateToBusiness(
+            stateApp.navController.navigateToBiz(
                 navOptions = navOptions {
                     launchSingleTop = true
                     restoreState = true
                 },
-                destinationBusiness = menu
+                destBiz = menu
             )
         }
     )
@@ -111,8 +111,8 @@ private fun TopAppBar() {
 
 @Composable
 private fun ScreenContent(
-    menuData: ResourceState<Set<DestinationBusiness>>,
-    onNavigateToMenu: (DestinationBusiness) -> Unit
+    menuData: ResourceState<Set<DestBiz>>,
+    onNavigateToMenu: (DestBiz) -> Unit
 ) {
     when(menuData){
         ResourceState.Idle, ResourceState.Loading -> { LoadingScreen() }

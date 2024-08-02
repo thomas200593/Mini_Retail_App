@@ -8,19 +8,19 @@ import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers.Dispatchers.IO
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
-import com.thomas200593.mini_retail_app.features.business.biz.navigation.DestinationBusiness
-import com.thomas200593.mini_retail_app.features.business.biz.repository.RepoBusiness
+import com.thomas200593.mini_retail_app.features.business.biz.navigation.DestBiz
+import com.thomas200593.mini_retail_app.features.business.biz.repository.RepoBiz
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class VMBusiness @Inject constructor(
-    private val repository: RepoBusiness,
+class VMBiz @Inject constructor(
+    private val repository: RepoBiz,
     @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
 ): ViewModel() {
-    private val _menuData: MutableState<ResourceState<Set<DestinationBusiness>>> = mutableStateOf(ResourceState.Idle)
+    private val _menuData: MutableState<ResourceState<Set<DestBiz>>> = mutableStateOf(ResourceState.Idle)
     val menuData = _menuData
 
     fun onOpen(sessionState: SessionState) = viewModelScope.launch(ioDispatcher){
