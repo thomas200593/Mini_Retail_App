@@ -57,10 +57,9 @@ class VMConfGenCurrency @Inject constructor(
 
     fun onEvent(events: UiEvents){
         when(events){
-            is OnOpenEvents -> onOpenEvent()
+            OnOpenEvents -> onOpenEvent()
             BtnNavBackEvents.OnClick -> onBtnNavBackClicked()
-            is BtnSelectCurrencyEvents.OnClick ->
-                onSaveSelectedCurrency(events.currency)
+            is BtnSelectCurrencyEvents.OnClick -> onSaveSelectedCurrency(events.currency)
         }
     }
     private fun onOpenEvent() = viewModelScope.launch(ioDispatcher) {
