@@ -4,7 +4,6 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers.Dispatchers.IO
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
@@ -42,14 +41,14 @@ class VMConfGenCurrency @Inject constructor(
         val dlgLoadDataErrorEnabled : MutableState<Boolean> = mutableStateOf(false)
     )
     sealed class UiEvents {
-        data class OnOpenEvents(val sessionState: SessionState): UiEvents()
+        data object OnOpenEvents: UiEvents()
         sealed class ButtonEvents : UiEvents(){
             sealed class BtnNavBackEvents: ButtonEvents(){
                 data object OnClick: BtnNavBackEvents()
             }
         }
         sealed class BtnSelectCurrencyEvents: ButtonEvents(){
-            data class OnClick(val sessionState: SessionState, val currency: Currency): BtnSelectCurrencyEvents()
+            data class OnClick(val currency: Currency): BtnSelectCurrencyEvents()
         }
     }
 
@@ -58,49 +57,34 @@ class VMConfGenCurrency @Inject constructor(
 
     fun onEvent(events: UiEvents){
         when(events){
-            is OnOpenEvents -> onOpenEvent(events.sessionState)
+            is OnOpenEvents -> onOpenEvent()
             BtnNavBackEvents.OnClick -> onBtnNavBackClicked()
             is BtnSelectCurrencyEvents.OnClick ->
-                onSaveSelectedCurrency(events.sessionState, events.currency)
+                onSaveSelectedCurrency(events.currency)
         }
     }
-    private fun onOpenEvent(sessionState: SessionState){
-        when(sessionState){
-            SessionState.Loading -> {
+    private fun onOpenEvent() = viewModelScope.launch(ioDispatcher) {
+        updateDialogState(
+            dlgLoadDataEnabled = true,
+            dlgLoadDataError = false
+        )
+        ucGetConfCurrency.invoke().flowOn(ioDispatcher)
+            .catch { e ->
+                _uiState.update { it.copy(configCurrency = Error(e)) }
                 updateDialogState(
                     dlgLoadDataEnabled = false,
-                    dlgLoadDataError = false
+                    dlgLoadDataError = true
                 )
             }
-            is SessionState.Invalid, is SessionState.Valid -> viewModelScope.launch(ioDispatcher) {
-                updateDialogState(
-                    dlgLoadDataEnabled = true,
-                    dlgLoadDataError = false
-                )
-                ucGetConfCurrency.invoke().flowOn(ioDispatcher)
-                    .catch { e ->
-                        _uiState.update { it.copy(configCurrency = Error(e)) }
-                        updateDialogState(
-                            dlgLoadDataEnabled = false,
-                            dlgLoadDataError = true
-                        )
-                    }
-                    .collect{ data ->
-                        _uiState.update { it.copy(configCurrency = data, dialogState = DialogState()) }
-                    }
+            .collect{ data ->
+                _uiState.update { it.copy(configCurrency = data, dialogState = DialogState()) }
             }
-        }
     }
     private fun onBtnNavBackClicked() {
         _uiState.update { it.copy(dialogState = DialogState()) }
     }
-    private fun onSaveSelectedCurrency(sessionState: SessionState, currency: Currency) {
-        when(sessionState){
-            SessionState.Loading -> Unit
-            is SessionState.Invalid, is SessionState.Valid ->
-                viewModelScope.launch(ioDispatcher) { repoConfGenCurrency.setCurrency(currency) }
-        }
-    }
+    private fun onSaveSelectedCurrency(currency: Currency) =
+        viewModelScope.launch(ioDispatcher) { repoConfGenCurrency.setCurrency(currency) }
     private fun updateDialogState(
         dlgLoadDataEnabled: Boolean = false,
         dlgLoadDataError: Boolean = false

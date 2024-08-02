@@ -74,10 +74,9 @@ fun ScrConfGenCurrency(
     vm: VMConfGenCurrency = hiltViewModel(),
     stateApp: StateApp = LocalStateApp.current
 ) {
-    val sessionState by stateApp.isSessionValid.collectAsStateWithLifecycle()
     val uiState by vm.uiState.collectAsStateWithLifecycle()
-    LaunchedEffect(sessionState) { vm.onEvent(OnOpenEvents(sessionState)) }
-    TopAppBar(onNavigateBack = { vm.onEvent(BtnNavBackEvents.OnClick) })
+    LaunchedEffect(Unit) { vm.onEvent(OnOpenEvents) }
+    TopAppBar(onNavigateBack = { vm.onEvent(BtnNavBackEvents.OnClick).also { stateApp.onNavUp() } })
     when(uiState.configCurrency){
         Idle, Loading -> Unit
         Empty -> EmptyScreen(
@@ -92,7 +91,7 @@ fun ScrConfGenCurrency(
         )
         is Success -> ScreenContent(
             configCurrency = (uiState.configCurrency as Success).data,
-            onSaveSelectedCurrency = { vm.onEvent(BtnSelectCurrencyEvents.OnClick(sessionState, it)) }
+            onSaveSelectedCurrency = { vm.onEvent(BtnSelectCurrencyEvents.OnClick(it)) }
         )
     }
     AppAlertDialog(
@@ -114,7 +113,7 @@ fun ScrConfGenCurrency(
         body = { Text("Load Data Error") },
         useConfirmButton = true,
         confirmButton = {
-            TextButton(onClick = { vm.onEvent(OnOpenEvents(sessionState)) })
+            TextButton(onClick = { vm.onEvent(OnOpenEvents) })
             { Text(stringResource(id = str_ok)) }
         }
     )
