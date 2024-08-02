@@ -19,7 +19,7 @@ import com.thomas200593.mini_retail_app.app.navigation.DestWithTopAppBar.destWit
 import com.thomas200593.mini_retail_app.core.data.local.session.Session
 import com.thomas200593.mini_retail_app.core.data.local.session.SessionState.Loading
 import com.thomas200593.mini_retail_app.core.design_system.network_monitor.NetworkMonitor
-import com.thomas200593.mini_retail_app.features.business.navigation.navigateToBusiness
+import com.thomas200593.mini_retail_app.features.business.business.navigation.navigateToBusiness
 import com.thomas200593.mini_retail_app.features.dashboard.navigation.navToDashboard
 import com.thomas200593.mini_retail_app.features.reporting.navigation.navToReporting
 import com.thomas200593.mini_retail_app.features.user_profile.navigation.navToUserProfile
