@@ -21,6 +21,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -37,31 +38,35 @@ import androidx.compose.ui.text.style.TextOverflow.Companion.Ellipsis
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.R.string.str_country
 import com.thomas200593.mini_retail_app.R.string.str_empty_message
 import com.thomas200593.mini_retail_app.R.string.str_empty_message_title
 import com.thomas200593.mini_retail_app.R.string.str_error
 import com.thomas200593.mini_retail_app.R.string.str_error_fetching_preferences
+import com.thomas200593.mini_retail_app.R.string.str_ok
 import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
 import com.thomas200593.mini_retail_app.app.ui.StateApp
-import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Empty
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Error
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Idle
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Loading
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Success
-import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.Currency.currency
+import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.Country.country
 import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar.ProvideTopAppBarAction
 import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar.ProvideTopAppBarNavigationIcon
 import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar.ProvideTopAppBarTitle
+import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AlertDialogContext.ERROR
+import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AlertDialogContext.INFORMATION
+import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AppAlertDialog
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.EmptyScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.ErrorScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.ThreeRowCardItem
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.entity.ConfigCountry
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.entity.Country
-import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.ui.VMConfGenCountry.UiEvents.ScreenEvents.OnNavigateUp
-import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.ui.VMConfGenCountry.UiEvents.ScreenEvents.OnOpen
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.ui.VMConfGenCountry.UiEvents.ButtonEvents.BtnNavBackEvents
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.ui.VMConfGenCountry.UiEvents.ButtonEvents.BtnSelectCountryEvents
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.ui.VMConfGenCountry.UiEvents.OnOpenEvents
 
 @Composable
 fun ScrConfGenCountry(
@@ -70,14 +75,85 @@ fun ScrConfGenCountry(
 ){
     val sessionState by stateApp.isSessionValid.collectAsStateWithLifecycle()
     val uiState by vm.uiState.collectAsStateWithLifecycle()
-    LaunchedEffect(sessionState) { vm.onEvent(OnOpen(sessionState)) }
-    TopAppBar(onNavigateBack = { vm.onEvent(OnNavigateUp); stateApp.onNavUp() })
-    /*ScreenContent(
-        configCountry = uiState.configCountry,
-        sessionState = sessionState,
-        onAllowSaveSelectedCountry = { vm.onEvent(OnAllow) },
-        onDenySaveSelectedCountry = { vm.onEvent(OnDeny) }
-    )*/
+    LaunchedEffect(sessionState) { vm.onEvent(OnOpenEvents(sessionState)) }
+    TopAppBar(onNavigateBack = { vm.onEvent(BtnNavBackEvents.OnClick).also{ stateApp.onNavUp() }})
+    when(uiState.configCountry){
+        Idle, Loading -> Unit
+        Empty -> EmptyScreen(
+            title = stringResource(id = str_empty_message_title),
+            emptyMessage = stringResource(id = str_empty_message),
+            showIcon = true
+        )
+        is Error -> ErrorScreen(
+            title = stringResource(id = str_error),
+            errorMessage = stringResource(id = str_error_fetching_preferences),
+            showIcon = true
+        )
+        is Success -> ScreenContent(
+            configCountry = (uiState.configCountry as Success).data,
+            onSaveSelectedCountry = { vm.onEvent(BtnSelectCountryEvents.OnClick(sessionState, it)) }
+        )
+    }
+    AppAlertDialog(
+        showDialog = uiState.dialogState.dlgVldAuthEnabled,
+        dialogContext = INFORMATION,
+        showIcon = true,
+        showTitle = true,
+        title = { Text(text = stringResource(id = R.string.str_loading))},
+        showBody = true,
+        body = { Text(text = stringResource(id = R.string.str_loading))},
+    )
+    AppAlertDialog(
+        showDialog = uiState.dialogState.dlgLoadDataEnabled,
+        dialogContext = INFORMATION,
+        showIcon = true,
+        showTitle = true,
+        title = { Text(text = stringResource(id = R.string.str_loading))},
+        showBody = true,
+        body = { Text(text = stringResource(id = R.string.str_loading))},
+    )
+    AppAlertDialog(
+        showDialog = uiState.dialogState.dlgLoadDataErrorEnabled,
+        dialogContext = ERROR,
+        showIcon = true,
+        showTitle = true,
+        title = { Text(text = stringResource(id = str_error))},
+        showBody = true,
+        body = { Text("Load Data Error") },
+        useConfirmButton = true,
+        confirmButton = {
+            TextButton(onClick = { vm.onEvent(OnOpenEvents(sessionState)) })
+            { Text(stringResource(id = str_ok)) }
+        }
+    )
+    AppAlertDialog(
+        showDialog = uiState.dialogState.dlgDenyAccessEnabled,
+        dialogContext = ERROR,
+        showIcon = true,
+        showTitle = true,
+        title = { Text(text = stringResource(id = str_error))},
+        showBody = true,
+        body = { Text("Forbidden Access Get Data") },
+        useConfirmButton = true,
+        confirmButton = {
+            TextButton(onClick = { vm.onEvent(OnOpenEvents(sessionState)) })
+            { Text(stringResource(id = str_ok)) }
+        }
+    )
+    AppAlertDialog(
+        showDialog = uiState.dialogState.dlgDenySaveDataEnabled,
+        dialogContext = ERROR,
+        showIcon = true,
+        showTitle = true,
+        title = { Text(text = stringResource(id = str_error))},
+        showBody = true,
+        body = { Text("Forbidden Access To Save Data") },
+        useConfirmButton = true,
+        confirmButton = {
+            TextButton(onClick = { vm.onEvent(OnOpenEvents(sessionState)) })
+            { Text(stringResource(id = str_ok)) }
+        }
+    )
 }
 
 @Composable
@@ -99,7 +175,7 @@ private fun TopAppBar(onNavigateBack: () -> Unit) {
         ){
             Icon(
                 modifier = Modifier.sizeIn(maxHeight = IconSize),
-                imageVector = ImageVector.vectorResource(id = currency),
+                imageVector = ImageVector.vectorResource(id = country),
                 contentDescription = null
             )
             Text(
@@ -126,38 +202,6 @@ private fun TopAppBar(onNavigateBack: () -> Unit) {
 
 @Composable
 private fun ScreenContent(
-    configCountry: ResourceState<ConfigCountry>,
-    sessionState: SessionState,
-    onAllowSaveSelectedCountry: (Country) -> Unit,
-    onDenySaveSelectedCountry: () -> Unit
-) {
-    when(configCountry){
-        Idle, Loading -> Unit
-        Empty -> EmptyScreen(
-            title = stringResource(id = str_empty_message_title),
-            emptyMessage = stringResource(id = str_empty_message),
-            showIcon = true
-        )
-        is Error -> ErrorScreen(
-            title = stringResource(id = str_error),
-            errorMessage = stringResource(id = str_error_fetching_preferences),
-            showIcon = true
-        )
-        is Success -> SuccessSection(
-            configCountry = configCountry.data,
-            onSaveSelectedCountry = {
-                when(sessionState){
-                    SessionState.Loading -> Unit
-                    is SessionState.Invalid -> onDenySaveSelectedCountry.invoke()
-                    is SessionState.Valid -> onAllowSaveSelectedCountry.invoke(it)
-                }
-            }
-        )
-    }
-}
-
-@Composable
-private fun SuccessSection(
     configCountry: ConfigCountry,
     onSaveSelectedCountry: (Country) -> Unit
 ) {

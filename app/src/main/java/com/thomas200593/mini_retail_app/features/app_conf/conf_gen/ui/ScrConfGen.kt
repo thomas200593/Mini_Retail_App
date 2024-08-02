@@ -19,6 +19,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -58,6 +59,7 @@ import com.thomas200593.mini_retail_app.features.app_conf.conf_gen.ui.VMConfGen.
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen.ui.VMConfGen.UiEvents.ButtonEvents.BtnMenuEvents.OnDeny
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen.ui.VMConfGen.UiEvents.ButtonEvents.BtnNavBackEvents
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen.ui.VMConfGen.UiEvents.OnOpenEvents
+import kotlinx.coroutines.launch
 
 @Composable
 fun ScrConfGen(
@@ -66,6 +68,7 @@ fun ScrConfGen(
 ) {
     val sessionState by stateApp.isSessionValid.collectAsStateWithLifecycle()
     val uiState by vm.uiState.collectAsStateWithLifecycle()
+    val coroutineScope = rememberCoroutineScope()
     LaunchedEffect(sessionState) { vm.onEvent(OnOpenEvents(sessionState)) }
     TopAppBar(onNavigateBack = { vm.onEvent(BtnNavBackEvents.OnClick).also { stateApp.onNavUp() } })
     when(uiState.destConfGen){
@@ -88,9 +91,13 @@ fun ScrConfGen(
                     SessionState.Loading -> Unit
                     is SessionState.Invalid ->
                         if(menu.usesAuth) vm.onEvent(OnDeny)
-                        else vm.onEvent(OnAllow).also { stateApp.navController.navToConfGen(menu) }
+                        else vm.onEvent(OnAllow).also {
+                            coroutineScope.launch{ stateApp.navController.navToConfGen(menu) }
+                        }
                     is SessionState.Valid ->
-                        vm.onEvent(OnAllow).also { stateApp.navController.navToConfGen(menu) }
+                        vm.onEvent(OnAllow).also {
+                            coroutineScope.launch{ stateApp.navController.navToConfGen(menu) }
+                        }
                 }
             }
         )
@@ -176,7 +183,9 @@ private fun TopAppBar(onNavigateBack: () -> Unit){
 @Composable
 private fun ScreenContent(menuPreferences: Set<DestConfGen>, onNavToMenu: (DestConfGen) -> Unit) {
     LazyColumn(
-        modifier = Modifier.fillMaxSize().padding(8.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(8.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
