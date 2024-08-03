@@ -1,4 +1,4 @@
-package com.thomas200593.mini_retail_app.features.business.ui.master_data.supplier.list
+package com.thomas200593.mini_retail_app.features.business.biz_m_data_supplier.ui.list
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -11,9 +11,9 @@ import androidx.paging.cachedIn
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.AuditTrail
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers
-import com.thomas200593.mini_retail_app.features.business.domain.GetSupplierListUseCase
-import com.thomas200593.mini_retail_app.features.business.entity.supplier.Supplier
-import com.thomas200593.mini_retail_app.features.business.entity.supplier.dto.SortSupplier
+import com.thomas200593.mini_retail_app.features.business.biz_m_data_supplier.domain.GetSupplierListUseCase
+import com.thomas200593.mini_retail_app.features.business.biz_m_data_supplier.entity.Supplier
+import com.thomas200593.mini_retail_app.features.business.biz_m_data_supplier.entity.dto.SortSupplier
 import com.thomas200593.mini_retail_app.features.business.repository.SupplierRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher

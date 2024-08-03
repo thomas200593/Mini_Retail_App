@@ -1,4 +1,4 @@
-package com.thomas200593.mini_retail_app.features.business.ui.master_data.supplier.add_update
+package com.thomas200593.mini_retail_app.features.business.biz_m_data_supplier.ui.add_update
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf

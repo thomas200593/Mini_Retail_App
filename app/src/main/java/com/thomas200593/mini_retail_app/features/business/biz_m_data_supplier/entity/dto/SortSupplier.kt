@@ -1,4 +1,4 @@
-package com.thomas200593.mini_retail_app.features.business.entity.supplier.dto
+package com.thomas200593.mini_retail_app.features.business.biz_m_data_supplier.entity.dto
 
 enum class SortSupplier(
     val title: String

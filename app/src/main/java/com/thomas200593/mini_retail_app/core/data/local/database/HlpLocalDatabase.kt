@@ -10,9 +10,9 @@ import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.T
 import com.thomas200593.mini_retail_app.features.business.entity.business_profile.TypeConvBizIdentity
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.TypeConvContact
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.TypeConvLinks
-import com.thomas200593.mini_retail_app.features.business.dao.SupplierDao
+import com.thomas200593.mini_retail_app.features.business.biz_m_data_supplier.dao.SupplierDao
 import com.thomas200593.mini_retail_app.features.business.entity.business_profile.TypeConvBizName
-import com.thomas200593.mini_retail_app.features.business.entity.supplier.Supplier
+import com.thomas200593.mini_retail_app.features.business.biz_m_data_supplier.entity.Supplier
 import javax.inject.Singleton
 
 @Singleton

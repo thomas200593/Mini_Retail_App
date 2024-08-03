@@ -1,10 +1,10 @@
-package com.thomas200593.mini_retail_app.features.business.domain
+package com.thomas200593.mini_retail_app.features.business.biz_m_data_supplier.domain
 
 import androidx.paging.PagingData
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers
-import com.thomas200593.mini_retail_app.features.business.entity.supplier.Supplier
-import com.thomas200593.mini_retail_app.features.business.entity.supplier.dto.SortSupplier
+import com.thomas200593.mini_retail_app.features.business.biz_m_data_supplier.entity.Supplier
+import com.thomas200593.mini_retail_app.features.business.biz_m_data_supplier.entity.dto.SortSupplier
 import com.thomas200593.mini_retail_app.features.business.repository.SupplierRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow

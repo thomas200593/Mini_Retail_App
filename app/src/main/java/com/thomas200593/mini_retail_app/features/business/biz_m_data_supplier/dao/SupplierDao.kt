@@ -1,4 +1,4 @@
-package com.thomas200593.mini_retail_app.features.business.dao
+package com.thomas200593.mini_retail_app.features.business.biz_m_data_supplier.dao
 
 import androidx.paging.PagingSource
 import androidx.room.Dao
@@ -6,7 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.thomas200593.mini_retail_app.core.data.local.database.HlpLocalDatabase
-import com.thomas200593.mini_retail_app.features.business.entity.supplier.Supplier
+import com.thomas200593.mini_retail_app.features.business.biz_m_data_supplier.entity.Supplier
 import javax.inject.Inject
 
 @Dao
@@ -89,7 +89,7 @@ ORDER BY spr_legal_name DESC
 
 class SupplierDaoImpl @Inject constructor(
     private val dbHelper: HlpLocalDatabase
-): SupplierDao{
+): SupplierDao {
     override fun getAllSortGenIdAsc(): PagingSource<Int, Supplier> =
         dbHelper.getSupplierDao().getAllSortGenIdAsc()
 

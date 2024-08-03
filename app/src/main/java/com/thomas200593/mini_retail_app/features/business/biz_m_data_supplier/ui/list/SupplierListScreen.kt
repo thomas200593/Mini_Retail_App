@@ -1,4 +1,4 @@
-package com.thomas200593.mini_retail_app.features.business.ui.master_data.supplier.list
+package com.thomas200593.mini_retail_app.features.business.biz_m_data_supplier.ui.list
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -55,8 +55,8 @@ import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.App.app
 import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.Data.master_data
 import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar
 import com.thomas200593.mini_retail_app.core.ui.component.CustomSearching.SearchToolBar
-import com.thomas200593.mini_retail_app.features.business.entity.supplier.Supplier
-import com.thomas200593.mini_retail_app.features.business.entity.supplier.dto.SortSupplier
+import com.thomas200593.mini_retail_app.features.business.biz_m_data_supplier.entity.Supplier
+import com.thomas200593.mini_retail_app.features.business.biz_m_data_supplier.entity.dto.SortSupplier
 
 @Composable
 fun SupplierListScreen(
