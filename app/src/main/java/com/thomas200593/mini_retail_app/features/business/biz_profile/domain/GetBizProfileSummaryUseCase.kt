@@ -2,7 +2,9 @@ package com.thomas200593.mini_retail_app.features.business.biz_profile.domain
 
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
+import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Empty
+import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Error
+import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Success
 import com.thomas200593.mini_retail_app.features.business.biz_profile.repository.RepoBizProfile
 import com.thomas200593.mini_retail_app.features.business.util.ExtFnBusiness
 import kotlinx.coroutines.CoroutineDispatcher
@@ -17,9 +19,9 @@ class GetBizProfileSummaryUseCase @Inject constructor(
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ) {
     operator fun invoke() = repository.getBusinessProfile().flowOn(ioDispatcher)
-        .catch { ResourceState.Error(it) }
+        .catch { Error(it) }
         .map {
-            if(it != null){ ResourceState.Success(bizExtFn.bizProfileToBizProfileSummary(it)) }
-            else{ ResourceState.Empty }
+            if(it != null){ Success(bizExtFn.bizProfileToBizProfileSummary(it)) }
+            else{ Empty }
         }
 }
