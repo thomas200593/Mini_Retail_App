@@ -88,11 +88,7 @@ class VMAppConfig @Inject constructor(
         _uiState.update { it.copy(dialogState = DialogState()) }
     }
     private fun onAllowAccessMenu() {
-        updateDialogState(
-            dlgVldAuthEnabled = false,
-            dlgLoadMenuEnabled = false,
-            dlgDenyAccessMenuEnabled = false
-        )
+        _uiState.update { it.copy(dialogState = DialogState()) }
     }
     private fun onDenyAccessMenu() {
         updateDialogState(
