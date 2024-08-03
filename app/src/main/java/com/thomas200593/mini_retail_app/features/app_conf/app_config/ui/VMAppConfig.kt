@@ -72,35 +72,15 @@ class VMAppConfig @Inject constructor(
                 )
                 _uiState.update { it.copy(destAppConfig = Loading) }
             }
-            is SessionState.Invalid -> viewModelScope.launch(ioDispatcher) {
+            is SessionState.Invalid, is SessionState.Valid -> viewModelScope.launch(ioDispatcher) {
                 updateDialogState(
                     dlgVldAuthEnabled = false,
                     dlgLoadMenuEnabled = true,
                     dlgDenyAccessMenuEnabled = false
                 )
                 _uiState.update {
-                    it.copy(destAppConfig = Success(repoAppConf.getMenuData(sessionState)))
+                    it.copy(destAppConfig = Success(repoAppConf.getMenuData(sessionState)), dialogState = DialogState())
                 }
-                updateDialogState(
-                    dlgVldAuthEnabled = false,
-                    dlgLoadMenuEnabled = false,
-                    dlgDenyAccessMenuEnabled = false
-                )
-            }
-            is SessionState.Valid -> viewModelScope.launch(ioDispatcher) {
-                updateDialogState(
-                    dlgVldAuthEnabled = false,
-                    dlgLoadMenuEnabled = true,
-                    dlgDenyAccessMenuEnabled = false
-                )
-                _uiState.update {
-                    it.copy(destAppConfig = Success(repoAppConf.getMenuData(sessionState)))
-                }
-                updateDialogState(
-                    dlgVldAuthEnabled = false,
-                    dlgLoadMenuEnabled = false,
-                    dlgDenyAccessMenuEnabled = false
-                )
             }
         }
     }
