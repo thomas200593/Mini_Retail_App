@@ -8,7 +8,7 @@ import androidx.navigation.navigation
 import com.thomas200593.mini_retail_app.app.navigation.NavGraph
 import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs
 import com.thomas200593.mini_retail_app.features.business.biz_m_data.ui.ScrMasterData
-import com.thomas200593.mini_retail_app.features.business.navigation.navGraphSupplier
+import com.thomas200593.mini_retail_app.features.business.biz_m_data_supplier.navigation.navGraphSupplier
 
 fun NavGraphBuilder.navGraphMasterData() {
     navigation(

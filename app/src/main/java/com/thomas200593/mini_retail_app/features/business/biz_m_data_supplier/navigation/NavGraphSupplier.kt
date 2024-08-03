@@ -1,4 +1,4 @@
-package com.thomas200593.mini_retail_app.features.business.navigation
+package com.thomas200593.mini_retail_app.features.business.biz_m_data_supplier.navigation
 
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
