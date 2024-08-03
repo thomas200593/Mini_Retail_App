@@ -72,35 +72,15 @@ class VMConfGen @Inject constructor(
                 )
                 _uiState.update { it.copy(destConfGen = Loading) }
             }
-            is SessionState.Invalid -> viewModelScope.launch(ioDispatcher) {
+            is SessionState.Invalid, is SessionState.Valid -> viewModelScope.launch(ioDispatcher) {
                 updateDialogState(
                     dlgVldAuthEnabled = false,
                     dlgLoadMenuEnabled = true,
                     dlgDenyAccessMenuEnabled = false
                 )
                 _uiState.update {
-                    it.copy(destConfGen = Success(repoConfGen.getMenuData(sessionState)))
+                    it.copy(destConfGen = Success(repoConfGen.getMenuData(sessionState)), dialogState = DialogState())
                 }
-                updateDialogState(
-                    dlgVldAuthEnabled = false,
-                    dlgLoadMenuEnabled = false,
-                    dlgDenyAccessMenuEnabled = false
-                )
-            }
-            is SessionState.Valid -> viewModelScope.launch(ioDispatcher) {
-                updateDialogState(
-                    dlgVldAuthEnabled = false,
-                    dlgLoadMenuEnabled = true,
-                    dlgDenyAccessMenuEnabled = false
-                )
-                _uiState.update {
-                    it.copy(destConfGen = Success(repoConfGen.getMenuData(sessionState)))
-                }
-                updateDialogState(
-                    dlgVldAuthEnabled = false,
-                    dlgLoadMenuEnabled = false,
-                    dlgDenyAccessMenuEnabled = false
-                )
             }
         }
     }
@@ -108,11 +88,7 @@ class VMConfGen @Inject constructor(
         _uiState.update { it.copy(dialogState = DialogState()) }
     }
     private fun onAllowAccessMenu() {
-        updateDialogState(
-            dlgVldAuthEnabled = false,
-            dlgLoadMenuEnabled = false,
-            dlgDenyAccessMenuEnabled = false
-        )
+        _uiState.update { it.copy(dialogState = DialogState()) }
     }
     private fun onDenyAccessMenu() {
         updateDialogState(
