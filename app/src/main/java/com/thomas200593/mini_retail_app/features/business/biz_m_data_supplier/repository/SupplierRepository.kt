@@ -1,4 +1,4 @@
-package com.thomas200593.mini_retail_app.features.business.repository
+package com.thomas200593.mini_retail_app.features.business.biz_m_data_supplier.repository
 
 import androidx.paging.Pager
 import androidx.paging.PagingConfig

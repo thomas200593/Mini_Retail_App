@@ -2,8 +2,8 @@ package com.thomas200593.mini_retail_app.features.business.biz_m_data_supplier.d
 
 import com.thomas200593.mini_retail_app.features.business.biz_m_data_supplier.dao.SupplierDao
 import com.thomas200593.mini_retail_app.features.business.biz_m_data_supplier.dao.SupplierDaoImpl
-import com.thomas200593.mini_retail_app.features.business.repository.SupplierRepository
-import com.thomas200593.mini_retail_app.features.business.repository.SupplierRepositoryImpl
+import com.thomas200593.mini_retail_app.features.business.biz_m_data_supplier.repository.SupplierRepository
+import com.thomas200593.mini_retail_app.features.business.biz_m_data_supplier.repository.SupplierRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

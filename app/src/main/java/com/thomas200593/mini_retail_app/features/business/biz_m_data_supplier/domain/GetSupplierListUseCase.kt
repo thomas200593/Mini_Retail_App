@@ -5,7 +5,7 @@ import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers
 import com.thomas200593.mini_retail_app.features.business.biz_m_data_supplier.entity.Supplier
 import com.thomas200593.mini_retail_app.features.business.biz_m_data_supplier.entity.dto.SortSupplier
-import com.thomas200593.mini_retail_app.features.business.repository.SupplierRepository
+import com.thomas200593.mini_retail_app.features.business.biz_m_data_supplier.repository.SupplierRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
