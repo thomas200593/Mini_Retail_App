@@ -59,22 +59,14 @@ class VMOnboarding @Inject constructor(
     }
     private fun onOpenEvent() = viewModelScope.launch(ioDispatcher) {
         _uiState.update { it.copy(onboardingPages = Loading) }
-        try {
-            _uiState.update {
-                it.copy(onboardingPages = Success(repoOnboarding.getOnboardingPages()))
-            }
-        }
+        try { _uiState.update { it.copy(onboardingPages = Success(repoOnboarding.getOnboardingPages())) } }
         catch (e: Throwable){ _uiState.update { it.copy(onboardingPages = Error(e)) } }
     }
     private fun onBtnNextOnClick() {
-        _uiState.update {
-            it.copy(screenState = it.screenState.copy(currentPage = it.screenState.currentPage + 1))
-        }
+        _uiState.update { it.copy(screenState = it.screenState.copy(currentPage = it.screenState.currentPage + 1)) }
     }
     private fun onTabPageSelectEvent(index: Int) {
-        _uiState.update {
-            it.copy(screenState = it.screenState.copy(currentPage = index))
-        }
+        _uiState.update { it.copy(screenState = it.screenState.copy(currentPage = index)) }
     }
     private fun onFinishedOnboardingEvent() = viewModelScope.launch(ioDispatcher) {
         repoOnboarding.hideOnboarding()
