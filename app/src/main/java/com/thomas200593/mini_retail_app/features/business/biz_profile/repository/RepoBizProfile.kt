@@ -1,9 +1,9 @@
-package com.thomas200593.mini_retail_app.features.business.repository
+package com.thomas200593.mini_retail_app.features.business.biz_profile.repository
 
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers.Dispatchers.IO
-import com.thomas200593.mini_retail_app.features.business.dao.BusinessProfileDao
-import com.thomas200593.mini_retail_app.features.business.entity.business_profile.BusinessProfile
+import com.thomas200593.mini_retail_app.features.business.biz_profile.dao.BusinessProfileDao
+import com.thomas200593.mini_retail_app.features.business.biz_profile.entity.BusinessProfile
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
