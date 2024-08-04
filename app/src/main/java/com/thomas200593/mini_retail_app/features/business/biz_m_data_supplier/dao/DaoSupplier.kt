@@ -10,7 +10,7 @@ import com.thomas200593.mini_retail_app.features.business.biz_m_data_supplier.en
 import javax.inject.Inject
 
 @Dao
-interface SupplierDao{
+interface DaoSupplier{
     @Query("""
 SELECT * FROM supplier
 WHERE 1 = 1
@@ -89,7 +89,7 @@ ORDER BY spr_legal_name DESC
 
 class SupplierDaoImpl @Inject constructor(
     private val dbHelper: HlpLocalDatabase
-): SupplierDao {
+): DaoSupplier {
     override fun getAllSortGenIdAsc(): PagingSource<Int, Supplier> =
         dbHelper.getSupplierDao().getAllSortGenIdAsc()
 

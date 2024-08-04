@@ -5,7 +5,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers
-import com.thomas200593.mini_retail_app.features.business.biz_m_data_supplier.dao.SupplierDao
+import com.thomas200593.mini_retail_app.features.business.biz_m_data_supplier.dao.DaoSupplier
 import com.thomas200593.mini_retail_app.features.business.biz_m_data_supplier.entity.Supplier
 import com.thomas200593.mini_retail_app.features.business.biz_m_data_supplier.entity.dto.SortSupplier
 import kotlinx.coroutines.CoroutineDispatcher
@@ -20,7 +20,7 @@ interface SupplierRepository{
 }
 
 class SupplierRepositoryImpl @Inject constructor(
-    private val dao: SupplierDao,
+    private val dao: DaoSupplier,
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ): SupplierRepository {
     override fun getAllSuppliers(sortBy: SortSupplier): Flow<PagingData<Supplier>> {
