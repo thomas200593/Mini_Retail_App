@@ -1,6 +1,9 @@
 package com.thomas200593.mini_retail_app.features.business.biz.repository
 
 import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
+import com.thomas200593.mini_retail_app.core.data.local.session.SessionState.Invalid
+import com.thomas200593.mini_retail_app.core.data.local.session.SessionState.Loading
+import com.thomas200593.mini_retail_app.core.data.local.session.SessionState.Valid
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers.Dispatchers.IO
 import com.thomas200593.mini_retail_app.features.business.biz.navigation.DestBiz
@@ -19,9 +22,9 @@ internal class RepoBizImpl @Inject constructor(
     override suspend fun getMenuData(sessionState: SessionState): Set<DestBiz> =
         withContext(ioDispatcher){
             when(sessionState){
-                SessionState.Loading -> emptySet()
-                is SessionState.Invalid -> entries.filterNot { it.usesAuth }.toSet()
-                is SessionState.Valid -> entries.toSet()
+                Loading -> emptySet()
+                is Invalid -> entries.filterNot { it.usesAuth }.toSet()
+                is Valid -> entries.toSet()
             }
         }
 }

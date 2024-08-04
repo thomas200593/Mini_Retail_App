@@ -8,14 +8,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
-import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridCells.Fixed
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.Icons.AutoMirrored
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.ButtonDefaults.IconSize
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.MaterialTheme.shapes
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -28,8 +30,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.style.TextAlign.Companion.Center
+import androidx.compose.ui.text.style.TextOverflow.Companion.Ellipsis
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -144,7 +146,7 @@ private fun TopAppBar(
         ) {
             Icon(
                 modifier = Modifier,
-                imageVector = Icons.AutoMirrored.Default.KeyboardArrowLeft,
+                imageVector = AutoMirrored.Default.KeyboardArrowLeft,
                 contentDescription = null
             )
         }
@@ -163,7 +165,7 @@ private fun TopAppBar(
             Text(
                 text = stringResource(id = R.string.str_biz_master_data),
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                overflow = Ellipsis
             )
         }
     }
@@ -189,14 +191,14 @@ private fun ScreenContent(
 ) {
     LazyVerticalGrid(
         modifier = Modifier.fillMaxSize().padding(8.dp),
-        columns = GridCells.Fixed(3)
+        columns = Fixed(3)
     ) {
         items(count = menuData.count()){ index ->
             val menu = menuData.elementAt(index)
             Surface(
                 modifier = Modifier.fillMaxWidth().padding(4.dp),
                 onClick = { onNavigateToMenu(menu) },
-                shape = MaterialTheme.shapes.medium,
+                shape = shapes.medium,
                 border = BorderStroke(1.dp, Color.DarkGray),
             ) {
                 Column(
@@ -205,8 +207,8 @@ private fun ScreenContent(
                     verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterVertically)
                 ) {
                     Surface(
-                        shape = MaterialTheme.shapes.medium,
-                        color = MaterialTheme.colorScheme.tertiaryContainer,
+                        shape = shapes.medium,
+                        color = colorScheme.tertiaryContainer,
                     ) {
                         Icon(
                             modifier = Modifier.padding(8.dp),
@@ -217,9 +219,9 @@ private fun ScreenContent(
                     Text(
                         text = stringResource(id = menu.title),
                         modifier = Modifier.fillMaxWidth(),
-                        color = MaterialTheme.colorScheme.onTertiaryContainer,
-                        textAlign = TextAlign.Center,
-                        overflow = TextOverflow.Ellipsis
+                        color = colorScheme.onTertiaryContainer,
+                        textAlign = Center,
+                        overflow = Ellipsis
                     )
                 }
             }

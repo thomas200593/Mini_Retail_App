@@ -2,9 +2,10 @@ package com.thomas200593.mini_retail_app.features.business.biz_m_data.navigation
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import com.thomas200593.mini_retail_app.R
-import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs
-import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons
+import com.thomas200593.mini_retail_app.R.string.str_supplier
+import com.thomas200593.mini_retail_app.R.string.str_supplier_desc
+import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs.Supplier
+import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.Supplier.supplier
 
 enum class DestMasterData(
     val route: String,
@@ -14,10 +15,10 @@ enum class DestMasterData(
     val usesAuth: Boolean
 ){
     SUPPLIER(
-        route = ScrGraphs.Supplier.route,
-        iconRes = CustomIcons.Supplier.supplier,
-        title = R.string.str_supplier,
-        description = R.string.str_supplier_desc,
+        route = Supplier.route,
+        iconRes = supplier,
+        title = str_supplier,
+        description = str_supplier_desc,
         usesAuth = true
     ),
 //    CUSTOMER(
