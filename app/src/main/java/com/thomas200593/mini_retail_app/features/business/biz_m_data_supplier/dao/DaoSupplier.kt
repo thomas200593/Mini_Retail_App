@@ -87,7 +87,7 @@ ORDER BY spr_legal_name DESC
     fun testGen(supplier: Supplier)
 }
 
-class SupplierDaoImpl @Inject constructor(
+class DaoSupplierImpl @Inject constructor(
     private val dbHelper: HlpLocalDatabase
 ): DaoSupplier {
     override fun getAllSortGenIdAsc(): PagingSource<Int, Supplier> =

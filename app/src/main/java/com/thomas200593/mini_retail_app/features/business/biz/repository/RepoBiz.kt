@@ -4,6 +4,7 @@ import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers.Dispatchers.IO
 import com.thomas200593.mini_retail_app.features.business.biz.navigation.DestBiz
+import com.thomas200593.mini_retail_app.features.business.biz.navigation.DestBiz.entries
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -18,10 +19,9 @@ internal class RepoBizImpl @Inject constructor(
     override suspend fun getMenuData(sessionState: SessionState): Set<DestBiz> =
         withContext(ioDispatcher){
             when(sessionState){
-                SessionState.Loading -> { emptySet() }
-                is SessionState.Invalid ->
-                    { DestBiz.entries.filterNot { it.usesAuth }.toSet() }
-                is SessionState.Valid -> { DestBiz.entries.toSet() }
+                SessionState.Loading -> emptySet()
+                is SessionState.Invalid -> entries.filterNot { it.usesAuth }.toSet()
+                is SessionState.Valid -> entries.toSet()
             }
         }
 }

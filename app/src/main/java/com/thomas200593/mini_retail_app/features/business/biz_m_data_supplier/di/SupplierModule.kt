@@ -1,7 +1,7 @@
 package com.thomas200593.mini_retail_app.features.business.biz_m_data_supplier.di
 
 import com.thomas200593.mini_retail_app.features.business.biz_m_data_supplier.dao.DaoSupplier
-import com.thomas200593.mini_retail_app.features.business.biz_m_data_supplier.dao.SupplierDaoImpl
+import com.thomas200593.mini_retail_app.features.business.biz_m_data_supplier.dao.DaoSupplierImpl
 import com.thomas200593.mini_retail_app.features.business.biz_m_data_supplier.repository.SupplierRepository
 import com.thomas200593.mini_retail_app.features.business.biz_m_data_supplier.repository.SupplierRepositoryImpl
 import dagger.Binds
@@ -19,6 +19,6 @@ abstract class SupplierModule {
 
     @Binds
     abstract fun bindsDao(
-        impl: SupplierDaoImpl
+        impl: DaoSupplierImpl
     ): DaoSupplier
 }
