@@ -43,7 +43,7 @@ import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Id
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Loading
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Success
 import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons
-import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar
+import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar.ProvideTopAppBarAction
 import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar.ProvideTopAppBarTitle
 import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AlertDialogContext.ERROR
 import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AlertDialogContext.INFORMATION
@@ -150,7 +150,7 @@ private fun TopAppBar() {
             )
         }
     }
-    CustomAppBar.ProvideTopAppBarAction {
+    ProvideTopAppBarAction {
         Row(
             modifier = Modifier.padding(end = 20.dp),
             verticalAlignment = Alignment.CenterVertically,

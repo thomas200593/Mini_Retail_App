@@ -42,7 +42,7 @@ class VMAppConfig @Inject constructor(
         data class OnOpenEvents(val sessionState: SessionState) : UiEvents()
         sealed class ButtonEvents : UiEvents(){
             sealed class BtnNavBackEvents: ButtonEvents(){
-                data object OnClick: ButtonEvents()
+                data object OnClick: BtnNavBackEvents()
             }
             sealed class BtnMenuEvents: ButtonEvents(){
                 data object OnAllow: BtnMenuEvents()
