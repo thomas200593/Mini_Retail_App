@@ -17,9 +17,7 @@ fun NavGraphBuilder.navGraphBiz(){
     ){
         composable(
             route = Business.route
-        ){
-            ScrBiz()
-        }
+        ){ ScrBiz() }
 
         /**
          * - Master Data
@@ -29,7 +27,7 @@ fun NavGraphBuilder.navGraphBiz(){
     }
 }
 
-fun NavController.navigateToBiz(
+fun NavController.navToBiz(
     navOptions: NavOptions?,
     destBiz: DestBiz? = null
 ) {

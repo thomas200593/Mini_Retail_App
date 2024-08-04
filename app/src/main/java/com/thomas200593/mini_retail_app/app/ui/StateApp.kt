@@ -19,7 +19,7 @@ import com.thomas200593.mini_retail_app.app.navigation.DestWithTopAppBar.destWit
 import com.thomas200593.mini_retail_app.core.data.local.session.Session
 import com.thomas200593.mini_retail_app.core.data.local.session.SessionState.Loading
 import com.thomas200593.mini_retail_app.core.design_system.network_monitor.NetworkMonitor
-import com.thomas200593.mini_retail_app.features.business.biz.navigation.navigateToBiz
+import com.thomas200593.mini_retail_app.features.business.biz.navigation.navToBiz
 import com.thomas200593.mini_retail_app.features.dashboard.navigation.navToDashboard
 import com.thomas200593.mini_retail_app.features.reporting.navigation.navToReporting
 import com.thomas200593.mini_retail_app.features.user_profile.navigation.navToUserProfile
@@ -82,7 +82,7 @@ class StateApp(
         }
         when(destTopLevel){
             DASHBOARD -> { navController.navToDashboard(navOptions = destTopLevelNavOptions) }
-            BUSINESS -> { navController.navigateToBiz(navOptions = destTopLevelNavOptions) }
+            BUSINESS -> { navController.navToBiz(navOptions = destTopLevelNavOptions) }
             REPORTING -> { navController.navToReporting(navOptions = destTopLevelNavOptions) }
             USER_PROFILE -> { navController.navToUserProfile(navOptions = destTopLevelNavOptions) }
         }
