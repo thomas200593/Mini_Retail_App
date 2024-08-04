@@ -39,6 +39,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class ActMain: AppCompatActivity() {
 
+    //add comment
     @Inject lateinit var networkMonitor: NetworkMonitor
     @Inject lateinit var session: Session
 
