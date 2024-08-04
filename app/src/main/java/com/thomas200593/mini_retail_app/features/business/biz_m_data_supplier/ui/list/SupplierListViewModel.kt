@@ -11,10 +11,10 @@ import androidx.paging.cachedIn
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.AuditTrail
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers
-import com.thomas200593.mini_retail_app.features.business.biz_m_data_supplier.domain.GetSupplierListUseCase
+import com.thomas200593.mini_retail_app.features.business.biz_m_data_supplier.domain.UCGetSupplierList
 import com.thomas200593.mini_retail_app.features.business.biz_m_data_supplier.entity.Supplier
 import com.thomas200593.mini_retail_app.features.business.biz_m_data_supplier.entity.dto.SortSupplier
-import com.thomas200593.mini_retail_app.features.business.biz_m_data_supplier.repository.SupplierRepository
+import com.thomas200593.mini_retail_app.features.business.biz_m_data_supplier.repository.RepoSupplier
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -28,8 +28,8 @@ import kotlin.random.Random
 
 @HiltViewModel
 class SupplierListViewModel @Inject constructor(
-    useCase: GetSupplierListUseCase,
-    private val repository: SupplierRepository,
+    useCase: UCGetSupplierList,
+    private val repository: RepoSupplier,
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
     private val savedStateHandle: SavedStateHandle
 ): ViewModel() {
