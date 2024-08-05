@@ -10,14 +10,14 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 interface ExtFnBizProfile{
-    suspend fun bizProfileToBizProfileSummary(bizProfile: BizProfile): BizProfileShort
-    suspend fun bizProfileSummaryToBizProfile(bizProfileShort: BizProfileShort): BizProfile
+    suspend fun bizProfileToBizProfileShort(bizProfile: BizProfile): BizProfileShort
+    suspend fun bizProfileShortToBizProfile(bizProfileShort: BizProfileShort): BizProfile
 }
 
 class ExtFnBizProfileImpl @Inject constructor(
     @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
 ): ExtFnBizProfile {
-    override suspend fun bizProfileToBizProfileSummary(bizProfile: BizProfile): BizProfileShort =
+    override suspend fun bizProfileToBizProfileShort(bizProfile: BizProfile): BizProfileShort =
         withContext(ioDispatcher){
             BizProfileShort(
                 seqId = bizProfile.seqId,
@@ -27,7 +27,7 @@ class ExtFnBizProfileImpl @Inject constructor(
                 bizIndustry = bizProfile.bizIdentity?.industries
             )
         }
-    override suspend fun bizProfileSummaryToBizProfile(bizProfileShort: BizProfileShort): BizProfile =
+    override suspend fun bizProfileShortToBizProfile(bizProfileShort: BizProfileShort): BizProfile =
         withContext(ioDispatcher){
             BizProfile(
                 seqId = bizProfileShort.seqId,

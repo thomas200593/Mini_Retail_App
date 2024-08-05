@@ -21,7 +21,7 @@ class UCGetBizProfileSummary @Inject constructor(
     operator fun invoke() = repoBizProfile.getBusinessProfile().flowOn(ioDispatcher)
         .catch { Error(it) }
         .map {
-            if(it != null){ Success(extFnBizProfile.bizProfileToBizProfileSummary(it)) }
+            if(it != null){ Success(extFnBizProfile.bizProfileToBizProfileShort(it)) }
             else{ Empty }
         }
 }

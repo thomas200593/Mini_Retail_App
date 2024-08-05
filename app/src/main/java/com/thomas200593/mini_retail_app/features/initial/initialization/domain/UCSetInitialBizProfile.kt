@@ -13,7 +13,7 @@ class UCSetInitialBizProfile @Inject constructor(
     private val extFnBizProfile: ExtFnBizProfile
 ){
     suspend operator fun invoke(bizProfileShort: BizProfileShort): BizProfileShort?{
-        if(repoBizProfile.setBusinessProfile(extFnBizProfile.bizProfileSummaryToBizProfile(bizProfileShort)) > 0){
+        if(repoBizProfile.setBusinessProfile(extFnBizProfile.bizProfileShortToBizProfile(bizProfileShort)) > 0){
             repoAppConf.setFirstTimeStatus(NO)
             return bizProfileShort
         }
