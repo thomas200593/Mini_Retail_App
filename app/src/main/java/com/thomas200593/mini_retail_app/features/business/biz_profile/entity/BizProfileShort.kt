@@ -12,3 +12,14 @@ data class BizProfileShort(
     val bizIndustry: Industries?,
     val auditTrail: AuditTrail
 )
+
+fun BizProfileShort.toBizProfile() = BizProfile(
+    seqId = seqId,
+    genId = genId,
+    bizIdentity = BizIdentity(
+        bizName = bizName,
+        industries = bizIndustry,
+        auditTrail = auditTrail
+    ),
+    auditTrail = auditTrail
+)

@@ -45,3 +45,11 @@ data class BizProfile(
     @ColumnInfo(name = "links")
     val links: List<Link>? = null,
 ): BaseEntity
+
+fun BizProfile.toBizProfileShort() = BizProfileShort(
+    seqId = seqId,
+    genId = genId,
+    bizIndustry = bizIdentity?.industries,
+    bizName = bizIdentity?.bizName,
+    auditTrail = auditTrail
+)

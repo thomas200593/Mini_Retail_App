@@ -4,8 +4,6 @@ import com.thomas200593.mini_retail_app.features.business.biz_profile.dao.DaoBiz
 import com.thomas200593.mini_retail_app.features.business.biz_profile.dao.DaoBizProfileImpl
 import com.thomas200593.mini_retail_app.features.business.biz_profile.repository.RepoBizProfile
 import com.thomas200593.mini_retail_app.features.business.biz_profile.repository.RepoBizProfileImpl
-import com.thomas200593.mini_retail_app.features.business.biz_profile.util.ExtFnBizProfile
-import com.thomas200593.mini_retail_app.features.business.biz_profile.util.ExtFnBizProfileImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -14,9 +12,6 @@ import dagger.hilt.components.SingletonComponent
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class ModBizProfile {
-    @Binds
-    abstract fun bindsImplementation(impl: ExtFnBizProfileImpl): ExtFnBizProfile
-
     @Binds
     internal abstract fun bindsRepository(impl: RepoBizProfileImpl): RepoBizProfile
 
