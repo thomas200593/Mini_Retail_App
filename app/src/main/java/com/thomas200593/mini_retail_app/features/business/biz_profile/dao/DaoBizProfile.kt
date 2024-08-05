@@ -6,7 +6,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Upsert
 import com.thomas200593.mini_retail_app.core.data.local.database.HlpLocalDatabase
-import com.thomas200593.mini_retail_app.features.business.biz_profile.entity.BusinessProfile
+import com.thomas200593.mini_retail_app.features.business.biz_profile.entity.BizProfile
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -21,26 +21,26 @@ SELECT
     bp.contacts,
     bp.links,
     bp.audit_trail 
-FROM business_profile bp LIMIT 1
+FROM biz_profile bp LIMIT 1
     """)
-    fun getBusinessProfile(): Flow<BusinessProfile?>
+    fun getBusinessProfile(): Flow<BizProfile?>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun testGenerate(businessProfile: BusinessProfile)
+    suspend fun testGenerate(bizProfile: BizProfile)
 
-    @Upsert(BusinessProfile::class)
-    fun setInitialBizProfile(businessProfile: BusinessProfile): Long
+    @Upsert(BizProfile::class)
+    fun setInitialBizProfile(bizProfile: BizProfile): Long
 }
 
 class DaoBizProfileImpl @Inject constructor(
     private val dbHelper: HlpLocalDatabase
 ): DaoBizProfile {
-    override fun getBusinessProfile(): Flow<BusinessProfile?> =
+    override fun getBusinessProfile(): Flow<BizProfile?> =
         dbHelper.getBusinessProfileDao().getBusinessProfile()
 
-    override suspend fun testGenerate(businessProfile: BusinessProfile) =
-        dbHelper.getBusinessProfileDao().testGenerate(businessProfile)
+    override suspend fun testGenerate(bizProfile: BizProfile) =
+        dbHelper.getBusinessProfileDao().testGenerate(bizProfile)
 
-    override fun setInitialBizProfile(businessProfile: BusinessProfile): Long =
-        dbHelper.getBusinessProfileDao().setInitialBizProfile(businessProfile)
+    override fun setInitialBizProfile(bizProfile: BizProfile): Long =
+        dbHelper.getBusinessProfileDao().setInitialBizProfile(bizProfile)
 }

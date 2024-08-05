@@ -3,23 +3,23 @@ package com.thomas200593.mini_retail_app.features.business.biz_profile.repositor
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers.Dispatchers.IO
 import com.thomas200593.mini_retail_app.features.business.biz_profile.dao.DaoBizProfile
-import com.thomas200593.mini_retail_app.features.business.biz_profile.entity.BusinessProfile
+import com.thomas200593.mini_retail_app.features.business.biz_profile.entity.BizProfile
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
 interface RepoBizProfile{
-    fun getBusinessProfile(): Flow<BusinessProfile?>
-    suspend fun setBusinessProfile(businessProfile: BusinessProfile): Long
+    fun getBusinessProfile(): Flow<BizProfile?>
+    suspend fun setBusinessProfile(bizProfile: BizProfile): Long
 }
 
 class RepoBizProfileImpl @Inject constructor(
     private val dao: DaoBizProfile,
     @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
 ): RepoBizProfile {
-    override fun getBusinessProfile(): Flow<BusinessProfile?> =
+    override fun getBusinessProfile(): Flow<BizProfile?> =
         dao.getBusinessProfile().flowOn(ioDispatcher)
-    override suspend fun setBusinessProfile(businessProfile: BusinessProfile): Long =
-        dao.setInitialBizProfile(businessProfile)
+    override suspend fun setBusinessProfile(bizProfile: BizProfile): Long =
+        dao.setInitialBizProfile(bizProfile)
 }

@@ -7,21 +7,21 @@ import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.Address
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.AuditTrail
-import com.thomas200593.mini_retail_app.core.design_system.base_class.BaseEntity
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.Contact
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.Link
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.TypeConvAuditTrail
+import com.thomas200593.mini_retail_app.core.design_system.base_class.BaseEntity
 import kotlinx.serialization.Serializable
 import ulid.ULID
 
 @Serializable
 @Entity(
-    tableName = "business_profile",
+    tableName = "biz_profile",
     indices = [
         Index(value = ["gen_id"]),
     ]
 )
-data class BusinessProfile(
+data class BizProfile(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "seq_id")
     override val seqId: Int = 0,

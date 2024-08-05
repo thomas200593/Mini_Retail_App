@@ -1,12 +1,12 @@
 package com.thomas200593.mini_retail_app.features.business.biz_profile.domain
 
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatcher
-import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers
+import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers.Dispatchers.IO
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Empty
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Error
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Success
 import com.thomas200593.mini_retail_app.features.business.biz_profile.repository.RepoBizProfile
-import com.thomas200593.mini_retail_app.features.business.biz_profile.util.ExtFnBusiness
+import com.thomas200593.mini_retail_app.features.business.biz_profile.util.ExtFnBizProfile
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOn
@@ -14,14 +14,14 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class UCGetBizProfileSummary @Inject constructor(
-    private val repository: RepoBizProfile,
-    private val bizExtFn: ExtFnBusiness,
-    @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher
+    private val repoBizProfile: RepoBizProfile,
+    private val extFnBizProfile: ExtFnBizProfile,
+    @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
 ) {
-    operator fun invoke() = repository.getBusinessProfile().flowOn(ioDispatcher)
+    operator fun invoke() = repoBizProfile.getBusinessProfile().flowOn(ioDispatcher)
         .catch { Error(it) }
         .map {
-            if(it != null){ Success(bizExtFn.bizProfileToBizProfileSummary(it)) }
+            if(it != null){ Success(extFnBizProfile.bizProfileToBizProfileSummary(it)) }
             else{ Empty }
         }
 }

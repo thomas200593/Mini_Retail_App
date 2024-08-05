@@ -21,7 +21,7 @@ import com.thomas200593.mini_retail_app.core.ui.component.CustomForm.Component.U
 import com.thomas200593.mini_retail_app.core.ui.component.CustomForm.Component.UseCase.UiText.StringResource
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_language.entity.Language
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_language.repository.RepoConfGenLanguage
-import com.thomas200593.mini_retail_app.features.business.biz_profile.entity.dto.BizProfileSummary
+import com.thomas200593.mini_retail_app.features.business.biz_profile.entity.BizProfileShort
 import com.thomas200593.mini_retail_app.features.initial.initialization.domain.UCGetInitializationData
 import com.thomas200593.mini_retail_app.features.initial.initialization.domain.UCSetInitialBizProfile
 import com.thomas200593.mini_retail_app.features.initial.initialization.entity.Initialization
@@ -56,7 +56,7 @@ class VMInitialization @Inject constructor(
         val welcomePanelState: WelcomePanelState = WelcomePanelState(),
         val inputFormState: InputFormState = InputFormState(),
         val dialogState: DialogState = DialogState(),
-        val initBizProfileResult: ResourceState<BizProfileSummary> = Idle
+        val initBizProfileResult: ResourceState<BizProfileShort> = Idle
     )
     data class WelcomePanelState(val visible: Boolean = true)
     data class InputFormState(
@@ -83,7 +83,7 @@ class VMInitialization @Inject constructor(
                 data class ValueChanged(val commonName: String): CommonNameEvents()
             }
             sealed class BtnSubmitEvents: InputFormEvents(){
-                data class OnClick(val bizProfileSummary: BizProfileSummary): BtnSubmitEvents()
+                data class OnClick(val bizProfileShort: BizProfileShort): BtnSubmitEvents()
             }
             sealed class BtnCancelEvents: InputFormEvents(){
                 data object OnClick: BtnCancelEvents()
@@ -97,7 +97,7 @@ class VMInitialization @Inject constructor(
         sealed class ButtonEvents: UiEvents(){
             sealed class BtnInitDefaultBizProfileEvents: ButtonEvents(){
                 data class OnClick(
-                    val bizProfileSummary: BizProfileSummary
+                    val bizProfileShort: BizProfileShort
                 ): BtnInitDefaultBizProfileEvents()
             }
             sealed class BtnInitManualBizProfileEvents: ButtonEvents(){
@@ -113,11 +113,11 @@ class VMInitialization @Inject constructor(
         when(events){
             OnOpenEvents -> onOpenEvent()
             is DDLanguage.OnSelect -> onSelectLanguageEvent(events.language)
-            is BtnInitDefaultBizProfileEvents.OnClick -> doInitBizProfile(events.bizProfileSummary)
+            is BtnInitDefaultBizProfileEvents.OnClick -> doInitBizProfile(events.bizProfileShort)
             BtnInitManualBizProfileEvents.OnClick -> doShowForm()
             is LegalNameEvents.ValueChanged -> formLegalNameValueChanged(events.legalName)
             is CommonNameEvents.ValueChanged -> formCommonNameValueChanged(events.commonName)
-            is BtnSubmitEvents.OnClick -> doInitBizProfile(events.bizProfileSummary)
+            is BtnSubmitEvents.OnClick -> doInitBizProfile(events.bizProfileShort)
             BtnCancelEvents.OnClick -> doResetForm()
         }
     }
@@ -193,7 +193,7 @@ class VMInitialization @Inject constructor(
             )
         }
     }
-    private fun doInitBizProfile(bizProfileSummary: BizProfileSummary) =
+    private fun doInitBizProfile(bizProfileShort: BizProfileShort) =
         viewModelScope.launch(ioDispatcher) {
             updateDialogState(
                 dlgLoadingEnabled = true,
@@ -203,7 +203,7 @@ class VMInitialization @Inject constructor(
             )
             _uiState.update { it.copy(initBizProfileResult = Loading) }
             try {
-                val result = ucSetInitBizProfile.invoke(bizProfileSummary)
+                val result = ucSetInitBizProfile.invoke(bizProfileShort)
                 if (result != null) {
                     updateDialogState(
                         dlgLoadingEnabled = false,

@@ -63,7 +63,7 @@ import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.LoadingScr
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.entity.AppConfig.ConfigCurrent
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_language.entity.Language
 import com.thomas200593.mini_retail_app.features.business.biz_profile.entity.BizName
-import com.thomas200593.mini_retail_app.features.business.biz_profile.entity.dto.BizProfileSummary
+import com.thomas200593.mini_retail_app.features.business.biz_profile.entity.BizProfileShort
 import com.thomas200593.mini_retail_app.features.initial.initial.navigation.navToInitial
 import com.thomas200593.mini_retail_app.features.initial.initialization.entity.Initialization
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.InputFormState
@@ -139,11 +139,11 @@ fun ScrInitialization(
 private fun ScreenContent(
     uiState: UiState,
     onSelectLanguage: (Language) -> Unit,
-    onInitBizProfileDefaultBtnClicked: (BizProfileSummary) -> Unit,
+    onInitBizProfileDefaultBtnClicked: (BizProfileShort) -> Unit,
     onInitBizProfileManualBtnClicked: () -> Unit,
     onLegalNameValueChanged: (String) -> Unit,
     onCommonNameValueChanged: (String) -> Unit,
-    onFormSubmitBtnClicked: (BizProfileSummary) -> Unit,
+    onFormSubmitBtnClicked: (BizProfileShort) -> Unit,
     onFormCancelBtnClicked: () -> Unit
 ) {
     when(uiState.initialization){
@@ -183,11 +183,11 @@ private fun SuccessSection(
     uiState: UiState,
     initData: Initialization,
     onSelectLanguage: (Language) -> Unit,
-    onInitBizProfileDefaultBtnClicked: (BizProfileSummary) -> Unit,
+    onInitBizProfileDefaultBtnClicked: (BizProfileShort) -> Unit,
     onInitBizProfileManualBtnClicked: () -> Unit,
     onLegalNameValueChanged: (String) -> Unit,
     onCommonNameValueChanged: (String) -> Unit,
-    onFormSubmitBtnClicked: (BizProfileSummary) -> Unit,
+    onFormSubmitBtnClicked: (BizProfileShort) -> Unit,
     onFormCancelBtnClicked: () -> Unit
 ) {
     Column(
@@ -284,7 +284,7 @@ private fun LanguageSection(
 
 @Composable
 private fun WelcomeMessage(
-    onInitBizProfileDefaultBtnClicked: (BizProfileSummary) -> Unit,
+    onInitBizProfileDefaultBtnClicked: (BizProfileShort) -> Unit,
     onInitBizProfileManualBtnClicked: () -> Unit,
 ) {
     Column(
@@ -344,7 +344,7 @@ private fun WelcomeMessage(
     TextButton(
         onClick = {
             onInitBizProfileDefaultBtnClicked.invoke(
-                BizProfileSummary(
+                BizProfileShort(
                     seqId = 0,
                     genId = randomULID(),
                     bizName = BizName(
@@ -370,7 +370,7 @@ fun InitManualForm(
     inputFormState: InputFormState,
     onLegalNameValueChanged: (String) -> Unit,
     onCommonNameValueChanged: (String) -> Unit,
-    onFormSubmitBtnClicked: (BizProfileSummary) -> Unit,
+    onFormSubmitBtnClicked: (BizProfileShort) -> Unit,
     onFormCancelBtnClicked: () -> Unit,
 ) {
     Surface(
@@ -433,7 +433,7 @@ fun InitManualForm(
                         modifier = Modifier.weight(0.5f),
                         onClick = {
                             onFormSubmitBtnClicked.invoke(
-                                BizProfileSummary(
+                                BizProfileShort(
                                     seqId = 0,
                                     genId = randomULID(),
                                     bizName = BizName(

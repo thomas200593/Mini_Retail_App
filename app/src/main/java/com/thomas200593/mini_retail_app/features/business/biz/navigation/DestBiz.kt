@@ -22,7 +22,7 @@ enum class DestBiz(
         usesAuth = true
     ),
 //    BUSINESS_PROFILE(
-//        route = ScrGraphs.BusinessProfile.route,
+//        route = ScrGraphs.BizProfile.route,
 //        iconRes = CustomIcons.Business.business_profile,
 //        title = R.string.business_profile,
 //        description = R.string.business_profile_desc,
