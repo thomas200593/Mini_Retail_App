@@ -10,7 +10,7 @@ import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
 import com.thomas200593.mini_retail_app.features.auth.entity.UserData
 import com.thomas200593.mini_retail_app.features.auth.repository.RepoAuth
-import com.thomas200593.mini_retail_app.features.business.biz_profile.domain.UCGetBizProfileSummary
+import com.thomas200593.mini_retail_app.features.business.biz_profile.domain.UCGetBizProfileShort
 import com.thomas200593.mini_retail_app.features.business.biz_profile.entity.BizProfileShort
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -23,7 +23,7 @@ private val TAG = VMUserProfile::class.simpleName
 @HiltViewModel
 class VMUserProfile @Inject constructor(
     private val repoAuth: RepoAuth,
-    private val ucGetBizProfileSummary: UCGetBizProfileSummary,
+    private val ucGetBizProfileShort: UCGetBizProfileShort,
     @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
 ): ViewModel(){
 
@@ -52,7 +52,7 @@ class VMUserProfile @Inject constructor(
     private fun getBusinessProfileSummary() = viewModelScope.launch(ioDispatcher){
         Timber.d("Called : fun $TAG.getBusinessProfile()")
         _businessProfileSummary.value = ResourceState.Loading
-        ucGetBizProfileSummary.invoke().collect{ bps ->
+        ucGetBizProfileShort.invoke().collect{ bps ->
             _businessProfileSummary.value = bps
         }
     }

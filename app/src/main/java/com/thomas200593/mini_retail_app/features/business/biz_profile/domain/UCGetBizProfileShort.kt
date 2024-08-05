@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class UCGetBizProfileSummary @Inject constructor(
+class UCGetBizProfileShort @Inject constructor(
     private val repoBizProfile: RepoBizProfile,
     private val extFnBizProfile: ExtFnBizProfile,
     @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
