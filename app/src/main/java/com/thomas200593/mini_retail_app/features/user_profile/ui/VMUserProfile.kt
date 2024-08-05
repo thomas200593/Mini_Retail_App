@@ -8,6 +8,10 @@ import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers.Dispatchers.IO
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
+import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Error
+import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Idle
+import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Loading
+import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Success
 import com.thomas200593.mini_retail_app.features.auth.entity.UserData
 import com.thomas200593.mini_retail_app.features.auth.repository.RepoAuth
 import com.thomas200593.mini_retail_app.features.business.biz_profile.domain.UCGetBizProfileShort
@@ -27,10 +31,12 @@ class VMUserProfile @Inject constructor(
     @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
 ): ViewModel(){
 
-    private val _currentSessionUserData: MutableState<ResourceState<UserData>> = mutableStateOf(ResourceState.Idle)
+    private val _currentSessionUserData: MutableState<ResourceState<UserData>> = mutableStateOf(Idle)
     val currentSessionUserData = _currentSessionUserData
 
-    private val _businessProfileSummary: MutableState<ResourceState<BizProfileShort>> = mutableStateOf(ResourceState.Idle)
+    private val _businessProfileSummary: MutableState<ResourceState<BizProfileShort>> = mutableStateOf(
+        Idle
+    )
     val businessProfileSummary = _businessProfileSummary
 
     fun onOpen(validSession: SessionState.Valid) = viewModelScope.launch(ioDispatcher){
@@ -41,17 +47,17 @@ class VMUserProfile @Inject constructor(
 
     private fun getCurrentSessionUserData(validSession: SessionState.Valid) = viewModelScope.launch(ioDispatcher){
         Timber.d("Called : fun $TAG.getCurrentUserSession()")
-        _currentSessionUserData.value = ResourceState.Loading
+        _currentSessionUserData.value = Loading
         _currentSessionUserData.value = try{
-            ResourceState.Success(validSession.userData)
+            Success(validSession.userData)
         }catch (e: Throwable){
-            ResourceState.Error(e)
+            Error(e)
         }
     }
 
     private fun getBusinessProfileSummary() = viewModelScope.launch(ioDispatcher){
         Timber.d("Called : fun $TAG.getBusinessProfile()")
-        _businessProfileSummary.value = ResourceState.Loading
+        _businessProfileSummary.value = Loading
         ucGetBizProfileShort.invoke().collect{ bps ->
             _businessProfileSummary.value = bps
         }
@@ -59,7 +65,7 @@ class VMUserProfile @Inject constructor(
 
     fun handleSignOut() = viewModelScope.launch(ioDispatcher){
         Timber.d("Called : fun $TAG.handleSignOut()")
-        _currentSessionUserData.value = ResourceState.Loading
+        _currentSessionUserData.value = Loading
         repoAuth.clearAuthSessionToken()
     }
 }
