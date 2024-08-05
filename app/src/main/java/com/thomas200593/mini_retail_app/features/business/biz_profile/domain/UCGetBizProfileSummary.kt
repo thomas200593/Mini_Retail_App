@@ -18,7 +18,7 @@ class UCGetBizProfileSummary @Inject constructor(
     private val extFnBizProfile: ExtFnBizProfile,
     @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
 ) {
-    operator fun invoke() = repoBizProfile.getBusinessProfile().flowOn(ioDispatcher)
+    operator fun invoke() = repoBizProfile.getBizProfile().flowOn(ioDispatcher)
         .catch { Error(it) }
         .map {
             if(it != null){ Success(extFnBizProfile.bizProfileToBizProfileShort(it)) }
