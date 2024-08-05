@@ -6,14 +6,14 @@ import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Em
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Error
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Success
 import com.thomas200593.mini_retail_app.features.business.biz_profile.repository.RepoBizProfile
-import com.thomas200593.mini_retail_app.features.business.util.ExtFnBusiness
+import com.thomas200593.mini_retail_app.features.business.biz_profile.util.ExtFnBusiness
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class GetBizProfileSummaryUseCase @Inject constructor(
+class UCGetBizProfileSummary @Inject constructor(
     private val repository: RepoBizProfile,
     private val bizExtFn: ExtFnBusiness,
     @Dispatcher(Dispatchers.Dispatchers.IO) private val ioDispatcher: CoroutineDispatcher

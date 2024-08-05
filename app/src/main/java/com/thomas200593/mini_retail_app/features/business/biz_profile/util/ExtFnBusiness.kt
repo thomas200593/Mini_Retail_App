@@ -1,4 +1,4 @@
-package com.thomas200593.mini_retail_app.features.business.util
+package com.thomas200593.mini_retail_app.features.business.biz_profile.util
 
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers.Dispatchers.IO

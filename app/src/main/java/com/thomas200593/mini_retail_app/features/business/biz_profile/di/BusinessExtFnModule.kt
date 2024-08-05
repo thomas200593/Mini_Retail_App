@@ -1,7 +1,7 @@
-package com.thomas200593.mini_retail_app.features.business.util.di
+package com.thomas200593.mini_retail_app.features.business.biz_profile.di
 
-import com.thomas200593.mini_retail_app.features.business.util.BusinessExtFnImpl
-import com.thomas200593.mini_retail_app.features.business.util.ExtFnBusiness
+import com.thomas200593.mini_retail_app.features.business.biz_profile.util.BusinessExtFnImpl
+import com.thomas200593.mini_retail_app.features.business.biz_profile.util.ExtFnBusiness
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

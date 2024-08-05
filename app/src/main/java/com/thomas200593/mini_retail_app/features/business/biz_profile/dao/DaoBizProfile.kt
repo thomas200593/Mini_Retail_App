@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 @Dao
-interface BusinessProfileDao{
+interface DaoBizProfile{
     @Query("""
 SELECT 
     bp.seq_id, 
@@ -32,9 +32,9 @@ FROM business_profile bp LIMIT 1
     fun setInitialBizProfile(businessProfile: BusinessProfile): Long
 }
 
-class BusinessProfileDaoImpl @Inject constructor(
+class DaoBizProfileImpl @Inject constructor(
     private val dbHelper: HlpLocalDatabase
-): BusinessProfileDao {
+): DaoBizProfile {
     override fun getBusinessProfile(): Flow<BusinessProfile?> =
         dbHelper.getBusinessProfileDao().getBusinessProfile()
 

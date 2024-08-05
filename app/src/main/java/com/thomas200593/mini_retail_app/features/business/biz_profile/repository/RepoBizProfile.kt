@@ -2,7 +2,7 @@ package com.thomas200593.mini_retail_app.features.business.biz_profile.repositor
 
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers.Dispatchers.IO
-import com.thomas200593.mini_retail_app.features.business.biz_profile.dao.BusinessProfileDao
+import com.thomas200593.mini_retail_app.features.business.biz_profile.dao.DaoBizProfile
 import com.thomas200593.mini_retail_app.features.business.biz_profile.entity.BusinessProfile
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
@@ -15,7 +15,7 @@ interface RepoBizProfile{
 }
 
 class RepoBizProfileImpl @Inject constructor(
-    private val dao: BusinessProfileDao,
+    private val dao: DaoBizProfile,
     @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
 ): RepoBizProfile {
     override fun getBusinessProfile(): Flow<BusinessProfile?> =

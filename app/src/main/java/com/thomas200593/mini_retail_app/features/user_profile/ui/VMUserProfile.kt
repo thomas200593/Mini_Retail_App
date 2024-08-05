@@ -10,7 +10,7 @@ import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
 import com.thomas200593.mini_retail_app.features.auth.entity.UserData
 import com.thomas200593.mini_retail_app.features.auth.repository.RepoAuth
-import com.thomas200593.mini_retail_app.features.business.biz_profile.domain.GetBizProfileSummaryUseCase
+import com.thomas200593.mini_retail_app.features.business.biz_profile.domain.UCGetBizProfileSummary
 import com.thomas200593.mini_retail_app.features.business.biz_profile.entity.dto.BizProfileSummary
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -23,7 +23,7 @@ private val TAG = VMUserProfile::class.simpleName
 @HiltViewModel
 class VMUserProfile @Inject constructor(
     private val repoAuth: RepoAuth,
-    private val ucGetBizProfileSummary: GetBizProfileSummaryUseCase,
+    private val ucGetBizProfileSummary: UCGetBizProfileSummary,
     @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
 ): ViewModel(){
 

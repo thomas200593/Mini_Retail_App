@@ -4,7 +4,7 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.TypeConvAuditTrail
-import com.thomas200593.mini_retail_app.features.business.biz_profile.dao.BusinessProfileDao
+import com.thomas200593.mini_retail_app.features.business.biz_profile.dao.DaoBizProfile
 import com.thomas200593.mini_retail_app.features.business.biz_profile.entity.BusinessProfile
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.TypeConvAddress
 import com.thomas200593.mini_retail_app.features.business.biz_profile.entity.TypeConvBizIdentity
@@ -31,6 +31,6 @@ import javax.inject.Singleton
     ]
 )
 abstract class HlpLocalDatabase: RoomDatabase(){
-    abstract fun getBusinessProfileDao(): BusinessProfileDao
+    abstract fun getBusinessProfileDao(): DaoBizProfile
     abstract fun getSupplierDao(): DaoSupplier
 }

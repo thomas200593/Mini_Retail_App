@@ -3,7 +3,7 @@ package com.thomas200593.mini_retail_app.features.initial.initialization.domain
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.repository.RepoAppConf
 import com.thomas200593.mini_retail_app.features.business.biz_profile.entity.dto.BizProfileSummary
 import com.thomas200593.mini_retail_app.features.business.biz_profile.repository.RepoBizProfile
-import com.thomas200593.mini_retail_app.features.business.util.ExtFnBusiness
+import com.thomas200593.mini_retail_app.features.business.biz_profile.util.ExtFnBusiness
 import com.thomas200593.mini_retail_app.features.initial.initial.entity.FirstTimeStatus.NO
 import javax.inject.Inject
 
