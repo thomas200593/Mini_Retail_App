@@ -1,4 +1,4 @@
-package com.thomas200593.mini_retail_app.features.business.biz_profile.dao
+package com.thomas200593.mini_retail_app.features.business.biz_c_profile.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
@@ -6,7 +6,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Upsert
 import com.thomas200593.mini_retail_app.core.data.local.database.HlpLocalDatabase
-import com.thomas200593.mini_retail_app.features.business.biz_profile.entity.BusinessProfile
+import com.thomas200593.mini_retail_app.features.business.biz_c_profile.entity.BusinessProfile
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 

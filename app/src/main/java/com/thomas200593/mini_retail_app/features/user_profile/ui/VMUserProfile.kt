@@ -10,8 +10,8 @@ import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
 import com.thomas200593.mini_retail_app.features.auth.entity.UserData
 import com.thomas200593.mini_retail_app.features.auth.repository.RepoAuth
-import com.thomas200593.mini_retail_app.features.business.biz_profile.domain.GetBizProfileSummaryUseCase
-import com.thomas200593.mini_retail_app.features.business.biz_profile.entity.dto.BizProfileSummary
+import com.thomas200593.mini_retail_app.features.business.biz_c_profile.domain.GetBizProfileSummaryUseCase
+import com.thomas200593.mini_retail_app.features.business.biz_c_profile.entity.dto.BizProfileSummary
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch

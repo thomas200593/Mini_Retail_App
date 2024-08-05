@@ -1,4 +1,4 @@
-package com.thomas200593.mini_retail_app.features.business.biz_profile.entity
+package com.thomas200593.mini_retail_app.features.business.biz_c_profile.entity
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

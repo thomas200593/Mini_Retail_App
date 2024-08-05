@@ -21,7 +21,7 @@ import com.thomas200593.mini_retail_app.core.ui.component.CustomForm.Component.U
 import com.thomas200593.mini_retail_app.core.ui.component.CustomForm.Component.UseCase.UiText.StringResource
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_language.entity.Language
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_language.repository.RepoConfGenLanguage
-import com.thomas200593.mini_retail_app.features.business.biz_profile.entity.dto.BizProfileSummary
+import com.thomas200593.mini_retail_app.features.business.biz_c_profile.entity.dto.BizProfileSummary
 import com.thomas200593.mini_retail_app.features.initial.initialization.domain.UCGetInitializationData
 import com.thomas200593.mini_retail_app.features.initial.initialization.domain.UCSetInitialBizProfile
 import com.thomas200593.mini_retail_app.features.initial.initialization.entity.Initialization

@@ -1,7 +1,7 @@
 package com.thomas200593.mini_retail_app.features.business.biz_m_data_supplier.ui.add_update
 
 import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
-import com.thomas200593.mini_retail_app.features.business.biz_profile.entity.dto.BizProfileSummary
+import com.thomas200593.mini_retail_app.features.business.biz_c_profile.entity.dto.BizProfileSummary
 
 sealed class SupplierAddUpdateUiEvent {
     data object OnSessionCheckLoading: SupplierAddUpdateUiEvent()
