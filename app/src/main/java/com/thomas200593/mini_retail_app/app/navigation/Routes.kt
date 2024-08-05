@@ -47,6 +47,7 @@ object Routes {
     const val R_MASTER_DATA = "r_master_data"
     const val R_SUPPLIER = "r_supplier"
     const val R_CUSTOMER = "r_customer"
+    const val R_BIZ_PROFILE = "r_biz_profile"
 
     /**
      * Reporting

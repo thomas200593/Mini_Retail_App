@@ -2,6 +2,7 @@ package com.thomas200593.mini_retail_app.app.navigation
 
 import com.thomas200593.mini_retail_app.app.navigation.Routes.R_APP_CONFIG
 import com.thomas200593.mini_retail_app.app.navigation.Routes.R_AUTH
+import com.thomas200593.mini_retail_app.app.navigation.Routes.R_BIZ_PROFILE
 import com.thomas200593.mini_retail_app.app.navigation.Routes.R_BUSINESS
 import com.thomas200593.mini_retail_app.app.navigation.Routes.R_CONFIG_DATA
 import com.thomas200593.mini_retail_app.app.navigation.Routes.R_CONFIG_GENERAL
@@ -26,7 +27,6 @@ import com.thomas200593.mini_retail_app.app.navigation.Routes.R_USER_PROFILE
 sealed class ScrGraphs(
     val route: String
 ) {
-
     /**
      * Initial
      */
@@ -72,6 +72,7 @@ sealed class ScrGraphs(
     data object MasterData: ScrGraphs(route = R_MASTER_DATA)
     data object Supplier: ScrGraphs(route = R_SUPPLIER)
     data object Customer: ScrGraphs(route = R_CUSTOMER)
+    data object BizProfile: ScrGraphs(route = R_BIZ_PROFILE)
 
     /**
      * Reporting

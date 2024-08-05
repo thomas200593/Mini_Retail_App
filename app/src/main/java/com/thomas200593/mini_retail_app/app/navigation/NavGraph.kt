@@ -39,6 +39,7 @@ object NavGraph {
     const val G_BUSINESS = "g_business"
     const val G_MASTER_DATA = "g_master_data"
     const val G_SUPPLIER = "g_supplier"
+    const val G_BIZ_PROFILE = "g_biz_profile"
 
     /**
      * Reporting

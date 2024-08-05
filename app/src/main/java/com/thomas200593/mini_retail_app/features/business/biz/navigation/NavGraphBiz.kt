@@ -9,21 +9,29 @@ import com.thomas200593.mini_retail_app.app.navigation.NavGraph.G_BUSINESS
 import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs.Business
 import com.thomas200593.mini_retail_app.features.business.biz.ui.ScrBiz
 import com.thomas200593.mini_retail_app.features.business.biz_m_data.navigation.navGraphMasterData
+import com.thomas200593.mini_retail_app.features.business.biz_profile.navigation.navGraphBizProfile
 
 fun NavGraphBuilder.navGraphBiz(){
     navigation(
         route = G_BUSINESS,
         startDestination = Business.route
     ){
+        /**
+         * - Biz Screen
+         */
         composable(
             route = Business.route
         ){ ScrBiz() }
 
         /**
-         * - Master Data
+         * - Graph Master Data
          */
         navGraphMasterData()
-//        navGraphBusinessConfiguration()
+
+        /**
+         * - Graph Biz Profile
+         * */
+        navGraphBizProfile()
     }
 }
 
