@@ -66,7 +66,7 @@ import com.thomas200593.mini_retail_app.features.app_conf.app_config.navigation.
 import com.thomas200593.mini_retail_app.features.auth.entity.OAuth2UserMetadata
 import com.thomas200593.mini_retail_app.features.auth.entity.OAuthProvider
 import com.thomas200593.mini_retail_app.features.auth.entity.UserData
-import com.thomas200593.mini_retail_app.features.business.biz_c_profile.entity.dto.BizProfileSummary
+import com.thomas200593.mini_retail_app.features.business.biz_profile.entity.dto.BizProfileSummary
 import com.thomas200593.mini_retail_app.features.initial.initial.navigation.navToInitial
 import com.thomas200593.mini_retail_app.work.workers.session_monitor.manager.ManagerWorkSessionMonitor
 import timber.log.Timber

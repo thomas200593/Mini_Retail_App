@@ -62,8 +62,8 @@ import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.ErrorScree
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.LoadingScreen
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.entity.AppConfig.ConfigCurrent
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_language.entity.Language
-import com.thomas200593.mini_retail_app.features.business.biz_c_profile.entity.BizName
-import com.thomas200593.mini_retail_app.features.business.biz_c_profile.entity.dto.BizProfileSummary
+import com.thomas200593.mini_retail_app.features.business.biz_profile.entity.BizName
+import com.thomas200593.mini_retail_app.features.business.biz_profile.entity.dto.BizProfileSummary
 import com.thomas200593.mini_retail_app.features.initial.initial.navigation.navToInitial
 import com.thomas200593.mini_retail_app.features.initial.initialization.entity.Initialization
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.InputFormState
