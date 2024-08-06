@@ -53,7 +53,7 @@ fun ScrBizProfile(
     when(uiState.bizProfile){
         Idle, Loading -> LoadingScreen()
         is Error -> ErrorScreen()
-        Empty -> EmptyContent()
+        Empty -> ScreenEmptyContent()
         is Success -> ScreenContent(
             bizProfileDtl = (uiState.bizProfile as Success).data
         )
@@ -105,7 +105,7 @@ fun TopAppBar(onNavigateBack: () -> Unit) {
 }
 
 @Composable
-private fun EmptyContent() {
+private fun ScreenEmptyContent() {
 
 }
 
