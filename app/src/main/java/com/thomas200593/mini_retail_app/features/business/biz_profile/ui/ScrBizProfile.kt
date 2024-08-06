@@ -118,7 +118,10 @@ private fun ScreenContent(
     bizProfileDtl: BizProfileDtl
 ) {
     Column(
-        modifier = Modifier.fillMaxWidth().padding(12.dp).verticalScroll(rememberScrollState()),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(12.dp)
+            .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.Top)
     ) {
@@ -127,7 +130,9 @@ private fun ScreenContent(
             shape = shapes.medium
         ) {
             Column(
-                modifier = Modifier.fillMaxWidth().padding(8.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ){
@@ -140,7 +145,9 @@ private fun ScreenContent(
             shape = shapes.medium
         ) {
             Column(
-                modifier = Modifier.fillMaxWidth().padding(8.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ){
@@ -153,7 +160,9 @@ private fun ScreenContent(
             shape = shapes.medium
         ) {
             Column(
-                modifier = Modifier.fillMaxWidth().padding(8.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ){
@@ -166,7 +175,9 @@ private fun ScreenContent(
             shape = shapes.medium
         ) {
             Column(
-                modifier = Modifier.fillMaxWidth().padding(8.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ){
@@ -179,7 +190,9 @@ private fun ScreenContent(
             shape = shapes.medium
         ) {
             Column(
-                modifier = Modifier.fillMaxWidth().padding(8.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ){
