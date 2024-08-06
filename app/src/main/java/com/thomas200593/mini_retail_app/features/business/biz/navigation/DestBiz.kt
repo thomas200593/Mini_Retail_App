@@ -18,18 +18,18 @@ enum class DestBiz(
     @StringRes val description: Int,
     val usesAuth: Boolean
 ) {
-    MASTER_DATA(
-        route = MasterData.route,
-        iconRes = master_data,
-        title = str_biz_master_data,
-        description = str_biz_master_data_desc,
-        usesAuth = true
-    ),
     BIZ_PROFILE(
         route = BizProfile.route,
         iconRes = business_profile,
         title = str_business_profile,
         description = str_business_profile_desc,
+        usesAuth = true
+    ),
+    MASTER_DATA(
+        route = MasterData.route,
+        iconRes = master_data,
+        title = str_biz_master_data,
+        description = str_biz_master_data_desc,
         usesAuth = true
     )
 }

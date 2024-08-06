@@ -8,22 +8,18 @@ import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Er
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Loading
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Success
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.repository.RepoAppConf
-import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_timezone.repository.RepoConfGenTimezone
 import com.thomas200593.mini_retail_app.features.business.biz_profile.entity.BizProfileDtl
 import com.thomas200593.mini_retail_app.features.business.biz_profile.repository.RepoBizProfile
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.onStart
 import javax.inject.Inject
 
 class UCGetBizProfile @Inject constructor(
     private val repoBizProfile: RepoBizProfile,
     private val repoAppConf: RepoAppConf,
-    private val repoConfGenTimezone: RepoConfGenTimezone,
     @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
 ) {
     suspend operator fun invoke(sessionState: SessionState) = when(sessionState){
@@ -33,21 +29,16 @@ class UCGetBizProfile @Inject constructor(
             val result =
                 combine(
                     repoBizProfile.getBizProfile(),
-                    repoAppConf.configCurrent,
-                    flow { emit(repoConfGenTimezone.getTimezones()) }
-                ){ bizProfile, configCurrent, timezones ->
+                    repoAppConf.configCurrent
+                ){ bizProfile, configCurrent ->
                     if(bizProfile == null) Empty
                     else Success(
                         data = BizProfileDtl(
                             bizProfile = bizProfile,
-                            configCurrent = configCurrent,
-                            timezones = timezones
+                            configCurrent = configCurrent
                         )
                     )
-                }
-                .flowOn(ioDispatcher)
-                .catch { t -> emit(Error(t)) }
-                .onStart { emit(Loading) }.first()
+                }.flowOn(ioDispatcher).catch { t -> emit(Error(t)) }.first()
             result
         }
     }

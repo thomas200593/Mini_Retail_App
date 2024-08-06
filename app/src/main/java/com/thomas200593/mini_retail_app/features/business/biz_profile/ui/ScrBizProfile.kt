@@ -1,10 +1,13 @@
 package com.thomas200593.mini_retail_app.features.business.biz_profile.ui
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons.AutoMirrored.Filled
 import androidx.compose.material.icons.Icons.Default
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
@@ -113,5 +116,11 @@ private fun ScreenEmptyContent() {
 private fun ScreenContent(
     bizProfileDtl: BizProfileDtl
 ) {
-
+    Column(
+        modifier = Modifier.fillMaxWidth().padding(4.dp).verticalScroll(rememberScrollState()),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Top)
+    ) {
+        Text(text = bizProfileDtl.toString())
+    }
 }
