@@ -9,6 +9,7 @@ import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Idle
 import com.thomas200593.mini_retail_app.features.business.biz_profile.domain.UCGetBizProfile
 import com.thomas200593.mini_retail_app.features.business.biz_profile.entity.BizProfileDtl
+import com.thomas200593.mini_retail_app.features.business.biz_profile.ui.VMBizProfile.UiEvents.OnOpenEvents
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -34,7 +35,7 @@ class VMBizProfile @Inject constructor(
 
     fun onEvent(events: UiEvents) {
         when(events){
-            is UiEvents.OnOpenEvents -> onOpenEvent(events.sessionState)
+            is OnOpenEvents -> onOpenEvent(events.sessionState)
         }
     }
     private fun onOpenEvent(sessionState: SessionState) = viewModelScope.launch(ioDispatcher){
