@@ -38,6 +38,6 @@ class VMBizProfile @Inject constructor(
         }
     }
     private fun onOpenEvent(sessionState: SessionState) = viewModelScope.launch(ioDispatcher){
-        _uiState.update { it.copy(bizProfile = ucGetBizProfile.invoke(sessionState)) }
+        ucGetBizProfile.invoke(sessionState).collect{ data -> _uiState.update { it.copy(bizProfile = data) } }
     }
 }

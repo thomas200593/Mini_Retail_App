@@ -13,7 +13,7 @@ import com.thomas200593.mini_retail_app.features.business.biz_profile.repository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
@@ -23,23 +23,19 @@ class UCGetBizProfile @Inject constructor(
     @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
 ) {
     suspend operator fun invoke(sessionState: SessionState) = when(sessionState){
-        SessionState.Loading -> Loading
-        is SessionState.Invalid -> Error(t = Throwable("SessionExpired"))
-        is SessionState.Valid -> {
-            val result =
-                combine(
-                    repoBizProfile.getBizProfile(),
-                    repoAppConf.configCurrent
-                ){ bizProfile, configCurrent ->
-                    if(bizProfile == null) Empty
-                    else Success(
-                        data = BizProfileDtl(
-                            bizProfile = bizProfile,
-                            configCurrent = configCurrent
-                        )
-                    )
-                }.flowOn(ioDispatcher).catch { t -> emit(Error(t)) }.first()
-            result
-        }
+        SessionState.Loading -> flow { emit(Loading) }
+        is SessionState.Invalid -> flow { emit(Error(t = Throwable("SessionExpired"))) }
+        is SessionState.Valid -> combine(
+            repoBizProfile.getBizProfile(),
+            repoAppConf.configCurrent
+        ){ bizProfile, configCurrent ->
+            if(bizProfile == null) Empty
+            else Success(
+                data = BizProfileDtl(
+                    bizProfile = bizProfile,
+                    configCurrent = configCurrent
+                )
+            )
+        }.flowOn(ioDispatcher).catch { t -> emit(Error(t)) }
     }
 }
