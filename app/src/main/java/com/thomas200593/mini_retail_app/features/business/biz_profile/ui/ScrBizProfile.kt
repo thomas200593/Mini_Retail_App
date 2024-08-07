@@ -13,6 +13,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons.AutoMirrored.Filled
 import androidx.compose.material.icons.Icons.Default
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Info
@@ -140,7 +141,9 @@ private fun ScreenContent(
             shape = shapes.medium
         ) {
             Column(
-                modifier = Modifier.fillMaxWidth().padding(8.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ){
@@ -152,7 +155,8 @@ private fun ScreenContent(
                     Surface(modifier = Modifier.weight(0.1f)) {
                         Icon(
                             modifier = Modifier.size(20.dp),
-                            imageVector = ImageVector.vectorResource(id = country), contentDescription = null
+                            imageVector = ImageVector.vectorResource(id = country),
+                            contentDescription = null
                         )
                     }
                     Text(
@@ -161,7 +165,9 @@ private fun ScreenContent(
                         textAlign = Start,
                         overflow = Ellipsis,
                         maxLines = 1,
-                        modifier = Modifier.weight(0.7f).fillMaxWidth()
+                        modifier = Modifier
+                            .weight(0.7f)
+                            .fillMaxWidth()
                     )
                     Row(
                         modifier = Modifier.weight(0.2f),
@@ -196,9 +202,51 @@ private fun ScreenContent(
                     .fillMaxWidth()
                     .padding(8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ){
-                Text(text = "Business Industry")
+                Row(
+                    modifier = Modifier.fillMaxWidth(1.0f),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Surface(modifier = Modifier.weight(0.1f)) {
+                        Icon(
+                            modifier = Modifier.size(20.dp),
+                            imageVector = ImageVector.vectorResource(id = country),
+                            contentDescription = null
+                        )
+                    }
+                    Text(
+                        text = "Business Addresses",
+                        fontWeight = Bold,
+                        textAlign = Start,
+                        overflow = Ellipsis,
+                        maxLines = 1,
+                        modifier = Modifier
+                            .weight(0.7f)
+                            .fillMaxWidth()
+                    )
+                    Row(
+                        modifier = Modifier.weight(0.2f),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Surface(modifier = Modifier.weight(0.1f)) {
+                            Icon(
+                                modifier = Modifier.size(20.dp),
+                                imageVector = Default.Add,
+                                contentDescription = null
+                            )
+                        }
+                        Surface(modifier = Modifier.weight(0.1f)) {
+                            Icon(
+                                modifier = Modifier.size(20.dp),
+                                imageVector = Default.Clear,
+                                contentDescription = null
+                            )
+                        }
+                    }
+                }
             }
         }
 
@@ -211,9 +259,51 @@ private fun ScreenContent(
                     .fillMaxWidth()
                     .padding(8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ){
-                Text(text = "Company Address")
+                Row(
+                    modifier = Modifier.fillMaxWidth(1.0f),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Surface(modifier = Modifier.weight(0.1f)) {
+                        Icon(
+                            modifier = Modifier.size(20.dp),
+                            imageVector = ImageVector.vectorResource(id = country),
+                            contentDescription = null
+                        )
+                    }
+                    Text(
+                        text = "Business Contacts",
+                        fontWeight = Bold,
+                        textAlign = Start,
+                        overflow = Ellipsis,
+                        maxLines = 1,
+                        modifier = Modifier
+                            .weight(0.7f)
+                            .fillMaxWidth()
+                    )
+                    Row(
+                        modifier = Modifier.weight(0.2f),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Surface(modifier = Modifier.weight(0.1f)) {
+                            Icon(
+                                modifier = Modifier.size(20.dp),
+                                imageVector = Default.Add,
+                                contentDescription = null
+                            )
+                        }
+                        Surface(modifier = Modifier.weight(0.1f)) {
+                            Icon(
+                                modifier = Modifier.size(20.dp),
+                                imageVector = Default.Clear,
+                                contentDescription = null
+                            )
+                        }
+                    }
+                }
             }
         }
 
@@ -226,24 +316,51 @@ private fun ScreenContent(
                     .fillMaxWidth()
                     .padding(8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ){
-                Text(text = "Business Contacts")
-            }
-        }
-
-        Surface(
-            modifier = Modifier.fillMaxWidth(),
-            shape = shapes.medium
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ){
-                Text(text = "Business Links")
+                Row(
+                    modifier = Modifier.fillMaxWidth(1.0f),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Surface(modifier = Modifier.weight(0.1f)) {
+                        Icon(
+                            modifier = Modifier.size(20.dp),
+                            imageVector = ImageVector.vectorResource(id = country),
+                            contentDescription = null
+                        )
+                    }
+                    Text(
+                        text = "Business Links",
+                        fontWeight = Bold,
+                        textAlign = Start,
+                        overflow = Ellipsis,
+                        maxLines = 1,
+                        modifier = Modifier
+                            .weight(0.7f)
+                            .fillMaxWidth()
+                    )
+                    Row(
+                        modifier = Modifier.weight(0.2f),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Surface(modifier = Modifier.weight(0.1f)) {
+                            Icon(
+                                modifier = Modifier.size(20.dp),
+                                imageVector = Default.Add,
+                                contentDescription = null
+                            )
+                        }
+                        Surface(modifier = Modifier.weight(0.1f)) {
+                            Icon(
+                                modifier = Modifier.size(20.dp),
+                                imageVector = Default.Clear,
+                                contentDescription = null
+                            )
+                        }
+                    }
+                }
             }
         }
     }
