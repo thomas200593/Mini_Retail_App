@@ -39,7 +39,7 @@ object HlpDatetime {
         uniqueOffset.toList().sortedBy { it.timezoneOffset }
     }
 
-    fun convertTimestampToDate(
+    fun timestampToDatetime(
         timestamp: Long,
         offsetString: String?,
         format: DateFormat
