@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
 interface RepoBizProfile{
-    fun getBizProfile(): Flow<BizProfile?>
+    fun getBizProfile(): Flow<BizProfile>
     suspend fun setBizProfile(bizProfile: BizProfile): Long
 }
 
@@ -18,7 +18,7 @@ class RepoBizProfileImpl @Inject constructor(
     private val dao: DaoBizProfile,
     @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
 ): RepoBizProfile {
-    override fun getBizProfile(): Flow<BizProfile?> =
+    override fun getBizProfile(): Flow<BizProfile> =
         dao.getBizProfile().flowOn(ioDispatcher)
     override suspend fun setBizProfile(bizProfile: BizProfile): Long =
         dao.setInitBizProfile(bizProfile)

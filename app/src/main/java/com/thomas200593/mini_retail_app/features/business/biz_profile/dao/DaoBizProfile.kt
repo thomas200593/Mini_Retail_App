@@ -23,7 +23,7 @@ SELECT
     bp.audit_trail 
 FROM biz_profile bp LIMIT 1
     """)
-    fun getBizProfile(): Flow<BizProfile?>
+    fun getBizProfile(): Flow<BizProfile>
 
     @Upsert(BizProfile::class)
     fun setInitBizProfile(bizProfile: BizProfile): Long
@@ -35,7 +35,7 @@ FROM biz_profile bp LIMIT 1
 class DaoBizProfileImpl @Inject constructor(
     private val dbHelper: HlpLocalDatabase
 ): DaoBizProfile {
-    override fun getBizProfile(): Flow<BizProfile?> =
+    override fun getBizProfile(): Flow<BizProfile> =
         dbHelper.getBizProfileDao().getBizProfile()
 
     override fun setInitBizProfile(bizProfile: BizProfile): Long =
