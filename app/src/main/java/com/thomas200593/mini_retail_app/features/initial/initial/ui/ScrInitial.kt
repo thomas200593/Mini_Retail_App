@@ -14,11 +14,6 @@ import com.thomas200593.mini_retail_app.R.string.str_error
 import com.thomas200593.mini_retail_app.app.navigation.NavGraph.G_INITIAL
 import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
 import com.thomas200593.mini_retail_app.app.ui.StateApp
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Empty
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Error
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Idle
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Loading
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Success
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.ErrorScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.LoadingScreen
 import com.thomas200593.mini_retail_app.features.auth.entity.OAuth2UserMetadata.Google
@@ -30,6 +25,9 @@ import com.thomas200593.mini_retail_app.features.initial.initial.entity.FirstTim
 import com.thomas200593.mini_retail_app.features.initial.initial.entity.FirstTimeStatus.YES
 import com.thomas200593.mini_retail_app.features.initial.initial.entity.Initial
 import com.thomas200593.mini_retail_app.features.initial.initial.ui.VMInitial.UiEvents
+import com.thomas200593.mini_retail_app.features.initial.initial.ui.VMInitial.UiStateInitial.Error
+import com.thomas200593.mini_retail_app.features.initial.initial.ui.VMInitial.UiStateInitial.Loading
+import com.thomas200593.mini_retail_app.features.initial.initial.ui.VMInitial.UiStateInitial.Success
 import com.thomas200593.mini_retail_app.features.initial.initialization.navigation.navToInitialization
 import com.thomas200593.mini_retail_app.features.onboarding.entity.OnboardingStatus.HIDE
 import com.thomas200593.mini_retail_app.features.onboarding.entity.OnboardingStatus.SHOW
@@ -46,14 +44,14 @@ fun ScrInitial(
     LaunchedEffect(Unit) { vm.onEvent(UiEvents.OnOpenEvents) }
 
     when(uiState.initial){
-        Idle, Loading, Empty -> LoadingScreen()
+        Loading -> LoadingScreen()
         is Error -> ErrorScreen(
             title = stringResource(id = str_error),
             errorMessage = "${(uiState.initial as Error).t.message} : ${(uiState.initial as Error).t.localizedMessage}",
             showIcon = true
         )
         is Success -> ScreenContent(
-            initial = (uiState.initial as Success).data,
+            initial = (uiState.initial as Success).initial,
             onNavToOnboarding = { stateApp.navController.navToOnboarding() },
             onNavToInitialization = { stateApp.navController.navToInitialization() },
             onNavToAuth = { stateApp.navController.navToAuth() },

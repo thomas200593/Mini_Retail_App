@@ -5,12 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers.Dispatchers.IO
 import com.thomas200593.mini_retail_app.core.design_system.util.HlpStateFlow.update
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Error
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Idle
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Loading
 import com.thomas200593.mini_retail_app.features.initial.initial.domain.UCGetInitialData
 import com.thomas200593.mini_retail_app.features.initial.initial.entity.Initial
+import com.thomas200593.mini_retail_app.features.initial.initial.ui.VMInitial.UiStateInitial.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,8 +22,13 @@ class VMInitial @Inject constructor(
     private val ucGetInitialData: UCGetInitialData,
     @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
 ): ViewModel() {
+    sealed interface UiStateInitial {
+        data object Loading: UiStateInitial
+        data class Success(val initial: Initial): UiStateInitial
+        data class Error(val t: Throwable): UiStateInitial
+    }
     data class UiState(
-        val initial: ResourceState<Initial> = Idle
+        val initial: UiStateInitial = Loading
     )
     sealed class UiEvents {
         data object OnOpenEvents: UiEvents()
@@ -41,9 +43,8 @@ class VMInitial @Inject constructor(
         }
     }
     private fun onOpenEvent() = viewModelScope.launch {
-        _uiState.update { it.copy(initial = Loading) }
         ucGetInitialData.invoke().flowOn(ioDispatcher)
             .catch { e -> _uiState.update { prev -> prev.copy(initial = Error(e)) } }
-            .collect{ _uiState.update { prev -> prev.copy(initial = it) } }
+            .collect{ _uiState.update { prev -> prev.copy(initial = Success(it.data)) } }
     }
 }

@@ -20,7 +20,7 @@ class UCGetInitialData @Inject constructor(
     private val repoAppConf: RepoAppConf,
     @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
 ){
-    operator fun invoke(): Flow<Success<Initial>> = combine(
+    operator fun invoke() = combine(
         flow = repoAuth.authSessionToken,
         flow2 = repoAppConf.configCurrent,
         flow3 = repoAppConf.firstTimeStatus
