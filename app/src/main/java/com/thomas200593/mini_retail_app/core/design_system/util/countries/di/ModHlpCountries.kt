@@ -7,7 +7,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import javax.inject.Named
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -17,7 +16,7 @@ abstract class ModHlpCountries {
 
     companion object {
         @Provides
-        @Named("HlpCountriesConstants")
-        fun providesConstants() = HlpCountriesImpl.COUNTRY_DEFAULT
+        @CountryDefault
+        fun providesCountryDefault() = HlpCountriesImpl.COUNTRY_DEFAULT
     }
 }
