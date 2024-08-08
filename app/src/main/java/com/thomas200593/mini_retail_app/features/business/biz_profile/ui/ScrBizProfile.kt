@@ -864,19 +864,3 @@ private fun BusinessLinksSection(links: List<Link>?) {
         }
     }
 }
-
-@Preview(showBackground = true)
-@Composable
-private fun Preview(){
-    CustomThemes.ApplicationTheme {
-        Column(modifier = Modifier
-            .fillMaxSize()) {
-            ScreenContent(
-                bizProfileDtl = BizProfileDtl(
-                    bizProfile = BizProfile(),
-                    configCurrent = AppConfig.ConfigCurrent()
-                )
-            )
-        }
-    }
-}

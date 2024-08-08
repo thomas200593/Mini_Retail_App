@@ -34,7 +34,7 @@ data class BizProfile(
     override val auditTrail: AuditTrail = AuditTrail(),
 
     @ColumnInfo(name = "biz_identity")
-    val bizIdentity: BizIdentity? = null,
+    val bizIdentity: BizIdentity,
 
     @ColumnInfo(name = "addresses")
     val addresses: List<Address>? = null,
@@ -49,7 +49,9 @@ data class BizProfile(
 fun BizProfile.toBizProfileShort() = BizProfileShort(
     seqId = seqId,
     genId = genId,
-    bizIndustry = bizIdentity?.industries,
-    bizName = bizIdentity?.bizName,
+    bizIndustry = bizIdentity.industries,
+    bizName = bizIdentity.bizName,
+    bizLegalType = bizIdentity.legalType,
+    bizTaxation = bizIdentity.taxation,
     auditTrail = auditTrail
 )

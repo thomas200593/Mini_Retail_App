@@ -45,6 +45,9 @@ import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
 import com.thomas200593.mini_retail_app.app.ui.StateApp
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.AuditTrail
+import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.Industries
+import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.LegalType
+import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.Taxation
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Empty
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Error
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Idle
@@ -351,7 +354,9 @@ private fun WelcomeMessage(
                         legalName = "My-Company Corp",
                         commonName = "My Company"
                     ),
-                    bizIndustry = null,
+                    bizIndustry = Industries(identityKey = 0),
+                    bizLegalType = LegalType(identifierKey = 0),
+                    bizTaxation = Taxation(identifierKey = 0),
                     auditTrail = AuditTrail()
                 )
             )
@@ -440,7 +445,9 @@ fun InitManualForm(
                                         legalName = inputFormState.legalName,
                                         commonName = inputFormState.commonName,
                                     ),
-                                    bizIndustry = null,
+                                    bizIndustry = Industries(identityKey = 0),
+                                    bizLegalType = LegalType(identifierKey = 0),
+                                    bizTaxation = Taxation(identifierKey = 0),
                                     auditTrail = AuditTrail()
                                 )
                             )

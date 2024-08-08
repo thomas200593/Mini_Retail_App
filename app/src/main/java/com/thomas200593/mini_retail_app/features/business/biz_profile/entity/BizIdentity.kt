@@ -11,10 +11,10 @@ import kotlinx.serialization.json.Json
 
 @Serializable
 data class BizIdentity(
-    val bizName: BizName? = null,
-    val industries: Industries? = null,
-    val legalType: LegalType? = null,
-    val taxation: Taxation? = null,
+    val bizName: BizName,
+    val industries: Industries,
+    val legalType: LegalType,
+    val taxation: Taxation,
     val auditTrail: AuditTrail = AuditTrail()
 )
 
