@@ -4,11 +4,20 @@ import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_timezone.enti
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.time.Instant
+import java.time.LocalDateTime
 import java.time.ZoneId.getAvailableZoneIds
 import java.time.ZoneId.of
+import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeFormatter.ISO_OFFSET_DATE_TIME
+import java.time.format.DateTimeFormatter.ofPattern
 import java.util.Locale.getDefault
 
 object HlpTimezone {
+    enum class DateFormat(val formatter: DateTimeFormatter) {
+        LONG_DATETIME_WITH_TZ(ofPattern("EEEE, dd-MMM-yyyy HH:mm:ss z")),
+        ISO8601(ISO_OFFSET_DATE_TIME)
+    }
     private const val ZULU = "+00:00"
     val TIMEZONE_DEFAULT = Timezone(ZULU)
     private const val SECONDS_IN_HOUR = 3_600
@@ -28,5 +37,21 @@ object HlpTimezone {
             uniqueOffset.add(Timezone(formattedOffset))
         }
         uniqueOffset.toList().sortedBy { it.timezoneOffset }
+    }
+
+    fun convertTimestampToDate(
+        timestamp: Long,
+        offsetString: String?,
+        format: DateFormat
+    ): String {
+        val zoneOffset = offsetString?.let {
+            val offsetPattern = Regex("^[+-](0[0-9]|1[0-4]):([0-5][0-9])$")
+            if (offsetPattern.matches(it)) ZoneOffset.of(it) else ZoneOffset.UTC
+        } ?: ZoneOffset.UTC // Default to +00:00 if offsetString is null
+
+        return LocalDateTime
+            .ofInstant(Instant.ofEpochSecond(timestamp), zoneOffset)
+            .atOffset(zoneOffset)
+            .format(format.formatter)
     }
 }
