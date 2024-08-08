@@ -13,7 +13,7 @@ import java.time.format.DateTimeFormatter.ISO_OFFSET_DATE_TIME
 import java.time.format.DateTimeFormatter.ofPattern
 import java.util.Locale.getDefault
 
-object HlpTimezone {
+object HlpDatetime {
     enum class DateFormat(val formatter: DateTimeFormatter) {
         LONG_DATETIME_WITH_TZ(ofPattern("EEEE, dd-MMM-yyyy HH:mm:ss z")),
         ISO8601(ISO_OFFSET_DATE_TIME)
