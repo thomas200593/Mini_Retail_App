@@ -8,22 +8,19 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 
-fun String.highlightText(
-    query: String,
-    highlightColor: Color = Yellow
-): AnnotatedString {
-    val text = this
-    return buildAnnotatedString {
-        val startIndex = text.indexOf(query, ignoreCase = true)
-        if (startIndex >= 0) {
-            val endIndex = startIndex + query.length
-            append(text.substring(0, startIndex))
-            withStyle(style = SpanStyle(color = highlightColor, background = Transparent)) {
-                append(text.substring(startIndex, endIndex))
+object HlpString {
+    fun String.highlightText(query: String, highlightColor: Color = Yellow): AnnotatedString {
+        val text = this
+        return buildAnnotatedString {
+            val startIndex = text.indexOf(query, ignoreCase = true)
+            if (startIndex >= 0)
+            {
+                val endIndex = startIndex + query.length; append(text.substring(0, startIndex))
+                withStyle(style = SpanStyle(color = highlightColor, background = Transparent))
+                { append(text.substring(startIndex, endIndex)) }
+                append(text.substring(endIndex))
             }
-            append(text.substring(endIndex))
-        } else {
-            append(text)
+            else { append(text) }
         }
     }
 }
