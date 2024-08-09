@@ -7,15 +7,13 @@ import androidx.lifecycle.viewModelScope
 import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers.Dispatchers.IO
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.di.Dispatcher
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Idle
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Loading
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Success
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.navigation.DestAppConfig
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.repository.RepoAppConf
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.ui.VMAppConfig.UiEvents.ButtonEvents.BtnMenuEvents
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.ui.VMAppConfig.UiEvents.ButtonEvents.BtnNavBackEvents
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.ui.VMAppConfig.UiEvents.OnOpenEvents
+import com.thomas200593.mini_retail_app.features.app_conf.app_config.ui.VMAppConfig.UiStateDestAppConfig.Loading
+import com.thomas200593.mini_retail_app.features.app_conf.app_config.ui.VMAppConfig.UiStateDestAppConfig.Success
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,8 +27,12 @@ class VMAppConfig @Inject constructor(
     private val repoAppConf: RepoAppConf,
     @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
 ): ViewModel(){
+    sealed interface UiStateDestAppConfig {
+        data object Loading: UiStateDestAppConfig
+        data class Success(val destAppConfig: Set<DestAppConfig>): UiStateDestAppConfig
+    }
     data class UiState(
-        val destAppConfig: ResourceState<Set<DestAppConfig>> = Idle,
+        val destAppConfig: UiStateDestAppConfig = Loading,
         val dialogState: DialogState = DialogState()
     )
     data class DialogState(
@@ -64,14 +66,11 @@ class VMAppConfig @Inject constructor(
     }
     private fun onOpenEvent(sessionState: SessionState) {
         when(sessionState){
-            SessionState.Loading -> {
-                updateDialogState(
-                    dlgVldAuthEnabled = true,
-                    dlgLoadMenuEnabled = false,
-                    dlgDenyAccessMenuEnabled = false
-                )
-                _uiState.update { it.copy(destAppConfig = Loading) }
-            }
+            SessionState.Loading -> updateDialogState(
+                dlgVldAuthEnabled = true,
+                dlgLoadMenuEnabled = false,
+                dlgDenyAccessMenuEnabled = false
+            )
             is SessionState.Invalid, is SessionState.Valid -> viewModelScope.launch(ioDispatcher) {
                 updateDialogState(
                     dlgVldAuthEnabled = false,
