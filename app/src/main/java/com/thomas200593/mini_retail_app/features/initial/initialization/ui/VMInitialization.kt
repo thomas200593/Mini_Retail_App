@@ -11,11 +11,6 @@ import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers.Dispatchers.IO
 import com.thomas200593.mini_retail_app.core.design_system.util.HlpStateFlow.update
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Empty
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Error
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Idle
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Loading
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Success
 import com.thomas200593.mini_retail_app.core.ui.component.CustomForm.Component.UseCase.InputFieldValidation.RegularTextValidation
 import com.thomas200593.mini_retail_app.core.ui.component.CustomForm.Component.UseCase.UiText
 import com.thomas200593.mini_retail_app.core.ui.component.CustomForm.Component.UseCase.UiText.StringResource
@@ -51,12 +46,17 @@ class VMInitialization @Inject constructor(
     private val repoConfGenLanguage: RepoConfGenLanguage,
     @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
 ): ViewModel() {
+    sealed interface UiStateInitialization{
+        data object Loading: UiStateInitialization
+        data class Success(val data: Initialization): UiStateInitialization
+        data class Error(val t: Throwable): UiStateInitialization
+    }
     data class UiState(
-        val initialization: ResourceState<Initialization> = Idle,
+        val initialization: UiStateInitialization = UiStateInitialization.Loading,
         val welcomePanelState: WelcomePanelState = WelcomePanelState(),
         val inputFormState: InputFormState = InputFormState(),
         val dialogState: DialogState = DialogState(),
-        val initBizProfileResult: ResourceState<BizProfileShort> = Idle
+        val initBizProfileResult: ResourceState<BizProfileShort> = ResourceState.Idle
     )
     data class WelcomePanelState(val visible: Boolean = true)
     data class InputFormState(
@@ -122,22 +122,19 @@ class VMInitialization @Inject constructor(
         }
     }
     private fun onOpenEvent() = viewModelScope.launch(ioDispatcher) {
-        _uiState.update { it.copy(initialization = Loading) }
         ucGetInitializationData.invoke().flowOn(ioDispatcher)
-            .catch { e -> _uiState.update { it.copy(initialization = Error(e)) } }
-            .collectLatest { data -> _uiState.update { it.copy(initialization = data) } }
+            .catch { e -> _uiState.update { it.copy(initialization = UiStateInitialization.Error(e)) } }
+            .collectLatest { data -> _uiState.update { it.copy(initialization = UiStateInitialization.Success(data.data)) } }
     }
     private fun onSelectLanguageEvent(language: Language) = viewModelScope.launch(ioDispatcher) {
         repoConfGenLanguage.setLanguage(language)
         setApplicationLocales( create(Locale(language.code)) )
     }
     private fun doShowForm() {
-        _uiState.update {
-            it.copy(
-                welcomePanelState = it.welcomePanelState.copy(visible = false),
-                inputFormState = it.inputFormState.copy(visible = true)
-            )
-        }
+        _uiState.update { it.copy(
+            welcomePanelState = it.welcomePanelState.copy(visible = false),
+            inputFormState = it.inputFormState.copy(visible = true)
+        ) }
     }
     private fun formLegalNameValueChanged(legalName: String) {
         _uiState.update { it.copy(inputFormState = it.inputFormState.copy(legalName = legalName)) }
@@ -150,48 +147,22 @@ class VMInitialization @Inject constructor(
                 required = true,
                 maxLength = 100
             )
-        _uiState.update {
-            it.copy(
-                inputFormState = it.inputFormState.copy(
-                    legalNameError = result.errorMessage
-                )
-            )
-        }
+        _uiState.update { it.copy(inputFormState = it.inputFormState.copy(legalNameError = result.errorMessage)) }
         return result.isSuccess
     }
     private fun formCommonNameValueChanged(commonName: String) {
-        _uiState.update {
-            it.copy(
-                inputFormState = it.inputFormState.copy(
-                    commonName = commonName
-                )
-            )
-        }
+        _uiState.update { it.copy(inputFormState = it.inputFormState.copy(commonName = commonName)) }
         formSubmitBtnShouldEnable()
     }
     private fun formCommonNameValidation(): Boolean {
         val result = RegularTextValidation()
-            .execute(
-                input = _uiState.value.inputFormState.commonName, required = true, maxLength = 100
-            )
-        _uiState.update {
-            it.copy(
-                inputFormState = it.inputFormState.copy(
-                    commonNameError = result.errorMessage
-                )
-            )
-        }
+            .execute(input = _uiState.value.inputFormState.commonName, required = true, maxLength = 100)
+        _uiState.update { it.copy(inputFormState = it.inputFormState.copy(commonNameError = result.errorMessage)) }
         return result.isSuccess
     }
     private fun formSubmitBtnShouldEnable() {
         val result = formLegalNameValidation() && formCommonNameValidation()
-        _uiState.update {
-            it.copy(
-                inputFormState = it.inputFormState.copy(
-                    fldSubmitBtnEnabled = result
-                )
-            )
-        }
+        _uiState.update { it.copy(inputFormState = it.inputFormState.copy(fldSubmitBtnEnabled = result)) }
     }
     private fun doInitBizProfile(bizProfileShort: BizProfileShort) =
         viewModelScope.launch(ioDispatcher) {
@@ -201,7 +172,7 @@ class VMInitialization @Inject constructor(
                 dlgSuccessEnabled = false,
                 dlgErrorEnabled = false
             )
-            _uiState.update { it.copy(initBizProfileResult = Loading) }
+            _uiState.update { it.copy(initBizProfileResult = ResourceState.Loading) }
             try {
                 val result = ucSetInitBizProfile.invoke(bizProfileShort)
                 if (result != null) {
@@ -211,7 +182,7 @@ class VMInitialization @Inject constructor(
                         dlgSuccessEnabled = true,
                         dlgErrorEnabled = false
                     )
-                    _uiState.update { it.copy(initBizProfileResult = Success(data = result)) }
+                    _uiState.update { it.copy(initBizProfileResult = ResourceState.Success(data = result)) }
                 } else {
                     updateDialogState(
                         dlgLoadingEnabled = false,
@@ -219,7 +190,7 @@ class VMInitialization @Inject constructor(
                         dlgSuccessEnabled = false,
                         dlgErrorEnabled = false
                     )
-                    _uiState.update { it.copy(initBizProfileResult = Empty) }
+                    _uiState.update { it.copy(initBizProfileResult = ResourceState.Empty) }
                 }
             } catch (e: Throwable) {
                 updateDialogState(
@@ -228,17 +199,15 @@ class VMInitialization @Inject constructor(
                     dlgSuccessEnabled = false,
                     dlgErrorEnabled = true
                 )
-                _uiState.update { it.copy(initBizProfileResult = Error(e)) }
+                _uiState.update { it.copy(initBizProfileResult = ResourceState.Error(e)) }
             }
         }
     private fun doResetForm() {
-        _uiState.update {
-            it.copy(
-                welcomePanelState = WelcomePanelState(),
-                dialogState = DialogState(),
-                inputFormState = InputFormState()
-            )
-        }
+        _uiState.update { it.copy(
+            welcomePanelState = WelcomePanelState(),
+            dialogState = DialogState(),
+            inputFormState = InputFormState()
+        ) }
     }
     private fun updateDialogState(
         dlgLoadingEnabled: Boolean = false,
@@ -246,15 +215,13 @@ class VMInitialization @Inject constructor(
         dlgSuccessEnabled: Boolean = false,
         dlgErrorEnabled: Boolean = false
     ) {
-        _uiState.update {
-            it.copy(
-                dialogState = it.dialogState.copy(
-                    dlgLoadingEnabled = mutableStateOf(dlgLoadingEnabled),
-                    dlgEmptyEnabled = mutableStateOf(dlgEmptyEnabled),
-                    dlgSuccessEnabled = mutableStateOf(dlgSuccessEnabled),
-                    dlgErrorEnabled = mutableStateOf(dlgErrorEnabled)
-                )
+        _uiState.update { it.copy(
+            dialogState = it.dialogState.copy(
+                dlgLoadingEnabled = mutableStateOf(dlgLoadingEnabled),
+                dlgEmptyEnabled = mutableStateOf(dlgEmptyEnabled),
+                dlgSuccessEnabled = mutableStateOf(dlgSuccessEnabled),
+                dlgErrorEnabled = mutableStateOf(dlgErrorEnabled)
             )
-        }
+        ) }
     }
 }

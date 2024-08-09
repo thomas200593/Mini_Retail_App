@@ -13,11 +13,9 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults.ItemContentPadding
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.MaterialTheme.colorScheme
-import androidx.compose.material3.MaterialTheme.shapes
-import androidx.compose.material3.MaterialTheme.typography
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -29,13 +27,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color.Companion.Transparent
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.style.TextAlign.Companion.Center
-import androidx.compose.ui.text.style.TextAlign.Companion.Justify
-import androidx.compose.ui.text.style.TextOverflow.Companion.Ellipsis
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -48,11 +45,6 @@ import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.A
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.Industries
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.LegalType
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.Taxation
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Empty
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Error
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Idle
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Loading
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Success
 import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.App.app
 import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.Emotion.happy
 import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.Emotion.neutral
@@ -60,7 +52,6 @@ import com.thomas200593.mini_retail_app.core.ui.component.CustomButton.Common.Ap
 import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AlertDialogContext
 import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AppAlertDialog
 import com.thomas200593.mini_retail_app.core.ui.component.CustomForm.Component.TextInput
-import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.EmptyScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.ErrorScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.LoadingScreen
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.entity.AppConfig.ConfigCurrent
@@ -79,6 +70,9 @@ import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMIni
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.InputFormEvents.LegalNameEvents
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.OnOpenEvents
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiState
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiStateInitialization.Error
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiStateInitialization.Loading
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiStateInitialization.Success
 import ulid.ULID.Companion.randomULID
 
 @Composable
@@ -87,18 +81,26 @@ fun ScrInitialization(
     stateApp: StateApp = LocalStateApp.current
 ){
     val uiState by vm.uiState.collectAsStateWithLifecycle()
-
     LaunchedEffect(Unit) {vm.onEvent(OnOpenEvents)}
-    ScreenContent(
-        uiState = uiState,
-        onSelectLanguage = { vm.onEvent(OnSelect(it)) },
-        onInitBizProfileDefaultBtnClicked = { vm.onEvent(BtnInitDefaultBizProfileEvents.OnClick(it)) },
-        onInitBizProfileManualBtnClicked = { vm.onEvent(BtnInitManualBizProfileEvents.OnClick) },
-        onLegalNameValueChanged = { vm.onEvent(LegalNameEvents.ValueChanged(it)) },
-        onCommonNameValueChanged = { vm.onEvent(CommonNameEvents.ValueChanged(it)) },
-        onFormSubmitBtnClicked = { vm.onEvent(BtnSubmitEvents.OnClick(it)) },
-        onFormCancelBtnClicked = { vm.onEvent(BtnCancelEvents.OnClick) }
-    )
+    when(uiState.initialization){
+        Loading -> LoadingScreen()
+        is Error -> ErrorScreen(
+            title = stringResource(id = R.string.str_error),
+            errorMessage = stringResource(id = R.string.str_error_fetching_preferences),
+            showIcon = true
+        )
+        is Success -> ScreenContent(
+            uiState = uiState,
+            initData = (uiState.initialization as Success).data,
+            onSelectLanguage = { vm.onEvent(OnSelect(it)) },
+            onInitBizProfileDefaultBtnClicked = { vm.onEvent(BtnInitDefaultBizProfileEvents.OnClick(it)) },
+            onInitBizProfileManualBtnClicked = { vm.onEvent(BtnInitManualBizProfileEvents.OnClick) },
+            onLegalNameValueChanged = { vm.onEvent(LegalNameEvents.ValueChanged(it)) },
+            onCommonNameValueChanged = { vm.onEvent(CommonNameEvents.ValueChanged(it)) },
+            onFormSubmitBtnClicked = { vm.onEvent(BtnSubmitEvents.OnClick(it)) },
+            onFormCancelBtnClicked = { vm.onEvent(BtnCancelEvents.OnClick) }
+        )
+    }
     AppAlertDialog(
         showDialog = uiState.dialogState.dlgLoadingEnabled,
         dialogContext = AlertDialogContext.INFORMATION,
@@ -140,49 +142,6 @@ fun ScrInitialization(
 
 @Composable
 private fun ScreenContent(
-    uiState: UiState,
-    onSelectLanguage: (Language) -> Unit,
-    onInitBizProfileDefaultBtnClicked: (BizProfileShort) -> Unit,
-    onInitBizProfileManualBtnClicked: () -> Unit,
-    onLegalNameValueChanged: (String) -> Unit,
-    onCommonNameValueChanged: (String) -> Unit,
-    onFormSubmitBtnClicked: (BizProfileShort) -> Unit,
-    onFormCancelBtnClicked: () -> Unit
-) {
-    when(uiState.initialization){
-        Idle, Loading -> { LoadingScreen() }
-        Empty -> {
-            EmptyScreen(
-                title = stringResource(id = R.string.str_empty_message_title),
-                emptyMessage = stringResource(id = R.string.str_empty_message),
-                showIcon = true
-            )
-        }
-        is Error -> {
-            ErrorScreen(
-                title = stringResource(id = R.string.str_error),
-                errorMessage = stringResource(id = R.string.str_error_fetching_preferences),
-                showIcon = true
-            )
-        }
-        is Success -> {
-            SuccessSection(
-                uiState = uiState,
-                initData = uiState.initialization.data,
-                onSelectLanguage = onSelectLanguage,
-                onInitBizProfileDefaultBtnClicked = onInitBizProfileDefaultBtnClicked,
-                onInitBizProfileManualBtnClicked = onInitBizProfileManualBtnClicked,
-                onLegalNameValueChanged = onLegalNameValueChanged,
-                onCommonNameValueChanged = onCommonNameValueChanged,
-                onFormSubmitBtnClicked = onFormSubmitBtnClicked,
-                onFormCancelBtnClicked = onFormCancelBtnClicked
-            )
-        }
-    }
-}
-
-@Composable
-private fun SuccessSection(
     uiState: UiState,
     initData: Initialization,
     onSelectLanguage: (Language) -> Unit,
@@ -239,9 +198,7 @@ private fun LanguageSection(
             expanded = expanded,
             onExpandedChange = { expanded = !expanded }
         ) {
-            TextButton(
-                modifier = Modifier.fillMaxWidth().menuAnchor(), onClick = { expanded = true }
-            ) {
+            TextButton(modifier = Modifier.fillMaxWidth().menuAnchor(), onClick = { expanded = true }) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -255,9 +212,9 @@ private fun LanguageSection(
                     Text(
                         modifier = Modifier.weight(0.8f),
                         text = stringResource(id = configCurrent.language.title),
-                        textAlign = Center,
+                        textAlign = TextAlign.Center,
                         maxLines = 1,
-                        overflow = Ellipsis
+                        overflow = TextOverflow.Ellipsis
                     )
                 }
             }
@@ -272,12 +229,14 @@ private fun LanguageSection(
                                 contentDescription = null
                             )
                         },
-                        text = { Text(modifier = Modifier.fillMaxWidth(), text = stringResource(id = language.title)) },
+                        text = {
+                            Text(modifier = Modifier.fillMaxWidth(), text = stringResource(id = language.title))
+                        },
                         onClick = {
                             expanded = false
                             onSelectLanguage.invoke(language)
                         },
-                        contentPadding = ItemContentPadding
+                        contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
                     )
                 }
             }
@@ -297,33 +256,33 @@ private fun WelcomeMessage(
     ) {
         Surface(
             modifier = Modifier.size(150.dp),
-            color = Transparent,
-            shape = shapes.medium
+            color = Color.Transparent,
+            shape = MaterialTheme.shapes.medium
         ) { Image(imageVector = ImageVector.vectorResource(id = app), contentDescription = null) }
         Text(
             modifier = Modifier.fillMaxWidth(),
             text = stringResource(id = R.string.app_name),
-            textAlign = Center,
-            style = typography.titleLarge,
-            color = colorScheme.onSurface,
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.titleLarge,
+            color = MaterialTheme.colorScheme.onSurface,
             maxLines = 1,
-            overflow = Ellipsis
+            overflow = TextOverflow.Ellipsis
         )
         Text(
             modifier = Modifier.fillMaxWidth(),
             text = "$VERSION_NAME - $BUILD_TYPE",
-            textAlign = Center,
-            style = typography.labelMedium,
-            color = colorScheme.onSurface,
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onSurface,
             maxLines = 1,
-            overflow = Ellipsis
+            overflow = TextOverflow.Ellipsis
         )
     }
     Surface(
         modifier = Modifier.fillMaxWidth().padding(16.dp),
-        shape = shapes.medium,
-        color = colorScheme.primaryContainer,
-        contentColor = colorScheme.onPrimaryContainer,
+        shape = MaterialTheme.shapes.medium,
+        color = MaterialTheme.colorScheme.primaryContainer,
+        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
     ) {
         Column(
             modifier = Modifier.fillMaxWidth(),
@@ -333,8 +292,8 @@ private fun WelcomeMessage(
             Text(
                 modifier = Modifier.fillMaxWidth().padding(16.dp),
                 text = stringResource(R.string.str_init_welcome_message),
-                style = typography.labelLarge,
-                textAlign = Justify
+                style = MaterialTheme.typography.labelLarge,
+                textAlign = TextAlign.Justify
             )
             AppIconButton(
                 modifier = Modifier.fillMaxWidth(),
@@ -350,10 +309,7 @@ private fun WelcomeMessage(
                 BizProfileShort(
                     seqId = 0,
                     genId = randomULID(),
-                    bizName = BizName(
-                        legalName = "My-Company Corp",
-                        commonName = "My Company"
-                    ),
+                    bizName = BizName(legalName = "My-Company Corp", commonName = "My Company"),
                     bizIndustry = Industries(identityKey = 0),
                     bizLegalType = LegalType(identifierKey = 0),
                     bizTaxation = Taxation(identifierKey = 0),
@@ -364,8 +320,8 @@ private fun WelcomeMessage(
     ) {
         Text(
             text = stringResource(R.string.str_init_setup_no),
-            textAlign = Center,
-            style = typography.titleMedium
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.titleMedium
         )
     }
 }
@@ -380,8 +336,8 @@ fun InitManualForm(
 ) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
-        shape = shapes.medium,
-        color = colorScheme.surfaceContainerHighest
+        shape = MaterialTheme.shapes.medium,
+        color = MaterialTheme.colorScheme.surfaceContainerHighest
     ){
         Column(
             modifier = Modifier.fillMaxWidth().padding(12.dp),
@@ -391,24 +347,24 @@ fun InitManualForm(
             Text(
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(id = R.string.str_business_profile),
-                textAlign = Center,
-                style = typography.titleLarge,
-                color = colorScheme.onSurface,
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.onSurface,
                 maxLines = 1,
-                overflow = Ellipsis
+                overflow = TextOverflow.Ellipsis
             )
             Text(
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(id = R.string.str_business_profile_desc),
-                textAlign = Center,
-                style = typography.labelMedium,
-                color = colorScheme.onSurface,
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurface,
                 maxLines = 1,
-                overflow = Ellipsis
+                overflow = TextOverflow.Ellipsis
             )
             HorizontalDivider(
                 thickness = 2.dp,
-                color = colorScheme.onSurface
+                color = MaterialTheme.colorScheme.onSurface
             )
             TextInput(
                 value = inputFormState.legalName,
@@ -443,7 +399,7 @@ fun InitManualForm(
                                     genId = randomULID(),
                                     bizName = BizName(
                                         legalName = inputFormState.legalName,
-                                        commonName = inputFormState.commonName,
+                                        commonName = inputFormState.commonName
                                     ),
                                     bizIndustry = Industries(identityKey = 0),
                                     bizLegalType = LegalType(identifierKey = 0),
@@ -461,8 +417,8 @@ fun InitManualForm(
                     onClick = onFormCancelBtnClicked,
                     icon = ImageVector.vectorResource(id = neutral),
                     text = stringResource(id = R.string.str_cancel),
-                    containerColor = colorScheme.errorContainer,
-                    contentColor = colorScheme.onErrorContainer
+                    containerColor = MaterialTheme.colorScheme.errorContainer,
+                    contentColor = MaterialTheme.colorScheme.onErrorContainer
                 )
             }
         }
