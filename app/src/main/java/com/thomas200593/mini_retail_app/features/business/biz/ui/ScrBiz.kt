@@ -87,20 +87,16 @@ fun ScrBiz(
                     is SessionState.Invalid -> {
                         if(menu.usesAuth){ vm.onEvent(OnDeny) }
                         else
-                        { vm.onEvent(OnAllow).also {
-                            stateApp.navController.navToBiz(
-                                navOptions=navOptions{ launchSingleTop=true; restoreState=true },
-                                destBiz=menu
-                            )
-                        } }
+                        { vm.onEvent(OnAllow).also { stateApp.navController.navToBiz(
+                            navOptions=navOptions{ launchSingleTop=true; restoreState=true },
+                            destBiz=menu
+                        ) } }
                     }
                     is SessionState.Valid -> {
-                        vm.onEvent(OnAllow).also {
-                            stateApp.navController.navToBiz(
-                                navOptions=navOptions{ launchSingleTop=true; restoreState=true },
-                                destBiz=menu
-                            )
-                        }
+                        vm.onEvent(OnAllow).also { stateApp.navController.navToBiz(
+                            navOptions=navOptions{ launchSingleTop=true; restoreState=true },
+                            destBiz=menu
+                        ) }
                     }
                 }
             }
@@ -124,8 +120,7 @@ fun ScrBiz(
         showBody = true,
         body = { Text("Forbidden Access") },
         useConfirmButton = true,
-        confirmButton = {
-            TextButton(onClick = { vm.onEvent(OnOpenEvents(sessionState)) })
+        confirmButton = { TextButton(onClick = { vm.onEvent(OnOpenEvents(sessionState)) })
             { Text(stringResource(id = R.string.str_ok)) }
         }
     )
