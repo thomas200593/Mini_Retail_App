@@ -5,8 +5,8 @@ import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
 import com.thomas200593.mini_retail_app.core.data.local.session.SessionState.Invalid
 import com.thomas200593.mini_retail_app.core.data.local.session.SessionState.Loading
 import com.thomas200593.mini_retail_app.core.data.local.session.SessionState.Valid
-import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.di.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers.Dispatchers.IO
+import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.di.Dispatcher
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.entity.AppConfig.ConfigCurrent
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.navigation.DestAppConfig
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.navigation.DestAppConfig.entries
@@ -32,7 +32,7 @@ internal class RepoAppConfImpl @Inject constructor(
     override suspend fun setFirstTimeStatus(firstTimeStatus: FirstTimeStatus)
     { dataStore.setFirstTimeStatus(firstTimeStatus) }
     override suspend fun getMenuData(sessionState: SessionState): Set<DestAppConfig> =
-        withContext(ioDispatcher){
+        withContext(ioDispatcher) {
             when(sessionState){
                 Loading -> { emptySet() }
                 is Invalid -> { entries.filterNot { it.usesAuth }.toSet() }

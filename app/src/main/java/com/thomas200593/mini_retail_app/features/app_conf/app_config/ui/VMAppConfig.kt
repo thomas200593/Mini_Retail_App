@@ -5,8 +5,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
-import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.di.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers.Dispatchers.IO
+import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.di.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Idle
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Loading
@@ -78,38 +78,31 @@ class VMAppConfig @Inject constructor(
                     dlgLoadMenuEnabled = true,
                     dlgDenyAccessMenuEnabled = false
                 )
-                _uiState.update {
-                    it.copy(destAppConfig = Success(repoAppConf.getMenuData(sessionState)), dialogState = DialogState())
-                }
+                _uiState.update { it.copy(
+                    destAppConfig = Success(repoAppConf.getMenuData(sessionState)),
+                    dialogState = DialogState()
+                ) }
             }
         }
     }
-    private fun onBtnNavBackClicked() {
-        _uiState.update { it.copy(dialogState = DialogState()) }
-    }
-    private fun onAllowAccessMenu() {
-        _uiState.update { it.copy(dialogState = DialogState()) }
-    }
-    private fun onDenyAccessMenu() {
-        updateDialogState(
-            dlgVldAuthEnabled = false,
-            dlgLoadMenuEnabled = false,
-            dlgDenyAccessMenuEnabled = true
-        )
-    }
+    private fun onBtnNavBackClicked() { _uiState.update { it.copy(dialogState = DialogState()) } }
+    private fun onAllowAccessMenu() { _uiState.update { it.copy(dialogState = DialogState()) } }
+    private fun onDenyAccessMenu() { updateDialogState(
+        dlgVldAuthEnabled = false,
+        dlgLoadMenuEnabled = false,
+        dlgDenyAccessMenuEnabled = true
+    ) }
     private fun updateDialogState(
         dlgVldAuthEnabled: Boolean = false,
         dlgLoadMenuEnabled: Boolean = false,
         dlgDenyAccessMenuEnabled: Boolean = false
     ){
-        _uiState.update {
-            it.copy(
-                dialogState = it.dialogState.copy(
-                    dlgVldAuthEnabled = mutableStateOf(dlgVldAuthEnabled),
-                    dlgLoadMenuEnabled = mutableStateOf(dlgLoadMenuEnabled),
-                    dlgDenyAccessMenuEnabled = mutableStateOf(dlgDenyAccessMenuEnabled)
-                )
+        _uiState.update { it.copy(
+            dialogState = it.dialogState.copy(
+                dlgVldAuthEnabled = mutableStateOf(dlgVldAuthEnabled),
+                dlgLoadMenuEnabled = mutableStateOf(dlgLoadMenuEnabled),
+                dlgDenyAccessMenuEnabled = mutableStateOf(dlgDenyAccessMenuEnabled)
             )
-        }
+        ) }
     }
 }
