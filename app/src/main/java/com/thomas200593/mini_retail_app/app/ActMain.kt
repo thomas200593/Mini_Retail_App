@@ -23,8 +23,7 @@ import com.thomas200593.mini_retail_app.app.ui.ScrApp
 import com.thomas200593.mini_retail_app.app.ui.rememberStateApplication
 import com.thomas200593.mini_retail_app.core.data.local.session.Session
 import com.thomas200593.mini_retail_app.core.design_system.network_monitor.NetworkMonitor
-import com.thomas200593.mini_retail_app.core.ui.common.CustomColors.darkScrim
-import com.thomas200593.mini_retail_app.core.ui.common.CustomColors.lightScrim
+import com.thomas200593.mini_retail_app.core.ui.common.CustomColors
 import com.thomas200593.mini_retail_app.core.ui.common.CustomThemes.ApplicationTheme
 import com.thomas200593.mini_retail_app.core.ui.common.CustomThemes.calculateInitialFontSize
 import com.thomas200593.mini_retail_app.core.ui.common.CustomThemes.shouldUseDarkTheme
@@ -39,7 +38,6 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class ActMain: AppCompatActivity() {
 
-    //add comment
     @Inject lateinit var networkMonitor: NetworkMonitor
     @Inject lateinit var session: Session
 
@@ -69,7 +67,9 @@ class ActMain: AppCompatActivity() {
             DisposableEffect(key1 = darkTheme) {
                 enableEdgeToEdge(
                     statusBarStyle = auto(TRANSPARENT, TRANSPARENT) { darkTheme },
-                    navigationBarStyle = auto(lightScrim = lightScrim, darkScrim = darkScrim) { darkTheme }
+                    navigationBarStyle = auto(
+                        lightScrim = CustomColors.lightScrim, darkScrim = CustomColors.darkScrim
+                    ) { darkTheme }
                 ); onDispose {}
             }
 
