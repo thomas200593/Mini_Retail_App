@@ -1,6 +1,6 @@
 package com.thomas200593.mini_retail_app.features.business.biz_profile.repository
 
-import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatcher
+import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.di.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers.Dispatchers.IO
 import com.thomas200593.mini_retail_app.features.business.biz_profile.dao.DaoBizProfile
 import com.thomas200593.mini_retail_app.features.business.biz_profile.entity.BizProfile

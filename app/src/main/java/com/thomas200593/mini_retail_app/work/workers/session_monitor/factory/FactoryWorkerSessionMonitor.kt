@@ -3,7 +3,7 @@ package com.thomas200593.mini_retail_app.work.workers.session_monitor.factory
 import android.content.Context
 import androidx.work.ListenableWorker
 import androidx.work.WorkerParameters
-import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatcher
+import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.di.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers
 import com.thomas200593.mini_retail_app.features.auth.domain.UCValidateAuthSession
 import com.thomas200593.mini_retail_app.features.auth.repository.RepoAuth

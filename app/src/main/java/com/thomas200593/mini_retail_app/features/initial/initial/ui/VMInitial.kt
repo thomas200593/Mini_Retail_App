@@ -2,12 +2,14 @@ package com.thomas200593.mini_retail_app.features.initial.initial.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers.Dispatchers.IO
+import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.di.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.util.HlpStateFlow.update
 import com.thomas200593.mini_retail_app.features.initial.initial.domain.UCGetInitialData
 import com.thomas200593.mini_retail_app.features.initial.initial.entity.Initial
-import com.thomas200593.mini_retail_app.features.initial.initial.ui.VMInitial.UiStateInitial.*
+import com.thomas200593.mini_retail_app.features.initial.initial.ui.VMInitial.UiStateInitial.Error
+import com.thomas200593.mini_retail_app.features.initial.initial.ui.VMInitial.UiStateInitial.Loading
+import com.thomas200593.mini_retail_app.features.initial.initial.ui.VMInitial.UiStateInitial.Success
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow

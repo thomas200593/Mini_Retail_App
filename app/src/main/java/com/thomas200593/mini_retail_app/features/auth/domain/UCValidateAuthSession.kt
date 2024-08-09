@@ -1,6 +1,6 @@
 package com.thomas200593.mini_retail_app.features.auth.domain
 
-import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatcher
+import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.di.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers.Dispatchers.IO
 import com.thomas200593.mini_retail_app.features.auth.entity.AuthSessionToken
 import com.thomas200593.mini_retail_app.features.auth.repository.RepoAuth

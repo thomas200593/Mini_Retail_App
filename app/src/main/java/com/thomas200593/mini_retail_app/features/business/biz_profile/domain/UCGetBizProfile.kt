@@ -1,7 +1,7 @@
 package com.thomas200593.mini_retail_app.features.business.biz_profile.domain
 
 import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
-import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatcher
+import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.di.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers.Dispatchers.IO
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Empty
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Error

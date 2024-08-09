@@ -1,7 +1,7 @@
 package com.thomas200593.mini_retail_app.features.app_conf.conf_gen_theme.repository
 
 import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStorePreferences
-import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatcher
+import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.di.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers.Dispatchers.IO
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_theme.entity.Theme
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_theme.entity.Theme.entries

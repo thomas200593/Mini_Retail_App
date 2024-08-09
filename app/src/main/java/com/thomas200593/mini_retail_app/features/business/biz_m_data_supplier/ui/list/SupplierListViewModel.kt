@@ -9,7 +9,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.AuditTrail
-import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatcher
+import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.di.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers
 import com.thomas200593.mini_retail_app.features.business.biz_m_data_supplier.domain.UCGetSupplierList
 import com.thomas200593.mini_retail_app.features.business.biz_m_data_supplier.entity.Supplier

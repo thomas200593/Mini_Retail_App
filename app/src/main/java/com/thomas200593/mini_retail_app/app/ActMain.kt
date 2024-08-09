@@ -67,9 +67,7 @@ class ActMain: AppCompatActivity() {
             DisposableEffect(key1 = darkTheme) {
                 enableEdgeToEdge(
                     statusBarStyle = auto(TRANSPARENT, TRANSPARENT) { darkTheme },
-                    navigationBarStyle = auto(
-                        lightScrim = CustomColors.lightScrim, darkScrim = CustomColors.darkScrim
-                    ) { darkTheme }
+                    navigationBarStyle = auto(lightScrim = CustomColors.lightScrim, darkScrim = CustomColors.darkScrim) { darkTheme }
                 ); onDispose {}
             }
 

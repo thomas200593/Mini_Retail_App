@@ -11,16 +11,22 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
 import com.thomas200593.mini_retail_app.app.navigation.DestTopLevel
-import com.thomas200593.mini_retail_app.app.navigation.DestWithTopAppBar
+import com.thomas200593.mini_retail_app.app.navigation.DestTopLevel.BUSINESS
+import com.thomas200593.mini_retail_app.app.navigation.DestTopLevel.DASHBOARD
+import com.thomas200593.mini_retail_app.app.navigation.DestTopLevel.REPORTING
+import com.thomas200593.mini_retail_app.app.navigation.DestTopLevel.USER_PROFILE
+import com.thomas200593.mini_retail_app.app.navigation.DestTopLevel.entries
+import com.thomas200593.mini_retail_app.app.navigation.DestWithTopAppBar.destWithTopAppBar
 import com.thomas200593.mini_retail_app.core.data.local.session.Session
-import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
+import com.thomas200593.mini_retail_app.core.data.local.session.SessionState.Loading
 import com.thomas200593.mini_retail_app.core.design_system.network_monitor.NetworkMonitor
 import com.thomas200593.mini_retail_app.features.business.biz.navigation.navToBiz
 import com.thomas200593.mini_retail_app.features.dashboard.navigation.navToDashboard
 import com.thomas200593.mini_retail_app.features.reporting.navigation.navToReporting
 import com.thomas200593.mini_retail_app.features.user_profile.navigation.navToUserProfile
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.SharingStarted.Companion.Eagerly
+import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
@@ -50,25 +56,25 @@ class StateApp(
     val isNetworkOffline = networkMonitor.isNetworkOnline.map(Boolean::not).stateIn(
         scope = coroutineScope,
         initialValue = false,
-        started = SharingStarted.WhileSubscribed(1_000)
+        started = WhileSubscribed(1_000)
     )
 
     val isSessionValid = session.currentUserSession.stateIn(
         scope = coroutineScope,
-        initialValue = SessionState.Loading,
-        started = SharingStarted.Eagerly
+        initialValue = Loading,
+        started = Eagerly
     )
 
     val destCurrent: NavDestination?
         @Composable get() = navController.currentBackStackEntryAsState().value?.destination
 
-    val destTopLevels: List<DestTopLevel> = DestTopLevel.entries
+    val destTopLevels: List<DestTopLevel> = entries
 
     val shouldShowBottomBar: Boolean
         @Composable get() = destCurrent?.route in destTopLevels.map { it.route }
 
     val shouldShowTopBar: Boolean
-        @Composable get() = destCurrent?.route in DestWithTopAppBar.destWithTopAppBar()
+        @Composable get() = destCurrent?.route in destWithTopAppBar()
 
     fun navToDestTopLevel(destTopLevel: DestTopLevel){
         val destTopLevelNavOptions = navOptions {
@@ -76,10 +82,10 @@ class StateApp(
             launchSingleTop = true; restoreState = true
         }
         when(destTopLevel){
-            DestTopLevel.DASHBOARD -> { navController.navToDashboard(navOptions = destTopLevelNavOptions) }
-            DestTopLevel.BUSINESS -> { navController.navToBiz(navOptions = destTopLevelNavOptions) }
-            DestTopLevel.REPORTING -> { navController.navToReporting(navOptions = destTopLevelNavOptions) }
-            DestTopLevel.USER_PROFILE -> { navController.navToUserProfile(navOptions = destTopLevelNavOptions) }
+            DASHBOARD -> { navController.navToDashboard(navOptions = destTopLevelNavOptions) }
+            BUSINESS -> { navController.navToBiz(navOptions = destTopLevelNavOptions) }
+            REPORTING -> { navController.navToReporting(navOptions = destTopLevelNavOptions) }
+            USER_PROFILE -> { navController.navToUserProfile(navOptions = destTopLevelNavOptions) }
         }
     }
 
