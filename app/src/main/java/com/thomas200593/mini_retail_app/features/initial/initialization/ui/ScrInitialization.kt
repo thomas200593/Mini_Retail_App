@@ -15,7 +15,9 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.MaterialTheme.shapes
+import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -31,14 +33,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.style.TextAlign.Companion.Center
+import androidx.compose.ui.text.style.TextAlign.Companion.Justify
+import androidx.compose.ui.text.style.TextOverflow.Companion.Ellipsis
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.thomas200593.mini_retail_app.BuildConfig.BUILD_TYPE
 import com.thomas200593.mini_retail_app.BuildConfig.VERSION_NAME
-import com.thomas200593.mini_retail_app.R
+import com.thomas200593.mini_retail_app.R.string
 import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
 import com.thomas200593.mini_retail_app.app.ui.StateApp
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.AuditTrail
@@ -49,7 +52,9 @@ import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.App.app
 import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.Emotion.happy
 import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.Emotion.neutral
 import com.thomas200593.mini_retail_app.core.ui.component.CustomButton.Common.AppIconButton
-import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AlertDialogContext
+import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AlertDialogContext.ERROR
+import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AlertDialogContext.INFORMATION
+import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AlertDialogContext.SUCCESS
 import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AppAlertDialog
 import com.thomas200593.mini_retail_app.core.ui.component.CustomForm.Component.TextInput
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.ErrorScreen
@@ -85,8 +90,8 @@ fun ScrInitialization(
     when(uiState.initialization){
         Loading -> LoadingScreen()
         is Error -> ErrorScreen(
-            title = stringResource(id = R.string.str_error),
-            errorMessage = stringResource(id = R.string.str_error_fetching_preferences),
+            title = stringResource(id = string.str_error),
+            errorMessage = stringResource(id = string.str_error_fetching_preferences),
             showIcon = true
         )
         is Success -> ScreenContent(
@@ -103,39 +108,39 @@ fun ScrInitialization(
     }
     AppAlertDialog(
         showDialog = uiState.dialogState.dlgLoadingEnabled,
-        dialogContext = AlertDialogContext.INFORMATION,
+        dialogContext = INFORMATION,
         showIcon = true,
         showTitle = true,
-        title = { Text(stringResource(id = R.string.str_loading)) },
+        title = { Text(stringResource(id = string.str_loading)) },
         showBody = true,
-        body = { Text(stringResource(id = R.string.str_biz_profile_init_loading)) }
+        body = { Text(stringResource(id = string.str_biz_profile_init_loading)) }
     )
     AppAlertDialog(
         showDialog = uiState.dialogState.dlgSuccessEnabled,
-        dialogContext = AlertDialogContext.SUCCESS,
+        dialogContext = SUCCESS,
         showIcon = true,
         showTitle = true,
-        title = { Text(stringResource(id = R.string.str_success)) },
+        title = { Text(stringResource(id = string.str_success)) },
         showBody = true,
-        body = { Text(stringResource(id = R.string.str_biz_profile_init_success)) },
+        body = { Text(stringResource(id = string.str_biz_profile_init_success)) },
         useConfirmButton = true,
         confirmButton = {
             TextButton(onClick = { stateApp.navController.navToInitial() })
-            { Text(stringResource(id = R.string.str_ok)) }
+            { Text(stringResource(id = string.str_ok)) }
         }
     )
     AppAlertDialog(
         showDialog = uiState.dialogState.dlgErrorEnabled,
-        dialogContext = AlertDialogContext.ERROR,
+        dialogContext = ERROR,
         showIcon = true,
         showTitle = true,
-        title = { Text(stringResource(id = R.string.str_error)) },
+        title = { Text(stringResource(id = string.str_error)) },
         showBody = true,
-        body = { Text(stringResource(id = R.string.str_biz_profile_init_failed)) },
+        body = { Text(stringResource(id = string.str_biz_profile_init_failed)) },
         useDismissButton = true,
         dismissButton = {
             TextButton(onClick = { stateApp.navController.navToInitial() })
-            { Text(stringResource(id = R.string.str_ok)) }
+            { Text(stringResource(id = string.str_ok)) }
         }
     )
 }
@@ -212,9 +217,9 @@ private fun LanguageSection(
                     Text(
                         modifier = Modifier.weight(0.8f),
                         text = stringResource(id = configCurrent.language.title),
-                        textAlign = TextAlign.Center,
+                        textAlign = Center,
                         maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
+                        overflow = Ellipsis
                     )
                 }
             }
@@ -229,9 +234,8 @@ private fun LanguageSection(
                                 contentDescription = null
                             )
                         },
-                        text = {
-                            Text(modifier = Modifier.fillMaxWidth(), text = stringResource(id = language.title))
-                        },
+                        text =
+                        { Text(modifier = Modifier.fillMaxWidth(), text = stringResource(id = language.title)) },
                         onClick = {
                             expanded = false
                             onSelectLanguage.invoke(language)
@@ -257,32 +261,32 @@ private fun WelcomeMessage(
         Surface(
             modifier = Modifier.size(150.dp),
             color = Color.Transparent,
-            shape = MaterialTheme.shapes.medium
+            shape = shapes.medium
         ) { Image(imageVector = ImageVector.vectorResource(id = app), contentDescription = null) }
         Text(
             modifier = Modifier.fillMaxWidth(),
-            text = stringResource(id = R.string.app_name),
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.titleLarge,
-            color = MaterialTheme.colorScheme.onSurface,
+            text = stringResource(id = string.app_name),
+            textAlign = Center,
+            style = typography.titleLarge,
+            color = colorScheme.onSurface,
             maxLines = 1,
-            overflow = TextOverflow.Ellipsis
+            overflow = Ellipsis
         )
         Text(
             modifier = Modifier.fillMaxWidth(),
             text = "$VERSION_NAME - $BUILD_TYPE",
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.labelMedium,
-            color = MaterialTheme.colorScheme.onSurface,
+            textAlign = Center,
+            style = typography.labelMedium,
+            color = colorScheme.onSurface,
             maxLines = 1,
-            overflow = TextOverflow.Ellipsis
+            overflow = Ellipsis
         )
     }
     Surface(
         modifier = Modifier.fillMaxWidth().padding(16.dp),
-        shape = MaterialTheme.shapes.medium,
-        color = MaterialTheme.colorScheme.primaryContainer,
-        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+        shape = shapes.medium,
+        color = colorScheme.primaryContainer,
+        contentColor = colorScheme.onPrimaryContainer,
     ) {
         Column(
             modifier = Modifier.fillMaxWidth(),
@@ -291,15 +295,15 @@ private fun WelcomeMessage(
         ) {
             Text(
                 modifier = Modifier.fillMaxWidth().padding(16.dp),
-                text = stringResource(R.string.str_init_welcome_message),
-                style = MaterialTheme.typography.labelLarge,
-                textAlign = TextAlign.Justify
+                text = stringResource(string.str_init_welcome_message),
+                style = typography.labelLarge,
+                textAlign = Justify
             )
             AppIconButton(
                 modifier = Modifier.fillMaxWidth(),
                 onClick = { onInitBizProfileManualBtnClicked.invoke() },
                 icon = ImageVector.vectorResource(id = happy),
-                text = stringResource(R.string.str_init_setup_yes)
+                text = stringResource(string.str_init_setup_yes)
             )
         }
     }
@@ -319,9 +323,9 @@ private fun WelcomeMessage(
         }
     ) {
         Text(
-            text = stringResource(R.string.str_init_setup_no),
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.titleMedium
+            text = stringResource(string.str_init_setup_no),
+            textAlign = Center,
+            style = typography.titleMedium
         )
     }
 }
@@ -336,8 +340,8 @@ fun InitManualForm(
 ) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
-        shape = MaterialTheme.shapes.medium,
-        color = MaterialTheme.colorScheme.surfaceContainerHighest
+        shape = shapes.medium,
+        color = colorScheme.surfaceContainerHighest
     ){
         Column(
             modifier = Modifier.fillMaxWidth().padding(12.dp),
@@ -346,31 +350,31 @@ fun InitManualForm(
         ) {
             Text(
                 modifier = Modifier.fillMaxWidth(),
-                text = stringResource(id = R.string.str_business_profile),
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.onSurface,
+                text = stringResource(id = string.str_business_profile),
+                textAlign = Center,
+                style = typography.titleLarge,
+                color = colorScheme.onSurface,
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                overflow = Ellipsis
             )
             Text(
                 modifier = Modifier.fillMaxWidth(),
-                text = stringResource(id = R.string.str_business_profile_desc),
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.onSurface,
+                text = stringResource(id = string.str_business_profile_desc),
+                textAlign = Center,
+                style = typography.labelMedium,
+                color = colorScheme.onSurface,
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                overflow = Ellipsis
             )
             HorizontalDivider(
                 thickness = 2.dp,
-                color = MaterialTheme.colorScheme.onSurface
+                color = colorScheme.onSurface
             )
             TextInput(
                 value = inputFormState.legalName,
                 onValueChange = { onLegalNameValueChanged(it) },
-                label = stringResource(R.string.str_company_legal_name),
-                placeholder = stringResource(R.string.str_company_legal_name),
+                label = stringResource(string.str_company_legal_name),
+                placeholder = stringResource(string.str_company_legal_name),
                 singleLine = true,
                 isError = inputFormState.legalNameError != null,
                 errorMessage = inputFormState.legalNameError
@@ -378,8 +382,8 @@ fun InitManualForm(
             TextInput(
                 value = inputFormState.commonName,
                 onValueChange = { onCommonNameValueChanged(it) },
-                label = stringResource(R.string.str_company_common_name),
-                placeholder = stringResource(R.string.str_company_common_name),
+                label = stringResource(string.str_company_common_name),
+                placeholder = stringResource(string.str_company_common_name),
                 singleLine = true,
                 isError = inputFormState.commonNameError != null,
                 errorMessage = inputFormState.commonNameError
@@ -409,16 +413,16 @@ fun InitManualForm(
                             )
                         },
                         icon = ImageVector.vectorResource(id = neutral),
-                        text = stringResource(id = R.string.str_save)
+                        text = stringResource(id = string.str_save)
                     )
                 }
                 AppIconButton(
                     modifier = Modifier.weight(if(inputFormState.fldSubmitBtnEnabled){0.5f}else{1.0f}),
                     onClick = onFormCancelBtnClicked,
                     icon = ImageVector.vectorResource(id = neutral),
-                    text = stringResource(id = R.string.str_cancel),
-                    containerColor = MaterialTheme.colorScheme.errorContainer,
-                    contentColor = MaterialTheme.colorScheme.onErrorContainer
+                    text = stringResource(id = string.str_cancel),
+                    containerColor = colorScheme.errorContainer,
+                    contentColor = colorScheme.onErrorContainer
                 )
             }
         }
