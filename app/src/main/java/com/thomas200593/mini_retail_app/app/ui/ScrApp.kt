@@ -8,13 +8,12 @@ import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarDuration.Indefinite
-import androidx.compose.material3.SnackbarDuration.Short
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.SnackbarResult.ActionPerformed
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -43,7 +42,7 @@ fun ScrApp(
         if(isNetworkOffline){
             snackBarHostState.showSnackbar(
                 message = networkNotConnectedMessage,
-                duration = Indefinite
+                duration = SnackbarDuration.Indefinite
             )
         }
     }
@@ -59,8 +58,8 @@ internal fun ScrApp(
 ){
     Scaffold(
         modifier = modifier.semantics { testTagsAsResourceId = true },
-        containerColor = colorScheme.background,
-        contentColor = colorScheme.onBackground,
+        containerColor = MaterialTheme.colorScheme.background,
+        contentColor = MaterialTheme.colorScheme.onBackground,
         snackbarHost = { SnackbarHost(snackBarHostState) },
         topBar = {
             if(stateApp.shouldShowTopBar)
@@ -86,8 +85,8 @@ internal fun ScrApp(
                             snackBarHostState.showSnackbar(
                                 message = message,
                                 actionLabel = action,
-                                duration = duration ?: Short
-                            ) == ActionPerformed
+                                duration = duration ?: SnackbarDuration.Short
+                            ) == SnackbarResult.ActionPerformed
                         }
                     )
                 }
