@@ -2,19 +2,16 @@ package com.thomas200593.mini_retail_app.features.onboarding.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.di.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers.Dispatchers.IO
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Error
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Idle
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Loading
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Success
+import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.di.Dispatcher
 import com.thomas200593.mini_retail_app.features.onboarding.entity.Onboarding.OnboardingPage
 import com.thomas200593.mini_retail_app.features.onboarding.repository.RepoOnboarding
 import com.thomas200593.mini_retail_app.features.onboarding.ui.VMOnboarding.UiEvents.ButtonEvents
 import com.thomas200593.mini_retail_app.features.onboarding.ui.VMOnboarding.UiEvents.OnFinishedOnboardingEvent
 import com.thomas200593.mini_retail_app.features.onboarding.ui.VMOnboarding.UiEvents.OnOpenEvents
 import com.thomas200593.mini_retail_app.features.onboarding.ui.VMOnboarding.UiEvents.TabsEvents
+import com.thomas200593.mini_retail_app.features.onboarding.ui.VMOnboarding.UiStateOnboardingPages.Loading
+import com.thomas200593.mini_retail_app.features.onboarding.ui.VMOnboarding.UiStateOnboardingPages.Success
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,8 +25,12 @@ class VMOnboarding @Inject constructor(
     private val repoOnboarding: RepoOnboarding,
     @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
 ): ViewModel() {
+    sealed interface UiStateOnboardingPages{
+        data object Loading: UiStateOnboardingPages
+        data class Success(val onboardingPages: List<OnboardingPage>): UiStateOnboardingPages
+    }
     data class UiState(
-        val onboardingPages: ResourceState<List<OnboardingPage>> = Idle,
+        val onboardingPages: UiStateOnboardingPages = Loading,
         val screenState: ScreenState = ScreenState()
     )
     data class ScreenState(
@@ -58,15 +59,13 @@ class VMOnboarding @Inject constructor(
         }
     }
     private fun onOpenEvent() = viewModelScope.launch(ioDispatcher) {
-        _uiState.update { it.copy(onboardingPages = Loading) }
-        try { _uiState.update { it.copy(onboardingPages = Success(repoOnboarding.getOnboardingPages())) } }
-        catch (e: Throwable){ _uiState.update { it.copy(onboardingPages = Error(e)) } }
+        _uiState.update { it.copy(onboardingPages = Success(repoOnboarding.getOnboardingPages())) }
     }
-    private fun onBtnNextOnClick() {
-        _uiState.update { it.copy(screenState = it.screenState.copy(currentPage = it.screenState.currentPage + 1)) }
+    private fun onBtnNextOnClick() = _uiState.update {
+        it.copy(screenState = it.screenState.copy(currentPage = it.screenState.currentPage + 1))
     }
-    private fun onTabPageSelectEvent(index: Int) {
-        _uiState.update { it.copy(screenState = it.screenState.copy(currentPage = index)) }
+    private fun onTabPageSelectEvent(index: Int) = _uiState.update {
+        it.copy(screenState = it.screenState.copy(currentPage = index))
     }
     private fun onFinishedOnboardingEvent() = viewModelScope.launch(ioDispatcher) {
         repoOnboarding.hideOnboarding()
