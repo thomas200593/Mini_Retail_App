@@ -8,14 +8,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.Icons.AutoMirrored.Outlined
+import androidx.compose.material.icons.Icons.AutoMirrored
 import androidx.compose.material.icons.Icons.Default
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowRight
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Info
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ButtonDefaults.IconSize
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme.colorScheme
@@ -39,20 +38,9 @@ import androidx.compose.ui.text.style.TextOverflow.Companion.Ellipsis
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.thomas200593.mini_retail_app.R
-import com.thomas200593.mini_retail_app.R.string.str_country
-import com.thomas200593.mini_retail_app.R.string.str_empty_message
-import com.thomas200593.mini_retail_app.R.string.str_empty_message_title
-import com.thomas200593.mini_retail_app.R.string.str_error
-import com.thomas200593.mini_retail_app.R.string.str_error_fetching_preferences
-import com.thomas200593.mini_retail_app.R.string.str_ok
+import com.thomas200593.mini_retail_app.R.string
 import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
 import com.thomas200593.mini_retail_app.app.ui.StateApp
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Empty
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Error
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Idle
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Loading
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Success
 import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.Currency.currency
 import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar.ProvideTopAppBarAction
 import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar.ProvideTopAppBarNavigationIcon
@@ -60,7 +48,6 @@ import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar.ProvideTo
 import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AlertDialogContext.ERROR
 import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AlertDialogContext.INFORMATION
 import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AppAlertDialog
-import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.EmptyScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.ErrorScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.ThreeRowCardItem
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_currency.entity.ConfigCurrency
@@ -68,6 +55,9 @@ import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_currency.enti
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_currency.ui.VMConfGenCurrency.UiEvents.BtnSelectCurrencyEvents
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_currency.ui.VMConfGenCurrency.UiEvents.ButtonEvents.BtnNavBackEvents
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_currency.ui.VMConfGenCurrency.UiEvents.OnOpenEvents
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_currency.ui.VMConfGenCurrency.UiStateConfigCurrency.Error
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_currency.ui.VMConfGenCurrency.UiStateConfigCurrency.Loading
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_currency.ui.VMConfGenCurrency.UiStateConfigCurrency.Success
 
 @Composable
 fun ScrConfGenCurrency(
@@ -78,19 +68,14 @@ fun ScrConfGenCurrency(
     LaunchedEffect(Unit) { vm.onEvent(OnOpenEvents) }
     TopAppBar(onNavigateBack = { vm.onEvent(BtnNavBackEvents.OnClick).also { stateApp.onNavUp() } })
     when(uiState.configCurrency){
-        Idle, Loading -> Unit
-        Empty -> EmptyScreen(
-            title = stringResource(id = str_empty_message_title),
-            emptyMessage = stringResource(id = str_empty_message),
-            showIcon = true
-        )
+        Loading -> Unit
         is Error -> ErrorScreen(
-            title = stringResource(id = str_error),
-            errorMessage = stringResource(id = str_error_fetching_preferences),
+            title = stringResource(id = string.str_error),
+            errorMessage = stringResource(id = string.str_error_fetching_preferences),
             showIcon = true
         )
         is Success -> ScreenContent(
-            configCurrency = (uiState.configCurrency as Success).data,
+            configCurrency = (uiState.configCurrency as Success).configCurrency,
             onSaveSelectedCurrency = { vm.onEvent(BtnSelectCurrencyEvents.OnClick(it)) }
         )
     }
@@ -99,22 +84,21 @@ fun ScrConfGenCurrency(
         dialogContext = INFORMATION,
         showIcon = true,
         showTitle = true,
-        title = { Text(text = stringResource(id = R.string.str_loading))},
+        title = { Text(text = stringResource(id = string.str_loading))},
         showBody = true,
-        body = { Text(text = stringResource(id = R.string.str_loading))},
+        body = { Text(text = stringResource(id = string.str_loading))},
     )
     AppAlertDialog(
         showDialog = uiState.dialogState.dlgLoadDataErrorEnabled,
         dialogContext = ERROR,
         showIcon = true,
         showTitle = true,
-        title = { Text(text = stringResource(id = str_error))},
+        title = { Text(text = stringResource(id = string.str_error))},
         showBody = true,
         body = { Text("Load Data Error") },
         useConfirmButton = true,
-        confirmButton = {
-            TextButton(onClick = { vm.onEvent(OnOpenEvents) })
-            { Text(stringResource(id = str_ok)) }
+        confirmButton = { TextButton(onClick = { vm.onEvent(OnOpenEvents) })
+            { Text(stringResource(id = string.str_ok)) }
         }
     )
 }
@@ -128,7 +112,7 @@ private fun TopAppBar(onNavigateBack: () -> Unit) {
         ) {
             Icon(
                 modifier = Modifier,
-                imageVector = Icons.AutoMirrored.Default.KeyboardArrowLeft,
+                imageVector = AutoMirrored.Default.KeyboardArrowLeft,
                 contentDescription = null
             )
         }
@@ -140,12 +124,12 @@ private fun TopAppBar(onNavigateBack: () -> Unit) {
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ){
             Icon(
-                modifier = Modifier.sizeIn(maxHeight = ButtonDefaults.IconSize),
+                modifier = Modifier.sizeIn(maxHeight = IconSize),
                 imageVector = ImageVector.vectorResource(id = currency),
                 contentDescription = null
             )
             Text(
-                text = stringResource(id = R.string.str_currency),
+                text = stringResource(id = string.str_currency),
                 maxLines = 1,
                 overflow = Ellipsis
             )
@@ -158,7 +142,7 @@ private fun TopAppBar(onNavigateBack: () -> Unit) {
             horizontalArrangement = Arrangement.Center
         ){
             Icon(
-                modifier = Modifier.sizeIn(maxHeight = ButtonDefaults.IconSize),
+                modifier = Modifier.sizeIn(maxHeight = IconSize),
                 imageVector = Default.Info,
                 contentDescription = null
             )
@@ -179,7 +163,7 @@ private fun ScreenContent(
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         Text(
-            text = "${stringResource(id = str_country)} : ${currentData.displayName}",
+            text = "${stringResource(id = string.str_country)} : ${currentData.displayName}",
             modifier = Modifier.fillMaxWidth().padding(4.dp),
             fontWeight = Bold,
             maxLines = 1,
@@ -192,8 +176,8 @@ private fun ScreenContent(
             verticalArrangement = Arrangement.spacedBy(10.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            items(count = preferencesList.count()){ index ->
-                val data = preferencesList[index]
+            items(count = preferencesList.count()){
+                val data = preferencesList[it]
                 ThreeRowCardItem(
                     firstRowContent = {
                         Text(
@@ -231,7 +215,7 @@ private fun ScreenContent(
                         ) {
                             Icon(
                                 imageVector = if (data == currentData) { Default.CheckCircle }
-                                else { Outlined.KeyboardArrowRight },
+                                else { AutoMirrored.Outlined.KeyboardArrowRight },
                                 contentDescription = null,
                                 tint = if (data == currentData) { Green }
                                 else { colorScheme.onTertiaryContainer }

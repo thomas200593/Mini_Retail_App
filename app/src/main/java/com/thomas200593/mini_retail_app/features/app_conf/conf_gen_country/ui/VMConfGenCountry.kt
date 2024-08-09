@@ -5,11 +5,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
-import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.di.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers.Dispatchers.IO
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Error
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Idle
+import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.di.Dispatcher
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.domain.UCGetConfCountry
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.entity.ConfigCountry
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.entity.Country
@@ -17,6 +14,9 @@ import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.repos
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.ui.VMConfGenCountry.UiEvents.ButtonEvents.BtnNavBackEvents
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.ui.VMConfGenCountry.UiEvents.ButtonEvents.BtnSelectCountryEvents
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.ui.VMConfGenCountry.UiEvents.OnOpenEvents
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.ui.VMConfGenCountry.UiStateConfigCountry.Error
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.ui.VMConfGenCountry.UiStateConfigCountry.Loading
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.ui.VMConfGenCountry.UiStateConfigCountry.Success
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -33,8 +33,13 @@ class VMConfGenCountry @Inject constructor(
     private val ucGetConfCountry: UCGetConfCountry,
     @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel(){
+    sealed interface UiStateConfigCountry{
+        data object Loading: UiStateConfigCountry
+        data class Success(val configCountry: ConfigCountry): UiStateConfigCountry
+        data class Error(val t: Throwable): UiStateConfigCountry
+    }
     data class UiState(
-        val configCountry: ResourceState<ConfigCountry> = Idle,
+        val configCountry: UiStateConfigCountry = Loading,
         val dialogState: DialogState = DialogState()
     )
     data class DialogState(
@@ -63,30 +68,25 @@ class VMConfGenCountry @Inject constructor(
         when(events){
             is OnOpenEvents -> onOpenEvent(events.sessionState)
             BtnNavBackEvents.OnClick -> onBtnNavBackClicked()
-            is BtnSelectCountryEvents.OnClick ->
-                onSaveSelectedCountry(events.sessionState, events.country)
+            is BtnSelectCountryEvents.OnClick -> onSaveSelectedCountry(events.sessionState, events.country)
         }
     }
     private fun onOpenEvent(sessionState: SessionState) {
         when(sessionState){
-            SessionState.Loading -> {
-                updateDialogState(
-                    dlgVldAuthEnabled = true,
-                    dlgLoadDataEnabled = false,
-                    dlgLoadDataError = false,
-                    dlgDenyAccessEnabled = false,
-                    dlgDenySaveDataEnabled = false
-                )
-            }
-            is SessionState.Invalid -> {
-                updateDialogState(
-                    dlgVldAuthEnabled = false,
-                    dlgLoadDataEnabled = false,
-                    dlgLoadDataError = false,
-                    dlgDenyAccessEnabled = true,
-                    dlgDenySaveDataEnabled = false
-                )
-            }
+            SessionState.Loading -> updateDialogState(
+                dlgVldAuthEnabled = true,
+                dlgLoadDataEnabled = false,
+                dlgLoadDataError = false,
+                dlgDenyAccessEnabled = false,
+                dlgDenySaveDataEnabled = false
+            )
+            is SessionState.Invalid -> updateDialogState(
+                dlgVldAuthEnabled = false,
+                dlgLoadDataEnabled = false,
+                dlgLoadDataError = false,
+                dlgDenyAccessEnabled = true,
+                dlgDenySaveDataEnabled = false
+            )
             is SessionState.Valid -> viewModelScope.launch(ioDispatcher) {
                 updateDialogState(
                     dlgVldAuthEnabled = false,
@@ -96,8 +96,7 @@ class VMConfGenCountry @Inject constructor(
                     dlgDenySaveDataEnabled = false
                 )
                 ucGetConfCountry.invoke().flowOn(ioDispatcher)
-                    .catch { e ->
-                        _uiState.update { it.copy(configCountry = Error(e)) }
+                    .catch { e -> _uiState.update { it.copy(configCountry = Error(e)) }
                         updateDialogState(
                             dlgVldAuthEnabled = false,
                             dlgLoadDataEnabled = false,
@@ -106,27 +105,23 @@ class VMConfGenCountry @Inject constructor(
                             dlgDenySaveDataEnabled = false
                         )
                     }
-                    .collect{ data ->
-                        _uiState.update { it.copy(configCountry = data, dialogState = DialogState()) }
-                    }
+                    .collect{ result -> _uiState.update {
+                        it.copy(configCountry = Success(result.data), dialogState = DialogState())
+                    } }
             }
         }
     }
-    private fun onBtnNavBackClicked() {
-        _uiState.update { it.copy(dialogState = DialogState()) }
-    }
+    private fun onBtnNavBackClicked() = _uiState.update { it.copy(dialogState = DialogState()) }
     private fun onSaveSelectedCountry(sessionState: SessionState, country: Country) {
         when(sessionState){
             SessionState.Loading -> Unit
-            is SessionState.Invalid -> {
-                updateDialogState(
-                    dlgVldAuthEnabled = false,
-                    dlgLoadDataEnabled = false,
-                    dlgLoadDataError = false,
-                    dlgDenyAccessEnabled = false,
-                    dlgDenySaveDataEnabled = true
-                )
-            }
+            is SessionState.Invalid -> updateDialogState(
+                dlgVldAuthEnabled = false,
+                dlgLoadDataEnabled = false,
+                dlgLoadDataError = false,
+                dlgDenyAccessEnabled = false,
+                dlgDenySaveDataEnabled = true
+            )
             is SessionState.Valid ->
                 viewModelScope.launch(ioDispatcher) { repoConfGenCountry.setCountry(country) }
         }
@@ -138,16 +133,14 @@ class VMConfGenCountry @Inject constructor(
         dlgDenyAccessEnabled: Boolean = false,
         dlgDenySaveDataEnabled: Boolean = false
     ) {
-        _uiState.update {
-            it.copy(
-                dialogState = it.dialogState.copy(
-                    dlgVldAuthEnabled = mutableStateOf(dlgVldAuthEnabled),
-                    dlgLoadDataEnabled = mutableStateOf(dlgLoadDataEnabled),
-                    dlgLoadDataErrorEnabled = mutableStateOf(dlgLoadDataError),
-                    dlgDenyAccessEnabled = mutableStateOf(dlgDenyAccessEnabled),
-                    dlgDenySaveDataEnabled = mutableStateOf(dlgDenySaveDataEnabled)
-                )
+        _uiState.update { it.copy(
+            dialogState = it.dialogState.copy(
+                dlgVldAuthEnabled = mutableStateOf(dlgVldAuthEnabled),
+                dlgLoadDataEnabled = mutableStateOf(dlgLoadDataEnabled),
+                dlgLoadDataErrorEnabled = mutableStateOf(dlgLoadDataError),
+                dlgDenyAccessEnabled = mutableStateOf(dlgDenyAccessEnabled),
+                dlgDenySaveDataEnabled = mutableStateOf(dlgDenySaveDataEnabled)
             )
-        }
+        ) }
     }
 }

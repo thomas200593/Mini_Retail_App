@@ -8,8 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons.AutoMirrored.Filled
-import androidx.compose.material.icons.Icons.AutoMirrored.Outlined
+import androidx.compose.material.icons.Icons.AutoMirrored
 import androidx.compose.material.icons.Icons.Default
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowRight
@@ -38,20 +37,9 @@ import androidx.compose.ui.text.style.TextOverflow.Companion.Ellipsis
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.thomas200593.mini_retail_app.R
-import com.thomas200593.mini_retail_app.R.string.str_country
-import com.thomas200593.mini_retail_app.R.string.str_empty_message
-import com.thomas200593.mini_retail_app.R.string.str_empty_message_title
-import com.thomas200593.mini_retail_app.R.string.str_error
-import com.thomas200593.mini_retail_app.R.string.str_error_fetching_preferences
-import com.thomas200593.mini_retail_app.R.string.str_ok
+import com.thomas200593.mini_retail_app.R.string
 import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
 import com.thomas200593.mini_retail_app.app.ui.StateApp
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Empty
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Error
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Idle
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Loading
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Success
 import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.Country.country
 import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar.ProvideTopAppBarAction
 import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar.ProvideTopAppBarNavigationIcon
@@ -59,7 +47,6 @@ import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar.ProvideTo
 import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AlertDialogContext.ERROR
 import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AlertDialogContext.INFORMATION
 import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AppAlertDialog
-import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.EmptyScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.ErrorScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.ThreeRowCardItem
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.entity.ConfigCountry
@@ -67,6 +54,9 @@ import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.entit
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.ui.VMConfGenCountry.UiEvents.ButtonEvents.BtnNavBackEvents
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.ui.VMConfGenCountry.UiEvents.ButtonEvents.BtnSelectCountryEvents
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.ui.VMConfGenCountry.UiEvents.OnOpenEvents
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.ui.VMConfGenCountry.UiStateConfigCountry.Error
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.ui.VMConfGenCountry.UiStateConfigCountry.Loading
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.ui.VMConfGenCountry.UiStateConfigCountry.Success
 
 @Composable
 fun ScrConfGenCountry(
@@ -78,19 +68,14 @@ fun ScrConfGenCountry(
     LaunchedEffect(sessionState) { vm.onEvent(OnOpenEvents(sessionState)) }
     TopAppBar(onNavigateBack = { vm.onEvent(BtnNavBackEvents.OnClick).also{ stateApp.onNavUp() }})
     when(uiState.configCountry){
-        Idle, Loading -> Unit
-        Empty -> EmptyScreen(
-            title = stringResource(id = str_empty_message_title),
-            emptyMessage = stringResource(id = str_empty_message),
-            showIcon = true
-        )
+        Loading -> Unit
         is Error -> ErrorScreen(
-            title = stringResource(id = str_error),
-            errorMessage = stringResource(id = str_error_fetching_preferences),
+            title = stringResource(id = string.str_error),
+            errorMessage = stringResource(id = string.str_error_fetching_preferences),
             showIcon = true
         )
         is Success -> ScreenContent(
-            configCountry = (uiState.configCountry as Success).data,
+            configCountry = (uiState.configCountry as Success).configCountry,
             onSaveSelectedCountry = { vm.onEvent(BtnSelectCountryEvents.OnClick(sessionState, it)) }
         )
     }
@@ -99,31 +84,31 @@ fun ScrConfGenCountry(
         dialogContext = INFORMATION,
         showIcon = true,
         showTitle = true,
-        title = { Text(text = stringResource(id = R.string.str_loading))},
+        title = { Text(text = stringResource(id = string.str_loading))},
         showBody = true,
-        body = { Text(text = stringResource(id = R.string.str_loading))},
+        body = { Text(text = stringResource(id = string.str_loading))},
     )
     AppAlertDialog(
         showDialog = uiState.dialogState.dlgLoadDataEnabled,
         dialogContext = INFORMATION,
         showIcon = true,
         showTitle = true,
-        title = { Text(text = stringResource(id = R.string.str_loading))},
+        title = { Text(text = stringResource(id = string.str_loading))},
         showBody = true,
-        body = { Text(text = stringResource(id = R.string.str_loading))},
+        body = { Text(text = stringResource(id = string.str_loading))},
     )
     AppAlertDialog(
         showDialog = uiState.dialogState.dlgLoadDataErrorEnabled,
         dialogContext = ERROR,
         showIcon = true,
         showTitle = true,
-        title = { Text(text = stringResource(id = str_error))},
+        title = { Text(text = stringResource(id = string.str_error))},
         showBody = true,
         body = { Text("Load Data Error") },
         useConfirmButton = true,
         confirmButton = {
             TextButton(onClick = { vm.onEvent(OnOpenEvents(sessionState)) })
-            { Text(stringResource(id = str_ok)) }
+            { Text(stringResource(id = string.str_ok)) }
         }
     )
     AppAlertDialog(
@@ -131,13 +116,13 @@ fun ScrConfGenCountry(
         dialogContext = ERROR,
         showIcon = true,
         showTitle = true,
-        title = { Text(text = stringResource(id = str_error))},
+        title = { Text(text = stringResource(id = string.str_error))},
         showBody = true,
         body = { Text("Forbidden Access Get Data") },
         useConfirmButton = true,
         confirmButton = {
             TextButton(onClick = { vm.onEvent(OnOpenEvents(sessionState)) })
-            { Text(stringResource(id = str_ok)) }
+            { Text(stringResource(id = string.str_ok)) }
         }
     )
     AppAlertDialog(
@@ -145,13 +130,13 @@ fun ScrConfGenCountry(
         dialogContext = ERROR,
         showIcon = true,
         showTitle = true,
-        title = { Text(text = stringResource(id = str_error))},
+        title = { Text(text = stringResource(id = string.str_error))},
         showBody = true,
         body = { Text("Forbidden Access To Save Data") },
         useConfirmButton = true,
         confirmButton = {
             TextButton(onClick = { vm.onEvent(OnOpenEvents(sessionState)) })
-            { Text(stringResource(id = str_ok)) }
+            { Text(stringResource(id = string.str_ok)) }
         }
     )
 }
@@ -162,7 +147,7 @@ private fun TopAppBar(onNavigateBack: () -> Unit) {
         Surface(onClick = onNavigateBack, modifier = Modifier) {
             Icon(
                 modifier = Modifier,
-                imageVector = Filled.KeyboardArrowLeft,
+                imageVector = AutoMirrored.Filled.KeyboardArrowLeft,
                 contentDescription = null
             )
         }
@@ -179,7 +164,7 @@ private fun TopAppBar(onNavigateBack: () -> Unit) {
                 contentDescription = null
             )
             Text(
-                text = stringResource(id = str_country),
+                text = stringResource(id = string.str_country),
                 maxLines = 1,
                 overflow = Ellipsis
             )
@@ -213,7 +198,7 @@ private fun ScreenContent(
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         Text(
-            text = "${stringResource(id = str_country)} : ${currentData.displayName}",
+            text = "${stringResource(id = string.str_country)} : ${currentData.displayName}",
             modifier = Modifier.fillMaxWidth().padding(4.dp),
             fontWeight = Bold,
             maxLines = 1,
@@ -225,8 +210,8 @@ private fun ScreenContent(
             verticalArrangement = Arrangement.spacedBy(10.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            items(count = preferencesList.count()){ index ->
-                val data = preferencesList[index]
+            items(count = preferencesList.count()){
+                val data = preferencesList[it]
                 ThreeRowCardItem(
                     firstRowContent = {
                         Text(
@@ -264,7 +249,7 @@ private fun ScreenContent(
                         ) {
                             Icon(
                                 imageVector = if (data == currentData) { Default.CheckCircle }
-                                else { Outlined.KeyboardArrowRight },
+                                else { AutoMirrored.Outlined.KeyboardArrowRight },
                                 contentDescription = null,
                                 tint = if (data == currentData) { Green }
                                 else { colorScheme.onTertiaryContainer }
