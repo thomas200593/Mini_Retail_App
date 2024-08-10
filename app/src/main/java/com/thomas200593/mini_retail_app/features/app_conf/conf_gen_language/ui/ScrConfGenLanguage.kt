@@ -195,8 +195,8 @@ private fun ScreenContent(
             verticalArrangement = Arrangement.spacedBy(10.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            items(count = preferencesList.count()){ index ->
-                val data = preferencesList.elementAt(index)
+            items(count = preferencesList.count()){
+                val data = preferencesList.elementAt(it)
                 ThreeRowCardItem(
                     firstRowContent = {
                         Surface(modifier = Modifier.fillMaxWidth()) {
