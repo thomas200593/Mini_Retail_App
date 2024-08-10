@@ -73,15 +73,17 @@ class VMConfGenDynamicColor @Inject constructor(
             dlgLoadDataError = false
         )
         ucGetConfDynamicColor.invoke().flowOn(ioDispatcher)
-            .catch { e ->
-                _uiState.update { it.copy(configDynamicColor = Error(e)) }
+            .catch { e -> _uiState.update { it.copy(configDynamicColor = Error(e)) }
                 updateDialogState(
                     dlgLoadDataEnabled = false,
                     dlgLoadDataError = true
                 )
             }
             .collect{ result ->
-                _uiState.update { it.copy(configDynamicColor = Success(result.data), dialogState = DialogState()) }
+                _uiState.update { it.copy(
+                    configDynamicColor = Success(result.data),
+                    dialogState = DialogState())
+                }
             }
     }
     private fun onBtnNavBackClicked() =

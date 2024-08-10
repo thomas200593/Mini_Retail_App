@@ -4,11 +4,8 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.di.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers.Dispatchers.IO
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Error
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Idle
+import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.di.Dispatcher
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_font_size.domain.UCGetConfFontSize
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_font_size.entity.ConfigFontSizes
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_font_size.entity.FontSize
@@ -16,6 +13,9 @@ import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_font_size.rep
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_font_size.ui.VMConfGenFontSize.UiEvents.BtnSelectFontSizeEvents
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_font_size.ui.VMConfGenFontSize.UiEvents.ButtonEvents.BtnNavBackEvents
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_font_size.ui.VMConfGenFontSize.UiEvents.OnOpenEvents
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_font_size.ui.VMConfGenFontSize.UiStateConfigFontSize.Error
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_font_size.ui.VMConfGenFontSize.UiStateConfigFontSize.Loading
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_font_size.ui.VMConfGenFontSize.UiStateConfigFontSize.Success
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,8 +32,13 @@ class VMConfGenFontSize @Inject constructor(
     private val ucGetConfFontSize: UCGetConfFontSize,
     @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
 ): ViewModel() {
+    sealed interface UiStateConfigFontSize{
+        data object Loading: UiStateConfigFontSize
+        data class Success(val configFontSizes: ConfigFontSizes): UiStateConfigFontSize
+        data class Error(val t: Throwable): UiStateConfigFontSize
+    }
     data class UiState(
-        val configFontSizes: ResourceState<ConfigFontSizes> = Idle,
+        val configFontSizes: UiStateConfigFontSize = Loading,
         val dialogState: DialogState = DialogState()
     )
     data class DialogState(
@@ -68,33 +73,31 @@ class VMConfGenFontSize @Inject constructor(
             dlgLoadDataError = false
         )
         ucGetConfFontSize.invoke().flowOn(ioDispatcher)
-            .catch { e ->
-                _uiState.update { it.copy(configFontSizes = Error(e)) }
+            .catch { e -> _uiState.update { it.copy(configFontSizes = Error(e)) }
                 updateDialogState(
                     dlgLoadDataEnabled = false,
                     dlgLoadDataError = true
                 )
             }
-            .collect{ data ->
-                _uiState.update { it.copy(configFontSizes = data, dialogState = DialogState()) }
+            .collect{ result ->
+                _uiState.update {
+                    it.copy(configFontSizes = Success(result.data), dialogState = DialogState())
+                }
             }
     }
-    private fun onBtnNavBackClicked() {
+    private fun onBtnNavBackClicked() =
         _uiState.update { it.copy(dialogState = DialogState()) }
-    }
     private fun onSaveSelectedFontSize(fontSize: FontSize) =
         viewModelScope.launch(ioDispatcher) { repoConfGenFontSize.setFontSize(fontSize) }
     private fun updateDialogState(
         dlgLoadDataEnabled: Boolean = false,
         dlgLoadDataError: Boolean = false
     ) {
-        _uiState.update {
-            it.copy(
-                dialogState = it.dialogState.copy(
-                    dlgLoadDataEnabled = mutableStateOf(dlgLoadDataEnabled),
-                    dlgLoadDataErrorEnabled = mutableStateOf(dlgLoadDataError),
-                )
+        _uiState.update { it.copy(
+            dialogState = it.dialogState.copy(
+                dlgLoadDataEnabled = mutableStateOf(dlgLoadDataEnabled),
+                dlgLoadDataErrorEnabled = mutableStateOf(dlgLoadDataError)
             )
-        }
+        ) }
     }
 }
