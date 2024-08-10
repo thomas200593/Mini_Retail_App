@@ -5,16 +5,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
-import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.di.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers.Dispatchers.IO
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Idle
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Loading
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Success
+import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.di.Dispatcher
 import com.thomas200593.mini_retail_app.features.business.biz.navigation.DestBiz
 import com.thomas200593.mini_retail_app.features.business.biz.repository.RepoBiz
 import com.thomas200593.mini_retail_app.features.business.biz.ui.VMBiz.UiEvents.ButtonEvents.BtnMenuEvents
 import com.thomas200593.mini_retail_app.features.business.biz.ui.VMBiz.UiEvents.OnOpenEvents
+import com.thomas200593.mini_retail_app.features.business.biz.ui.VMBiz.UiStateDestBiz.Loading
+import com.thomas200593.mini_retail_app.features.business.biz.ui.VMBiz.UiStateDestBiz.Success
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,8 +26,12 @@ class VMBiz @Inject constructor(
     private val repoBiz: RepoBiz,
     @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
 ): ViewModel() {
+    sealed interface UiStateDestBiz{
+        data object Loading: UiStateDestBiz
+        data class Success(val destBiz: Set<DestBiz>): UiStateDestBiz
+    }
     data class UiState(
-        val destBiz: ResourceState<Set<DestBiz>> = Idle,
+        val destBiz: UiStateDestBiz = Loading,
         val dialogState: DialogState = DialogState()
     )
     data class DialogState(
@@ -79,29 +81,23 @@ class VMBiz @Inject constructor(
             }
         }
     }
-    private fun onAllowAccessMenu() {
-        _uiState.update { it.copy(dialogState = DialogState()) }
-    }
-    private fun onDenyAccessMenu() {
-        updateDialogState(
-            dlgVldAuthEnabled = false,
-            dlgLoadMenuEnabled = false,
-            dlgDenyAccessMenuEnabled = true
-        )
-    }
+    private fun onAllowAccessMenu() = _uiState.update { it.copy(dialogState = DialogState()) }
+    private fun onDenyAccessMenu() = updateDialogState(
+        dlgVldAuthEnabled = false,
+        dlgLoadMenuEnabled = false,
+        dlgDenyAccessMenuEnabled = true
+    )
     private fun updateDialogState(
         dlgVldAuthEnabled: Boolean = false,
         dlgLoadMenuEnabled: Boolean = false,
         dlgDenyAccessMenuEnabled: Boolean = false
     ){
-        _uiState.update {
-            it.copy(
-                dialogState = it.dialogState.copy(
-                    dlgVldAuthEnabled = mutableStateOf(dlgVldAuthEnabled),
-                    dlgLoadMenuEnabled = mutableStateOf(dlgLoadMenuEnabled),
-                    dlgDenyAccessMenuEnabled = mutableStateOf(dlgDenyAccessMenuEnabled)
-                )
+        _uiState.update { it.copy(
+            dialogState = it.dialogState.copy(
+                dlgVldAuthEnabled = mutableStateOf(dlgVldAuthEnabled),
+                dlgLoadMenuEnabled = mutableStateOf(dlgLoadMenuEnabled),
+                dlgDenyAccessMenuEnabled = mutableStateOf(dlgDenyAccessMenuEnabled)
             )
-        }
+        ) }
     }
 }

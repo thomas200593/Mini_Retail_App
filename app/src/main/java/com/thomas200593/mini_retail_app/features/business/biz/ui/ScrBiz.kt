@@ -24,7 +24,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.DarkGray
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -34,29 +34,24 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.navOptions
-import com.thomas200593.mini_retail_app.R
+import com.thomas200593.mini_retail_app.R.string
 import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
 import com.thomas200593.mini_retail_app.app.ui.StateApp
 import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Empty
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Error
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Idle
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Loading
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Success
 import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons
 import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar.ProvideTopAppBarAction
 import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar.ProvideTopAppBarTitle
 import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AlertDialogContext.ERROR
 import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AlertDialogContext.INFORMATION
 import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AppAlertDialog
-import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.EmptyScreen
-import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.ErrorScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.LoadingScreen
 import com.thomas200593.mini_retail_app.features.business.biz.navigation.DestBiz
 import com.thomas200593.mini_retail_app.features.business.biz.navigation.navToBiz
 import com.thomas200593.mini_retail_app.features.business.biz.ui.VMBiz.UiEvents.ButtonEvents.BtnMenuEvents.OnAllow
 import com.thomas200593.mini_retail_app.features.business.biz.ui.VMBiz.UiEvents.ButtonEvents.BtnMenuEvents.OnDeny
 import com.thomas200593.mini_retail_app.features.business.biz.ui.VMBiz.UiEvents.OnOpenEvents
+import com.thomas200593.mini_retail_app.features.business.biz.ui.VMBiz.UiStateDestBiz.Loading
+import com.thomas200593.mini_retail_app.features.business.biz.ui.VMBiz.UiStateDestBiz.Success
 
 @Composable
 fun ScrBiz(
@@ -68,34 +63,25 @@ fun ScrBiz(
     LaunchedEffect(sessionState) { vm.onEvent(OnOpenEvents(sessionState)) }
     TopAppBar()
     when(uiState.destBiz){
-        Idle, Loading -> LoadingScreen()
-        Empty -> EmptyScreen(
-            title = stringResource(id = R.string.str_empty_message_title),
-            emptyMessage = stringResource(id = R.string.str_empty_message),
-            showIcon = true
-        )
-        is Error -> ErrorScreen(
-            title = stringResource(id = R.string.str_error),
-            errorMessage = stringResource(id = R.string.str_error_fetching_preferences),
-            showIcon = true
-        )
+        Loading -> LoadingScreen()
         is Success -> ScreenContent(
-            menuData = (uiState.destBiz as Success).data,
-            onNavigateToMenu = { menu ->
+            menuData = (uiState.destBiz as Success).destBiz,
+            onNavigateToMenu = {
                 when(sessionState){
                     SessionState.Loading -> Unit
                     is SessionState.Invalid -> {
-                        if(menu.usesAuth){ vm.onEvent(OnDeny) }
-                        else
-                        { vm.onEvent(OnAllow).also { stateApp.navController.navToBiz(
-                            navOptions=navOptions{ launchSingleTop=true; restoreState=true },
-                            destBiz=menu
-                        ) } }
+                        if(it.usesAuth){ vm.onEvent(OnDeny) }
+                        else { vm.onEvent(OnAllow)
+                            .apply { stateApp.navController.navToBiz(
+                                navOptions=navOptions{ launchSingleTop=true; restoreState=true },
+                                destBiz=it
+                            ) }
+                        }
                     }
                     is SessionState.Valid -> {
-                        vm.onEvent(OnAllow).also { stateApp.navController.navToBiz(
+                        vm.onEvent(OnAllow).apply { stateApp.navController.navToBiz(
                             navOptions=navOptions{ launchSingleTop=true; restoreState=true },
-                            destBiz=menu
+                            destBiz=it
                         ) }
                     }
                 }
@@ -107,21 +93,21 @@ fun ScrBiz(
         dialogContext = INFORMATION,
         showIcon = true,
         showTitle = true,
-        title = { Text(text = stringResource(id = R.string.str_loading))},
+        title = { Text(text = stringResource(id = string.str_loading))},
         showBody = true,
-        body = { Text(text = stringResource(id = R.string.str_loading))},
+        body = { Text(text = stringResource(id = string.str_loading))},
     )
     AppAlertDialog(
         showDialog = uiState.dialogState.dlgDenyAccessMenuEnabled,
         dialogContext = ERROR,
         showIcon = true,
         showTitle = true,
-        title = { Text(text = stringResource(id = R.string.str_error))},
+        title = { Text(text = stringResource(id = string.str_error))},
         showBody = true,
         body = { Text("Forbidden Access") },
         useConfirmButton = true,
         confirmButton = { TextButton(onClick = { vm.onEvent(OnOpenEvents(sessionState)) })
-            { Text(stringResource(id = R.string.str_ok)) }
+            { Text(stringResource(id = string.str_ok)) }
         }
     )
 }
@@ -140,7 +126,7 @@ private fun TopAppBar() {
                 contentDescription = null
             )
             Text(
-                text = stringResource(id = R.string.str_business),
+                text = stringResource(id = string.str_business),
                 maxLines = 1,
                 overflow = Ellipsis
             )
@@ -176,7 +162,7 @@ private fun ScreenContent(
                 modifier = Modifier.fillMaxWidth().padding(4.dp),
                 onClick = { onNavigateToMenu(menu) },
                 shape = shapes.medium,
-                border = BorderStroke(1.dp, Color.DarkGray),
+                border = BorderStroke(1.dp, DarkGray),
             ) {
                 Column(
                     Modifier.fillMaxSize().padding(8.dp),
