@@ -44,19 +44,15 @@ import com.thomas200593.mini_retail_app.app.ui.StateApp
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.Address
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.Contact
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.Link
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Empty
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Error
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Idle
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Loading
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Success
 import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.Country.country
 import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar.ProvideTopAppBarAction
 import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar.ProvideTopAppBarNavigationIcon
 import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar.ProvideTopAppBarTitle
-import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.ErrorScreen
-import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.LoadingScreen
+import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel
 import com.thomas200593.mini_retail_app.features.business.biz_profile.entity.BizProfile
-import com.thomas200593.mini_retail_app.features.business.biz_profile.entity.BizProfileDtl
+import com.thomas200593.mini_retail_app.features.business.biz_profile.ui.VMBizProfile.UiStateBizProfile.Error
+import com.thomas200593.mini_retail_app.features.business.biz_profile.ui.VMBizProfile.UiStateBizProfile.Loading
+import com.thomas200593.mini_retail_app.features.business.biz_profile.ui.VMBizProfile.UiStateBizProfile.Success
 
 @Composable
 fun ScrBizProfile(
@@ -68,11 +64,10 @@ fun ScrBizProfile(
     LaunchedEffect(sessionState) { vm.onEvent(VMBizProfile.UiEvents.OnOpenEvents(sessionState)) }
     TopAppBar(onNavigateBack = {  })
     when(uiState.bizProfile){
-        Idle, Loading -> LoadingScreen()
-        is Error -> ErrorScreen()
-        Empty -> ScreenEmptyContent()
+        Loading -> CustomPanel.LoadingScreen()
+        is Error -> CustomPanel.ErrorScreen()
         is Success -> ScreenContent(
-            bizProfileDtl = (uiState.bizProfile as Success).data
+            bizProfile = (uiState.bizProfile as Success).bizProfile
         )
     }
 }
@@ -122,13 +117,8 @@ fun TopAppBar(onNavigateBack: () -> Unit) {
 }
 
 @Composable
-private fun ScreenEmptyContent() {
-
-}
-
-@Composable
 private fun ScreenContent(
-    bizProfileDtl: BizProfileDtl
+    bizProfile: BizProfile
 ) {
     Column(
         modifier = Modifier
@@ -138,10 +128,10 @@ private fun ScreenContent(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.Top)
     ) {
-        BusinessIdentitySection(bizProfile = bizProfileDtl.bizProfile)
-        BusinessAddressesSection(addresses = bizProfileDtl.bizProfile.addresses)
-        BusinessContactsSection(contacts = bizProfileDtl.bizProfile.contacts)
-        BusinessLinksSection(links = bizProfileDtl.bizProfile.links)
+        BusinessIdentitySection(bizProfile = bizProfile)
+        BusinessAddressesSection(addresses = bizProfile.addresses)
+        BusinessContactsSection(contacts = bizProfile.contacts)
+        BusinessLinksSection(links = bizProfile.links)
     }
 }
 
@@ -152,7 +142,9 @@ private fun BusinessIdentitySection(bizProfile: BizProfile) {
         shape = shapes.medium
     ) {
         Column(
-            modifier = Modifier.fillMaxWidth().padding(8.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
@@ -174,7 +166,9 @@ private fun BusinessIdentitySection(bizProfile: BizProfile) {
                     textAlign = Start,
                     overflow = Ellipsis,
                     maxLines = 1,
-                    modifier = Modifier.weight(0.9f).fillMaxWidth()
+                    modifier = Modifier
+                        .weight(0.9f)
+                        .fillMaxWidth()
                 )
             }
 
@@ -205,7 +199,9 @@ private fun BusinessIdentitySection(bizProfile: BizProfile) {
                 color = colorScheme.errorContainer
             ) {
                 Column(
-                    modifier = Modifier.fillMaxWidth().padding(8.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
@@ -227,7 +223,9 @@ private fun BusinessIdentitySection(bizProfile: BizProfile) {
                             textAlign = Start,
                             overflow = Ellipsis,
                             maxLines = 1,
-                            modifier = Modifier.weight(0.8f).fillMaxWidth()
+                            modifier = Modifier
+                                .weight(0.8f)
+                                .fillMaxWidth()
                         )
                         Surface(modifier = Modifier.weight(0.1f), color = Transparent) {
                             Icon(
@@ -298,7 +296,9 @@ private fun BusinessIdentitySection(bizProfile: BizProfile) {
                 color = colorScheme.errorContainer
             ) {
                 Column(
-                    modifier = Modifier.fillMaxWidth().padding(8.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
@@ -320,7 +320,9 @@ private fun BusinessIdentitySection(bizProfile: BizProfile) {
                             textAlign = Start,
                             overflow = Ellipsis,
                             maxLines = 1,
-                            modifier = Modifier.weight(0.8f).fillMaxWidth()
+                            modifier = Modifier
+                                .weight(0.8f)
+                                .fillMaxWidth()
                         )
                         Surface(modifier = Modifier.weight(0.1f), color = Transparent) {
                             Icon(
@@ -391,7 +393,9 @@ private fun BusinessIdentitySection(bizProfile: BizProfile) {
                 color = colorScheme.errorContainer
             ) {
                 Column(
-                    modifier = Modifier.fillMaxWidth().padding(8.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
@@ -413,7 +417,9 @@ private fun BusinessIdentitySection(bizProfile: BizProfile) {
                             textAlign = Start,
                             overflow = Ellipsis,
                             maxLines = 1,
-                            modifier = Modifier.weight(0.8f).fillMaxWidth()
+                            modifier = Modifier
+                                .weight(0.8f)
+                                .fillMaxWidth()
                         )
                         Surface(modifier = Modifier.weight(0.1f), color = Transparent) {
                             Icon(
@@ -530,7 +536,9 @@ private fun BusinessIdentitySection(bizProfile: BizProfile) {
                 color = colorScheme.errorContainer
             ) {
                 Column(
-                    modifier = Modifier.fillMaxWidth().padding(8.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
@@ -552,7 +560,9 @@ private fun BusinessIdentitySection(bizProfile: BizProfile) {
                             textAlign = Start,
                             overflow = Ellipsis,
                             maxLines = 1,
-                            modifier = Modifier.weight(0.8f).fillMaxWidth()
+                            modifier = Modifier
+                                .weight(0.8f)
+                                .fillMaxWidth()
                         )
                         Surface(modifier = Modifier.weight(0.1f), color = Transparent) {
                             Icon(
@@ -692,7 +702,9 @@ private fun BusinessAddressesSection(addresses: List<Address>?) {
         shape = shapes.medium
     ) {
         Column(
-            modifier = Modifier.fillMaxWidth().padding(8.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ){
@@ -714,7 +726,9 @@ private fun BusinessAddressesSection(addresses: List<Address>?) {
                     textAlign = Start,
                     overflow = Ellipsis,
                     maxLines = 1,
-                    modifier = Modifier.weight(0.7f).fillMaxWidth()
+                    modifier = Modifier
+                        .weight(0.7f)
+                        .fillMaxWidth()
                 )
                 Row(
                     modifier = Modifier.weight(0.2f),
@@ -748,7 +762,9 @@ private fun BusinessContactsSection(contacts: List<Contact>?) {
         shape = shapes.medium
     ) {
         Column(
-            modifier = Modifier.fillMaxWidth().padding(8.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ){
@@ -770,7 +786,9 @@ private fun BusinessContactsSection(contacts: List<Contact>?) {
                     textAlign = Start,
                     overflow = Ellipsis,
                     maxLines = 1,
-                    modifier = Modifier.weight(0.7f).fillMaxWidth()
+                    modifier = Modifier
+                        .weight(0.7f)
+                        .fillMaxWidth()
                 )
                 Row(
                     modifier = Modifier.weight(0.2f),
@@ -804,7 +822,9 @@ private fun BusinessLinksSection(links: List<Link>?) {
         shape = shapes.medium
     ) {
         Column(
-            modifier = Modifier.fillMaxWidth().padding(8.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ){
@@ -826,7 +846,9 @@ private fun BusinessLinksSection(links: List<Link>?) {
                     textAlign = Start,
                     overflow = Ellipsis,
                     maxLines = 1,
-                    modifier = Modifier.weight(0.7f).fillMaxWidth()
+                    modifier = Modifier
+                        .weight(0.7f)
+                        .fillMaxWidth()
                 )
                 Row(
                     modifier = Modifier.weight(0.2f),
