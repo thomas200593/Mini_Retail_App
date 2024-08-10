@@ -4,11 +4,8 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.di.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers.Dispatchers.IO
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Error
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Idle
+import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.di.Dispatcher
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_dynamic_color.domain.UCGetConfDynamicColor
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_dynamic_color.entity.ConfigDynamicColor
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_dynamic_color.entity.DynamicColor
@@ -16,6 +13,9 @@ import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_dynamic_color
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_dynamic_color.ui.VMConfGenDynamicColor.UiEvents.BtnSelectDynamicColorEvents
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_dynamic_color.ui.VMConfGenDynamicColor.UiEvents.ButtonEvents.BtnNavBackEvents
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_dynamic_color.ui.VMConfGenDynamicColor.UiEvents.OnOpenEvents
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_dynamic_color.ui.VMConfGenDynamicColor.UiStateConfigDynamicColor.Error
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_dynamic_color.ui.VMConfGenDynamicColor.UiStateConfigDynamicColor.Loading
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_dynamic_color.ui.VMConfGenDynamicColor.UiStateConfigDynamicColor.Success
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,8 +32,13 @@ class VMConfGenDynamicColor @Inject constructor(
     private val ucGetConfDynamicColor: UCGetConfDynamicColor,
     @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
 ): ViewModel() {
+    sealed interface UiStateConfigDynamicColor{
+        data object Loading: UiStateConfigDynamicColor
+        data class Success(val configDynamicColor: ConfigDynamicColor): UiStateConfigDynamicColor
+        data class Error(val t: Throwable): UiStateConfigDynamicColor
+    }
     data class UiState(
-        val configDynamicColor: ResourceState<ConfigDynamicColor> = Idle,
+        val configDynamicColor: UiStateConfigDynamicColor = Loading,
         val dialogState: DialogState = DialogState()
     )
     data class DialogState(
@@ -75,13 +80,12 @@ class VMConfGenDynamicColor @Inject constructor(
                     dlgLoadDataError = true
                 )
             }
-            .collect{ data ->
-                _uiState.update { it.copy(configDynamicColor = data, dialogState = DialogState()) }
+            .collect{ result ->
+                _uiState.update { it.copy(configDynamicColor = Success(result.data), dialogState = DialogState()) }
             }
     }
-    private fun onBtnNavBackClicked() {
+    private fun onBtnNavBackClicked() =
         _uiState.update { it.copy(dialogState = DialogState()) }
-    }
     private fun onSaveSelectedDynamicColor(dynamicColor: DynamicColor) =
         viewModelScope.launch(ioDispatcher) { repoConfGenDynamicColor.setDynamicColor(dynamicColor) }
     private fun updateDialogState(

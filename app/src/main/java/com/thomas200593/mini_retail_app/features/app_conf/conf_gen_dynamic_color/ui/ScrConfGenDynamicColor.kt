@@ -8,9 +8,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.Icons.AutoMirrored.Default
-import androidx.compose.material.icons.Icons.AutoMirrored.Outlined
+import androidx.compose.material.icons.Icons.AutoMirrored
+import androidx.compose.material.icons.Icons.Default
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowRight
 import androidx.compose.material.icons.filled.CheckCircle
@@ -37,20 +36,9 @@ import androidx.compose.ui.text.style.TextOverflow.Companion.Ellipsis
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.thomas200593.mini_retail_app.R
-import com.thomas200593.mini_retail_app.R.string.str_dynamic_color
-import com.thomas200593.mini_retail_app.R.string.str_empty_message
-import com.thomas200593.mini_retail_app.R.string.str_empty_message_title
-import com.thomas200593.mini_retail_app.R.string.str_error
-import com.thomas200593.mini_retail_app.R.string.str_error_fetching_preferences
-import com.thomas200593.mini_retail_app.R.string.str_ok
+import com.thomas200593.mini_retail_app.R.string
 import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
 import com.thomas200593.mini_retail_app.app.ui.StateApp
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Empty
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Error
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Idle
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Loading
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Success
 import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.DynamicColor.dynamic_color
 import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar.ProvideTopAppBarAction
 import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar.ProvideTopAppBarNavigationIcon
@@ -58,7 +46,6 @@ import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar.ProvideTo
 import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AlertDialogContext.ERROR
 import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AlertDialogContext.INFORMATION
 import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AppAlertDialog
-import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.EmptyScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.ErrorScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.ThreeRowCardItem
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_dynamic_color.entity.ConfigDynamicColor
@@ -66,6 +53,9 @@ import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_dynamic_color
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_dynamic_color.ui.VMConfGenDynamicColor.UiEvents.BtnSelectDynamicColorEvents
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_dynamic_color.ui.VMConfGenDynamicColor.UiEvents.ButtonEvents.BtnNavBackEvents
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_dynamic_color.ui.VMConfGenDynamicColor.UiEvents.OnOpenEvents
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_dynamic_color.ui.VMConfGenDynamicColor.UiStateConfigDynamicColor.Error
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_dynamic_color.ui.VMConfGenDynamicColor.UiStateConfigDynamicColor.Loading
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_dynamic_color.ui.VMConfGenDynamicColor.UiStateConfigDynamicColor.Success
 
 @Composable
 fun ScrConfGenDynamicColor(
@@ -76,19 +66,14 @@ fun ScrConfGenDynamicColor(
     LaunchedEffect(Unit) { vm.onEvent(OnOpenEvents) }
     TopAppBar(onNavigateBack = { vm.onEvent(BtnNavBackEvents.OnClick).also { stateApp.onNavUp() } })
     when(uiState.configDynamicColor){
-        Idle, Loading -> Unit
-        Empty -> EmptyScreen(
-            title = stringResource(id = str_empty_message_title),
-            emptyMessage = stringResource(id = str_empty_message),
-            showIcon = true
-        )
+        Loading -> Unit
         is Error -> ErrorScreen(
-            title = stringResource(id = str_error),
-            errorMessage = stringResource(id = str_error_fetching_preferences),
+            title = stringResource(id = string.str_error),
+            errorMessage = stringResource(id = string.str_error_fetching_preferences),
             showIcon = true
         )
         is Success -> ScreenContent(
-            configDynamicColor = (uiState.configDynamicColor as Success).data,
+            configDynamicColor = (uiState.configDynamicColor as Success).configDynamicColor,
             onSaveSelectedDynamicColor = { vm.onEvent(BtnSelectDynamicColorEvents.OnClick(it)) }
         )
     }
@@ -97,22 +82,22 @@ fun ScrConfGenDynamicColor(
         dialogContext = INFORMATION,
         showIcon = true,
         showTitle = true,
-        title = { Text(text = stringResource(id = R.string.str_loading))},
+        title = { Text(text = stringResource(id = string.str_loading))},
         showBody = true,
-        body = { Text(text = stringResource(id = R.string.str_loading))},
+        body = { Text(text = stringResource(id = string.str_loading))},
     )
     AppAlertDialog(
         showDialog = uiState.dialogState.dlgLoadDataErrorEnabled,
         dialogContext = ERROR,
         showIcon = true,
         showTitle = true,
-        title = { Text(text = stringResource(id = str_error))},
+        title = { Text(text = stringResource(id = string.str_error))},
         showBody = true,
         body = { Text("Load Data Error") },
         useConfirmButton = true,
         confirmButton = {
             TextButton(onClick = { vm.onEvent(OnOpenEvents) })
-            { Text(stringResource(id = str_ok)) }
+            { Text(stringResource(id = string.str_ok)) }
         }
     )
 }
@@ -123,7 +108,7 @@ private fun TopAppBar(onNavigateBack: () -> Unit) {
         Surface(onClick =  onNavigateBack, modifier = Modifier) {
             Icon(
                 modifier = Modifier,
-                imageVector = Default.KeyboardArrowLeft,
+                imageVector = AutoMirrored.Default.KeyboardArrowLeft,
                 contentDescription = null
             )
         }
@@ -140,7 +125,7 @@ private fun TopAppBar(onNavigateBack: () -> Unit) {
                 contentDescription = null
             )
             Text(
-                text = stringResource(id = str_dynamic_color),
+                text = stringResource(id = string.str_dynamic_color),
                 maxLines = 1,
                 overflow = Ellipsis
             )
@@ -154,7 +139,7 @@ private fun TopAppBar(onNavigateBack: () -> Unit) {
         ){
             Icon(
                 modifier = Modifier.sizeIn(maxHeight = IconSize),
-                imageVector = Icons.Default.Info,
+                imageVector = Default.Info,
                 contentDescription = null
             )
         }
@@ -175,7 +160,7 @@ private fun ScreenContent(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "${stringResource(id = str_dynamic_color)} : ${stringResource(id = currentData.title)}",
+            text = "${stringResource(id = string.str_dynamic_color)} : ${stringResource(id = currentData.title)}",
             modifier = Modifier.fillMaxWidth().padding(4.dp),
             fontWeight = Bold,
             maxLines = 1,
@@ -187,8 +172,8 @@ private fun ScreenContent(
             verticalArrangement = Arrangement.spacedBy(10.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            items(count = preferencesList.count()){ index ->
-                val data = preferencesList.elementAt(index)
+            items(count = preferencesList.count()){
+                val data = preferencesList.elementAt(it)
                 ThreeRowCardItem(
                     firstRowContent = {
                         Surface(modifier = Modifier.fillMaxWidth()) {
@@ -214,7 +199,7 @@ private fun ScreenContent(
                             onClick = { onSaveSelectedDynamicColor(data) }
                         ) {
                             Icon(
-                                imageVector = if (data == currentData) Icons.Default.CheckCircle else Outlined.KeyboardArrowRight,
+                                imageVector = if (data == currentData) Default.CheckCircle else AutoMirrored.Outlined.KeyboardArrowRight,
                                 contentDescription = null,
                                 tint = if (data == currentData) Green else colorScheme.onTertiaryContainer
                             )
