@@ -7,8 +7,8 @@ import androidx.core.os.LocaleListCompat.create
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.thomas200593.mini_retail_app.R
-import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.di.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers.Dispatchers.IO
+import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.di.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.util.HlpStateFlow.update
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
 import com.thomas200593.mini_retail_app.core.ui.component.CustomForm.Component.UseCase.InputFieldValidation.RegularTextValidation
@@ -124,7 +124,7 @@ class VMInitialization @Inject constructor(
     private fun onOpenEvent() = viewModelScope.launch(ioDispatcher) {
         ucGetInitializationData.invoke().flowOn(ioDispatcher)
             .catch { e -> _uiState.update { it.copy(initialization = UiStateInitialization.Error(e)) } }
-            .collectLatest { data -> _uiState.update { it.copy(initialization = UiStateInitialization.Success(data.data)) } }
+            .collectLatest { result -> _uiState.update { it.copy(initialization = UiStateInitialization.Success(result.data)) } }
     }
     private fun onSelectLanguageEvent(language: Language) = viewModelScope.launch(ioDispatcher) {
         repoConfGenLanguage.setLanguage(language)
