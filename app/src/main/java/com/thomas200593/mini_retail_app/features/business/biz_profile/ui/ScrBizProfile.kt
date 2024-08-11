@@ -1,8 +1,10 @@
 package com.thomas200593.mini_retail_app.features.business.biz_profile.ui
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -33,13 +35,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color.Companion.DarkGray
 import androidx.compose.ui.graphics.Color.Companion.Transparent
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
+import androidx.compose.ui.text.style.TextAlign.Companion.Justify
 import androidx.compose.ui.text.style.TextAlign.Companion.Start
 import androidx.compose.ui.text.style.TextOverflow.Companion.Ellipsis
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -47,16 +52,29 @@ import com.thomas200593.mini_retail_app.R.string
 import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
 import com.thomas200593.mini_retail_app.app.ui.StateApp
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.Address
+import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.AuditTrail
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.Contact
+import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.Industries
+import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.LegalDocumentType
+import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.LegalType
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.Link
+import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.Taxation
 import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.Country.country
+import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.Emotion.neutral
+import com.thomas200593.mini_retail_app.core.ui.common.CustomThemes.ApplicationTheme
 import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar.ProvideTopAppBarAction
 import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar.ProvideTopAppBarNavigationIcon
 import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar.ProvideTopAppBarTitle
+import com.thomas200593.mini_retail_app.core.ui.component.CustomButton.Common.AppIconButton
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.ErrorScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.LoadingScreen
+import com.thomas200593.mini_retail_app.features.app_conf.app_config.entity.AppConfig.ConfigCurrent
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.entity.Country
+import com.thomas200593.mini_retail_app.features.business.biz_profile.entity.BizIdentity
+import com.thomas200593.mini_retail_app.features.business.biz_profile.entity.BizName
 import com.thomas200593.mini_retail_app.features.business.biz_profile.entity.BizProfile
 import com.thomas200593.mini_retail_app.features.business.biz_profile.ui.VMBizProfile.UiEvents.OnOpenEvents
+import com.thomas200593.mini_retail_app.features.business.biz_profile.ui.VMBizProfile.UiState
 import com.thomas200593.mini_retail_app.features.business.biz_profile.ui.VMBizProfile.UiStateBizProfile.Error
 import com.thomas200593.mini_retail_app.features.business.biz_profile.ui.VMBizProfile.UiStateBizProfile.Loading
 import com.thomas200593.mini_retail_app.features.business.biz_profile.ui.VMBizProfile.UiStateBizProfile.Success
@@ -68,8 +86,21 @@ fun ScrBizProfile(
 ){
     val sessionState by stateApp.isSessionValid.collectAsStateWithLifecycle()
     val uiState by vm.uiState.collectAsStateWithLifecycle()
+
     LaunchedEffect(sessionState) { vm.onEvent(OnOpenEvents(sessionState)) }
-    TopAppBar(onNavigateBack = {  })
+
+    ScrBizProfile(
+        onNavigateBack = {},
+        uiState = uiState
+    )
+}
+
+@Composable
+private fun ScrBizProfile(
+    onNavigateBack: () -> Unit,
+    uiState: UiState
+){
+    TopAppBar(onNavigateBack = onNavigateBack)
     when(uiState.bizProfile){
         Loading -> LoadingScreen()
         is Error -> ErrorScreen(
@@ -78,13 +109,13 @@ fun ScrBizProfile(
             showIcon = true
         )
         is Success -> ScreenContent(
-            bizProfile = (uiState.bizProfile as Success).bizProfile
+            bizProfile = uiState.bizProfile.bizProfile
         )
     }
 }
 
 @Composable
-fun TopAppBar(onNavigateBack: () -> Unit) {
+private fun TopAppBar(onNavigateBack: () -> Unit) {
     ProvideTopAppBarNavigationIcon {
         Surface(onClick = onNavigateBack, modifier = Modifier) {
             Icon(
@@ -183,12 +214,13 @@ private fun BusinessIdentitySection(bizProfile: BizProfile) {
                         .fillMaxWidth()
                 )
                 Surface(
-                    modifier = Modifier.weight(0.1f),
+                    modifier = Modifier
+                        .weight(0.1f)
+                        .size(20.dp),
                     color = colorScheme.tertiaryContainer,
                     onClick = { expanded = expanded.not() }
                 ) {
                     Icon(
-                        modifier = Modifier.size(20.dp),
                         imageVector =
                         if(expanded) Icons.Default.KeyboardArrowDown
                             else Icons.AutoMirrored.Default.KeyboardArrowRight,
@@ -724,6 +756,7 @@ private fun BusinessIdentitySection(bizProfile: BizProfile) {
 
 @Composable
 private fun BusinessAddressesSection(addresses: List<Address>?) {
+    var expanded by remember { mutableStateOf(false) }
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = shapes.medium
@@ -754,27 +787,192 @@ private fun BusinessAddressesSection(addresses: List<Address>?) {
                     overflow = Ellipsis,
                     maxLines = 1,
                     modifier = Modifier
-                        .weight(0.7f)
+                        .weight(0.8f)
                         .fillMaxWidth()
                 )
-                Row(
-                    modifier = Modifier.weight(0.2f),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
+                Surface(
+                    modifier = Modifier
+                        .weight(0.1f)
+                        .size(20.dp),
+                    color = colorScheme.tertiaryContainer,
+                    onClick = { expanded = expanded.not() }
                 ) {
-                    Surface(modifier = Modifier.weight(0.1f)) {
-                        Icon(
-                            modifier = Modifier.size(20.dp),
-                            imageVector = Default.Add,
-                            contentDescription = null
-                        )
+                    Icon(
+                        modifier = Modifier,
+                        imageVector =
+                        if(expanded) Icons.Default.KeyboardArrowDown
+                        else Icons.AutoMirrored.Default.KeyboardArrowRight,
+                        contentDescription = null
+                    )
+                }
+            }
+
+            if(expanded){
+                if(addresses.isNullOrEmpty()){
+                    Surface(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp),
+                        shape = shapes.medium,
+                        border = BorderStroke(1.dp, color = DarkGray)
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(8.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically)
+                        ) {
+                            Surface(
+                                modifier = Modifier.size(48.dp),
+                                contentColor = colorScheme.error
+                            ) {
+                                Icon(
+                                    imageVector = ImageVector.vectorResource(id = neutral),
+                                    contentDescription = null
+                                )
+                            }
+                            Text(
+                                text = "You have not set any business address, would you mind to set it?",
+                                textAlign = Justify
+                            )
+                            AppIconButton(
+                                onClick = {},
+                                icon = Default.Add,
+                                text = "Add address"
+                            )
+                        }
                     }
-                    Surface(modifier = Modifier.weight(0.1f)) {
-                        Icon(
-                            modifier = Modifier.size(20.dp),
-                            imageVector = Default.Clear,
-                            contentDescription = null
-                        )
+                } else{
+                    if(addresses.size < 5){
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.End,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(0.2f),
+                                horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Surface(modifier = Modifier
+                                    .size(20.dp)
+                                    .weight(0.1f)) {
+                                    Icon(
+                                        modifier = Modifier,
+                                        imageVector = Default.Add,
+                                        contentDescription = null
+                                    )
+                                }
+                                Surface(modifier = Modifier
+                                    .size(20.dp)
+                                    .weight(0.1f)) {
+                                    Icon(
+                                        modifier = Modifier,
+                                        imageVector = Default.Clear,
+                                        contentDescription = null
+                                    )
+                                }
+                            }
+                        }
+                        addresses.forEach{ address ->
+                            Surface(
+                                modifier = Modifier
+                                    .fillMaxWidth(),
+                                shape = shapes.medium,
+                                border = BorderStroke(1.dp, DarkGray)
+                            ) {
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(8.dp),
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically)
+                                ) {
+                                    /**
+                                     * Interaction Button
+                                     */
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.End,
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Row(
+                                            modifier = Modifier.fillMaxWidth(0.2f),
+                                            horizontalArrangement = Arrangement.Center,
+                                            verticalAlignment = Alignment.CenterVertically
+                                        ) {
+                                            Surface(modifier = Modifier
+                                                .size(20.dp)
+                                                .weight(0.1f)) {
+                                                Icon(
+                                                    modifier = Modifier,
+                                                    imageVector = Default.Edit,
+                                                    contentDescription = null
+                                                )
+                                            }
+                                            Surface(modifier = Modifier
+                                                .size(20.dp)
+                                                .weight(0.1f)) {
+                                                Icon(
+                                                    modifier = Modifier,
+                                                    imageVector = Default.Clear,
+                                                    contentDescription = null
+                                                )
+                                            }
+                                        }
+                                    }
+
+                                    /**
+                                     * Label
+                                     */
+                                    address.label?.let {
+                                        Column(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            horizontalAlignment = Alignment.Start,
+                                            verticalArrangement = Arrangement.Center
+                                        ) {
+                                            Text(
+                                                text = "Address Label",
+                                                maxLines = 1,
+                                                fontWeight = Bold,
+                                                style = typography.labelSmall,
+                                                overflow = Ellipsis,
+                                                modifier = Modifier
+                                            )
+                                            Text(
+                                                text = it,
+                                                style = typography.bodyMedium,
+                                                modifier = Modifier
+                                            )
+                                        }
+                                    }
+
+                                    address.label?.let {
+                                        Column(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            horizontalAlignment = Alignment.Start,
+                                            verticalArrangement = Arrangement.Center
+                                        ) {
+                                            Text(
+                                                text = "Address Label",
+                                                maxLines = 1,
+                                                fontWeight = Bold,
+                                                style = typography.labelSmall,
+                                                overflow = Ellipsis,
+                                                modifier = Modifier
+                                            )
+                                            Text(
+                                                text = it,
+                                                style = typography.bodyMedium,
+                                                modifier = Modifier
+                                            )
+                                        }
+                                    }
+
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -898,6 +1096,67 @@ private fun BusinessLinksSection(links: List<Link>?) {
                     }
                 }
             }
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun Preview(){
+    ApplicationTheme {
+        Column(modifier = Modifier.fillMaxSize()) {
+            ScrBizProfile(
+                onNavigateBack = {},
+                uiState = UiState(
+                    bizProfile = Success(
+                        bizProfile = BizProfile(
+                            seqId = 0,
+                            genId = "Gen ID",
+                            auditTrail = AuditTrail(),
+                            bizIdentity = BizIdentity(
+                                bizName = BizName(legalName = "My Company", commonName = "Company"),
+                                industries = Industries(identityKey = 0, additionalInfo = "My Industry"),
+                                legalType = LegalType(
+                                    identifierKey = 0,
+                                    additionalInfo = "PT",
+                                    legalDocumentType = LegalDocumentType(identifierKey = 0, additionalInfo = "My Document"),
+                                    auditTrail = AuditTrail()
+                                ),
+                                taxation = Taxation(identifierKey = 0)
+                            ),
+                            addresses = listOf(
+                                Address(
+                                    identifierKey = 0,
+                                    additionalInfo = "Additional Info",
+                                    label = "Alamat Utama",
+                                    streetLine = "Jalan Jakarta",
+                                    postalCode = "51012",
+                                    country = Country(
+                                        isoCode = "US",
+                                        iso03Country = "USA",
+                                        displayName = "America"
+                                    ),
+                                    auditTrail = AuditTrail()
+                                ),
+                                Address(
+                                    identifierKey = 0,
+                                    additionalInfo = "Additional Info",
+                                    label = "Alamat 2nd",
+                                    streetLine = "Jalan Semarang",
+                                    postalCode = "12345",
+                                    country = Country(
+                                        isoCode = "US",
+                                        iso03Country = "USA",
+                                        displayName = "America"
+                                    ),
+                                    auditTrail = AuditTrail()
+                                )
+                            )
+                        ),
+                        configCurrent = ConfigCurrent()
+                    )
+                )
+            )
         }
     }
 }
