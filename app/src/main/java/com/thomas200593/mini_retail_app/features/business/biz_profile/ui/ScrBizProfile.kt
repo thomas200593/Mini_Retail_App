@@ -174,35 +174,35 @@ private fun ScreenContent(
     ) {
         BizIdentitySection(
             bizProfile = bizProfile,
-            onUpdateBizIdName = {},
-            onResetBizIdName = {},
-            onUpdateBizIdIndustry = {},
-            onResetBizIdIndustry = {},
-            onUpdateBizIdLegal = {},
-            onResetBizIdLegal = {},
-            onUpdateBizIdTaxation = {},
-            onResetBizIdTaxation = {}
+            onUpdateBizIdName = {/*TODO*/},
+            onResetBizIdName = {/*TODO*/},
+            onUpdateBizIdIndustry = {/*TODO*/},
+            onResetBizIdIndustry = {/*TODO*/},
+            onUpdateBizIdLegal = {/*TODO*/},
+            onResetBizIdLegal = {/*TODO*/},
+            onUpdateBizIdTaxation = {/*TODO*/},
+            onResetBizIdTaxation = {/*TODO*/}
         )
         BizAddressesSection(
             addresses = bizProfile.addresses,
-            onCreateBizAddress = {},
-            onUpdateBizAddress = {},
-            onDeleteBizAddress = {},
-            onDeleteAllBizAddresses = {}
+            onCreateBizAddress = {/*TODO*/},
+            onUpdateBizAddress = {/*TODO*/},
+            onDeleteBizAddress = {/*TODO*/},
+            onDeleteAllBizAddresses = {/*TODO*/}
         )
         BizContactsSection(
             contacts = bizProfile.contacts,
-            onCreateBizContact = {},
-            onUpdateBizContact = {},
-            onDeleteBizContact = {},
-            onDeleteAllBizContacts = {}
+            onCreateBizContact = {/*TODO*/},
+            onUpdateBizContact = {/*TODO*/},
+            onDeleteBizContact = {/*TODO*/},
+            onDeleteAllBizContacts = {/*TODO*/}
         )
         BizLinksSection(
             links = bizProfile.links,
-            onCreateBizLink = {},
-            onDeleteBizLink = {},
-            onUpdateBizLink = {},
-            onDeleteAllBizLinks = {}
+            onCreateBizLink = {/*TODO*/},
+            onDeleteBizLink = {/*TODO*/},
+            onUpdateBizLink = {/*TODO*/},
+            onDeleteAllBizLinks = {/*TODO*/}
         )
     }
 }
