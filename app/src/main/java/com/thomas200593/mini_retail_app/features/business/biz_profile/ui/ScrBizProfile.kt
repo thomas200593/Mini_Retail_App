@@ -58,6 +58,7 @@ import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.C
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.Industries
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.LegalDocumentType
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.LegalType
+import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.Link
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.Taxation
 import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.Country.country
 import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.Emotion.neutral
@@ -171,14 +172,53 @@ private fun ScreenContent(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.Top)
     ) {
-        BusinessIdentitySection(bizProfile = bizProfile)
-        BusinessAddressesSection(addresses = bizProfile.addresses)
-        BusinessContactsSection(contacts = bizProfile.contacts)
+        BizIdentitySection(
+            bizProfile = bizProfile,
+            onUpdateBizIdName = {},
+            onResetBizIdName = {},
+            onUpdateBizIdIndustry = {},
+            onResetBizIdIndustry = {},
+            onUpdateBizIdLegal = {},
+            onResetBizIdLegal = {},
+            onUpdateBizIdTaxation = {},
+            onResetBizIdTaxation = {}
+        )
+        BizAddressesSection(
+            addresses = bizProfile.addresses,
+            onCreateBizAddress = {},
+            onUpdateBizAddress = {},
+            onDeleteBizAddress = {},
+            onDeleteAllBizAddresses = {}
+        )
+        BizContactsSection(
+            contacts = bizProfile.contacts,
+            onCreateBizContact = {},
+            onUpdateBizContact = {},
+            onDeleteBizContact = {},
+            onDeleteAllBizContacts = {}
+        )
+        BizLinksSection(
+            links = bizProfile.links,
+            onCreateBizLink = {},
+            onDeleteBizLink = {},
+            onUpdateBizLink = {},
+            onDeleteAllBizLinks = {}
+        )
     }
 }
 
 @Composable
-private fun BusinessIdentitySection(bizProfile: BizProfile) {
+private fun BizIdentitySection(
+    bizProfile: BizProfile,
+    onUpdateBizIdName: () -> Unit,
+    onResetBizIdName: () -> Unit,
+    onUpdateBizIdIndustry: () -> Unit,
+    onResetBizIdIndustry: () -> Unit,
+    onUpdateBizIdLegal: () -> Unit,
+    onResetBizIdLegal: () -> Unit,
+    onUpdateBizIdTaxation: () -> Unit,
+    onResetBizIdTaxation: () -> Unit
+) {
     var expanded by remember { mutableStateOf(false) }
     Surface(
         modifier = Modifier.fillMaxWidth(),
@@ -284,7 +324,7 @@ private fun BusinessIdentitySection(bizProfile: BizProfile) {
                                     .fillMaxWidth()
                             )
                             Surface(
-                                onClick = {/*TODO*/},
+                                onClick = { onUpdateBizIdName() },
                                 modifier = Modifier
                                     .weight(0.1f)
                                     .size(20.dp),
@@ -296,7 +336,7 @@ private fun BusinessIdentitySection(bizProfile: BizProfile) {
                                 )
                             }
                             Surface(
-                                onClick = {/*TODO*/},
+                                onClick = { onResetBizIdName() },
                                 modifier = Modifier
                                     .weight(0.1f)
                                     .size(20.dp),
@@ -388,7 +428,7 @@ private fun BusinessIdentitySection(bizProfile: BizProfile) {
                                     .fillMaxWidth()
                             )
                             Surface(
-                                onClick = {/*TODO*/},
+                                onClick = { onUpdateBizIdIndustry() },
                                 modifier = Modifier
                                     .weight(0.1f)
                                     .size(20.dp),
@@ -401,7 +441,7 @@ private fun BusinessIdentitySection(bizProfile: BizProfile) {
                                 )
                             }
                             Surface(
-                                onClick = {/*TODO*/},
+                                onClick = { onResetBizIdIndustry() },
                                 modifier = Modifier
                                     .weight(0.1f)
                                     .size(20.dp),
@@ -493,7 +533,7 @@ private fun BusinessIdentitySection(bizProfile: BizProfile) {
                                     .fillMaxWidth()
                             )
                             Surface(
-                                onClick = {/*TODO*/},
+                                onClick = { onUpdateBizIdLegal() },
                                 modifier = Modifier
                                     .weight(0.1f)
                                     .size(20.dp),
@@ -505,7 +545,7 @@ private fun BusinessIdentitySection(bizProfile: BizProfile) {
                                 )
                             }
                             Surface(
-                                onClick = {/*TODO*/},
+                                onClick = { onResetBizIdLegal() },
                                 modifier = Modifier
                                     .weight(0.1f)
                                     .size(20.dp),
@@ -642,7 +682,7 @@ private fun BusinessIdentitySection(bizProfile: BizProfile) {
                                     .fillMaxWidth()
                             )
                             Surface(
-                                onClick = {/*TODO*/},
+                                onClick = { onUpdateBizIdTaxation() },
                                 modifier = Modifier
                                     .weight(0.1f)
                                     .size(20.dp),
@@ -654,7 +694,7 @@ private fun BusinessIdentitySection(bizProfile: BizProfile) {
                                 )
                             }
                             Surface(
-                                onClick = {/*TODO*/},
+                                onClick = { onResetBizIdTaxation() },
                                 modifier = Modifier
                                     .weight(0.1f)
                                     .size(20.dp),
@@ -776,7 +816,13 @@ private fun BusinessIdentitySection(bizProfile: BizProfile) {
 }
 
 @Composable
-private fun BusinessAddressesSection(addresses: List<Address>?) {
+private fun BizAddressesSection(
+    addresses: List<Address>?,
+    onCreateBizAddress: () -> Unit,
+    onUpdateBizAddress: (Address) -> Unit,
+    onDeleteBizAddress: (Address) -> Unit,
+    onDeleteAllBizAddresses: () -> Unit
+) {
     var expanded by remember { mutableStateOf(false) }
     Surface(
         modifier = Modifier.fillMaxWidth(),
@@ -857,7 +903,7 @@ private fun BusinessAddressesSection(addresses: List<Address>?) {
                                 textAlign = Justify
                             )
                             AppIconButton(
-                                onClick = {/*TODO*/},
+                                onClick = { onCreateBizAddress() },
                                 icon = Default.Add,
                                 text = stringResource(string.str_add)
                             )
@@ -879,7 +925,7 @@ private fun BusinessAddressesSection(addresses: List<Address>?) {
                         ) {
                             if(addresses.size < 5){
                                 Surface(
-                                    onClick = {/*TODO*/},
+                                    onClick = { onCreateBizAddress() },
                                     modifier = Modifier
                                         .size(20.dp)
                                         .weight(0.1f)
@@ -892,7 +938,7 @@ private fun BusinessAddressesSection(addresses: List<Address>?) {
                                 }
                             }
                             Surface(
-                                onClick = {/*TODO*/},
+                                onClick = { onDeleteAllBizAddresses() },
                                 modifier = Modifier
                                     .size(20.dp)
                                     .weight(0.1f)
@@ -945,7 +991,7 @@ private fun BusinessAddressesSection(addresses: List<Address>?) {
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
                                         Surface(
-                                            onClick = {/*TODO*/},
+                                            onClick = { onUpdateBizAddress(address) },
                                             modifier = Modifier
                                                 .size(20.dp)
                                                 .weight(0.1f)
@@ -956,7 +1002,7 @@ private fun BusinessAddressesSection(addresses: List<Address>?) {
                                             )
                                         }
                                         Surface(
-                                            onClick = {/*TODO*/},
+                                            onClick = { onDeleteBizAddress(address) },
                                             modifier = Modifier
                                                 .size(20.dp)
                                                 .weight(0.1f)
@@ -1147,7 +1193,13 @@ private fun BusinessAddressesSection(addresses: List<Address>?) {
 }
 
 @Composable
-private fun BusinessContactsSection(contacts: List<Contact>?) {
+private fun BizContactsSection(
+    contacts: List<Contact>?,
+    onCreateBizContact: () -> Unit,
+    onUpdateBizContact: (Contact) -> Unit,
+    onDeleteBizContact: (Contact) -> Unit,
+    onDeleteAllBizContacts: () -> Unit
+) {
     var expanded by remember { mutableStateOf(false) }
     Surface(
         modifier = Modifier.fillMaxWidth(),
@@ -1229,7 +1281,7 @@ private fun BusinessContactsSection(contacts: List<Contact>?) {
                                 textAlign = Justify
                             )
                             AppIconButton(
-                                onClick = {/*TODO*/},
+                                onClick = { onCreateBizContact() },
                                 icon = Default.Add,
                                 text = stringResource(string.str_add)
                             )
@@ -1251,7 +1303,7 @@ private fun BusinessContactsSection(contacts: List<Contact>?) {
                         ) {
                             if(contacts.size < 5){
                                 Surface(
-                                    onClick = {/*TODO*/},
+                                    onClick = { onCreateBizContact() },
                                     modifier = Modifier
                                         .size(20.dp)
                                         .weight(0.1f)
@@ -1264,7 +1316,7 @@ private fun BusinessContactsSection(contacts: List<Contact>?) {
                                 }
                             }
                             Surface(
-                                onClick = {/*TODO*/},
+                                onClick = { onDeleteAllBizContacts() },
                                 modifier = Modifier
                                     .size(20.dp)
                                     .weight(0.1f)
@@ -1317,7 +1369,7 @@ private fun BusinessContactsSection(contacts: List<Contact>?) {
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
                                         Surface(
-                                            onClick = {/*TODO*/},
+                                            onClick = { onUpdateBizContact(contact) },
                                             modifier = Modifier
                                                 .size(20.dp)
                                                 .weight(0.1f)
@@ -1328,7 +1380,7 @@ private fun BusinessContactsSection(contacts: List<Contact>?) {
                                             )
                                         }
                                         Surface(
-                                            onClick = {/*TODO*/},
+                                            onClick = { onDeleteBizContact(contact) },
                                             modifier = Modifier
                                                 .size(20.dp)
                                                 .weight(0.1f)
@@ -1418,7 +1470,9 @@ private fun BusinessContactsSection(contacts: List<Contact>?) {
 
                                     //Right Row
                                     Column(
-                                        modifier = Modifier.weight(0.5f).padding(8.dp),
+                                        modifier = Modifier
+                                            .weight(0.5f)
+                                            .padding(8.dp),
                                         horizontalAlignment = Alignment.CenterHorizontally,
                                         verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically)
                                     ) {
@@ -1483,6 +1537,308 @@ private fun BusinessContactsSection(contacts: List<Contact>?) {
                                                     style = typography.bodyMedium
                                                 )
                                             }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun BizLinksSection(
+    links: List<Link>?,
+    onCreateBizLink: () -> Unit,
+    onUpdateBizLink: (Link) -> Unit,
+    onDeleteBizLink: (Link) -> Unit,
+    onDeleteAllBizLinks: () -> Unit
+) {
+    var expanded by remember { mutableStateOf(false) }
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        shape = shapes.medium
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ){
+            Row(
+                modifier = Modifier.fillMaxWidth(1.0f),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Surface(modifier = Modifier.weight(0.1f)) {
+                    Icon(
+                        modifier = Modifier.size(20.dp),
+                        imageVector = ImageVector.vectorResource(id = country),
+                        contentDescription = null
+                    )
+                }
+                Text(
+                    text = stringResource(string.str_biz_links),
+                    fontWeight = Bold,
+                    textAlign = Start,
+                    overflow = Ellipsis,
+                    maxLines = 1,
+                    modifier = Modifier
+                        .weight(0.8f)
+                        .fillMaxWidth()
+                )
+                Surface(
+                    modifier = Modifier
+                        .weight(0.1f)
+                        .size(20.dp),
+                    color = colorScheme.tertiaryContainer,
+                    onClick = { expanded = expanded.not() }
+                ) {
+                    Icon(
+                        modifier = Modifier,
+                        imageVector =
+                        if(expanded) Default.KeyboardArrowDown
+                        else AutoMirrored.Default.KeyboardArrowRight,
+                        contentDescription = null
+                    )
+                }
+            }
+
+            if(expanded){
+                if(links.isNullOrEmpty()){
+                    Surface(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp),
+                        shape = shapes.medium,
+                        border = BorderStroke(1.dp, color = DarkGray)
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(8.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically)
+                        ) {
+                            Surface(
+                                modifier = Modifier.size(48.dp),
+                                contentColor = colorScheme.error
+                            ) {
+                                Icon(
+                                    imageVector = ImageVector.vectorResource(id = neutral),
+                                    contentDescription = null
+                                )
+                            }
+                            Text(
+                                text = stringResource(string.str_biz_links_not_set),
+                                textAlign = Justify
+                            )
+                            AppIconButton(
+                                onClick = onCreateBizLink,
+                                icon = Default.Add,
+                                text = stringResource(string.str_add)
+                            )
+                        }
+                    }
+                } else{
+                    HorizontalDivider()
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.End,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(
+                                if(links.size >= 5){ 0.1f }else{ 0.2f }
+                            ),
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            if(links.size < 5){
+                                Surface(
+                                    onClick = onCreateBizLink,
+                                    modifier = Modifier
+                                        .size(20.dp)
+                                        .weight(0.1f)
+                                ) {
+                                    Icon(
+                                        modifier = Modifier,
+                                        imageVector = Default.Add,
+                                        contentDescription = null
+                                    )
+                                }
+                            }
+                            Surface(
+                                onClick = onDeleteAllBizLinks,
+                                modifier = Modifier
+                                    .size(20.dp)
+                                    .weight(0.1f)
+                            ) {
+                                Icon(
+                                    modifier = Modifier,
+                                    imageVector = Default.Clear,
+                                    contentDescription = null
+                                )
+                            }
+                        }
+                    }
+                    HorizontalDivider()
+                    links.forEach{ link ->
+                        Surface(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            shape = shapes.medium,
+                            border = BorderStroke(1.dp, DarkGray)
+                        ) {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(8.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically)
+                            ) {
+                                //Interaction Buttons
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.End,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Row(
+                                        modifier = Modifier.weight(0.8f),
+                                        horizontalArrangement = Arrangement.Start,
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ){
+                                        link.label?.let {
+                                            Text(
+                                                text = it,
+                                                fontWeight = Bold,
+                                                style = typography.titleMedium
+                                            )
+                                        }
+                                    }
+                                    Row(
+                                        modifier = Modifier.weight(0.2f),
+                                        horizontalArrangement = Arrangement.Center,
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Surface(
+                                            onClick = {onUpdateBizLink(link)},
+                                            modifier = Modifier
+                                                .size(20.dp)
+                                                .weight(0.1f)
+                                        ) {
+                                            Icon(
+                                                imageVector = Default.Edit,
+                                                contentDescription = null
+                                            )
+                                        }
+                                        Surface(
+                                            onClick = { onDeleteBizLink(link) },
+                                            modifier = Modifier
+                                                .size(20.dp)
+                                                .weight(0.1f)
+                                        ) {
+                                            Icon(
+                                                imageVector = Default.Clear,
+                                                contentDescription = null
+                                            )
+                                        }
+                                    }
+                                }
+
+                                HorizontalDivider()
+
+                                Column(
+                                    modifier = Modifier.fillMaxWidth()
+                                        .padding(8.dp),
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically)
+                                ) {
+                                    //Gen ID
+                                    link.genId.let {
+                                        Column(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            horizontalAlignment = Alignment.Start,
+                                            verticalArrangement = Arrangement.Center
+                                        ) {
+                                            Text(
+                                                text = stringResource(string.str_gen_id),
+                                                maxLines = 1,
+                                                fontWeight = Bold,
+                                                style = typography.labelSmall,
+                                                overflow = Ellipsis
+                                            )
+                                            Text(
+                                                text = it,
+                                                style = typography.bodyMedium
+                                            )
+                                        }
+                                    }
+
+                                    //Label
+                                    link.label?.let {
+                                        Column(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            horizontalAlignment = Alignment.Start,
+                                            verticalArrangement = Arrangement.Center
+                                        ) {
+                                            Text(
+                                                text = stringResource(string.str_address_label),
+                                                maxLines = 1,
+                                                fontWeight = Bold,
+                                                style = typography.labelSmall,
+                                                overflow = Ellipsis
+                                            )
+                                            Text(
+                                                text = it,
+                                                style = typography.bodyMedium
+                                            )
+                                        }
+                                    }
+
+                                    //URI
+                                    link.uri?.let {
+                                        Column(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            horizontalAlignment = Alignment.Start,
+                                            verticalArrangement = Arrangement.Center
+                                        ) {
+                                            Text(
+                                                text = stringResource(string.str_additional_info),
+                                                maxLines = 1,
+                                                fontWeight = Bold,
+                                                style = typography.labelSmall,
+                                                overflow = Ellipsis
+                                            )
+                                            Text(
+                                                text = it,
+                                                style = typography.bodyMedium
+                                            )
+                                        }
+                                    }
+
+                                    //Audit Trail
+                                    link.auditTrail.modifiedAt.let {
+                                        Column(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            horizontalAlignment = Alignment.Start,
+                                            verticalArrangement = Arrangement.Center
+                                        ) {
+                                            Text(
+                                                text = stringResource(string.str_modified_at),
+                                                maxLines = 1,
+                                                fontWeight = Bold,
+                                                style = typography.labelSmall,
+                                                overflow = Ellipsis
+                                            )
+                                            Text(
+                                                text = it.toString(),
+                                                style = typography.bodyMedium
+                                            )
                                         }
                                     }
                                 }
@@ -1569,6 +1925,15 @@ private fun Preview(){
                                     mediaIdentifierKey = 0,
                                     additionalInfo = "Land Line",
                                     contactValue = "083842400262"
+                                )
+                            ),
+                            links = listOf(
+                                Link(
+                                    genId = ULID.randomULID(),
+                                    identifierKey = 0,
+                                    label = "Facebook",
+                                    uri = "https://facebook.com/thomas200593",
+                                    auditTrail = AuditTrail()
                                 )
                             )
                         )

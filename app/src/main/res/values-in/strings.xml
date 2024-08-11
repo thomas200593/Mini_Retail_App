@@ -118,4 +118,6 @@
     <string name="str_biz_contacts_not_set">Anda belum mengatur kontak bisnis. Mau atur sekarang?</string>
     <string name="str_media_contact_type">Tipe Kontak</string>
     <string name="str_contact">Kontak</string>
+    <string name="str_biz_links">Tautan Bisnis</string>
+    <string name="str_biz_links_not_set">Anda belum mengatur tautan bisnis. Mau atur sekarang?</string>
 </resources>

@@ -125,4 +125,6 @@
     <string name="str_biz_contacts_not_set">You haven\'t set a business contacts yet. Want to set it now?</string>
     <string name="str_media_contact_type">Contact Type</string>
     <string name="str_contact">Contact</string>
+    <string name="str_biz_links">Business Links</string>
+    <string name="str_biz_links_not_set">You haven\'t set a business link yet. Want to set it now?</string>
 </resources>
