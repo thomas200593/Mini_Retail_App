@@ -95,4 +95,27 @@
     <string name="str_company_legal_name">Nama resmi perusahaan</string>
     <string name="str_company_common_name">Nama umum perusahaan</string>
     <string name="str_auth_welcome_message">Selamat datang di Aplikasi! Untuk melanjutkan, silakan sign in menggunakan Akunmu.</string>
+    <string name="str_modified_at">Diperbarui</string>
+    <string name="str_additional_info">Info tambahan</string>
+    <string name="str_biz_identity">Identitas Bisnis</string>
+    <string name="str_biz_name">Nama Bisnis</string>
+    <string name="str_biz_legal_name">Nama Legal</string>
+    <string name="str_biz_common_name">Nama Umum</string>
+    <string name="str_biz_industry">Bidang Industri Bisnis</string>
+    <string name="str_biz_legal">Badan Hukum Bisnis</string>
+    <string name="str_biz_taxation">Perpajakan Bisnis</string>
+    <string name="str_biz_tax_id_doc_number">Nomor ID Dokumen Perpajakan</string>
+    <string name="str_biz_tax_id_issuer_country">Negara Penerbit Dokumen ID Perpajakan</string>
+    <string name="str_biz_tax_rate_percentage">Persentase Tarif Pajak</string>
+    <string name="str_biz_tax_included">Termasuk Pajak</string>
+    <string name="str_biz_addresses">Alamat Bisnis</string>
+    <string name="str_biz_address_not_set">Anda belum mengatur alamat bisnis. Mau atur sekarang?</string>
+    <string name="str_add">Tambahkan</string>
+    <string name="str_address_label">Label Alamat</string>
+    <string name="str_address_street_line">Alamat Lengkap</string>
+    <string name="str_postal_code">Kode Pos</string>
+    <string name="str_biz_contacts">Kontak Bisnis</string>
+    <string name="str_biz_contacts_not_set">Anda belum mengatur kontak bisnis. Mau atur sekarang?</string>
+    <string name="str_media_contact_type">Tipe Kontak</string>
+    <string name="str_contact">Kontak</string>
 </resources>

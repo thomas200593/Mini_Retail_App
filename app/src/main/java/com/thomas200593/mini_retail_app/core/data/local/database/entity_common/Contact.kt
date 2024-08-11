@@ -11,6 +11,7 @@ data class Contact(
     val genId: String = randomULID(),
     val identifierKey: Int,
     val additionalInfo: String? = null,
+    val label: String? = null,
     val mediaIdentifierKey: Int,
     val contactValue: String? = null,
     val auditTrail: AuditTrail = AuditTrail()
