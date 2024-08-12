@@ -14,8 +14,6 @@ import com.thomas200593.mini_retail_app.features.app_conf.app_config.entity.AppC
 import com.thomas200593.mini_retail_app.features.business.biz_profile.domain.UCGetBizProfile
 import com.thomas200593.mini_retail_app.features.business.biz_profile.entity.BizProfile
 import com.thomas200593.mini_retail_app.features.business.biz_profile.ui.VMBizProfile.UiEvents.ButtonEvents.BtnNavBackEvents
-import com.thomas200593.mini_retail_app.features.business.biz_profile.ui.VMBizProfile.UiEvents.ButtonEvents.BtnResetBizProfileEvents
-import com.thomas200593.mini_retail_app.features.business.biz_profile.ui.VMBizProfile.UiEvents.ButtonEvents.BtnUpdateBizProfileEvents
 import com.thomas200593.mini_retail_app.features.business.biz_profile.ui.VMBizProfile.UiEvents.OnOpenEvents
 import com.thomas200593.mini_retail_app.features.business.biz_profile.ui.VMBizProfile.UiStateBizProfile.*
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -45,12 +43,6 @@ class VMBizProfile @Inject constructor(
             sealed class BtnNavBackEvents: ButtonEvents() {
                 data object OnClick: BtnNavBackEvents()
             }
-            sealed class BtnResetBizProfileEvents: ButtonEvents() {
-                data object OnClick: BtnResetBizProfileEvents()
-            }
-            sealed class BtnUpdateBizProfileEvents: ButtonEvents() {
-                data object OnClick: BtnUpdateBizProfileEvents()
-            }
         }
     }
 
@@ -61,8 +53,6 @@ class VMBizProfile @Inject constructor(
         when(events){
             is OnOpenEvents -> onOpenEvent(events.sessionState)
             BtnNavBackEvents.OnClick -> {/*TODO*/}
-            BtnResetBizProfileEvents.OnClick -> {/*TODO*/}
-            BtnUpdateBizProfileEvents.OnClick -> {/*TODO*/}
         }
     }
     private fun onOpenEvent(sessionState: SessionState) = viewModelScope.launch(ioDispatcher){
