@@ -74,6 +74,13 @@ import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.entit
 import com.thomas200593.mini_retail_app.features.business.biz_profile.entity.BizIdentity
 import com.thomas200593.mini_retail_app.features.business.biz_profile.entity.BizName
 import com.thomas200593.mini_retail_app.features.business.biz_profile.entity.BizProfile
+import com.thomas200593.mini_retail_app.features.business.biz_profile.ui.VMBizProfile.UiEvents.ButtonEvents.BizAddressesBtnEvents
+import com.thomas200593.mini_retail_app.features.business.biz_profile.ui.VMBizProfile.UiEvents.ButtonEvents.BizContactsBtnEvents
+import com.thomas200593.mini_retail_app.features.business.biz_profile.ui.VMBizProfile.UiEvents.ButtonEvents.BizIdIndustryBtnEvents
+import com.thomas200593.mini_retail_app.features.business.biz_profile.ui.VMBizProfile.UiEvents.ButtonEvents.BizIdLegalBtnEvents
+import com.thomas200593.mini_retail_app.features.business.biz_profile.ui.VMBizProfile.UiEvents.ButtonEvents.BizIdNameBtnEvents
+import com.thomas200593.mini_retail_app.features.business.biz_profile.ui.VMBizProfile.UiEvents.ButtonEvents.BizIdTaxationBtnEvents
+import com.thomas200593.mini_retail_app.features.business.biz_profile.ui.VMBizProfile.UiEvents.ButtonEvents.BizLinksBtnEvents
 import com.thomas200593.mini_retail_app.features.business.biz_profile.ui.VMBizProfile.UiEvents.ButtonEvents.BtnNavBackEvents
 import com.thomas200593.mini_retail_app.features.business.biz_profile.ui.VMBizProfile.UiEvents.OnOpenEvents
 import com.thomas200593.mini_retail_app.features.business.biz_profile.ui.VMBizProfile.UiState
@@ -97,32 +104,39 @@ fun ScrBizProfile(
         //BtnNavBack
         onNavigateBack = { BtnNavBackEvents.OnClick.apply { stateApp.onNavUp() } },
         //BizIdName
-        onUpdateBizIdName = {},
-        onResetBizIdName = {},
-        onUpdateBizIdIndustry = {},
-        onResetBizIdIndustry = {},
-        onUpdateBizIdLegal = {},
-        onResetBizIdLegal = {},
-        onUpdateBizIdTaxation = {},
-        onResetBizIdTaxation = {},
-        onCreateBizAddress = {},
-        onUpdateBizAddress = {},
-        onDeleteBizAddress = {},
-        onDeleteAllBizAddresses = {},
-        onCreateBizContact = {},
-        onUpdateBizContact = {},
-        onDeleteBizContact = {},
-        onDeleteAllBizContacts = {},
-        onCreateBizLink = {},
-        onUpdateBizLink = {},
-        onDeleteBizLink = {},
-        onDeleteAllBizLinks = {}
+        onUpdateBizIdName = { BizIdNameBtnEvents.BtnUpdateEvents.OnClick(sessionState) },
+        onResetBizIdName = { BizIdNameBtnEvents.BtnResetEvents.OnClick(sessionState) },
+        //BizIdIndustry
+        onUpdateBizIdIndustry = { BizIdIndustryBtnEvents.BtnUpdateEvents.OnClick(sessionState) },
+        onResetBizIdIndustry = { BizIdIndustryBtnEvents.BtnResetEvents.OnClick(sessionState) },
+        //BizIdLegal
+        onUpdateBizIdLegal = { BizIdLegalBtnEvents.BtnUpdateEvents.OnClick(sessionState) },
+        onResetBizIdLegal = { BizIdLegalBtnEvents.BtnResetEvents.OnClick(sessionState) },
+        //BizIdTaxation
+        onUpdateBizIdTaxation = { BizIdTaxationBtnEvents.BtnUpdateEvents.OnClick(sessionState) },
+        onResetBizIdTaxation = { BizIdTaxationBtnEvents.BtnResetEvents.OnClick(sessionState) },
+        //BizAddresses
+        onCreateBizAddress = { BizAddressesBtnEvents.BtnAddEvents.OnClick(sessionState) },
+        onUpdateBizAddress = { BizAddressesBtnEvents.BtnUpdateEvents.OnClick(sessionState, it) },
+        onDeleteBizAddress = { BizAddressesBtnEvents.BtnDeleteEvents.OnClick(sessionState, it) },
+        onDeleteAllBizAddresses = { BizAddressesBtnEvents.BtnDeleteAllEvents.OnClick(sessionState) },
+        //BizContacts
+        onCreateBizContact = { BizContactsBtnEvents.BtnAddEvents.OnClick(sessionState) },
+        onUpdateBizContact = { BizContactsBtnEvents.BtnUpdateEvents.OnClick(sessionState, it) },
+        onDeleteBizContact = { BizContactsBtnEvents.BtnDeleteEvents.OnClick(sessionState, it) },
+        onDeleteAllBizContacts = { BizContactsBtnEvents.BtnDeleteAllEvents.OnClick(sessionState) },
+        //BizLinks
+        onCreateBizLink = { BizLinksBtnEvents.BtnAddEvents.OnClick(sessionState) },
+        onUpdateBizLink = { BizLinksBtnEvents.BtnUpdateEvents.OnClick(sessionState, it) },
+        onDeleteBizLink = { BizLinksBtnEvents.BtnDeleteEvents.OnClick(sessionState, it) },
+        onDeleteAllBizLinks = { BizLinksBtnEvents.BtnDeleteAllEvents.OnClick(sessionState) }
     )
 }
 
 @Composable
 private fun ScrBizProfile(
     uiState: UiState,
+    //NavBack
     onNavigateBack: () -> Unit,
     //BizIdName
     onUpdateBizIdName: () -> Unit, onResetBizIdName: () -> Unit,
