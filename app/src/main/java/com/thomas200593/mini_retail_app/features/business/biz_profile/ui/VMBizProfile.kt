@@ -144,27 +144,35 @@ class VMBizProfile @Inject constructor(
     fun onEvent(events: UiEvents) {
         when(events){
             is OnOpenEvents -> onOpenEvent(events.sessionState)
+            //NavBack
             is BtnNavBackEvents.OnClick -> {/*TODO*/}
+            //BizIdName
             is BizIdNameBtnEvents.BtnUpdateEvents.OnClick -> {/*TODO*/}
             is BizIdNameBtnEvents.BtnResetEvents.OnClick -> {/*TODO*/}
+            //BizIdIndustry
             is BizIdIndustryBtnEvents.BtnUpdateEvents.OnClick -> {/*TODO*/}
             is BizIdIndustryBtnEvents.BtnResetEvents.OnClick -> {/*TODO*/}
+            //BizIdLegal
             is BizIdLegalBtnEvents.BtnUpdateEvents.OnClick -> {/*TODO*/}
             is BizIdLegalBtnEvents.BtnResetEvents.OnClick -> {/*TODO*/}
+            //BizIdTaxation
             is BizIdTaxationBtnEvents.BtnUpdateEvents.OnClick -> {/*TODO*/}
             is BizIdTaxationBtnEvents.BtnResetEvents.OnClick -> {/*TODO*/}
+            //BizAddresses
             is BizAddressesBtnEvents.BtnAddEvents.OnClick -> {/*TODO*/}
             is BizAddressesBtnEvents.BtnUpdateEvents.OnClick -> {/*TODO*/}
             is BizAddressesBtnEvents.BtnDeleteEvents.OnClick -> {/*TODO*/}
             is BizAddressesBtnEvents.BtnDeleteAllEvents.OnClick -> {/*TODO*/}
+            //BizContacts
             is BizContactsBtnEvents.BtnAddEvents.OnClick -> {/*TODO*/}
-            is BizContactsBtnEvents.BtnDeleteAllEvents.OnClick -> {/*TODO*/}
-            is BizContactsBtnEvents.BtnDeleteEvents.OnClick -> {/*TODO*/}
             is BizContactsBtnEvents.BtnUpdateEvents.OnClick -> {/*TODO*/}
+            is BizContactsBtnEvents.BtnDeleteEvents.OnClick -> {/*TODO*/}
+            is BizContactsBtnEvents.BtnDeleteAllEvents.OnClick -> {/*TODO*/}
+            //BizLinks
             is BizLinksBtnEvents.BtnAddEvents.OnClick -> {/*TODO*/}
-            is BizLinksBtnEvents.BtnDeleteAllEvents.OnClick -> {/*TODO*/}
-            is BizLinksBtnEvents.BtnDeleteEvents.OnClick -> {/*TODO*/}
             is BizLinksBtnEvents.BtnUpdateEvents.OnClick -> {/*TODO*/}
+            is BizLinksBtnEvents.BtnDeleteEvents.OnClick -> {/*TODO*/}
+            is BizLinksBtnEvents.BtnDeleteAllEvents.OnClick -> {/*TODO*/}
         }
     }
     private fun onOpenEvent(sessionState: SessionState) = viewModelScope.launch(ioDispatcher){
