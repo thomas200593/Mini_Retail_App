@@ -122,32 +122,22 @@ private fun ScrBizProfile(
     uiState: UiState,
     onNavigateBack: () -> Unit,
     //BizIdName
-    onUpdateBizIdName: () -> Unit,
-    onResetBizIdName: () -> Unit,
+    onUpdateBizIdName: () -> Unit, onResetBizIdName: () -> Unit,
     //BizIdIndustry
-    onUpdateBizIdIndustry: () -> Unit,
-    onResetBizIdIndustry: () -> Unit,
+    onUpdateBizIdIndustry: () -> Unit, onResetBizIdIndustry: () -> Unit,
     //BizIdLegal
-    onUpdateBizIdLegal: () -> Unit,
-    onResetBizIdLegal: () -> Unit,
+    onUpdateBizIdLegal: () -> Unit, onResetBizIdLegal: () -> Unit,
     //BizIdTaxation
-    onUpdateBizIdTaxation: () -> Unit,
-    onResetBizIdTaxation: () -> Unit,
+    onUpdateBizIdTaxation: () -> Unit, onResetBizIdTaxation: () -> Unit,
     //BizAddresses
-    onCreateBizAddress: () -> Unit,
-    onUpdateBizAddress: (Address) -> Unit,
-    onDeleteBizAddress: (Address) -> Unit,
-    onDeleteAllBizAddresses: () -> Unit,
+    onCreateBizAddress: () -> Unit, onUpdateBizAddress: (Address) -> Unit,
+    onDeleteBizAddress: (Address) -> Unit, onDeleteAllBizAddresses: () -> Unit,
     //BizContacts
-    onCreateBizContact: () -> Unit,
-    onUpdateBizContact: (Contact) -> Unit,
-    onDeleteBizContact: (Contact) -> Unit,
-    onDeleteAllBizContacts: () -> Unit,
+    onCreateBizContact: () -> Unit, onUpdateBizContact: (Contact) -> Unit,
+    onDeleteBizContact: (Contact) -> Unit, onDeleteAllBizContacts: () -> Unit,
     //BizLinks
-    onCreateBizLink: () -> Unit,
-    onUpdateBizLink: (Link) -> Unit,
-    onDeleteBizLink: (Link) -> Unit,
-    onDeleteAllBizLinks: () -> Unit
+    onCreateBizLink: () -> Unit, onUpdateBizLink: (Link) -> Unit,
+    onDeleteBizLink: (Link) -> Unit, onDeleteAllBizLinks: () -> Unit
 ){
     TopAppBar(onNavigateBack = onNavigateBack)
     when(uiState.bizProfile){
@@ -159,26 +149,16 @@ private fun ScrBizProfile(
         )
         is Success -> ScreenContent(
             bizProfile = uiState.bizProfile.bizProfile,
-            onUpdateBizIdName = onUpdateBizIdName,
-            onResetBizIdName = onResetBizIdName,
-            onUpdateBizIdIndustry = onUpdateBizIdIndustry,
-            onResetBizIdIndustry = onResetBizIdIndustry,
-            onUpdateBizIdLegal = onUpdateBizIdLegal,
-            onResetBizIdLegal = onResetBizIdLegal,
-            onUpdateBizIdTaxation = onUpdateBizIdTaxation,
-            onResetBizIdTaxation = onResetBizIdTaxation,
-            onCreateBizAddress = onCreateBizAddress,
-            onUpdateBizAddress = onUpdateBizAddress,
-            onDeleteBizAddress = onDeleteBizAddress,
-            onDeleteAllBizAddresses = onDeleteAllBizAddresses,
-            onCreateBizContact = onCreateBizContact,
-            onUpdateBizContact = onUpdateBizContact,
-            onDeleteBizContact = onDeleteBizContact,
-            onDeleteAllBizContacts = onDeleteAllBizContacts,
-            onCreateBizLink = onCreateBizLink,
-            onUpdateBizLink = onUpdateBizLink,
-            onDeleteBizLink = onDeleteBizLink,
-            onDeleteAllBizLinks = onDeleteAllBizLinks
+            onUpdateBizIdName = onUpdateBizIdName, onResetBizIdName = onResetBizIdName,
+            onUpdateBizIdIndustry = onUpdateBizIdIndustry, onResetBizIdIndustry = onResetBizIdIndustry,
+            onUpdateBizIdLegal = onUpdateBizIdLegal, onResetBizIdLegal = onResetBizIdLegal,
+            onUpdateBizIdTaxation = onUpdateBizIdTaxation, onResetBizIdTaxation = onResetBizIdTaxation,
+            onCreateBizAddress = onCreateBizAddress, onUpdateBizAddress = onUpdateBizAddress,
+            onDeleteBizAddress = onDeleteBizAddress, onDeleteAllBizAddresses = onDeleteAllBizAddresses,
+            onCreateBizContact = onCreateBizContact, onUpdateBizContact = onUpdateBizContact,
+            onDeleteBizContact = onDeleteBizContact, onDeleteAllBizContacts = onDeleteAllBizContacts,
+            onCreateBizLink = onCreateBizLink, onUpdateBizLink = onUpdateBizLink,
+            onDeleteBizLink = onDeleteBizLink, onDeleteAllBizLinks = onDeleteAllBizLinks
         )
     }
 }
@@ -231,32 +211,22 @@ private fun TopAppBar(onNavigateBack: () -> Unit) {
 private fun ScreenContent(
     bizProfile: BizProfile,
     //BizIdName
-    onUpdateBizIdName: () -> Unit,
-    onResetBizIdName: () -> Unit,
+    onUpdateBizIdName: () -> Unit, onResetBizIdName: () -> Unit,
     //BizIdIndustry
-    onUpdateBizIdIndustry: () -> Unit,
-    onResetBizIdIndustry: () -> Unit,
+    onUpdateBizIdIndustry: () -> Unit, onResetBizIdIndustry: () -> Unit,
     //BizIdLegal
-    onUpdateBizIdLegal: () -> Unit,
-    onResetBizIdLegal: () -> Unit,
+    onUpdateBizIdLegal: () -> Unit, onResetBizIdLegal: () -> Unit,
     //BizIdTaxation
-    onUpdateBizIdTaxation: () -> Unit,
-    onResetBizIdTaxation: () -> Unit,
+    onUpdateBizIdTaxation: () -> Unit, onResetBizIdTaxation: () -> Unit,
     //BizAddresses
-    onCreateBizAddress: () -> Unit,
-    onUpdateBizAddress: (Address) -> Unit,
-    onDeleteBizAddress: (Address) -> Unit,
-    onDeleteAllBizAddresses: () -> Unit,
+    onCreateBizAddress: () -> Unit, onUpdateBizAddress: (Address) -> Unit,
+    onDeleteBizAddress: (Address) -> Unit, onDeleteAllBizAddresses: () -> Unit,
     //BizContacts
-    onCreateBizContact: () -> Unit,
-    onUpdateBizContact: (Contact) -> Unit,
-    onDeleteBizContact: (Contact) -> Unit,
-    onDeleteAllBizContacts: () -> Unit,
+    onCreateBizContact: () -> Unit, onUpdateBizContact: (Contact) -> Unit,
+    onDeleteBizContact: (Contact) -> Unit, onDeleteAllBizContacts: () -> Unit,
     //BizLinks
-    onCreateBizLink: () -> Unit,
-    onUpdateBizLink: (Link) -> Unit,
-    onDeleteBizLink: (Link) -> Unit,
-    onDeleteAllBizLinks: () -> Unit
+    onCreateBizLink: () -> Unit, onUpdateBizLink: (Link) -> Unit,
+    onDeleteBizLink: (Link) -> Unit, onDeleteAllBizLinks: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -268,35 +238,25 @@ private fun ScreenContent(
     ) {
         BizIdentitySection(
             bizProfile = bizProfile,
-            onUpdateBizIdName = onUpdateBizIdName,
-            onResetBizIdName = onResetBizIdName,
-            onUpdateBizIdIndustry = onUpdateBizIdIndustry,
-            onResetBizIdIndustry = onResetBizIdIndustry,
-            onUpdateBizIdLegal = onUpdateBizIdLegal,
-            onResetBizIdLegal = onResetBizIdLegal,
-            onUpdateBizIdTaxation = onUpdateBizIdTaxation,
-            onResetBizIdTaxation = onResetBizIdTaxation
+            onUpdateBizIdName = onUpdateBizIdName, onResetBizIdName = onResetBizIdName,
+            onUpdateBizIdIndustry = onUpdateBizIdIndustry, onResetBizIdIndustry = onResetBizIdIndustry,
+            onUpdateBizIdLegal = onUpdateBizIdLegal, onResetBizIdLegal = onResetBizIdLegal,
+            onUpdateBizIdTaxation = onUpdateBizIdTaxation, onResetBizIdTaxation = onResetBizIdTaxation
         )
         BizAddressesSection(
             addresses = bizProfile.addresses,
-            onCreateBizAddress = onCreateBizAddress,
-            onUpdateBizAddress = onUpdateBizAddress,
-            onDeleteBizAddress = onDeleteBizAddress,
-            onDeleteAllBizAddresses = onDeleteAllBizAddresses
+            onCreateBizAddress = onCreateBizAddress, onUpdateBizAddress = onUpdateBizAddress,
+            onDeleteBizAddress = onDeleteBizAddress, onDeleteAllBizAddresses = onDeleteAllBizAddresses
         )
         BizContactsSection(
             contacts = bizProfile.contacts,
-            onCreateBizContact = onCreateBizContact,
-            onUpdateBizContact = onUpdateBizContact,
-            onDeleteBizContact = onDeleteBizContact,
-            onDeleteAllBizContacts = onDeleteAllBizContacts
+            onCreateBizContact = onCreateBizContact, onUpdateBizContact = onUpdateBizContact,
+            onDeleteBizContact = onDeleteBizContact, onDeleteAllBizContacts = onDeleteAllBizContacts
         )
         BizLinksSection(
             links = bizProfile.links,
-            onCreateBizLink = onCreateBizLink,
-            onUpdateBizLink = onUpdateBizLink,
-            onDeleteBizLink = onDeleteBizLink,
-            onDeleteAllBizLinks = onDeleteAllBizLinks
+            onCreateBizLink = onCreateBizLink, onUpdateBizLink = onUpdateBizLink,
+            onDeleteBizLink = onDeleteBizLink, onDeleteAllBizLinks = onDeleteAllBizLinks
         )
     }
 }
@@ -304,14 +264,10 @@ private fun ScreenContent(
 @Composable
 private fun BizIdentitySection(
     bizProfile: BizProfile,
-    onUpdateBizIdName: () -> Unit,
-    onResetBizIdName: () -> Unit,
-    onUpdateBizIdIndustry: () -> Unit,
-    onResetBizIdIndustry: () -> Unit,
-    onUpdateBizIdLegal: () -> Unit,
-    onResetBizIdLegal: () -> Unit,
-    onUpdateBizIdTaxation: () -> Unit,
-    onResetBizIdTaxation: () -> Unit
+    onUpdateBizIdName: () -> Unit, onResetBizIdName: () -> Unit,
+    onUpdateBizIdIndustry: () -> Unit, onResetBizIdIndustry: () -> Unit,
+    onUpdateBizIdLegal: () -> Unit, onResetBizIdLegal: () -> Unit,
+    onUpdateBizIdTaxation: () -> Unit, onResetBizIdTaxation: () -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
     Surface(
@@ -1952,26 +1908,13 @@ private fun Preview(){
         Column(modifier = Modifier.fillMaxSize()) {
             ScrBizProfile(
                 onNavigateBack = {},
-                onUpdateBizIdName = {},
-                onResetBizIdName = {},
-                onUpdateBizIdIndustry = {},
-                onResetBizIdIndustry = {},
-                onUpdateBizIdLegal = {},
-                onResetBizIdLegal = {},
-                onUpdateBizIdTaxation = {},
-                onResetBizIdTaxation = {},
-                onCreateBizAddress = {},
-                onUpdateBizAddress = {},
-                onDeleteBizAddress = {},
-                onDeleteAllBizAddresses = {},
-                onCreateBizContact = {},
-                onUpdateBizContact = {},
-                onDeleteBizContact = {},
-                onDeleteAllBizContacts = {},
-                onCreateBizLink = {},
-                onUpdateBizLink = {},
-                onDeleteBizLink = {},
-                onDeleteAllBizLinks = {},
+                onUpdateBizIdName = {}, onResetBizIdName = {},
+                onUpdateBizIdIndustry = {}, onResetBizIdIndustry = {},
+                onUpdateBizIdLegal = {}, onResetBizIdLegal = {},
+                onUpdateBizIdTaxation = {}, onResetBizIdTaxation = {},
+                onCreateBizAddress = {}, onUpdateBizAddress = {}, onDeleteBizAddress = {}, onDeleteAllBizAddresses = {},
+                onCreateBizContact = {}, onUpdateBizContact = {}, onDeleteBizContact = {}, onDeleteAllBizContacts = {},
+                onCreateBizLink = {}, onUpdateBizLink = {}, onDeleteBizLink = {}, onDeleteAllBizLinks = {},
                 uiState = UiState(
                     bizProfile = Success(
                         configCurrent = AppConfig.ConfigCurrent(),
