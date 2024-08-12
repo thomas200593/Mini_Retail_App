@@ -13,6 +13,7 @@ import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Su
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.entity.AppConfig.ConfigCurrent
 import com.thomas200593.mini_retail_app.features.business.biz_profile.domain.UCGetBizProfile
 import com.thomas200593.mini_retail_app.features.business.biz_profile.entity.BizProfile
+import com.thomas200593.mini_retail_app.features.business.biz_profile.ui.VMBizProfile.UiEvents.ButtonEvents.BizIdNameBtnEvents
 import com.thomas200593.mini_retail_app.features.business.biz_profile.ui.VMBizProfile.UiEvents.ButtonEvents.BtnNavBackEvents
 import com.thomas200593.mini_retail_app.features.business.biz_profile.ui.VMBizProfile.UiEvents.OnOpenEvents
 import com.thomas200593.mini_retail_app.features.business.biz_profile.ui.VMBizProfile.UiStateBizProfile.*
@@ -43,6 +44,14 @@ class VMBizProfile @Inject constructor(
             sealed class BtnNavBackEvents: ButtonEvents() {
                 data object OnClick: BtnNavBackEvents()
             }
+            sealed class BizIdNameBtnEvents: ButtonEvents(){
+                sealed class BtnUpdateEvents: BizIdNameBtnEvents(){
+                    data class OnClick(val sessionState: SessionState): BtnUpdateEvents()
+                }
+                sealed class BtnResetEvents: BizIdNameBtnEvents(){
+                    data class OnClick(val sessionState: SessionState): BtnResetEvents()
+                }
+            }
         }
     }
 
@@ -53,6 +62,8 @@ class VMBizProfile @Inject constructor(
         when(events){
             is OnOpenEvents -> onOpenEvent(events.sessionState)
             BtnNavBackEvents.OnClick -> {/*TODO*/}
+            is BizIdNameBtnEvents.BtnResetEvents.OnClick -> {/*TODO*/}
+            is BizIdNameBtnEvents.BtnUpdateEvents.OnClick -> {/*TODO*/}
         }
     }
     private fun onOpenEvent(sessionState: SessionState) = viewModelScope.launch(ioDispatcher){

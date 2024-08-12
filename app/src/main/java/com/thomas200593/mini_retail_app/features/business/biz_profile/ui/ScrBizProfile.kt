@@ -74,6 +74,7 @@ import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.entit
 import com.thomas200593.mini_retail_app.features.business.biz_profile.entity.BizIdentity
 import com.thomas200593.mini_retail_app.features.business.biz_profile.entity.BizName
 import com.thomas200593.mini_retail_app.features.business.biz_profile.entity.BizProfile
+import com.thomas200593.mini_retail_app.features.business.biz_profile.ui.VMBizProfile.UiEvents.ButtonEvents.BtnNavBackEvents
 import com.thomas200593.mini_retail_app.features.business.biz_profile.ui.VMBizProfile.UiEvents.OnOpenEvents
 import com.thomas200593.mini_retail_app.features.business.biz_profile.ui.VMBizProfile.UiState
 import com.thomas200593.mini_retail_app.features.business.biz_profile.ui.VMBizProfile.UiStateBizProfile.Error
@@ -93,7 +94,9 @@ fun ScrBizProfile(
 
     ScrBizProfile(
         uiState = uiState,
-        onNavigateBack = {},
+        //BtnNavBack
+        onNavigateBack = { BtnNavBackEvents.OnClick.apply { stateApp.onNavUp() } },
+        //BizIdName
         onUpdateBizIdName = {},
         onResetBizIdName = {},
         onUpdateBizIdIndustry = {},
