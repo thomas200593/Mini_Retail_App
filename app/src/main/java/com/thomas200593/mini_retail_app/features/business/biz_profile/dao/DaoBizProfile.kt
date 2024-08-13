@@ -26,7 +26,7 @@ FROM biz_profile bp LIMIT 1
     fun getBizProfile(): Flow<BizProfile>
 
     @Upsert(BizProfile::class)
-    fun setInitBizProfile(bizProfile: BizProfile): Long
+    suspend fun setInitBizProfile(bizProfile: BizProfile): Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun testGenerate(bizProfile: BizProfile)
@@ -38,7 +38,7 @@ class DaoBizProfileImpl @Inject constructor(
     override fun getBizProfile(): Flow<BizProfile> =
         dbHelper.getBizProfileDao().getBizProfile()
 
-    override fun setInitBizProfile(bizProfile: BizProfile): Long =
+    override suspend fun setInitBizProfile(bizProfile: BizProfile): Long =
         dbHelper.getBizProfileDao().setInitBizProfile(bizProfile)
 
     override suspend fun testGenerate(bizProfile: BizProfile) =

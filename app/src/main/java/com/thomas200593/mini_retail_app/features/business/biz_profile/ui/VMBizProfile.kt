@@ -1,5 +1,7 @@
 package com.thomas200593.mini_retail_app.features.business.biz_profile.ui
 
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.Address
@@ -8,11 +10,6 @@ import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.L
 import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers.Dispatchers.IO
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.di.Dispatcher
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Empty
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Error
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Idle
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Loading
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Success
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.entity.AppConfig.ConfigCurrent
 import com.thomas200593.mini_retail_app.features.business.biz_profile.domain.UCGetBizProfile
 import com.thomas200593.mini_retail_app.features.business.biz_profile.entity.BizProfile
@@ -25,11 +22,18 @@ import com.thomas200593.mini_retail_app.features.business.biz_profile.ui.VMBizPr
 import com.thomas200593.mini_retail_app.features.business.biz_profile.ui.VMBizProfile.UiEvents.ButtonEvents.BizLinksBtnEvents
 import com.thomas200593.mini_retail_app.features.business.biz_profile.ui.VMBizProfile.UiEvents.ButtonEvents.BtnNavBackEvents
 import com.thomas200593.mini_retail_app.features.business.biz_profile.ui.VMBizProfile.UiEvents.OnOpenEvents
-import com.thomas200593.mini_retail_app.features.business.biz_profile.ui.VMBizProfile.UiStateBizProfile.*
+import com.thomas200593.mini_retail_app.features.business.biz_profile.ui.VMBizProfile.UiEvents.OnSessionInvalidEvents
+import com.thomas200593.mini_retail_app.features.business.biz_profile.ui.VMBizProfile.UiEvents.OnSessionLoadingEvents
+import com.thomas200593.mini_retail_app.features.business.biz_profile.ui.VMBizProfile.UiStateBizProfile.Error
+import com.thomas200593.mini_retail_app.features.business.biz_profile.ui.VMBizProfile.UiStateBizProfile.Loading
+import com.thomas200593.mini_retail_app.features.business.biz_profile.ui.VMBizProfile.UiStateBizProfile.Reject
+import com.thomas200593.mini_retail_app.features.business.biz_profile.ui.VMBizProfile.UiStateBizProfile.Success
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -41,14 +45,24 @@ class VMBizProfile @Inject constructor(
 ): ViewModel(){
     sealed interface UiStateBizProfile{
         data object Loading: UiStateBizProfile
+        data object Reject: UiStateBizProfile
         data class Success(val bizProfile: BizProfile, val configCurrent: ConfigCurrent): UiStateBizProfile
         data class Error(val t: Throwable): UiStateBizProfile
     }
     data class UiState(
-        val bizProfile: UiStateBizProfile = UiStateBizProfile.Loading
+        val bizProfile: UiStateBizProfile = Loading,
+        val dialogState: DialogState = DialogState()
+    )
+    data class DialogState(
+        val dlgSessionLoading: MutableState<Boolean> = mutableStateOf(false),
+        val dlgSessionInvalid: MutableState<Boolean> = mutableStateOf(false),
+        val dlgResetBizIdName: MutableState<Boolean> = mutableStateOf(false),
+        val dlgProcessing: MutableState<Boolean> = mutableStateOf(false)
     )
     sealed class UiEvents{
         data class OnOpenEvents(val sessionState: SessionState): UiEvents()
+        data object OnSessionLoadingEvents: UiEvents()
+        data object OnSessionInvalidEvents: UiEvents()
         sealed class ButtonEvents: UiEvents(){
             //NavBack
             sealed class BtnNavBackEvents: ButtonEvents() {
@@ -57,82 +71,84 @@ class VMBizProfile @Inject constructor(
             //BizIdName
             sealed class BizIdNameBtnEvents: ButtonEvents(){
                 sealed class BtnUpdateEvents: BizIdNameBtnEvents(){
-                    data class OnClick(val sessionState: SessionState): BtnUpdateEvents()
+                    data object OnClick: BtnUpdateEvents()
                 }
                 sealed class BtnResetEvents: BizIdNameBtnEvents(){
-                    data class OnClick(val sessionState: SessionState): BtnResetEvents()
+                    data object OnClick: BtnResetEvents()
+                    data class OnConfirm(val sessionState: SessionState): BtnResetEvents()
+                    data class OnDismissDialog(val sessionState: SessionState): BtnResetEvents()
                 }
             }
             //BizIdIndustry
             sealed class BizIdIndustryBtnEvents: ButtonEvents(){
                 sealed class BtnUpdateEvents: BizIdIndustryBtnEvents(){
-                    data class OnClick(val sessionState: SessionState): BtnUpdateEvents()
+                    data object OnClick: BtnUpdateEvents()
                 }
                 sealed class BtnResetEvents: BizIdIndustryBtnEvents(){
-                    data class OnClick(val sessionState: SessionState): BtnResetEvents()
+                    data object OnClick: BtnResetEvents()
                 }
             }
             //BizIdLegal
             sealed class BizIdLegalBtnEvents: ButtonEvents(){
                 sealed class BtnUpdateEvents: BizIdLegalBtnEvents(){
-                    data class OnClick(val sessionState: SessionState): BtnUpdateEvents()
+                    data object OnClick: BtnUpdateEvents()
                 }
                 sealed class BtnResetEvents: BizIdLegalBtnEvents(){
-                    data class OnClick(val sessionState: SessionState): BtnResetEvents()
+                    data object OnClick: BtnResetEvents()
                 }
             }
             //BizIdTaxation
             sealed class BizIdTaxationBtnEvents: ButtonEvents(){
                 sealed class BtnUpdateEvents: BizIdTaxationBtnEvents(){
-                    data class OnClick(val sessionState: SessionState): BtnUpdateEvents()
+                    data object OnClick: BtnUpdateEvents()
                 }
                 sealed class BtnResetEvents: BizIdTaxationBtnEvents(){
-                    data class OnClick(val sessionState: SessionState): BtnResetEvents()
+                    data object OnClick: BtnResetEvents()
                 }
             }
             //BizAddresses
             sealed class BizAddressesBtnEvents: ButtonEvents(){
                 sealed class BtnAddEvents: BizAddressesBtnEvents() {
-                    data class OnClick(val sessionState: SessionState): BtnAddEvents()
+                    data object OnClick: BtnAddEvents()
                 }
                 sealed class BtnUpdateEvents: BizAddressesBtnEvents() {
-                    data class OnClick(val sessionState: SessionState, val address: Address): BtnUpdateEvents()
+                    data class OnClick(val address: Address): BtnUpdateEvents()
                 }
                 sealed class BtnDeleteEvents: BizAddressesBtnEvents(){
-                    data class OnClick(val sessionState: SessionState, val address: Address): BtnDeleteEvents()
+                    data class OnClick(val address: Address): BtnDeleteEvents()
                 }
                 sealed class BtnDeleteAllEvents: BizAddressesBtnEvents(){
-                    data class OnClick(val sessionState: SessionState): BtnDeleteAllEvents()
+                    data object OnClick: BtnDeleteAllEvents()
                 }
             }
             //BizContacts
             sealed class BizContactsBtnEvents: ButtonEvents(){
                 sealed class BtnAddEvents: BizContactsBtnEvents() {
-                    data class OnClick(val sessionState: SessionState): BtnAddEvents()
+                    data object OnClick: BtnAddEvents()
                 }
                 sealed class BtnUpdateEvents: BizContactsBtnEvents() {
-                    data class OnClick(val sessionState: SessionState, val contact: Contact): BtnUpdateEvents()
+                    data class OnClick(val contact: Contact): BtnUpdateEvents()
                 }
                 sealed class BtnDeleteEvents: BizContactsBtnEvents(){
-                    data class OnClick(val sessionState: SessionState, val contact: Contact): BtnDeleteEvents()
+                    data class OnClick(val contact: Contact): BtnDeleteEvents()
                 }
                 sealed class BtnDeleteAllEvents: BizContactsBtnEvents(){
-                    data class OnClick(val sessionState: SessionState): BtnDeleteAllEvents()
+                    data object OnClick: BtnDeleteAllEvents()
                 }
             }
             //BizLinks
             sealed class BizLinksBtnEvents: ButtonEvents(){
                 sealed class BtnAddEvents: BizLinksBtnEvents() {
-                    data class OnClick(val sessionState: SessionState): BtnAddEvents()
+                    data object OnClick: BtnAddEvents()
                 }
                 sealed class BtnUpdateEvents: BizLinksBtnEvents() {
-                    data class OnClick(val sessionState: SessionState, val link: Link): BtnUpdateEvents()
+                    data class OnClick(val link: Link): BtnUpdateEvents()
                 }
                 sealed class BtnDeleteEvents: BizLinksBtnEvents(){
-                    data class OnClick(val sessionState: SessionState, val link: Link): BtnDeleteEvents()
+                    data class OnClick(val link: Link): BtnDeleteEvents()
                 }
                 sealed class BtnDeleteAllEvents: BizLinksBtnEvents(){
-                    data class OnClick(val sessionState: SessionState): BtnDeleteAllEvents()
+                    data object OnClick: BtnDeleteAllEvents()
                 }
             }
         }
@@ -144,49 +160,212 @@ class VMBizProfile @Inject constructor(
     fun onEvent(events: UiEvents) {
         when(events){
             is OnOpenEvents -> onOpenEvent(events.sessionState)
+            //On Session Loading
+            OnSessionLoadingEvents -> onSessionLoadingEvent()
+            //On Session Reject
+            is OnSessionInvalidEvents -> onSessionInvalidEvent()
             //NavBack
-            is BtnNavBackEvents.OnClick -> {/*TODO*/}
+            is BtnNavBackEvents.OnClick -> onBtnNavBackEvent()
             //BizIdName
-            is BizIdNameBtnEvents.BtnUpdateEvents.OnClick -> {/*TODO*/}
-            is BizIdNameBtnEvents.BtnResetEvents.OnClick -> {/*TODO*/}
+            is BizIdNameBtnEvents.BtnUpdateEvents.OnClick -> onBtnBizIdNameUpdateEvent()
+            is BizIdNameBtnEvents.BtnResetEvents.OnClick -> onBtnBizIdNameResetEvent()
+            is BizIdNameBtnEvents.BtnResetEvents.OnConfirm -> onProcessResetBizIdName(events.sessionState)
+            is BizIdNameBtnEvents.BtnResetEvents.OnDismissDialog -> onOpenEvent(events.sessionState)
             //BizIdIndustry
-            is BizIdIndustryBtnEvents.BtnUpdateEvents.OnClick -> {/*TODO*/}
-            is BizIdIndustryBtnEvents.BtnResetEvents.OnClick -> {/*TODO*/}
+            is BizIdIndustryBtnEvents.BtnUpdateEvents.OnClick -> onBtnBizIdIndustryUpdateEvent()
+            is BizIdIndustryBtnEvents.BtnResetEvents.OnClick -> onBtnBizIdIndustryResetEvent()
             //BizIdLegal
-            is BizIdLegalBtnEvents.BtnUpdateEvents.OnClick -> {/*TODO*/}
-            is BizIdLegalBtnEvents.BtnResetEvents.OnClick -> {/*TODO*/}
+            is BizIdLegalBtnEvents.BtnUpdateEvents.OnClick -> onBtnBizIdLegalUpdateEvent()
+            is BizIdLegalBtnEvents.BtnResetEvents.OnClick -> onBtnBizIdLegalResetEvent()
             //BizIdTaxation
-            is BizIdTaxationBtnEvents.BtnUpdateEvents.OnClick -> {/*TODO*/}
-            is BizIdTaxationBtnEvents.BtnResetEvents.OnClick -> {/*TODO*/}
+            is BizIdTaxationBtnEvents.BtnUpdateEvents.OnClick -> onBtnBizIdTaxationUpdateEvent()
+            is BizIdTaxationBtnEvents.BtnResetEvents.OnClick -> onBtnBizIdTaxationResetEvent()
             //BizAddresses
-            is BizAddressesBtnEvents.BtnAddEvents.OnClick -> {/*TODO*/}
-            is BizAddressesBtnEvents.BtnUpdateEvents.OnClick -> {/*TODO*/}
-            is BizAddressesBtnEvents.BtnDeleteEvents.OnClick -> {/*TODO*/}
-            is BizAddressesBtnEvents.BtnDeleteAllEvents.OnClick -> {/*TODO*/}
+            is BizAddressesBtnEvents.BtnAddEvents.OnClick -> onBtnBizAddressesAddEvent()
+            is BizAddressesBtnEvents.BtnUpdateEvents.OnClick -> onBtnBizAddressesUpdateEvent(events.address)
+            is BizAddressesBtnEvents.BtnDeleteEvents.OnClick -> onBtnBizAddressesDeleteEvent(events.address)
+            is BizAddressesBtnEvents.BtnDeleteAllEvents.OnClick -> onBtnBizAddressesDeleteAllEvent()
             //BizContacts
-            is BizContactsBtnEvents.BtnAddEvents.OnClick -> {/*TODO*/}
-            is BizContactsBtnEvents.BtnUpdateEvents.OnClick -> {/*TODO*/}
-            is BizContactsBtnEvents.BtnDeleteEvents.OnClick -> {/*TODO*/}
-            is BizContactsBtnEvents.BtnDeleteAllEvents.OnClick -> {/*TODO*/}
+            is BizContactsBtnEvents.BtnAddEvents.OnClick -> onBtnBizContactsAddEvent()
+            is BizContactsBtnEvents.BtnUpdateEvents.OnClick -> onBtnBizContactsUpdateEvent(events.contact)
+            is BizContactsBtnEvents.BtnDeleteEvents.OnClick -> onBtnBizContactsDeleteEvent(events.contact)
+            is BizContactsBtnEvents.BtnDeleteAllEvents.OnClick -> onBtnBizContactsDeleteAllEvent()
             //BizLinks
-            is BizLinksBtnEvents.BtnAddEvents.OnClick -> {/*TODO*/}
-            is BizLinksBtnEvents.BtnUpdateEvents.OnClick -> {/*TODO*/}
-            is BizLinksBtnEvents.BtnDeleteEvents.OnClick -> {/*TODO*/}
-            is BizLinksBtnEvents.BtnDeleteAllEvents.OnClick -> {/*TODO*/}
+            is BizLinksBtnEvents.BtnAddEvents.OnClick -> onBtnBizLinksAddEvent()
+            is BizLinksBtnEvents.BtnUpdateEvents.OnClick -> onBtnBizLinksUpdateEvent(events.link)
+            is BizLinksBtnEvents.BtnDeleteEvents.OnClick -> onBtnBizLinksDeleteEvent(events.link)
+            is BizLinksBtnEvents.BtnDeleteAllEvents.OnClick -> onBtnBizLinksDeleteAllEvent()
         }
     }
-    private fun onOpenEvent(sessionState: SessionState) = viewModelScope.launch(ioDispatcher){
-        ucGetBizProfile.invoke(sessionState).collect{ result ->
-            _uiState.update {
-                it.copy(
-                    bizProfile = when(result){
-                        Idle, Loading -> UiStateBizProfile.Loading
-                        Empty -> UiStateBizProfile.Error(Throwable("Error Getting Data!"))
-                        is Error -> UiStateBizProfile.Error(result.t)
-                        is Success -> Success(result.data.first, result.data.second)
-                    }
-                )
-            }
+
+    /**
+     * Update Dialog State
+     */
+    private fun updateDialogState(
+        dlgLoading: Boolean = false,
+        dlgSessionInvalid: Boolean = false,
+        dlgResetBizIdName: Boolean = false,
+        dlgProcessing: Boolean = false
+    ){
+        _uiState.update { it.copy(
+            dialogState = it.dialogState.copy(
+                dlgSessionLoading = mutableStateOf(dlgLoading),
+                dlgSessionInvalid = mutableStateOf(dlgSessionInvalid),
+                dlgResetBizIdName = mutableStateOf(dlgResetBizIdName),
+                dlgProcessing = mutableStateOf(dlgProcessing)
+            )
+        ) }
+    }
+
+    /**
+     * Reset Dialog State
+     */
+    private fun resetDialogState() = _uiState.update { it.copy(dialogState = DialogState()) }
+
+    /**
+     * OnOpen
+     */
+    private fun onOpenEvent(sessionState: SessionState) = viewModelScope.launch(ioDispatcher) {
+        when(sessionState){
+            SessionState.Loading -> _uiState.update { it.copy(bizProfile = Loading) }
+            is SessionState.Invalid -> _uiState.update { it.copy(bizProfile = Reject) }
+            is SessionState.Valid -> ucGetBizProfile.invoke().flowOn(ioDispatcher)
+                .catch { t -> _uiState.update { it.copy(bizProfile = Error(t)) } }
+                .collect{ result -> _uiState.update { it.copy(
+                    bizProfile = Success(result.data.first, result.data.second),
+                    dialogState = DialogState()
+                ) } }
         }
+    }
+
+    /**
+     * Loading Session
+     */
+    private fun onSessionLoadingEvent() = resetDialogState()
+        .apply { updateDialogState(dlgLoading = true) }
+
+    /**
+     * Invalid Session
+     */
+    private fun onSessionInvalidEvent() = resetDialogState()
+        .apply { updateDialogState(dlgSessionInvalid = true) }
+
+    /**
+     * NavBack
+     */
+    private fun onBtnNavBackEvent() = resetDialogState()
+
+    /**
+     * BizIdName
+     */
+    private fun onBtnBizIdNameUpdateEvent() {
+        resetDialogState()
+        /*TODO*/
+    }
+    private fun onBtnBizIdNameResetEvent() = resetDialogState()
+        .apply { updateDialogState(dlgResetBizIdName = true) }
+    private fun onProcessResetBizIdName(sessionState: SessionState) = when(sessionState){
+        SessionState.Loading -> _uiState.update { it.copy(bizProfile = Loading) }
+        is SessionState.Invalid -> _uiState.update { it.copy(bizProfile = Reject) }
+        is SessionState.Valid -> resetDialogState().apply {
+            updateDialogState(dlgProcessing = true)
+            /*TODO*/
+        }
+    }
+
+    /**
+     * BizIdIndustry
+     */
+    private fun onBtnBizIdIndustryUpdateEvent() {
+        resetDialogState()
+        /*TODO*/
+    }
+    private fun onBtnBizIdIndustryResetEvent() {
+        resetDialogState()
+        /*TODO*/
+    }
+
+    /**
+     * BizIdLegal
+     */
+    private fun onBtnBizIdLegalUpdateEvent() {
+        resetDialogState()
+        /*TODO*/
+    }
+    private fun onBtnBizIdLegalResetEvent() {
+        resetDialogState()
+        /*TODO*/
+    }
+
+    /**
+     * BizIdTaxation
+     */
+    private fun onBtnBizIdTaxationUpdateEvent() {
+        resetDialogState()
+        /*TODO*/
+    }
+    private fun onBtnBizIdTaxationResetEvent() {
+        resetDialogState()
+        /*TODO*/
+    }
+
+    /**
+     * BizAddresses
+     */
+    private fun onBtnBizAddressesAddEvent() {
+        resetDialogState()
+        /*TODO*/
+    }
+    private fun onBtnBizAddressesUpdateEvent(address: Address) {
+        resetDialogState()
+        /*TODO*/
+    }
+    private fun onBtnBizAddressesDeleteEvent(address: Address) {
+        resetDialogState()
+        /*TODO*/
+    }
+    private fun onBtnBizAddressesDeleteAllEvent() {
+        resetDialogState()
+        /*TODO*/
+    }
+
+    /**
+     * BizContacts
+     */
+    private fun onBtnBizContactsAddEvent() {
+        resetDialogState()
+        /*TODO*/
+    }
+    private fun onBtnBizContactsUpdateEvent(contact: Contact) {
+        resetDialogState()
+        /*TODO*/
+    }
+    private fun onBtnBizContactsDeleteEvent(contact: Contact) {
+        resetDialogState()
+        /*TODO*/
+    }
+    private fun onBtnBizContactsDeleteAllEvent() {
+        resetDialogState()
+        /*TODO*/
+    }
+
+    /**
+     * BizLinks
+     */
+    private fun onBtnBizLinksAddEvent() {
+        resetDialogState()
+        /*TODO*/
+    }
+    private fun onBtnBizLinksUpdateEvent(link: Link) {
+        resetDialogState()
+        /*TODO*/
+    }
+    private fun onBtnBizLinksDeleteEvent(link: Link) {
+        resetDialogState()
+        /*TODO*/
+    }
+    private fun onBtnBizLinksDeleteAllEvent() {
+        resetDialogState()
+        /*TODO*/
     }
 }

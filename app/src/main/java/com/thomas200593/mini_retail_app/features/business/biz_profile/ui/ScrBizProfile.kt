@@ -16,6 +16,7 @@ import androidx.compose.material.icons.Icons.Default
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Info
@@ -67,8 +68,10 @@ import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar.ProvideTo
 import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar.ProvideTopAppBarNavigationIcon
 import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar.ProvideTopAppBarTitle
 import com.thomas200593.mini_retail_app.core.ui.component.CustomButton.Common.AppIconButton
+import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AlertDialogContext.CONFIRMATION
+import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AlertDialogContext.INFORMATION
+import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AppAlertDialog
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.ErrorScreen
-import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.LoadingScreen
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.entity.AppConfig
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.entity.Country
 import com.thomas200593.mini_retail_app.features.business.biz_profile.entity.BizIdentity
@@ -79,13 +82,17 @@ import com.thomas200593.mini_retail_app.features.business.biz_profile.ui.VMBizPr
 import com.thomas200593.mini_retail_app.features.business.biz_profile.ui.VMBizProfile.UiEvents.ButtonEvents.BizIdIndustryBtnEvents
 import com.thomas200593.mini_retail_app.features.business.biz_profile.ui.VMBizProfile.UiEvents.ButtonEvents.BizIdLegalBtnEvents
 import com.thomas200593.mini_retail_app.features.business.biz_profile.ui.VMBizProfile.UiEvents.ButtonEvents.BizIdNameBtnEvents
+import com.thomas200593.mini_retail_app.features.business.biz_profile.ui.VMBizProfile.UiEvents.ButtonEvents.BizIdNameBtnEvents.BtnResetEvents
 import com.thomas200593.mini_retail_app.features.business.biz_profile.ui.VMBizProfile.UiEvents.ButtonEvents.BizIdTaxationBtnEvents
 import com.thomas200593.mini_retail_app.features.business.biz_profile.ui.VMBizProfile.UiEvents.ButtonEvents.BizLinksBtnEvents
 import com.thomas200593.mini_retail_app.features.business.biz_profile.ui.VMBizProfile.UiEvents.ButtonEvents.BtnNavBackEvents
 import com.thomas200593.mini_retail_app.features.business.biz_profile.ui.VMBizProfile.UiEvents.OnOpenEvents
+import com.thomas200593.mini_retail_app.features.business.biz_profile.ui.VMBizProfile.UiEvents.OnSessionInvalidEvents
+import com.thomas200593.mini_retail_app.features.business.biz_profile.ui.VMBizProfile.UiEvents.OnSessionLoadingEvents
 import com.thomas200593.mini_retail_app.features.business.biz_profile.ui.VMBizProfile.UiState
 import com.thomas200593.mini_retail_app.features.business.biz_profile.ui.VMBizProfile.UiStateBizProfile.Error
 import com.thomas200593.mini_retail_app.features.business.biz_profile.ui.VMBizProfile.UiStateBizProfile.Loading
+import com.thomas200593.mini_retail_app.features.business.biz_profile.ui.VMBizProfile.UiStateBizProfile.Reject
 import com.thomas200593.mini_retail_app.features.business.biz_profile.ui.VMBizProfile.UiStateBizProfile.Success
 import ulid.ULID
 
@@ -101,41 +108,107 @@ fun ScrBizProfile(
 
     ScrBizProfile(
         uiState = uiState,
+        onSessionLoading = { vm.onEvent(OnSessionLoadingEvents) },
+        onSessionInvalid = { vm.onEvent(OnSessionInvalidEvents) },
         //BtnNavBack
-        onNavigateBack = { BtnNavBackEvents.OnClick.apply { stateApp.onNavUp() } },
+        onNavigateBack = { vm.onEvent(BtnNavBackEvents.OnClick).apply { stateApp.onNavUp() } },
         //BizIdName
-        onUpdateBizIdName = { BizIdNameBtnEvents.BtnUpdateEvents.OnClick(sessionState) },
-        onResetBizIdName = { BizIdNameBtnEvents.BtnResetEvents.OnClick(sessionState) },
+        onUpdateBizIdName = { vm.onEvent(BizIdNameBtnEvents.BtnUpdateEvents.OnClick) },
+        onResetBizIdName = { vm.onEvent(BtnResetEvents.OnClick) },
         //BizIdIndustry
-        onUpdateBizIdIndustry = { BizIdIndustryBtnEvents.BtnUpdateEvents.OnClick(sessionState) },
-        onResetBizIdIndustry = { BizIdIndustryBtnEvents.BtnResetEvents.OnClick(sessionState) },
+        onUpdateBizIdIndustry = { vm.onEvent(BizIdIndustryBtnEvents.BtnUpdateEvents.OnClick) },
+        onResetBizIdIndustry = { vm.onEvent(BizIdIndustryBtnEvents.BtnResetEvents.OnClick) },
         //BizIdLegal
-        onUpdateBizIdLegal = { BizIdLegalBtnEvents.BtnUpdateEvents.OnClick(sessionState) },
-        onResetBizIdLegal = { BizIdLegalBtnEvents.BtnResetEvents.OnClick(sessionState) },
+        onUpdateBizIdLegal = { vm.onEvent(BizIdLegalBtnEvents.BtnUpdateEvents.OnClick) },
+        onResetBizIdLegal = { vm.onEvent(BizIdLegalBtnEvents.BtnResetEvents.OnClick) },
         //BizIdTaxation
-        onUpdateBizIdTaxation = { BizIdTaxationBtnEvents.BtnUpdateEvents.OnClick(sessionState) },
-        onResetBizIdTaxation = { BizIdTaxationBtnEvents.BtnResetEvents.OnClick(sessionState) },
+        onUpdateBizIdTaxation = { vm.onEvent(BizIdTaxationBtnEvents.BtnUpdateEvents.OnClick) },
+        onResetBizIdTaxation = { vm.onEvent(BizIdTaxationBtnEvents.BtnResetEvents.OnClick) },
         //BizAddresses
-        onCreateBizAddress = { BizAddressesBtnEvents.BtnAddEvents.OnClick(sessionState) },
-        onUpdateBizAddress = { BizAddressesBtnEvents.BtnUpdateEvents.OnClick(sessionState, it) },
-        onDeleteBizAddress = { BizAddressesBtnEvents.BtnDeleteEvents.OnClick(sessionState, it) },
-        onDeleteAllBizAddresses = { BizAddressesBtnEvents.BtnDeleteAllEvents.OnClick(sessionState) },
+        onCreateBizAddress = { vm.onEvent(BizAddressesBtnEvents.BtnAddEvents.OnClick) },
+        onUpdateBizAddress = { vm.onEvent(BizAddressesBtnEvents.BtnUpdateEvents.OnClick(it)) },
+        onDeleteBizAddress = { vm.onEvent(BizAddressesBtnEvents.BtnDeleteEvents.OnClick(it)) },
+        onDeleteAllBizAddresses = { vm.onEvent(BizAddressesBtnEvents.BtnDeleteAllEvents.OnClick) },
         //BizContacts
-        onCreateBizContact = { BizContactsBtnEvents.BtnAddEvents.OnClick(sessionState) },
-        onUpdateBizContact = { BizContactsBtnEvents.BtnUpdateEvents.OnClick(sessionState, it) },
-        onDeleteBizContact = { BizContactsBtnEvents.BtnDeleteEvents.OnClick(sessionState, it) },
-        onDeleteAllBizContacts = { BizContactsBtnEvents.BtnDeleteAllEvents.OnClick(sessionState) },
+        onCreateBizContact = { vm.onEvent(BizContactsBtnEvents.BtnAddEvents.OnClick) },
+        onUpdateBizContact = { vm.onEvent(BizContactsBtnEvents.BtnUpdateEvents.OnClick(it)) },
+        onDeleteBizContact = { vm.onEvent(BizContactsBtnEvents.BtnDeleteEvents.OnClick(it)) },
+        onDeleteAllBizContacts = { vm.onEvent(BizContactsBtnEvents.BtnDeleteAllEvents.OnClick) },
         //BizLinks
-        onCreateBizLink = { BizLinksBtnEvents.BtnAddEvents.OnClick(sessionState) },
-        onUpdateBizLink = { BizLinksBtnEvents.BtnUpdateEvents.OnClick(sessionState, it) },
-        onDeleteBizLink = { BizLinksBtnEvents.BtnDeleteEvents.OnClick(sessionState, it) },
-        onDeleteAllBizLinks = { BizLinksBtnEvents.BtnDeleteAllEvents.OnClick(sessionState) }
+        onCreateBizLink = { vm.onEvent(BizLinksBtnEvents.BtnAddEvents.OnClick) },
+        onUpdateBizLink = { vm.onEvent(BizLinksBtnEvents.BtnUpdateEvents.OnClick(it)) },
+        onDeleteBizLink = { vm.onEvent(BizLinksBtnEvents.BtnDeleteEvents.OnClick(it)) },
+        onDeleteAllBizLinks = { vm.onEvent(BizLinksBtnEvents.BtnDeleteAllEvents.OnClick) }
+    )
+    HandleDialogs(
+        uiState = uiState,
+        onConfirmResetBizIdName = {  },
+        onDismissDlgResetBizIdName = { vm.onEvent(BtnResetEvents.OnDismissDialog(sessionState)) }
+    )
+}
+
+@Composable
+private fun HandleDialogs(
+    uiState: UiState,
+    onConfirmResetBizIdName: () -> Unit,
+    onDismissDlgResetBizIdName: () -> Unit
+) {
+    //Session Loading Dialog
+    AppAlertDialog(
+        showDialog = uiState.dialogState.dlgSessionLoading,
+        dialogContext = INFORMATION,
+        showIcon = true,
+        showTitle = true,
+        title = { Text(text = stringResource(id = string.str_loading)) },
+        showBody = true,
+        body = { Text(text = "Fetching Data...") }
+    )
+    //TODO Session Invalid Dialog
+    //Confirm Reset BizIdName Dialog
+    AppAlertDialog(
+        showDialog = uiState.dialogState.dlgResetBizIdName,
+        dialogContext = CONFIRMATION,
+        showTitle = true,
+        title = { Text(text = "Reset Business Name?") },
+        showBody = true,
+        body = { Text(text = "Business Name will be returned to default value. this will not affect past transactions.") },
+        useConfirmButton = true,
+        confirmButton = {
+            AppIconButton(
+                onClick = { onConfirmResetBizIdName() },
+                icon = Default.Check,
+                text = stringResource(id = string.str_ok),
+                containerColor = colorScheme.errorContainer,
+                contentColor = colorScheme.onErrorContainer
+            )
+        },
+        useDismissButton = true,
+        dismissButton = {
+            AppIconButton(
+                onClick = { onDismissDlgResetBizIdName() },
+                icon = Default.Clear,
+                text = stringResource(id = string.str_cancel),
+                containerColor = colorScheme.tertiaryContainer,
+                contentColor = colorScheme.onTertiaryContainer
+            )
+        }
+    )
+    //Process Dialog (General Purpose)
+    AppAlertDialog(
+        showDialog = uiState.dialogState.dlgProcessing,
+        dialogContext = INFORMATION,
+        showTitle = true,
+        title = { Text(text = "Processing") },
+        showBody = true,
+        body = { Text(text = "Processing Request") }
     )
 }
 
 @Composable
 private fun ScrBizProfile(
     uiState: UiState,
+    onSessionLoading: () -> Unit,
+    onSessionInvalid: () -> Unit,
     //NavBack
     onNavigateBack: () -> Unit,
     //BizIdName
@@ -158,7 +231,8 @@ private fun ScrBizProfile(
 ){
     TopAppBar(onNavigateBack = onNavigateBack)
     when(uiState.bizProfile){
-        Loading -> LoadingScreen()
+        Loading -> onSessionLoading()
+        Reject -> onSessionInvalid()
         is Error -> ErrorScreen(
             title = stringResource(id = string.str_error),
             errorMessage = uiState.bizProfile.t.toString(),
@@ -1820,7 +1894,8 @@ fun BizLinksSection(
                                 HorizontalDivider()
 
                                 Column(
-                                    modifier = Modifier.fillMaxWidth()
+                                    modifier = Modifier
+                                        .fillMaxWidth()
                                         .padding(8.dp),
                                     horizontalAlignment = Alignment.CenterHorizontally,
                                     verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically)
@@ -1924,7 +1999,7 @@ private fun Preview(){
     ApplicationTheme {
         Column(modifier = Modifier.fillMaxSize()) {
             ScrBizProfile(
-                onNavigateBack = {},
+                onNavigateBack = {}, onSessionLoading = {}, onSessionInvalid = {},
                 onUpdateBizIdName = {}, onResetBizIdName = {},
                 onUpdateBizIdIndustry = {}, onResetBizIdIndustry = {},
                 onUpdateBizIdLegal = {}, onResetBizIdLegal = {},
