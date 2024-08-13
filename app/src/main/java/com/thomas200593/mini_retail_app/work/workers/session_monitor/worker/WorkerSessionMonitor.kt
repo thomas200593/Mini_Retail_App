@@ -7,9 +7,9 @@ import androidx.work.CoroutineWorker
 import androidx.work.ListenableWorker.Result.success
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkerParameters
-import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.di.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers.Dispatchers.IO
-import com.thomas200593.mini_retail_app.features.auth.domain.UCValidateAuthSession
+import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.di.Dispatcher
+import com.thomas200593.mini_retail_app.features.auth.domain.UCValidateAuthSessionAndSave
 import com.thomas200593.mini_retail_app.features.auth.repository.RepoAuth
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
@@ -24,12 +24,12 @@ class WorkerSessionMonitor @AssistedInject constructor(
     @Assisted context: Context,
     @Assisted workerParameters: WorkerParameters,
     private val repoAuth: RepoAuth,
-    private val ucValidateAuthSession: UCValidateAuthSession,
+    private val ucValidateAuthSessionAndSave: UCValidateAuthSessionAndSave,
     @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
 ): CoroutineWorker(context, workerParameters) {
 
     override suspend fun doWork(): Result {
-        if(ucValidateAuthSession.invoke(repoAuth.authSessionToken.flowOn(ioDispatcher).first())){
+        if(ucValidateAuthSessionAndSave.invoke(repoAuth.authSessionToken.flowOn(ioDispatcher).first())){
             Timber.d("fun doWork() returned : SessionValid")
             return success()
         }else{

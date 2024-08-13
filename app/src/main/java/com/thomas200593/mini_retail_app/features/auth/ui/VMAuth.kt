@@ -4,15 +4,15 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.di.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers.Dispatchers.IO
+import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.di.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.util.HlpStateFlow.update
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Error
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Idle
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Loading
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Success
-import com.thomas200593.mini_retail_app.features.auth.domain.UCValidateAuthSession
+import com.thomas200593.mini_retail_app.features.auth.domain.UCValidateAuthSessionAndSave
 import com.thomas200593.mini_retail_app.features.auth.entity.AuthSessionToken
 import com.thomas200593.mini_retail_app.features.auth.repository.RepoAuth
 import com.thomas200593.mini_retail_app.features.auth.ui.VMAuth.UiEvents.BtnAuthWithGoogle
@@ -27,7 +27,7 @@ import javax.inject.Inject
 @HiltViewModel
 class VMAuth @Inject constructor(
     private val repoAuth: RepoAuth,
-    private val ucValidateAuthSession: UCValidateAuthSession,
+    private val ucValidateAuthSessionAndSave: UCValidateAuthSessionAndSave,
     @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
 ): ViewModel() {
     data class UiState(
@@ -68,7 +68,7 @@ class VMAuth @Inject constructor(
             updateDialogState(loading = true, success = false, error = false)
             _uiState.update { it.copy(authVldState = Loading) }
             try{
-                if(ucValidateAuthSession.invoke(authSessionToken)) {
+                if(ucValidateAuthSessionAndSave.invoke(authSessionToken)) {
                     updateDialogState(loading = false, success = true, error = false)
                     _uiState.update { it.copy(authVldState = Success(authSessionToken)) }
                 }
