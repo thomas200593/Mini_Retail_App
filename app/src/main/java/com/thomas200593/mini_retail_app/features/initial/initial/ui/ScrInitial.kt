@@ -25,6 +25,7 @@ import com.thomas200593.mini_retail_app.features.initial.initial.entity.FirstTim
 import com.thomas200593.mini_retail_app.features.initial.initial.entity.FirstTimeStatus.YES
 import com.thomas200593.mini_retail_app.features.initial.initial.entity.Initial
 import com.thomas200593.mini_retail_app.features.initial.initial.ui.VMInitial.UiEvents
+import com.thomas200593.mini_retail_app.features.initial.initial.ui.VMInitial.UiState
 import com.thomas200593.mini_retail_app.features.initial.initial.ui.VMInitial.UiStateInitial.Error
 import com.thomas200593.mini_retail_app.features.initial.initial.ui.VMInitial.UiStateInitial.Loading
 import com.thomas200593.mini_retail_app.features.initial.initial.ui.VMInitial.UiStateInitial.Success
@@ -40,41 +41,52 @@ fun ScrInitial(
 ){
     val context = LocalContext.current
     val uiState by vm.uiState.collectAsStateWithLifecycle()
-
     LaunchedEffect(Unit) { vm.onEvent(UiEvents.OnOpenEvents) }
-
-    when(uiState.initial){
-        Loading -> LoadingScreen()
-        is Error -> ErrorScreen(
-            title = stringResource(id = string.str_error),
-            errorMessage = "${(uiState.initial as Error).t.message} : ${(uiState.initial as Error).t.localizedMessage}",
-            showIcon = true
-        )
-        is Success -> {
-            val welcomeMessage = stringResource(string.str_welcome)
-            ScreenContent(
-                initial = (uiState.initial as Success).initial,
-                onNavToOnboarding = { stateApp.navController.navToOnboarding() },
-                onNavToInitialization = { stateApp.navController.navToInitialization() },
-                onNavToAuth = { stateApp.navController.navToAuth() },
-                onNavToDashboard = {
-                    val navOpt = Builder()
-                        .setPopUpTo(route = G_INITIAL, inclusive = true, saveState = true)
-                        .setLaunchSingleTop(true).setRestoreState(true).build()
-                    when(it.authSessionToken?.authProvider){
-                        GOOGLE -> Toast.makeText(
-                            context,
-                            "$welcomeMessage! ${(it.oAuth2UserMetadata as Google).name}.",
-                            LENGTH_SHORT
-                        ).show()
-                        else -> Unit
-                    }
-                    stateApp.navController.navToDashboard(navOpt)
-                }
-            )
+    ScrInitial(
+        uiState = uiState,
+        onNavToOnboarding = { stateApp.navController.navToOnboarding() },
+        onNavToInitialization = { stateApp.navController.navToInitialization() },
+        onNavToAuth = { stateApp.navController.navToAuth() },
+        onNavToDashboard = { welcomeMessage, userData ->
+            val navOpt = Builder()
+                .setPopUpTo(route = G_INITIAL, inclusive = true, saveState = true)
+                .setLaunchSingleTop(true).setRestoreState(true).build()
+            when(userData.authSessionToken?.authProvider){
+                GOOGLE -> Toast.makeText(
+                    context,
+                    "$welcomeMessage! ${(userData.oAuth2UserMetadata as Google).name}.",
+                    LENGTH_SHORT
+                ).show()
+                else -> Unit
+            }
+            stateApp.navController.navToDashboard(navOpt)
         }
-    }
+    )
 }
+
+@Composable
+private fun ScrInitial(
+    uiState: UiState,
+    onNavToOnboarding: () -> Unit,
+    onNavToInitialization: () -> Unit,
+    onNavToAuth: () -> Unit,
+    onNavToDashboard: (String, UserData) -> Unit
+) = when(uiState.initial){
+    Loading -> LoadingScreen()
+    is Error -> ErrorScreen(
+        title = stringResource(id = string.str_error),
+        errorMessage = "${uiState.initial.t.message} : ${uiState.initial.t.cause}",
+        showIcon = true
+    )
+    is Success -> ScreenContent(
+        initial = uiState.initial.initial,
+        onNavToOnboarding = onNavToOnboarding,
+        onNavToInitialization = onNavToInitialization,
+        onNavToAuth = onNavToAuth,
+        onNavToDashboard = onNavToDashboard
+    )
+}
+
 
 @Composable
 private fun ScreenContent(
@@ -82,19 +94,17 @@ private fun ScreenContent(
     onNavToOnboarding: () -> Unit,
     onNavToInitialization: () -> Unit,
     onNavToAuth: () -> Unit,
-    onNavToDashboard: (UserData) -> Unit
-) {
-    when(initial.firstTimeStatus){
-        YES -> when(initial.configCurrent.onboardingStatus){
-            SHOW -> onNavToOnboarding.invoke()
-            HIDE -> onNavToInitialization.invoke()
-        }
-        NO -> when(initial.configCurrent.onboardingStatus){
-            SHOW -> onNavToOnboarding.invoke()
-            HIDE -> when(initial.session == null){
-                true -> onNavToAuth.invoke()
-                false -> onNavToDashboard.invoke(initial.session)
-            }
+    onNavToDashboard: (String, UserData) -> Unit
+) = when(initial.firstTimeStatus){
+    YES -> when(initial.configCurrent.onboardingStatus){
+        SHOW -> onNavToOnboarding.invoke()
+        HIDE -> onNavToInitialization.invoke()
+    }
+    NO -> when(initial.configCurrent.onboardingStatus){
+        SHOW -> onNavToOnboarding.invoke()
+        HIDE -> when(initial.session == null){
+            true -> onNavToAuth.invoke()
+            false -> onNavToDashboard.invoke(stringResource(string.str_welcome), initial.session)
         }
     }
 }
