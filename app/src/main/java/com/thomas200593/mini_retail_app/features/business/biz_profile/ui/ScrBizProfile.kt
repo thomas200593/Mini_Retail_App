@@ -77,6 +77,7 @@ import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.entit
 import com.thomas200593.mini_retail_app.features.business.biz_profile.entity.BizIdentity
 import com.thomas200593.mini_retail_app.features.business.biz_profile.entity.BizName
 import com.thomas200593.mini_retail_app.features.business.biz_profile.entity.BizProfile
+import com.thomas200593.mini_retail_app.features.business.biz_profile.navigation.navToBizProfileAddressesAddUpdate
 import com.thomas200593.mini_retail_app.features.business.biz_profile.ui.VMBizProfile.UiEvents.ButtonEvents.BizAddressesBtnEvents
 import com.thomas200593.mini_retail_app.features.business.biz_profile.ui.VMBizProfile.UiEvents.ButtonEvents.BizContactsBtnEvents
 import com.thomas200593.mini_retail_app.features.business.biz_profile.ui.VMBizProfile.UiEvents.ButtonEvents.BizIdIndustryBtnEvents
@@ -125,8 +126,16 @@ fun ScrBizProfile(
         onUpdateBizIdTaxation = { vm.onEvent(BizIdTaxationBtnEvents.BtnUpdateEvents.OnClick) },
         onResetBizIdTaxation = { vm.onEvent(BizIdTaxationBtnEvents.BtnResetEvents.OnClick) },
         //BizAddresses
-        onCreateBizAddress = { vm.onEvent(BizAddressesBtnEvents.BtnAddEvents.OnClick) },
-        onUpdateBizAddress = { vm.onEvent(BizAddressesBtnEvents.BtnUpdateEvents.OnClick(it)) },
+        onCreateBizAddress = {
+            vm.onEvent(BizAddressesBtnEvents.BtnAddEvents.OnClick).apply {
+                stateApp.navController.navToBizProfileAddressesAddUpdate()
+            }
+        },
+        onUpdateBizAddress = {
+            vm.onEvent(BizAddressesBtnEvents.BtnUpdateEvents.OnClick(it)).apply {
+                stateApp.navController.navToBizProfileAddressesAddUpdate(it)
+            }
+        },
         onDeleteBizAddress = { vm.onEvent(BizAddressesBtnEvents.BtnDeleteEvents.OnClick(it)) },
         onDeleteAllBizAddresses = { vm.onEvent(BizAddressesBtnEvents.BtnDeleteAllEvents.OnClick) },
         //BizContacts
