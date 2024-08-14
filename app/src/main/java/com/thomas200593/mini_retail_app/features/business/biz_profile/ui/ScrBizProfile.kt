@@ -143,7 +143,9 @@ fun ScrBizProfile(
     HandleDialogs(
         uiState = uiState,
         onConfirmResetBizIdName = {  },
-        onDismissDlgResetBizIdName = { vm.onEvent(BtnResetEvents.OnDismissDialog(sessionState)) }
+        onDismissDlgResetBizIdName = { vm.onEvent(BtnResetEvents.OnDismissDialog(sessionState)) },
+        onConfirmResetBizAddresses = {  },
+        onDismissDlgResetBizAddresses = {  }
     )
 }
 
@@ -151,7 +153,9 @@ fun ScrBizProfile(
 private fun HandleDialogs(
     uiState: UiState,
     onConfirmResetBizIdName: () -> Unit,
-    onDismissDlgResetBizIdName: () -> Unit
+    onDismissDlgResetBizIdName: () -> Unit,
+    onConfirmResetBizAddresses: () -> Unit,
+    onDismissDlgResetBizAddresses: () -> Unit
 ) {
     //Session Loading Dialog
     AppAlertDialog(
@@ -164,6 +168,15 @@ private fun HandleDialogs(
         body = { Text(text = "Fetching Data...") }
     )
     //TODO Session Invalid Dialog
+    //Process Dialog (General Purpose)
+    AppAlertDialog(
+        showDialog = uiState.dialogState.dlgProcessing,
+        dialogContext = INFORMATION,
+        showTitle = true,
+        title = { Text(text = "Processing") },
+        showBody = true,
+        body = { Text(text = "Processing Request") }
+    )
     //Confirm Reset BizIdName Dialog
     AppAlertDialog(
         showDialog = uiState.dialogState.dlgResetBizIdName,
@@ -193,14 +206,34 @@ private fun HandleDialogs(
             )
         }
     )
-    //Process Dialog (General Purpose)
+    //Confirm Reset BizAddresses Dialog
     AppAlertDialog(
-        showDialog = uiState.dialogState.dlgProcessing,
-        dialogContext = INFORMATION,
+        showDialog = uiState.dialogState.dlgDeleteAllBizAddresses,
+        dialogContext = CONFIRMATION,
         showTitle = true,
-        title = { Text(text = "Processing") },
+        title = { Text(text = "Reset Business Address?") },
         showBody = true,
-        body = { Text(text = "Processing Request") }
+        body = { Text(text = "All Business Address will be deleted, it will not affect past transactions.") },
+        useConfirmButton = true,
+        confirmButton = {
+            AppIconButton(
+                onClick = { onConfirmResetBizAddresses() },
+                icon = Default.Check,
+                text = stringResource(id = string.str_ok),
+                containerColor = colorScheme.errorContainer,
+                contentColor = colorScheme.onErrorContainer
+            )
+        },
+        useDismissButton = true,
+        dismissButton = {
+            AppIconButton(
+                onClick = { onDismissDlgResetBizAddresses() },
+                icon = Default.Clear,
+                text = stringResource(id = string.str_cancel),
+                containerColor = colorScheme.tertiaryContainer,
+                contentColor = colorScheme.onTertiaryContainer
+            )
+        }
     )
 }
 

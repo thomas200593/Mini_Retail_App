@@ -3,6 +3,7 @@ package com.thomas200593.mini_retail_app.app.navigation
 sealed class ScrGraphs(
     val route: String
 ) {
+
     /**
      * Initial
      */
@@ -49,6 +50,9 @@ sealed class ScrGraphs(
     data object Supplier: ScrGraphs(route = Routes.R_SUPPLIER)
     data object Customer: ScrGraphs(route = Routes.R_CUSTOMER)
     data object BizProfile: ScrGraphs(route = Routes.R_BIZ_PROFILE)
+    data object BizProfileAddressesAddUpdate: ScrGraphs(route = Routes.R_BIZ_PROFILE_ADDRESSES_ADD_UPDATE)
+    data object BizProfileContactsAddUpdate: ScrGraphs(route = Routes.R_BIZ_PROFILE_CONTACTS_ADD_UPDATE)
+    data object BizProfileLinksAddUpdate: ScrGraphs(route = Routes.R_BIZ_PROFILE_LINKS_ADD_UPDATE)
 
     /**
      * Reporting

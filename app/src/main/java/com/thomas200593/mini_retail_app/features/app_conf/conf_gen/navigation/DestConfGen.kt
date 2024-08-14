@@ -2,19 +2,7 @@ package com.thomas200593.mini_retail_app.features.app_conf.conf_gen.navigation
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import com.thomas200593.mini_retail_app.R.string.str_country
-import com.thomas200593.mini_retail_app.R.string.str_country_desc
-import com.thomas200593.mini_retail_app.R.string.str_currency
-import com.thomas200593.mini_retail_app.R.string.str_currency_desc
-import com.thomas200593.mini_retail_app.R.string.str_dynamic_color
-import com.thomas200593.mini_retail_app.R.string.str_dynamic_color_desc
-import com.thomas200593.mini_retail_app.R.string.str_lang
-import com.thomas200593.mini_retail_app.R.string.str_lang_desc
-import com.thomas200593.mini_retail_app.R.string.str_size_font
-import com.thomas200593.mini_retail_app.R.string.str_size_font_desc
-import com.thomas200593.mini_retail_app.R.string.str_theme
-import com.thomas200593.mini_retail_app.R.string.str_theme_desc
-import com.thomas200593.mini_retail_app.R.string.str_timezone
+import com.thomas200593.mini_retail_app.R.string
 import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs.Country
 import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs.Currency
 import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs.DynamicColor
@@ -40,50 +28,50 @@ enum class DestConfGen(
     THEME(
         route = Theme.route,
         iconRes = theme,
-        title = str_theme,
-        description = str_theme_desc,
+        title = string.str_theme,
+        description = string.str_theme_desc,
         usesAuth = false
     ),
     DYNAMIC_COLOR(
         route = DynamicColor.route,
         iconRes = dynamic_color,
-        title = str_dynamic_color,
-        description = str_dynamic_color_desc,
+        title = string.str_dynamic_color,
+        description = string.str_dynamic_color_desc,
         usesAuth = false
     ),
     FONT_SIZE(
         route = FontSize.route,
         iconRes = font,
-        title = str_size_font,
-        description = str_size_font_desc,
+        title = string.str_size_font,
+        description = string.str_size_font_desc,
         usesAuth = false
     ),
     COUNTRY(
         route = Country.route,
         iconRes = country,
-        title = str_country,
-        description = str_country_desc,
+        title = string.str_country,
+        description = string.str_country_desc,
         usesAuth = true
     ),
     LANGUAGE(
         route = Language.route,
         iconRes = language,
-        title = str_lang,
-        description = str_lang_desc,
+        title = string.str_lang,
+        description = string.str_lang_desc,
         usesAuth = false
     ),
     TIMEZONE(
         route = Timezone.route,
         iconRes = timezone,
-        title = str_timezone,
-        description = str_timezone,
+        title = string.str_timezone,
+        description = string.str_timezone,
         usesAuth = false
     ),
     CURRENCY(
         route = Currency.route,
         iconRes = currency,
-        title = str_currency,
-        description = str_currency_desc,
+        title = string.str_currency,
+        description = string.str_currency_desc,
         usesAuth = false
     )
 }

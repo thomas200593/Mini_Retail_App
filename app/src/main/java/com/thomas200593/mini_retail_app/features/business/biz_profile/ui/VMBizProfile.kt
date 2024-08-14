@@ -57,7 +57,8 @@ class VMBizProfile @Inject constructor(
         val dlgSessionLoading: MutableState<Boolean> = mutableStateOf(false),
         val dlgSessionInvalid: MutableState<Boolean> = mutableStateOf(false),
         val dlgResetBizIdName: MutableState<Boolean> = mutableStateOf(false),
-        val dlgProcessing: MutableState<Boolean> = mutableStateOf(false)
+        val dlgProcessing: MutableState<Boolean> = mutableStateOf(false),
+        val dlgDeleteAllBizAddresses: MutableState<Boolean> = mutableStateOf(false)
     )
     sealed class UiEvents{
         data class OnOpenEvents(val sessionState: SessionState): UiEvents()
@@ -119,6 +120,8 @@ class VMBizProfile @Inject constructor(
                 }
                 sealed class BtnDeleteAllEvents: BizAddressesBtnEvents(){
                     data object OnClick: BtnDeleteAllEvents()
+                    data class OnConfirm(val sessionState: SessionState): BtnDeleteAllEvents()
+                    data class OnDismissDialog(val sessionState: SessionState): BtnDeleteAllEvents()
                 }
             }
             //BizContacts
@@ -185,6 +188,8 @@ class VMBizProfile @Inject constructor(
             is BizAddressesBtnEvents.BtnUpdateEvents.OnClick -> onBtnBizAddressesUpdateEvent(events.address)
             is BizAddressesBtnEvents.BtnDeleteEvents.OnClick -> onBtnBizAddressesDeleteEvent(events.address)
             is BizAddressesBtnEvents.BtnDeleteAllEvents.OnClick -> onBtnBizAddressesDeleteAllEvent()
+            is BizAddressesBtnEvents.BtnDeleteAllEvents.OnConfirm -> onProcessResetBizAddresses(events.sessionState)
+            is BizAddressesBtnEvents.BtnDeleteAllEvents.OnDismissDialog -> onOpenEvent(events.sessionState)
             //BizContacts
             is BizContactsBtnEvents.BtnAddEvents.OnClick -> onBtnBizContactsAddEvent()
             is BizContactsBtnEvents.BtnUpdateEvents.OnClick -> onBtnBizContactsUpdateEvent(events.contact)
@@ -205,14 +210,16 @@ class VMBizProfile @Inject constructor(
         dlgLoading: Boolean = false,
         dlgSessionInvalid: Boolean = false,
         dlgResetBizIdName: Boolean = false,
-        dlgProcessing: Boolean = false
+        dlgProcessing: Boolean = false,
+        dlgDeleteAllBizAddresses: Boolean = false
     ){
         _uiState.update { it.copy(
             dialogState = it.dialogState.copy(
                 dlgSessionLoading = mutableStateOf(dlgLoading),
                 dlgSessionInvalid = mutableStateOf(dlgSessionInvalid),
                 dlgResetBizIdName = mutableStateOf(dlgResetBizIdName),
-                dlgProcessing = mutableStateOf(dlgProcessing)
+                dlgProcessing = mutableStateOf(dlgProcessing),
+                dlgDeleteAllBizAddresses = mutableStateOf(dlgDeleteAllBizAddresses)
             )
         ) }
     }
@@ -324,9 +331,15 @@ class VMBizProfile @Inject constructor(
         resetDialogState()
         /*TODO*/
     }
-    private fun onBtnBizAddressesDeleteAllEvent() {
-        resetDialogState()
-        /*TODO*/
+    private fun onBtnBizAddressesDeleteAllEvent() = resetDialogState()
+        .apply { updateDialogState(dlgDeleteAllBizAddresses = true) }
+    private fun onProcessResetBizAddresses(sessionState: SessionState) = when(sessionState){
+        is SessionState.Invalid -> _uiState.update { it.copy(bizProfile = Loading) }
+        SessionState.Loading -> _uiState.update { it.copy(bizProfile = Reject) }
+        is SessionState.Valid -> resetDialogState().apply {
+            updateDialogState(dlgProcessing = true)
+            /*TODO*/
+        }
     }
 
     /**

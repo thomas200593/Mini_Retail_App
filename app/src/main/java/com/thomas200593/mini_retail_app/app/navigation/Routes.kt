@@ -48,6 +48,9 @@ object Routes {
     const val R_SUPPLIER = "r_supplier"
     const val R_CUSTOMER = "r_customer"
     const val R_BIZ_PROFILE = "r_biz_profile"
+    const val R_BIZ_PROFILE_ADDRESSES_ADD_UPDATE = "r_biz_profile_addresses_add_update"
+    const val R_BIZ_PROFILE_CONTACTS_ADD_UPDATE = "r_biz_profile_contacts_add_update"
+    const val R_BIZ_PROFILE_LINKS_ADD_UPDATE = "r_biz_profile_links_add_update"
 
     /**
      * Reporting

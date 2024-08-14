@@ -2,6 +2,9 @@ package com.thomas200593.mini_retail_app.app.navigation
 
 import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs.AppConfig
 import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs.BizProfile
+import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs.BizProfileAddressesAddUpdate
+import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs.BizProfileContactsAddUpdate
+import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs.BizProfileLinksAddUpdate
 import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs.Business
 import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs.ConfigData
 import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs.ConfigGeneral
@@ -52,6 +55,9 @@ object DestWithTopAppBar{
             Supplier.route,
             //Biz Profile
             BizProfile.route,
+            BizProfileAddressesAddUpdate.route,
+            BizProfileContactsAddUpdate.route,
+            BizProfileLinksAddUpdate.route,
 
             /**
              * Reporting
