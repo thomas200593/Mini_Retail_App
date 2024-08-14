@@ -106,6 +106,19 @@ fun ScrInitialization(
             onFormCancelBtnClicked = { vm.onEvent(BtnCancelEvents.OnClick) }
         )
     }
+    HandleDialogs(
+        uiState = uiState,
+        onInitBizProfileSuccess = { stateApp.navController.navToInitial() },
+        onInitBizProfileError = { stateApp.navController.navToInitial() }
+    )
+}
+
+@Composable
+private fun HandleDialogs(
+    uiState: UiState,
+    onInitBizProfileSuccess: () -> Unit,
+    onInitBizProfileError: () -> Unit
+) {
     AppAlertDialog(
         showDialog = uiState.dialogState.dlgLoadingEnabled,
         dialogContext = INFORMATION,
@@ -125,7 +138,7 @@ fun ScrInitialization(
         body = { Text(stringResource(id = string.str_biz_profile_init_success)) },
         useConfirmButton = true,
         confirmButton = {
-            TextButton(onClick = { stateApp.navController.navToInitial() })
+            TextButton(onClick = { onInitBizProfileSuccess() })
             { Text(stringResource(id = string.str_ok)) }
         }
     )
@@ -139,7 +152,7 @@ fun ScrInitialization(
         body = { Text(stringResource(id = string.str_biz_profile_init_failed)) },
         useDismissButton = true,
         dismissButton = {
-            TextButton(onClick = { stateApp.navController.navToInitial() })
+            TextButton(onClick = { onInitBizProfileError() })
             { Text(stringResource(id = string.str_ok)) }
         }
     )
