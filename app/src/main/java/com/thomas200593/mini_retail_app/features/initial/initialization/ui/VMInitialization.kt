@@ -28,6 +28,9 @@ import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMIni
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.InputFormEvents.CommonNameEvents
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.InputFormEvents.LegalNameEvents
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.OnOpenEvents
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiStateInitialization.Error
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiStateInitialization.Loading
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiStateInitialization.Success
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -52,7 +55,7 @@ class VMInitialization @Inject constructor(
         data class Error(val t: Throwable): UiStateInitialization
     }
     data class UiState(
-        val initialization: UiStateInitialization = UiStateInitialization.Loading,
+        val initialization: UiStateInitialization = Loading,
         val welcomePanelState: WelcomePanelState = WelcomePanelState(),
         val inputFormState: InputFormState = InputFormState(),
         val dialogState: DialogState = DialogState(),
@@ -123,8 +126,8 @@ class VMInitialization @Inject constructor(
     }
     private fun onOpenEvent() = viewModelScope.launch(ioDispatcher) {
         ucGetInitializationData.invoke().flowOn(ioDispatcher)
-            .catch { e -> _uiState.update { it.copy(initialization = UiStateInitialization.Error(e)) } }
-            .collectLatest { result -> _uiState.update { it.copy(initialization = UiStateInitialization.Success(result.data)) } }
+            .catch { e -> _uiState.update { it.copy(initialization = Error(e)) } }
+            .collectLatest { result -> _uiState.update { it.copy(initialization = Success(result.data)) } }
     }
     private fun onSelectLanguageEvent(language: Language) = viewModelScope.launch(ioDispatcher) {
         repoConfGenLanguage.setLanguage(language)

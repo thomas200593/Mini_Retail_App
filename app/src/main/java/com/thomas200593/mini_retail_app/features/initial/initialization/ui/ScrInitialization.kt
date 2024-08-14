@@ -87,30 +87,53 @@ fun ScrInitialization(
 ){
     val uiState by vm.uiState.collectAsStateWithLifecycle()
     LaunchedEffect(Unit) {vm.onEvent(OnOpenEvents)}
-    when(uiState.initialization){
-        Loading -> LoadingScreen()
-        is Error -> ErrorScreen(
-            title = stringResource(id = string.str_error),
-            errorMessage = stringResource(id = string.str_error_fetching_preferences),
-            showIcon = true
-        )
-        is Success -> ScreenContent(
-            uiState = uiState,
-            initData = (uiState.initialization as Success).data,
-            onSelectLanguage = { vm.onEvent(OnSelect(it)) },
-            onInitBizProfileDefaultBtnClicked = { vm.onEvent(BtnInitDefaultBizProfileEvents.OnClick(it)) },
-            onInitBizProfileManualBtnClicked = { vm.onEvent(BtnInitManualBizProfileEvents.OnClick) },
-            onLegalNameValueChanged = { vm.onEvent(LegalNameEvents.ValueChanged(it)) },
-            onCommonNameValueChanged = { vm.onEvent(CommonNameEvents.ValueChanged(it)) },
-            onFormSubmitBtnClicked = { vm.onEvent(BtnSubmitEvents.OnClick(it)) },
-            onFormCancelBtnClicked = { vm.onEvent(BtnCancelEvents.OnClick) }
-        )
-    }
+    ScrInitialization(
+        uiState = uiState,
+        onSelectLanguage = { vm.onEvent(OnSelect(it)) },
+        onInitBizProfileDefaultBtnClicked = { vm.onEvent(BtnInitDefaultBizProfileEvents.OnClick(it)) },
+        onInitBizProfileManualBtnClicked = { vm.onEvent(BtnInitManualBizProfileEvents.OnClick) },
+        onLegalNameValueChanged = { vm.onEvent(LegalNameEvents.ValueChanged(it)) },
+        onCommonNameValueChanged = { vm.onEvent(CommonNameEvents.ValueChanged(it)) },
+        onFormSubmitBtnClicked = { vm.onEvent(BtnSubmitEvents.OnClick(it)) },
+        onFormCancelBtnClicked = { vm.onEvent(BtnCancelEvents.OnClick) }
+    )
     HandleDialogs(
         uiState = uiState,
         onInitBizProfileSuccess = { stateApp.navController.navToInitial() },
         onInitBizProfileError = { stateApp.navController.navToInitial() }
     )
+}
+
+@Composable
+private fun ScrInitialization(
+    uiState: UiState,
+    onSelectLanguage: (Language) -> Unit,
+    onInitBizProfileDefaultBtnClicked: (BizProfileShort) -> Unit,
+    onInitBizProfileManualBtnClicked: () -> Unit,
+    onLegalNameValueChanged: (String) -> Unit,
+    onCommonNameValueChanged: (String) -> Unit,
+    onFormSubmitBtnClicked: (BizProfileShort) -> Unit,
+    onFormCancelBtnClicked: () -> Unit
+) {
+    when(uiState.initialization){
+        Loading -> LoadingScreen()
+        is Error -> ErrorScreen(
+            title = stringResource(id = string.str_error),
+            errorMessage = uiState.initialization.t.stackTraceToString(),
+            showIcon = true
+        )
+        is Success -> ScreenContent(
+            uiState = uiState,
+            initData = uiState.initialization.data,
+            onSelectLanguage = onSelectLanguage,
+            onInitBizProfileDefaultBtnClicked = onInitBizProfileDefaultBtnClicked,
+            onInitBizProfileManualBtnClicked = onInitBizProfileManualBtnClicked,
+            onLegalNameValueChanged = onLegalNameValueChanged,
+            onCommonNameValueChanged = onCommonNameValueChanged,
+            onFormSubmitBtnClicked = onFormSubmitBtnClicked,
+            onFormCancelBtnClicked = onFormCancelBtnClicked
+        )
+    }
 }
 
 @Composable
@@ -237,21 +260,21 @@ private fun LanguageSection(
                 }
             }
             ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-                languages.forEach { language ->
+                languages.forEach {
                     DropdownMenuItem(
                         modifier = Modifier.fillMaxWidth(),
                         leadingIcon = {
                             Image(
                                 modifier = Modifier.size(24.dp),
-                                imageVector = ImageVector.vectorResource(id = language.iconRes),
+                                imageVector = ImageVector.vectorResource(id = it.iconRes),
                                 contentDescription = null
                             )
                         },
                         text =
-                        { Text(modifier = Modifier.fillMaxWidth(), text = stringResource(id = language.title)) },
+                        { Text(modifier = Modifier.fillMaxWidth(), text = stringResource(id = it.title)) },
                         onClick = {
                             expanded = false
-                            onSelectLanguage.invoke(language)
+                            onSelectLanguage.invoke(it)
                         },
                         contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
                     )
