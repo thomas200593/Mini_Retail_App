@@ -25,7 +25,7 @@ fun NavGraphBuilder.navGraphBizProfile(){
         composable(
             route = BizProfileAddressesAddUpdate.route + "?genId={genId}",
             arguments = listOf(
-                navArgument(name = "genId") { type = StringType; defaultValue = null }
+                navArgument(name = "genId") { type = StringType; defaultValue = null; nullable = true }
             )
         ) {
             ScrBizAddressAddUpdate(genId = it.arguments?.getString("genId"))
