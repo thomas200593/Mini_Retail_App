@@ -10,7 +10,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavOptions.Builder
-import com.thomas200593.mini_retail_app.R.string.str_error
+import com.thomas200593.mini_retail_app.R.string
 import com.thomas200593.mini_retail_app.app.navigation.NavGraph.G_INITIAL
 import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
 import com.thomas200593.mini_retail_app.app.ui.StateApp
@@ -46,25 +46,33 @@ fun ScrInitial(
     when(uiState.initial){
         Loading -> LoadingScreen()
         is Error -> ErrorScreen(
-            title = stringResource(id = str_error),
+            title = stringResource(id = string.str_error),
             errorMessage = "${(uiState.initial as Error).t.message} : ${(uiState.initial as Error).t.localizedMessage}",
             showIcon = true
         )
-        is Success -> ScreenContent(
-            initial = (uiState.initial as Success).initial,
-            onNavToOnboarding = { stateApp.navController.navToOnboarding() },
-            onNavToInitialization = { stateApp.navController.navToInitialization() },
-            onNavToAuth = { stateApp.navController.navToAuth() },
-            onNavToDashboard = {
-                val navOpt = Builder().setPopUpTo(route = G_INITIAL, inclusive = true, saveState = true)
-                    .setLaunchSingleTop(true).setRestoreState(true).build()
-                when(it.authSessionToken?.authProvider){
-                    GOOGLE -> Toast.makeText(context, "Welcome! ${(it.oAuth2UserMetadata as Google).name}", LENGTH_SHORT).show()
-                    else -> Unit
+        is Success -> {
+            val welcomeMessage = stringResource(string.str_welcome)
+            ScreenContent(
+                initial = (uiState.initial as Success).initial,
+                onNavToOnboarding = { stateApp.navController.navToOnboarding() },
+                onNavToInitialization = { stateApp.navController.navToInitialization() },
+                onNavToAuth = { stateApp.navController.navToAuth() },
+                onNavToDashboard = {
+                    val navOpt = Builder()
+                        .setPopUpTo(route = G_INITIAL, inclusive = true, saveState = true)
+                        .setLaunchSingleTop(true).setRestoreState(true).build()
+                    when(it.authSessionToken?.authProvider){
+                        GOOGLE -> Toast.makeText(
+                            context,
+                            "$welcomeMessage! ${(it.oAuth2UserMetadata as Google).name}.",
+                            LENGTH_SHORT
+                        ).show()
+                        else -> Unit
+                    }
+                    stateApp.navController.navToDashboard(navOpt)
                 }
-                stateApp.navController.navToDashboard(navOpt)
-            }
-        )
+            )
+        }
     }
 }
 

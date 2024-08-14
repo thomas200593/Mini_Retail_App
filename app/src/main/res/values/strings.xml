@@ -127,4 +127,5 @@
     <string name="str_contact">Contact</string>
     <string name="str_biz_links">Business Links</string>
     <string name="str_biz_links_not_set">You haven\'t set a business link yet. Want to set it now?</string>
+    <string name="str_welcome">Welcome</string>
 </resources>
