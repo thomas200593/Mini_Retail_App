@@ -14,32 +14,27 @@ import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.TopLevelDesti
 
 enum class DestTopLevel(
     val route: String,
-    @DrawableRes val selectedIcon: Int,
-    @DrawableRes val unselectedIcon: Int,
-    @StringRes val iconTextId: Int
+    @DrawableRes val iconRes: Int,
+    @StringRes val title: Int
 ){
     DASHBOARD(
         route = Dashboard.route,
-        selectedIcon = dashboard,
-        unselectedIcon = dashboard,
-        iconTextId = string.str_dashboard,
+        iconRes = dashboard,
+        title = string.str_dashboard,
     ),
     BUSINESS(
         route = Business.route,
-        selectedIcon = business,
-        unselectedIcon = business,
-        iconTextId = string.str_business,
+        iconRes = business,
+        title = string.str_business,
     ),
     REPORTING(
         route = Reporting.route,
-        selectedIcon = reporting,
-        unselectedIcon = reporting,
-        iconTextId = string.str_reporting,
+        iconRes = reporting,
+        title = string.str_reporting,
     ),
     USER_PROFILE(
         route = UserProfile.route,
-        selectedIcon = user_profile,
-        unselectedIcon = user_profile,
-        iconTextId = string.str_user_profile,
+        iconRes = user_profile,
+        title = string.str_user_profile,
     )
 }

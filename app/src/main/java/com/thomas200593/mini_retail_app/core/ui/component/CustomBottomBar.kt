@@ -38,17 +38,17 @@ object CustomBottomBar {
                     onClick = { onNavigateToDestination(destination) },
                     icon = {
                         Icon(
-                            imageVector = ImageVector.vectorResource(destination.unselectedIcon),
+                            imageVector = ImageVector.vectorResource(destination.iconRes),
                             contentDescription = null
                         )
                     },
                     selectedIcon = {
                         Icon(
-                            imageVector = ImageVector.vectorResource(destination.selectedIcon),
+                            imageVector = ImageVector.vectorResource(destination.iconRes),
                             contentDescription = null
                         )
                     },
-                    label = { Text(text = stringResource(id = destination.iconTextId)) },
+                    label = { Text(text = stringResource(id = destination.title)) },
                     modifier = Modifier.size(28.dp)
                 )
             }
