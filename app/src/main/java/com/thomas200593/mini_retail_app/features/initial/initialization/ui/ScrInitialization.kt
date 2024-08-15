@@ -36,6 +36,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign.Companion.Center
 import androidx.compose.ui.text.style.TextAlign.Companion.Justify
 import androidx.compose.ui.text.style.TextOverflow.Companion.Ellipsis
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -51,6 +52,7 @@ import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.T
 import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.App.app
 import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.Emotion.happy
 import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.Emotion.neutral
+import com.thomas200593.mini_retail_app.core.ui.common.CustomThemes
 import com.thomas200593.mini_retail_app.core.ui.component.CustomButton.Common.AppIconButton
 import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AlertDialogContext.ERROR
 import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AlertDialogContext.INFORMATION
@@ -95,10 +97,7 @@ fun ScrInitialization(
         onLegalNameValueChanged = { vm.onEvent(LegalNameEvents.ValueChanged(it)) },
         onCommonNameValueChanged = { vm.onEvent(CommonNameEvents.ValueChanged(it)) },
         onFormSubmitBtnClicked = { vm.onEvent(BtnSubmitEvents.OnClick(it)) },
-        onFormCancelBtnClicked = { vm.onEvent(BtnCancelEvents.OnClick) }
-    )
-    HandleDialogs(
-        uiState = uiState,
+        onFormCancelBtnClicked = { vm.onEvent(BtnCancelEvents.OnClick) },
         onInitBizProfileSuccess = { stateApp.navController.navToInitial() },
         onInitBizProfileError = { stateApp.navController.navToInitial() }
     )
@@ -113,8 +112,15 @@ private fun ScrInitialization(
     onLegalNameValueChanged: (String) -> Unit,
     onCommonNameValueChanged: (String) -> Unit,
     onFormSubmitBtnClicked: (BizProfileShort) -> Unit,
-    onFormCancelBtnClicked: () -> Unit
+    onFormCancelBtnClicked: () -> Unit,
+    onInitBizProfileSuccess: () -> Unit,
+    onInitBizProfileError: () -> Unit
 ) {
+    HandleDialogs(
+        uiState = uiState,
+        onInitBizProfileSuccess = onInitBizProfileSuccess,
+        onInitBizProfileError = onInitBizProfileError
+    )
     when(uiState.initialization){
         Loading -> LoadingScreen()
         is Error -> ErrorScreen(
@@ -194,7 +200,10 @@ private fun ScreenContent(
     onFormCancelBtnClicked: () -> Unit
 ) {
     Column(
-        modifier = Modifier.fillMaxSize().padding(8.dp).verticalScroll(rememberScrollState()),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(8.dp)
+            .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(30.dp, Alignment.Top)
     ) {
@@ -239,7 +248,9 @@ private fun LanguageSection(
             expanded = expanded,
             onExpandedChange = { expanded = !expanded }
         ) {
-            TextButton(modifier = Modifier.fillMaxWidth().menuAnchor(), onClick = { expanded = true }) {
+            TextButton(modifier = Modifier
+                .fillMaxWidth()
+                .menuAnchor(), onClick = { expanded = true }) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -319,7 +330,9 @@ private fun WelcomeMessage(
         )
     }
     Surface(
-        modifier = Modifier.fillMaxWidth().padding(16.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
         shape = shapes.medium,
         color = colorScheme.primaryContainer,
         contentColor = colorScheme.onPrimaryContainer,
@@ -330,7 +343,9 @@ private fun WelcomeMessage(
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                modifier = Modifier.fillMaxWidth().padding(16.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
                 text = stringResource(string.str_init_welcome_message),
                 style = typography.labelLarge,
                 textAlign = Justify
@@ -380,7 +395,9 @@ fun InitManualForm(
         color = colorScheme.surfaceContainerHighest
     ){
         Column(
-            modifier = Modifier.fillMaxWidth().padding(12.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically)
         ) {
@@ -462,5 +479,38 @@ fun InitManualForm(
                 )
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun Preview() = CustomThemes.ApplicationTheme {
+    Column(modifier = Modifier.fillMaxSize()) {
+        ScrInitialization(
+            onSelectLanguage = {},
+            onInitBizProfileDefaultBtnClicked = {},
+            onInitBizProfileManualBtnClicked = {},
+            onLegalNameValueChanged = {},
+            onCommonNameValueChanged = {},
+            onFormSubmitBtnClicked = {},
+            onFormCancelBtnClicked = {},
+            onInitBizProfileSuccess = {},
+            onInitBizProfileError = {},
+            uiState = UiState(
+                initialization = Success(
+                    data = Initialization(
+                        configCurrent = ConfigCurrent(),
+                        languages = setOf()
+                    )
+                ),
+                welcomePanelState = VMInitialization.WelcomePanelState(
+                    visible = false
+                ),
+                inputFormState = InputFormState(
+                    visible = true
+                ),
+                dialogState = VMInitialization.DialogState()
+            ),
+        )
     }
 }

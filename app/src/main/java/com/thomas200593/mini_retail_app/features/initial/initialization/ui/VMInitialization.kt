@@ -72,7 +72,6 @@ class VMInitialization @Inject constructor(
     )
     data class DialogState(
         val dlgLoadingEnabled: MutableState<Boolean> = mutableStateOf(false),
-        val dlgEmptyEnabled: MutableState<Boolean> = mutableStateOf(false),
         val dlgSuccessEnabled: MutableState<Boolean> = mutableStateOf(false),
         val dlgErrorEnabled: MutableState<Boolean> = mutableStateOf(false)
     )
@@ -171,7 +170,6 @@ class VMInitialization @Inject constructor(
         viewModelScope.launch(ioDispatcher) {
             updateDialogState(
                 dlgLoadingEnabled = true,
-                dlgEmptyEnabled = false,
                 dlgSuccessEnabled = false,
                 dlgErrorEnabled = false
             )
@@ -181,7 +179,6 @@ class VMInitialization @Inject constructor(
                 if (result != null) {
                     updateDialogState(
                         dlgLoadingEnabled = false,
-                        dlgEmptyEnabled = false,
                         dlgSuccessEnabled = true,
                         dlgErrorEnabled = false
                     )
@@ -189,7 +186,6 @@ class VMInitialization @Inject constructor(
                 } else {
                     updateDialogState(
                         dlgLoadingEnabled = false,
-                        dlgEmptyEnabled = true,
                         dlgSuccessEnabled = false,
                         dlgErrorEnabled = false
                     )
@@ -198,7 +194,6 @@ class VMInitialization @Inject constructor(
             } catch (e: Throwable) {
                 updateDialogState(
                     dlgLoadingEnabled = false,
-                    dlgEmptyEnabled = false,
                     dlgSuccessEnabled = false,
                     dlgErrorEnabled = true
                 )
@@ -214,14 +209,12 @@ class VMInitialization @Inject constructor(
     }
     private fun updateDialogState(
         dlgLoadingEnabled: Boolean = false,
-        dlgEmptyEnabled: Boolean = false,
         dlgSuccessEnabled: Boolean = false,
         dlgErrorEnabled: Boolean = false
     ) {
         _uiState.update { it.copy(
             dialogState = it.dialogState.copy(
                 dlgLoadingEnabled = mutableStateOf(dlgLoadingEnabled),
-                dlgEmptyEnabled = mutableStateOf(dlgEmptyEnabled),
                 dlgSuccessEnabled = mutableStateOf(dlgSuccessEnabled),
                 dlgErrorEnabled = mutableStateOf(dlgErrorEnabled)
             )
