@@ -1,66 +1,185 @@
 package com.thomas200593.mini_retail_app.app.navigation
 
-sealed class ScrGraphs(
-    val route: String
+import kotlinx.serialization.Serializable
+
+@Serializable sealed class ScrGraphs(
+    val route: String,
+    val usesAuth: Boolean,
+    val usesTopBar: Boolean
 ) {
+    /**
+     * Companion Object
+     */
+    companion object {
+        fun usesTopAppBar() = ScrGraphs::class.sealedSubclasses
+            .flatMap {
+                it.objectInstance?.let { instance ->
+                    if (instance.usesTopBar) instance.route else null
+                }?.let { route -> setOf(route) } ?: emptySet()
+            }.toSet()
+    }
 
     /**
      * Initial
      */
-    data object Initial: ScrGraphs(route = Routes.R_INITIAL)
-    data object Initialization: ScrGraphs(route = Routes.R_INITIALIZATION)
+    @Serializable data object Initial: ScrGraphs(
+        route = "r_initial",
+        usesAuth = false,
+        usesTopBar = false
+    )
+    @Serializable data object Initialization: ScrGraphs(
+        route = "r_initialization",
+        usesAuth = false,
+        usesTopBar = false
+    )
 
     /**
      * Onboarding
      */
-    data object Onboarding: ScrGraphs(route = Routes.R_ONBOARDING)
+    @Serializable data object Onboarding: ScrGraphs(
+        route = "r_onboarding",
+        usesAuth = false,
+        usesTopBar = false
+    )
 
     /**
      * Auth
      */
-    data object Auth: ScrGraphs(route = Routes.R_AUTH)
+    @Serializable data object Auth: ScrGraphs(
+        route = "r_auth",
+        usesAuth = false,
+        usesTopBar = false
+    )
 
     /**
      * App Config
      */
-    data object AppConfig: ScrGraphs(route = Routes.R_APP_CONFIG)
+    @Serializable data object AppConfig: ScrGraphs(
+        route = "r_app_config",
+        usesAuth = false,
+        usesTopBar = true
+    )
     //App Config General
-    data object ConfigGeneral : ScrGraphs(route = Routes.R_CONFIG_GENERAL)
-    data object Country : ScrGraphs(route = Routes.R_COUNTRY)
-    data object Currency: ScrGraphs(route = Routes.R_CURRENCY)
-    data object DynamicColor: ScrGraphs (route = Routes.R_DYNAMIC_COLOR)
-    data object FontSize: ScrGraphs(route = Routes.R_FONT_SIZE)
-    data object Language : ScrGraphs(route = Routes.R_LANGUAGE)
-    data object Theme: ScrGraphs (route = Routes.R_THEME)
-    data object Timezone: ScrGraphs(route = Routes.R_TIMEZONE)
+    @Serializable data object ConfigGeneral : ScrGraphs(
+        route = "r_conf_gen",
+        usesAuth = false,
+        usesTopBar = true
+    )
+    @Serializable data object Country : ScrGraphs(
+        route = "r_conf_gen_country",
+        usesAuth = false,
+        usesTopBar = true
+    )
+    @Serializable data object Currency: ScrGraphs(
+        route = "r_conf_gen_currency",
+        usesAuth = false,
+        usesTopBar = true
+    )
+    @Serializable data object DynamicColor: ScrGraphs (
+        route = "r_conf_gen_dynamic_color",
+        usesAuth = false,
+        usesTopBar = true
+    )
+    @Serializable data object FontSize: ScrGraphs(
+        route = "r_conf_gen_font_size",
+        usesAuth = false,
+        usesTopBar = true
+    )
+    @Serializable data object Language : ScrGraphs(
+        route = "r_conf_gen_language",
+        usesAuth = false,
+        usesTopBar = true
+    )
+    @Serializable data object Theme: ScrGraphs (
+        route = "r_conf_gen_theme",
+        usesAuth = false,
+        usesTopBar = true
+    )
+    @Serializable data object Timezone: ScrGraphs(
+        route = "r_conf_gen_timezone",
+        usesAuth = false,
+        usesTopBar = true
+    )
     //App Config Data
-    data object ConfigData: ScrGraphs(route = Routes.R_CONFIG_DATA)
-    data object DataBackup: ScrGraphs(route = Routes.R_DATA_BACKUP)
+    @Serializable data object ConfigData: ScrGraphs(
+        route = "r_conf_data",
+        usesAuth = true,
+        usesTopBar = true
+    )
+    @Serializable data object DataBackup: ScrGraphs(
+        route = "r_conf_data_backup",
+        usesAuth = true,
+        usesTopBar = true
+    )
 
     /**
      * Dashboard
      */
-    data object Dashboard: ScrGraphs(route = Routes.R_DASHBOARD)
+    @Serializable data object Dashboard: ScrGraphs(
+        route = "r_dashboard",
+        usesAuth = true,
+        usesTopBar = true
+    )
 
     /**
      * Business
      */
-    data object Business: ScrGraphs(route = Routes.R_BUSINESS)
-    data object MasterData: ScrGraphs(route = Routes.R_MASTER_DATA)
-    data object Supplier: ScrGraphs(route = Routes.R_SUPPLIER)
-    data object Customer: ScrGraphs(route = Routes.R_CUSTOMER)
-    data object BizProfile: ScrGraphs(route = Routes.R_BIZ_PROFILE)
-    data object BizProfileAddressesAddUpdate: ScrGraphs(route = Routes.R_BIZ_PROFILE_ADDRESSES_ADD_UPDATE)
-    data object BizProfileContactsAddUpdate: ScrGraphs(route = Routes.R_BIZ_PROFILE_CONTACTS_ADD_UPDATE)
-    data object BizProfileLinksAddUpdate: ScrGraphs(route = Routes.R_BIZ_PROFILE_LINKS_ADD_UPDATE)
+    @Serializable data object Business: ScrGraphs(
+        route = "r_biz",
+        usesAuth = true,
+        usesTopBar = true
+    )
+    @Serializable data object MasterData: ScrGraphs(
+        route = "r_biz_m_data",
+        usesAuth = true,
+        usesTopBar = true
+    )
+    @Serializable data object Supplier: ScrGraphs(
+        route = "r_biz_m_data_supplier",
+        usesAuth = true,
+        usesTopBar = true
+    )
+    @Serializable data object Customer: ScrGraphs(
+        route = "r_biz_m_data_customer",
+        usesAuth = true,
+        usesTopBar = true
+    )
+    @Serializable data object BizProfile: ScrGraphs(
+        route = "r_biz_profile",
+        usesAuth = true,
+        usesTopBar = true
+    )
+    @Serializable data object BizProfileAddressesAddUpdate: ScrGraphs(
+        route = "r_biz_profile_addresses_add_update",
+        usesAuth = true,
+        usesTopBar = true
+    )
+    @Serializable data object BizProfileContactsAddUpdate: ScrGraphs(
+        route = "r_biz_profile_contacts_add_update",
+        usesAuth = true,
+        usesTopBar = true
+    )
+    @Serializable data object BizProfileLinksAddUpdate: ScrGraphs(
+        route = "r_biz_profile_links_add_update",
+        usesAuth = true,
+        usesTopBar = true
+    )
 
     /**
      * Reporting
      */
-    data object Reporting: ScrGraphs(route = Routes.R_REPORTING)
+    @Serializable data object Reporting: ScrGraphs(
+        route = "r_reporting",
+        usesAuth = true,
+        usesTopBar = true
+    )
 
     /**
      * User Profile
      */
-    data object UserProfile: ScrGraphs(route = Routes.R_USER_PROFILE)
+    @Serializable data object UserProfile: ScrGraphs(
+        route = "r_user_profile",
+        usesAuth = true,
+        usesTopBar = false
+    )
 }
