@@ -1,5 +1,6 @@
 package com.thomas200593.mini_retail_app.app.navigation
 
+import com.livefront.sealedenum.GenSealedEnum
 import kotlinx.serialization.Serializable
 
 @Serializable sealed class ScrGraphs(
@@ -10,13 +11,10 @@ import kotlinx.serialization.Serializable
     /**
      * Companion Object
      */
+    @GenSealedEnum
     companion object {
-        fun usesTopAppBar() = ScrGraphs::class.sealedSubclasses
-            .flatMap {
-                it.objectInstance?.let { instance ->
-                    if (instance.usesTopBar) instance.route else null
-                }?.let { route -> setOf(route) } ?: emptySet()
-            }.toSet()
+        val screenWithTopAppBar = ScrGraphs.sealedEnum.values.filter { it.usesTopBar }
+            .map { it.route }.toSet()
     }
 
     /**
@@ -139,11 +137,6 @@ import kotlinx.serialization.Serializable
         usesAuth = true,
         usesTopBar = true
     )
-    @Serializable data object Customer: ScrGraphs(
-        route = "r_biz_m_data_customer",
-        usesAuth = true,
-        usesTopBar = true
-    )
     @Serializable data object BizProfile: ScrGraphs(
         route = "r_biz_profile",
         usesAuth = true,
@@ -151,16 +144,6 @@ import kotlinx.serialization.Serializable
     )
     @Serializable data object BizProfileAddressesAddUpdate: ScrGraphs(
         route = "r_biz_profile_addresses_add_update",
-        usesAuth = true,
-        usesTopBar = true
-    )
-    @Serializable data object BizProfileContactsAddUpdate: ScrGraphs(
-        route = "r_biz_profile_contacts_add_update",
-        usesAuth = true,
-        usesTopBar = true
-    )
-    @Serializable data object BizProfileLinksAddUpdate: ScrGraphs(
-        route = "r_biz_profile_links_add_update",
         usesAuth = true,
         usesTopBar = true
     )

@@ -16,7 +16,7 @@ import com.thomas200593.mini_retail_app.app.navigation.DestTopLevel.DASHBOARD
 import com.thomas200593.mini_retail_app.app.navigation.DestTopLevel.REPORTING
 import com.thomas200593.mini_retail_app.app.navigation.DestTopLevel.USER_PROFILE
 import com.thomas200593.mini_retail_app.app.navigation.DestTopLevel.entries
-import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs.Companion.usesTopAppBar
+import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs.Companion.screenWithTopAppBar
 import com.thomas200593.mini_retail_app.core.data.local.session.Session
 import com.thomas200593.mini_retail_app.core.data.local.session.SessionState.Loading
 import com.thomas200593.mini_retail_app.core.design_system.network_monitor.NetworkMonitor
@@ -74,7 +74,7 @@ class StateApp(
         @Composable get() = destCurrent?.route in destTopLevels.map { it.route }
 
     val shouldShowTopBar: Boolean
-        @Composable get() = destCurrent?.route in usesTopAppBar()
+        @Composable get() = destCurrent?.route in screenWithTopAppBar
 
     fun navToDestTopLevel(destTopLevel: DestTopLevel){
         val destTopLevelNavOptions = navOptions {

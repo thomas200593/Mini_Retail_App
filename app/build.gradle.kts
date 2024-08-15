@@ -19,12 +19,12 @@ plugins {
 
 android {
     namespace = "com.thomas200593.mini_retail_app"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.thomas200593.mini_retail_app"
         minSdk = 28
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
         multiDexEnabled = true
@@ -112,11 +112,11 @@ android {
         buildConfig = true
     }
     composeOptions{
-        kotlinCompilerExtensionVersion="1.5.0"
+        kotlinCompilerExtensionVersion="1.5.3"
     }
-    hilt{
+    /*hilt{
         enableAggregatingTask = true
-    }
+    }*/
 }
 
 dependencies {
@@ -176,6 +176,7 @@ dependencies {
     implementation(libs.okhttp)
     implementation(libs.okhttp.urlconnection)
     implementation(libs.play.services.oss.licenses)
+    implementation(libs.sealed.enum.runtime)
     implementation(libs.timber)
     implementation(libs.tracing.trace)
     implementation(libs.ulid.kotlin)
@@ -198,4 +199,5 @@ dependencies {
     ksp(libs.androidx.hilt.compiler)
     ksp(libs.androidx.room.compiler)
     ksp(libs.hilt.android.compiler)
+    ksp(libs.sealed.enum.ksp)
 }
