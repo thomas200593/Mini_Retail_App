@@ -11,10 +11,10 @@ import kotlinx.serialization.Serializable
     /**
      * Companion Object
      */
-    @GenSealedEnum
+    @GenSealedEnum(generateEnum = true)
     companion object {
-        val screenWithTopAppBar = ScrGraphs.sealedEnum.values.filter { it.usesTopBar }
-            .map { it.route }.toSet()
+        fun screenWithTopAppBar() = ScrGraphs.sealedEnum.values.filter { it.usesTopBar }
+        .map { it.route }.toSet()
     }
 
     /**

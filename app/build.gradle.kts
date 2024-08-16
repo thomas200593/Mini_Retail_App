@@ -110,6 +110,7 @@ android {
     buildFeatures{
         compose = true
         buildConfig = true
+        shaders = false
     }
     composeOptions{
         kotlinCompilerExtensionVersion="1.5.3"
