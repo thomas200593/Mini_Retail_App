@@ -37,18 +37,30 @@ object CustomBottomBar {
                     selected = selected,
                     onClick = { onNavigateToDestination(destination) },
                     icon = {
-                        Icon(
-                            imageVector = ImageVector.vectorResource(destination.iconRes),
-                            contentDescription = null
-                        )
+                        destination.scrGraphs.iconRes?.let {
+                            ImageVector.vectorResource(
+                                it
+                            )
+                        }?.let {
+                            Icon(
+                                imageVector = it,
+                                contentDescription = null
+                            )
+                        }
                     },
                     selectedIcon = {
-                        Icon(
-                            imageVector = ImageVector.vectorResource(destination.iconRes),
-                            contentDescription = null
-                        )
+                        destination.scrGraphs.iconRes?.let {
+                            ImageVector.vectorResource(
+                                it
+                            )
+                        }?.let {
+                            Icon(
+                                imageVector = it,
+                                contentDescription = null
+                            )
+                        }
                     },
-                    label = { Text(text = stringResource(id = destination.title)) },
+                    label = { destination.scrGraphs.title?.let { Text(text = stringResource(id = it)) } },
                     modifier = Modifier.size(28.dp)
                 )
             }
@@ -107,6 +119,6 @@ object CustomBottomBar {
 
     private fun NavDestination?.isDestinationTopLevelInHierarchy(destination: DestTopLevel) =
         this?.hierarchy?.any{
-            it.route?.contains(other = destination.route, ignoreCase = true) ?:false
+            it.route?.contains(other = destination.scrGraphs.route, ignoreCase = true) ?:false
         } ?:false
 }

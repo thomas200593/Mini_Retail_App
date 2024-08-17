@@ -71,7 +71,7 @@ class StateApp(
     val destTopLevels: List<DestTopLevel> = entries
 
     val shouldShowBottomBar: Boolean
-        @Composable get() = destCurrent?.route in destTopLevels.map { it.route }
+        @Composable get() = destCurrent?.route in destTopLevels.map { it.scrGraphs.route }
 
     val shouldShowTopBar: Boolean
         @Composable get() = destCurrent?.route in screenWithTopAppBar()
