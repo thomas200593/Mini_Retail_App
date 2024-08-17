@@ -62,7 +62,7 @@ class VMOnboarding @Inject constructor(
         _uiState.update { it.copy(onboardingPages = Success(repoOnboarding.getOnboardingPages())) }
     }
     private fun onBtnNextOnClick() = _uiState.update {
-        it.copy(screenState = it.screenState.copy(currentPage = it.screenState.currentPage + 1))
+        it.copy(screenState = it.screenState.copy(currentPage = if(it.screenState.currentPage < 3){it.screenState.currentPage + 1}else{it.screenState.currentPage}))
     }
     private fun onTabPageSelectEvent(index: Int) = _uiState.update {
         it.copy(screenState = it.screenState.copy(currentPage = index))

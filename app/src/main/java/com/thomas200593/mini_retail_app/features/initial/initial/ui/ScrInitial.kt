@@ -87,7 +87,6 @@ private fun ScrInitial(
     )
 }
 
-
 @Composable
 private fun ScreenContent(
     initial: Initial,

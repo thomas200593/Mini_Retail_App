@@ -1,7 +1,9 @@
 package com.thomas200593.mini_retail_app.app.navigation
 
-import com.livefront.sealedenum.GenSealedEnum
 import kotlinx.serialization.Serializable
+import kotlin.reflect.KType
+import kotlin.reflect.full.createType
+import kotlin.reflect.full.primaryConstructor
 
 @Serializable sealed class ScrGraphs(
     val route: String,
@@ -11,10 +13,14 @@ import kotlinx.serialization.Serializable
     /**
      * Companion Object
      */
-    @GenSealedEnum(generateEnum = true)
     companion object {
-        fun screenWithTopAppBar() = ScrGraphs.sealedEnum.values.filter { it.usesTopBar }
-        .map { it.route }.toSet()
+        fun screenWithTopAppBar() = ScrGraphs::class.sealedSubclasses
+            .mapNotNull { subclass ->
+                val instance = subclass.objectInstance ?: subclass.primaryConstructor?.callBy(
+                    subclass.primaryConstructor!!.parameters.associateWith { it.type.defaultValue() }
+                )
+                instance?.takeIf { it.usesTopBar }?.route
+            }.toSet()
     }
 
     /**
@@ -165,4 +171,11 @@ import kotlinx.serialization.Serializable
         usesAuth = true,
         usesTopBar = false
     )
+}
+
+fun KType.defaultValue(): Any? = when (this) {
+    String::class.createType() -> String()
+    Int::class.createType() -> 0
+    Boolean::class.createType() -> false
+    else -> null
 }
