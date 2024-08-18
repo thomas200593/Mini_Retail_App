@@ -36,7 +36,6 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign.Companion.Center
 import androidx.compose.ui.text.style.TextAlign.Companion.Justify
 import androidx.compose.ui.text.style.TextOverflow.Companion.Ellipsis
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -52,7 +51,6 @@ import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.T
 import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.App.app
 import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.Emotion.happy
 import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.Emotion.neutral
-import com.thomas200593.mini_retail_app.core.ui.common.CustomThemes
 import com.thomas200593.mini_retail_app.core.ui.component.CustomButton.Common.AppIconButton
 import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AlertDialogContext.ERROR
 import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AlertDialogContext.INFORMATION
@@ -479,38 +477,5 @@ fun InitManualForm(
                 )
             }
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun Preview() = CustomThemes.ApplicationTheme {
-    Column(modifier = Modifier.fillMaxSize()) {
-        ScrInitialization(
-            onSelectLanguage = {},
-            onInitBizProfileDefaultBtnClicked = {},
-            onInitBizProfileManualBtnClicked = {},
-            onLegalNameValueChanged = {},
-            onCommonNameValueChanged = {},
-            onFormSubmitBtnClicked = {},
-            onFormCancelBtnClicked = {},
-            onInitBizProfileSuccess = {},
-            onInitBizProfileError = {},
-            uiState = UiState(
-                initialization = Success(
-                    data = Initialization(
-                        configCurrent = ConfigCurrent(),
-                        languages = setOf()
-                    )
-                ),
-                welcomePanelState = VMInitialization.WelcomePanelState(
-                    visible = false
-                ),
-                inputFormState = InputFormState(
-                    visible = true
-                ),
-                dialogState = VMInitialization.DialogState()
-            ),
-        )
     }
 }
