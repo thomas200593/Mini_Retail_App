@@ -7,9 +7,9 @@ import androidx.navigation.navOptions
 import androidx.navigation.navigation
 import com.thomas200593.mini_retail_app.app.navigation.NavGraph.G_APP_CONFIG
 import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs.AppConfig
+import com.thomas200593.mini_retail_app.features.app_conf.app_config.ui.ScrAppConfig
 import com.thomas200593.mini_retail_app.features.app_conf.conf_data.navigation.navGraphConfData
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen.navigation.navGraphConfGen
-import com.thomas200593.mini_retail_app.features.app_conf.app_config.ui.ScrAppConfig
 
 fun NavGraphBuilder.navGraphAppConfig(){
     navigation(
@@ -27,7 +27,7 @@ fun NavGraphBuilder.navGraphAppConfig(){
 fun NavController.navToAppConfig(destAppConfig: DestAppConfig?){
     val navOptions = navOptions { launchSingleTop = true; restoreState = true }
     this.navigate(
-        route = destAppConfig?.route?: G_APP_CONFIG,
+        route = destAppConfig?.route ?: G_APP_CONFIG,
         navOptions = navOptions
     )
 }
