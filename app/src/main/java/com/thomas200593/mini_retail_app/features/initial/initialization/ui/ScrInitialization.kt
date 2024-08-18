@@ -98,7 +98,10 @@ fun ScrInitialization(
         onLegalNameValueChanged = { vm.onEvent(LegalNameEvents.ValueChanged(it)) },
         onCommonNameValueChanged = { vm.onEvent(CommonNameEvents.ValueChanged(it)) },
         onFormSubmitBtnClicked = { vm.onEvent(BtnSubmitEvents.OnClick(it)) },
-        onFormCancelBtnClicked = { vm.onEvent(BtnCancelEvents.OnClick) },
+        onFormCancelBtnClicked = { vm.onEvent(BtnCancelEvents.OnClick) }
+    )
+    HandleDialogs(
+        uiState = uiState,
         onInitBizProfileSuccess = { coroutineScope.launch { stateApp.navController.navToInitial() } },
         onInitBizProfileError = { coroutineScope.launch { stateApp.navController.navToInitial() } }
     )
@@ -113,15 +116,8 @@ private fun ScrInitialization(
     onLegalNameValueChanged: (String) -> Unit,
     onCommonNameValueChanged: (String) -> Unit,
     onFormSubmitBtnClicked: (BizProfileShort) -> Unit,
-    onFormCancelBtnClicked: () -> Unit,
-    onInitBizProfileSuccess: () -> Unit,
-    onInitBizProfileError: () -> Unit
+    onFormCancelBtnClicked: () -> Unit
 ) {
-    HandleDialogs(
-        uiState = uiState,
-        onInitBizProfileSuccess = onInitBizProfileSuccess,
-        onInitBizProfileError = onInitBizProfileError
-    )
     when(uiState.initialization){
         Loading -> LoadingScreen()
         is Error -> ErrorScreen(
