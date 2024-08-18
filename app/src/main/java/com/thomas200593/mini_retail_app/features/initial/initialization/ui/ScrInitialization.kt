@@ -26,6 +26,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -78,6 +79,7 @@ import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMIni
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiStateInitialization.Error
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiStateInitialization.Loading
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiStateInitialization.Success
+import kotlinx.coroutines.launch
 import ulid.ULID.Companion.randomULID
 
 @Composable
@@ -85,6 +87,7 @@ fun ScrInitialization(
     vm: VMInitialization = hiltViewModel(),
     stateApp: StateApp = LocalStateApp.current
 ){
+    val coroutineScope = rememberCoroutineScope()
     val uiState by vm.uiState.collectAsStateWithLifecycle()
     LaunchedEffect(Unit) {vm.onEvent(OnOpenEvents)}
     ScrInitialization(
@@ -96,8 +99,8 @@ fun ScrInitialization(
         onCommonNameValueChanged = { vm.onEvent(CommonNameEvents.ValueChanged(it)) },
         onFormSubmitBtnClicked = { vm.onEvent(BtnSubmitEvents.OnClick(it)) },
         onFormCancelBtnClicked = { vm.onEvent(BtnCancelEvents.OnClick) },
-        onInitBizProfileSuccess = { stateApp.navController.navToInitial() },
-        onInitBizProfileError = { stateApp.navController.navToInitial() }
+        onInitBizProfileSuccess = { coroutineScope.launch { stateApp.navController.navToInitial() } },
+        onInitBizProfileError = { coroutineScope.launch { stateApp.navController.navToInitial() } }
     )
 }
 
