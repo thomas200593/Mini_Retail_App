@@ -66,6 +66,7 @@ object CustomButton {
         fun AppIconButton(
             modifier: Modifier = Modifier,
             onClick: () -> Unit,
+            enabled: Boolean = true,
             icon: ImageVector,
             text: String = String(),
             shape: Shape = shapes.medium,
@@ -77,6 +78,7 @@ object CustomButton {
         ){
             Button(
                 onClick = onClick,
+                enabled = enabled,
                 shape = shape,
                 modifier = modifier.fillMaxWidth().padding(padding),
                 colors = ButtonColors(
