@@ -37,6 +37,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign.Companion.Center
 import androidx.compose.ui.text.style.TextAlign.Companion.Justify
 import androidx.compose.ui.text.style.TextOverflow.Companion.Ellipsis
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -49,9 +50,11 @@ import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.A
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.Industries
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.LegalType
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.Taxation
+import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
 import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.App.app
 import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.Emotion.happy
 import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.Emotion.neutral
+import com.thomas200593.mini_retail_app.core.ui.common.CustomThemes
 import com.thomas200593.mini_retail_app.core.ui.component.CustomButton.Common.AppIconButton
 import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AlertDialogContext.ERROR
 import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AlertDialogContext.INFORMATION
@@ -476,5 +479,43 @@ fun InitManualForm(
                 )
             }
         }
+    }
+}
+
+@Preview(
+    showBackground = true
+)
+@Composable
+private fun Preview() = CustomThemes.ApplicationTheme {
+    Column(
+        modifier = Modifier
+            .fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        ScrInitialization(
+            onSelectLanguage = {},
+            onInitBizProfileDefaultBtnClicked = {},
+            onInitBizProfileManualBtnClicked = {},
+            onLegalNameValueChanged = {},
+            onCommonNameValueChanged = {},
+            onFormSubmitBtnClicked = {},
+            onFormCancelBtnClicked = {},
+            uiState = UiState(
+                initialization = Success(
+                    data = Initialization(
+                        configCurrent = ConfigCurrent(),
+                        languages = setOf(
+                            Language.EN,
+                            Language.ID
+                        )
+                    ),
+                ),
+                dialogState = VMInitialization.DialogState(),
+                welcomePanelState = VMInitialization.WelcomePanelState(true),
+                inputFormState = InputFormState(true),
+                initBizProfileResult = ResourceState.Idle
+            )
+        )
     }
 }
