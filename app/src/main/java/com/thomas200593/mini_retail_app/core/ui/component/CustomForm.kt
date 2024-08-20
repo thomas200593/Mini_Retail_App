@@ -89,25 +89,40 @@ object CustomForm {
                     ): ValidationResult {
                         required?.let {
                             if (it && input.isEmpty()) {
-                                return ValidationResult(isSuccess = false, errorMessage = StringResource(R.string.str_field_required))
+                                return ValidationResult(
+                                    isSuccess = false,
+                                    errorMessage = StringResource(R.string.str_field_required)
+                                )
                             }
                         }
                         minLength?.let {
                             if (input.length < it) {
-                                return ValidationResult(isSuccess = false, errorMessage = DynamicString("Min: $minLength char"))
+                                return ValidationResult(
+                                    isSuccess = false,
+                                    errorMessage = DynamicString("Min: $minLength char")
+                                )
                             }
                         }
                         maxLength?.let {
                             if (input.length > it) {
-                                return ValidationResult(isSuccess = false, errorMessage = DynamicString("Max: $maxLength char"))
+                                return ValidationResult(
+                                    isSuccess = false,
+                                    errorMessage = DynamicString("Max: $maxLength char")
+                                )
                             }
                         }
                         regex?.let {
                             if (!input.matches(it)) {
-                                return ValidationResult(isSuccess = false, errorMessage = DynamicString("Invalid format"))
+                                return ValidationResult(
+                                    isSuccess = false,
+                                    errorMessage = DynamicString("Invalid format")
+                                )
                             }
                         }
-                        return ValidationResult(isSuccess = true, errorMessage = null)
+                        return ValidationResult(
+                            isSuccess = true,
+                            errorMessage = null
+                        )
                     }
                 }
                 class NumberTextValidation: BaseValidation<String, ValidationResult> {
@@ -120,29 +135,47 @@ object CustomForm {
                     ): ValidationResult {
                         required?.let {
                             if (it && input.isEmpty()) {
-                                return ValidationResult(isSuccess = false, errorMessage = StringResource(R.string.str_field_required))
+                                return ValidationResult(
+                                    isSuccess = false,
+                                    errorMessage = StringResource(R.string.str_field_required)
+                                )
                             }
                         }
                         val numberRegex = "^[0-9]+(\\.[0-9]+)?\$".toRegex()
                         if (!input.matches(numberRegex)) {
-                            return ValidationResult(isSuccess = false, errorMessage = StringResource(R.string.str_field_invalid_number))
+                            return ValidationResult(
+                                isSuccess = false,
+                                errorMessage = StringResource(R.string.str_field_invalid_number)
+                            )
                         }
                         minLength?.let {
                             if (input.length < it) {
-                                return ValidationResult(isSuccess = false, errorMessage = DynamicString("Min: $minLength char"))
+                                return ValidationResult(
+                                    isSuccess = false,
+                                    errorMessage = DynamicString("Min: $minLength char")
+                                )
                             }
                         }
                         maxLength?.let {
                             if (input.length > it) {
-                                return ValidationResult(isSuccess = false, errorMessage = DynamicString("Max: $maxLength char"))
+                                return ValidationResult(
+                                    isSuccess = false,
+                                    errorMessage = DynamicString("Max: $maxLength char")
+                                )
                             }
                         }
                         regex?.let {
                             if (!input.matches(it)) {
-                                return ValidationResult(isSuccess = false, errorMessage = DynamicString("Invalid format"))
+                                return ValidationResult(
+                                    isSuccess = false,
+                                    errorMessage = DynamicString("Invalid format")
+                                )
                             }
                         }
-                        return ValidationResult(isSuccess = true, errorMessage = null)
+                        return ValidationResult(
+                            isSuccess = true,
+                            errorMessage = null
+                        )
                     }
                 }
             }
@@ -183,7 +216,8 @@ object CustomForm {
                     else -> { colorScheme.primary.copy(alpha = 0.3f) }
                 }
             )
-            val shouldShowLabel by remember(value) { derivedStateOf { value.isNotEmpty() && !label.isNullOrBlank() } }
+            val shouldShowLabel by
+            remember(value) { derivedStateOf { value.isNotEmpty() && !label.isNullOrBlank() } }
             val placeholderText = placeholder.orEmpty()
             val labelText = label.orEmpty()
 
@@ -213,7 +247,10 @@ object CustomForm {
                     singleLine = singleLine,
                     interactionSource = interactionSource,
                     visualTransformation = visualTransformation,
-                    keyboardOptions = KeyboardOptions(keyboardType = keyboardType, imeAction = imeAction),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = keyboardType,
+                        imeAction = imeAction
+                    ),
                     cursorBrush = SolidColor(colorScheme.primary),
                     decorationBox = { innerTextField ->
                         Row(verticalAlignment = Alignment.CenterVertically, modifier = modifier
