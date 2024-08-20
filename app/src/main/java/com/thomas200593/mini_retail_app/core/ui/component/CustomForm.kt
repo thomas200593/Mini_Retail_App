@@ -47,20 +47,20 @@ import com.thomas200593.mini_retail_app.core.ui.component.CustomForm.Component.U
 import com.thomas200593.mini_retail_app.core.ui.component.CustomForm.Component.UseCase.UiText.DynamicString
 import com.thomas200593.mini_retail_app.core.ui.component.CustomForm.Component.UseCase.UiText.StringResource
 
-object CustomForm{
-    object Component{
-        object UseCase{
-            sealed class UiText{
+object CustomForm {
+    object Component {
+        object UseCase {
+            sealed class UiText {
                 data class DynamicString(val value: String): UiText()
                 class StringResource(@StringRes val resId: Int, vararg val args: Any): UiText()
 
                 @Composable
-                fun asString(): String = when(this){
+                fun asString(): String = when(this) {
                     is DynamicString -> value
                     is StringResource -> stringResource(id = resId, *args)
                 }
 
-                fun asString(context: Context): String = when(this){
+                fun asString(context: Context): String = when(this) {
                     is DynamicString -> value
                     is StringResource -> context.getString(resId, *args)
                 }
@@ -69,7 +69,7 @@ object CustomForm{
                 val isSuccess: Boolean,
                 val errorMessage: UiText? = null
             )
-            interface BaseValidation<String, ValidationResult>{
+            interface BaseValidation<String, ValidationResult> {
                 fun execute(
                     input: String,
                     minLength: Int? = null,
@@ -78,8 +78,8 @@ object CustomForm{
                     regex: Regex? = null
                 ): ValidationResult
             }
-            object InputFieldValidation{
-                class RegularTextValidation: BaseValidation<String, ValidationResult>{
+            object InputFieldValidation {
+                class RegularTextValidation: BaseValidation<String, ValidationResult> {
                     override fun execute(
                         input: String,
                         minLength: Int?,
@@ -110,7 +110,7 @@ object CustomForm{
                         return ValidationResult(isSuccess = true, errorMessage = null)
                     }
                 }
-                class NumberTextValidation: BaseValidation<String, ValidationResult>{
+                class NumberTextValidation: BaseValidation<String, ValidationResult> {
                     override fun execute(
                         input: String,
                         minLength: Int?,
