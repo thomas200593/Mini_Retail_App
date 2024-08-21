@@ -50,6 +50,7 @@ class VMAuth @Inject constructor(
         sealed class BtnAuthWithGoogle: UiEvents() {
             data object OnClick: BtnAuthWithGoogle()
             data class OnValidationAuthSession(val authSessionToken: AuthSessionToken): BtnAuthWithGoogle()
+            data object OnDismissSuccessDialog: BtnAuthWithGoogle()
         }
     }
 
@@ -61,6 +62,7 @@ class VMAuth @Inject constructor(
             OnOpen -> initialization()
             BtnAuthWithGoogle.OnClick -> handleGoogleButtonClick()
             is BtnAuthWithGoogle.OnValidationAuthSession -> handleAuthVldResult(events.authSessionToken)
+            BtnAuthWithGoogle.OnDismissSuccessDialog -> _uiState.update { it.copy(dialogState = DialogState()) }
         }
     }
     private fun handleAuthVldResult(authSessionToken: AuthSessionToken) =

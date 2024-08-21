@@ -133,7 +133,9 @@ fun ScrAuth(
         useConfirmButton = true,
         confirmButton = {
             TextButton(onClick = {
-                coroutineScope.launch { initialize(appContext); stateApp.navController.navToInitial() }
+                vm.onEvent(BtnAuthWithGoogle.OnDismissSuccessDialog).also {
+                    coroutineScope.launch { initialize(appContext); stateApp.navController.navToInitial() }
+                }
             })
             { Text(stringResource(id = str_ok)) }
         }
