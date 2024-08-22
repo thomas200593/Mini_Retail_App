@@ -512,7 +512,7 @@ private fun Preview() = CustomThemes.ApplicationTheme {
                     ),
                 ),
                 dialogState = VMInitialization.DialogState(),
-                welcomePanelState = VMInitialization.WelcomePanelState(true),
+                welcomePanelState = VMInitialization.WelcomePanelState(false),
                 inputFormState = InputFormState(true),
                 initBizProfileResult = ResourceState.Idle
             )
