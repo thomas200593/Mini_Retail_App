@@ -1,35 +1,35 @@
 package com.thomas200593.mini_retail_app.features.onboarding.entity
 
 import androidx.annotation.DrawableRes
-import com.thomas200593.mini_retail_app.R.drawable.onboard_image_1
-import com.thomas200593.mini_retail_app.R.drawable.onboard_image_2
-import com.thomas200593.mini_retail_app.R.drawable.onboard_image_3
+import androidx.annotation.StringRes
+import com.thomas200593.mini_retail_app.R.drawable
+import com.thomas200593.mini_retail_app.R.string
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.withContext
 
 object Onboarding{
     data class OnboardingPage(
         @DrawableRes val imageRes: Int,
-        val title: String,
-        val description: String
+        @StringRes val title: Int,
+        @StringRes val description: Int
     )
 
     suspend fun getOnboardingPages() = withContext(IO){
         listOf(
             OnboardingPage(
-                imageRes = onboard_image_1,
-                title = "Welcome to Mini Retail Application",
-                description = "Welcome to Mini Retail Application, explore our feature within application."
+                imageRes = drawable.onboard_image_1,
+                title = string.onboarding_title_1,
+                description = string.onboarding_desc_1
             ),
             OnboardingPage(
-                imageRes = onboard_image_2,
-                title = "One-Solution for Your SME",
-                description = "From registering items, categories, employees, and shift management in one app."
+                imageRes = drawable.onboard_image_2,
+                title =  string.onboarding_title_2,
+                description = string.onboarding_desc_2
             ),
             OnboardingPage(
-                imageRes = onboard_image_3,
-                title = "Get Started",
-                description = "Begin explore our app."
+                imageRes = drawable.onboard_image_3,
+                title =  string.onboarding_title_3,
+                description = string.onboarding_desc_3
             )
         )
     }

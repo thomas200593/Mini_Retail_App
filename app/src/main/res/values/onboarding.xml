@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="onboarding_title_1">Welcome to Mini Retail Application</string>
+    <string name="onboarding_title_2">One-Solution for Your SME</string>
+    <string name="onboarding_title_3">Get Started</string>
+    <string name="onboarding_desc_1">Welcome to Mini Retail Application, explore our feature within application.</string>
+    <string name="onboarding_desc_2">From registering items, categories, employees, and shift management in one app.</string>
+    <string name="onboarding_desc_3">Begin explore our app.</string>
+</resources>

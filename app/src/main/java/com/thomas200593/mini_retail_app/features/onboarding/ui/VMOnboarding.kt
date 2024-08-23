@@ -9,7 +9,7 @@ import com.thomas200593.mini_retail_app.features.onboarding.repository.RepoOnboa
 import com.thomas200593.mini_retail_app.features.onboarding.ui.VMOnboarding.UiEvents.ButtonEvents
 import com.thomas200593.mini_retail_app.features.onboarding.ui.VMOnboarding.UiEvents.OnFinishedOnboardingEvent
 import com.thomas200593.mini_retail_app.features.onboarding.ui.VMOnboarding.UiEvents.OnOpenEvents
-import com.thomas200593.mini_retail_app.features.onboarding.ui.VMOnboarding.UiEvents.TabsEvents
+import com.thomas200593.mini_retail_app.features.onboarding.ui.VMOnboarding.UiEvents.TabRowEvents
 import com.thomas200593.mini_retail_app.features.onboarding.ui.VMOnboarding.UiStateOnboardingPages.Loading
 import com.thomas200593.mini_retail_app.features.onboarding.ui.VMOnboarding.UiStateOnboardingPages.Success
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -34,15 +34,16 @@ class VMOnboarding @Inject constructor(
         val screenState: ScreenState = ScreenState()
     )
     data class ScreenState(
-        val currentPage: Int = 0
+        val currentPage: Int = 0,
+        val maxPage: Int = 0
     )
     sealed class UiEvents{
         data object OnOpenEvents: UiEvents()
         sealed class ButtonEvents: UiEvents(){
             sealed class ButtonNextEvents: ButtonEvents(){ data object OnClick: ButtonNextEvents() }
         }
-        sealed class TabsEvents: UiEvents(){
-            sealed class TabPageSelection: TabsEvents(){ data class OnSelect(val index: Int): TabPageSelection() }
+        sealed class TabRowEvents: UiEvents(){
+            sealed class TabPageSelection: TabRowEvents(){ data class OnSelect(val index: Int): TabPageSelection() }
         }
         data object OnFinishedOnboardingEvent: UiEvents()
     }
@@ -51,31 +52,32 @@ class VMOnboarding @Inject constructor(
     val uiState = _uiState.asStateFlow()
 
     fun onEvent(events: UiEvents){
-        when(events){
+        when(events) {
             OnOpenEvents -> onOpenEvent()
-            ButtonEvents.ButtonNextEvents.OnClick -> onBtnNextOnClick()
-            is TabsEvents.TabPageSelection.OnSelect -> onTabPageSelectEvent(events.index)
+            ButtonEvents.ButtonNextEvents.OnClick -> btnNextOnClickEvent()
+            is TabRowEvents.TabPageSelection.OnSelect -> tabPageOnSelectEvent(events.index)
             OnFinishedOnboardingEvent -> onFinishedOnboardingEvent()
         }
     }
     private fun onOpenEvent() = viewModelScope.launch(ioDispatcher) {
-        _uiState.update { it.copy(onboardingPages = Success(repoOnboarding.getOnboardingPages())) }
+        repoOnboarding.getOnboardingPages().let { list ->
+            _uiState.update {
+                it.copy(
+                    onboardingPages = Success(list),
+                    screenState = it.screenState.copy(
+                        maxPage = list.size
+                    )
+                )
+            }
+        }
     }
-    private fun onBtnNextOnClick() = _uiState.update {
-        it.copy(
-            screenState = it.screenState.copy(
-                currentPage =
-                if(it.screenState.currentPage < 3)
-                {it.screenState.currentPage + 1}
-                else
-                {it.screenState.currentPage}
-            )
-        )
+    private fun btnNextOnClickEvent() = _uiState.update {
+        val nextPage = (it.screenState.currentPage + 1)
+            .coerceAtMost(it.screenState.maxPage - 1)
+        it.copy(screenState = it.screenState.copy(currentPage = nextPage))
     }
-    private fun onTabPageSelectEvent(index: Int) = _uiState.update {
-        it.copy(screenState = it.screenState.copy(currentPage = index))
-    }
-    private fun onFinishedOnboardingEvent() = viewModelScope.launch(ioDispatcher) {
-        repoOnboarding.hideOnboarding()
-    }
+    private fun tabPageOnSelectEvent(index: Int) =
+        _uiState.update { it.copy(screenState = it.screenState.copy(currentPage = index)) }
+    private fun onFinishedOnboardingEvent() =
+        viewModelScope.launch(ioDispatcher) { repoOnboarding.hideOnboarding() }
 }

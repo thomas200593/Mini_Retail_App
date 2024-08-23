@@ -1,19 +1,21 @@
 package com.thomas200593.mini_retail_app.features.onboarding.ui
 
+import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.MaterialTheme.shapes
 import androidx.compose.material3.MaterialTheme.typography
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
@@ -33,12 +35,17 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign.Companion.Center
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.thomas200593.mini_retail_app.R.drawable.onboard_image_1
+import com.thomas200593.mini_retail_app.R.drawable.onboard_image_2
+import com.thomas200593.mini_retail_app.R.drawable.onboard_image_3
 import com.thomas200593.mini_retail_app.R.string
 import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
 import com.thomas200593.mini_retail_app.app.ui.StateApp
+import com.thomas200593.mini_retail_app.core.ui.common.CustomThemes.ApplicationTheme
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.LoadingScreen
 import com.thomas200593.mini_retail_app.features.initial.initialization.navigation.navToInitialization
 import com.thomas200593.mini_retail_app.features.onboarding.entity.Onboarding.OnboardingPage
@@ -50,7 +57,8 @@ import com.thomas200593.mini_retail_app.features.onboarding.ui.VMOnboarding.Scre
 import com.thomas200593.mini_retail_app.features.onboarding.ui.VMOnboarding.UiEvents.ButtonEvents.ButtonNextEvents
 import com.thomas200593.mini_retail_app.features.onboarding.ui.VMOnboarding.UiEvents.OnFinishedOnboardingEvent
 import com.thomas200593.mini_retail_app.features.onboarding.ui.VMOnboarding.UiEvents.OnOpenEvents
-import com.thomas200593.mini_retail_app.features.onboarding.ui.VMOnboarding.UiEvents.TabsEvents.TabPageSelection
+import com.thomas200593.mini_retail_app.features.onboarding.ui.VMOnboarding.UiEvents.TabRowEvents.TabPageSelection
+import com.thomas200593.mini_retail_app.features.onboarding.ui.VMOnboarding.UiState
 import com.thomas200593.mini_retail_app.features.onboarding.ui.VMOnboarding.UiStateOnboardingPages.Loading
 import com.thomas200593.mini_retail_app.features.onboarding.ui.VMOnboarding.UiStateOnboardingPages.Success
 import kotlinx.coroutines.launch
@@ -65,19 +73,26 @@ fun ScrOnboarding(
     LaunchedEffect(Unit) {vm.onEvent(OnOpenEvents)}
     ScrOnboarding(
         uiState = uiState,
-        onBtnNextClicked = { vm.onEvent(ButtonNextEvents.OnClick) },
-        onTabSelected = { vm.onEvent(TabPageSelection.OnSelect(it)) },
+        onBtnNextClicked = {
+            vm.onEvent(ButtonNextEvents.OnClick)
+        },
+        onTabSelected = {
+            vm.onEvent(TabPageSelection.OnSelect(it))
+        },
         onFinishedOnboarding = {
-            vm.onEvent(OnFinishedOnboardingEvent).also {
-                coroutineScope.launch { stateApp.navController.navToInitialization() }
-            }
+            vm.onEvent(OnFinishedOnboardingEvent)
+                .also {
+                    coroutineScope.launch {
+                        stateApp.navController.navToInitialization()
+                    }
+                }
         }
     )
 }
 
 @Composable
 private fun ScrOnboarding(
-    uiState: VMOnboarding.UiState,
+    uiState: UiState,
     onBtnNextClicked: () -> Unit,
     onTabSelected: (Int) -> Unit,
     onFinishedOnboarding: () -> Unit
@@ -102,9 +117,11 @@ private fun ScreenContent(
     onTabSelected: (Int) -> Unit,
     onFinishedOnboarding: () -> Unit
 ) {
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .testTag(TAG_ONBOARD_SCREEN)) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .testTag(TAG_ONBOARD_SCREEN)
+    ) {
         OnboardingImages(
             modifier = Modifier
                 .weight(1.0f)
@@ -137,7 +154,10 @@ private fun ScreenContent(
 
 @Composable
 private fun OnboardingImages(modifier: Modifier, currentPage: OnboardingPage) {
-    Box(modifier = modifier.testTag(TAG_ONBOARD_SCREEN_IMAGE_VIEW + currentPage.title)){
+    Box(
+        modifier = modifier
+            .testTag(TAG_ONBOARD_SCREEN_IMAGE_VIEW + currentPage.title)
+    ){
         Image(
             painter = painterResource(id = currentPage.imageRes),
             contentDescription = null,
@@ -162,20 +182,32 @@ private fun OnboardingImages(modifier: Modifier, currentPage: OnboardingPage) {
 
 @Composable
 private fun OnboardingDetails(modifier: Modifier, currentPage: OnboardingPage) {
-    Column(modifier = modifier) {
-        Text(
-            text = currentPage.title,
-            style = typography.displaySmall,
-            textAlign = Center,
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(
-            text = currentPage.description,
-            style = typography.bodyMedium,
-            textAlign = Center,
-            modifier = Modifier.fillMaxWidth()
-        )
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        Surface(
+            color = Transparent,
+            contentColor = colorScheme.onSurface
+        ) {
+            Text(
+                text = stringResource(id = currentPage.title),
+                style = typography.displaySmall,
+                textAlign = Center,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+        Surface(
+            color = Transparent,
+            contentColor = colorScheme.onSurface
+        ) {
+            Text(
+                text = stringResource(id = currentPage.description),
+                style = typography.bodyMedium,
+                textAlign = Center,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
     }
 }
 
@@ -188,11 +220,13 @@ private fun OnboardingNavigation(
     onFinishedOnboarding: () -> Unit
 ) {
     Button(
-        modifier = modifier.testTag(TAG_ONBOARD_SCREEN_NAV_BUTTON),
+        modifier = modifier
+            .testTag(TAG_ONBOARD_SCREEN_NAV_BUTTON),
         onClick = {
             if (currentPage < pageSize - 1) onBtnNextClicked.invoke()
             else onFinishedOnboarding.invoke()
         },
+        shape = shapes.medium,
         content = {
             Text(
                 text = if (currentPage < pageSize - 1) stringResource(id = string.str_onboarding_next)
@@ -234,4 +268,42 @@ private fun OnboardingTabSelector(
             }
         }
     }
+}
+
+@Composable
+@Preview(
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    locale = "in"
+)
+private fun Preview() = ApplicationTheme {
+    ScrOnboarding(
+        onBtnNextClicked = {},
+        onTabSelected = {},
+        onFinishedOnboarding = {},
+        uiState = UiState(
+            screenState = ScreenState(
+                currentPage = 1
+            ),
+            onboardingPages = Success(
+                onboardingPages = listOf(
+                    OnboardingPage(
+                        imageRes = onboard_image_1,
+                        title = string.onboarding_title_1,
+                        description = string.onboarding_desc_1
+                    ),
+                    OnboardingPage(
+                        imageRes = onboard_image_2,
+                        title =  string.onboarding_title_2,
+                        description = string.onboarding_desc_2
+                    ),
+                    OnboardingPage(
+                        imageRes = onboard_image_3,
+                        title =  string.onboarding_title_3,
+                        description = string.onboarding_desc_3
+                    )
+                )
+            )
+        ),
+    )
 }
