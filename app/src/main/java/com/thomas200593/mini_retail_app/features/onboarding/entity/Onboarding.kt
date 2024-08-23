@@ -4,6 +4,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import com.thomas200593.mini_retail_app.R.drawable
 import com.thomas200593.mini_retail_app.R.string
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_language.entity.ConfigLanguages
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.withContext
 
@@ -12,6 +13,11 @@ object Onboarding{
         @DrawableRes val imageRes: Int,
         @StringRes val title: Int,
         @StringRes val description: Int
+    )
+
+    data class OnboardingData(
+        val listOfOnboardingPages: List<OnboardingPage>,
+        val configLanguages: ConfigLanguages,
     )
 
     suspend fun getOnboardingPages() = withContext(IO){

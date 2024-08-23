@@ -6,12 +6,17 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.shapes
 import androidx.compose.material3.MaterialTheme.typography
@@ -19,10 +24,14 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush.Companion.verticalGradient
@@ -30,24 +39,29 @@ import androidx.compose.ui.graphics.Color.Companion.LightGray
 import androidx.compose.ui.graphics.Color.Companion.Transparent
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale.Companion.FillWidth
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign.Companion.Center
+import androidx.compose.ui.text.style.TextOverflow.Companion.Ellipsis
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.thomas200593.mini_retail_app.R.drawable.onboard_image_1
-import com.thomas200593.mini_retail_app.R.drawable.onboard_image_2
-import com.thomas200593.mini_retail_app.R.drawable.onboard_image_3
+import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.R.string
 import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
 import com.thomas200593.mini_retail_app.app.ui.StateApp
 import com.thomas200593.mini_retail_app.core.ui.common.CustomThemes.ApplicationTheme
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.LoadingScreen
+import com.thomas200593.mini_retail_app.features.app_conf.app_config.entity.AppConfig
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_language.entity.ConfigLanguages
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_language.entity.Language
 import com.thomas200593.mini_retail_app.features.initial.initialization.navigation.navToInitialization
+import com.thomas200593.mini_retail_app.features.onboarding.entity.Onboarding
 import com.thomas200593.mini_retail_app.features.onboarding.entity.Onboarding.OnboardingPage
 import com.thomas200593.mini_retail_app.features.onboarding.entity.Onboarding.Tags.TAG_ONBOARD_SCREEN
 import com.thomas200593.mini_retail_app.features.onboarding.entity.Onboarding.Tags.TAG_ONBOARD_SCREEN_IMAGE_VIEW
@@ -73,6 +87,9 @@ fun ScrOnboarding(
     LaunchedEffect(Unit) {vm.onEvent(OnOpenEvents)}
     ScrOnboarding(
         uiState = uiState,
+        onSelectLanguage = {
+            vm.onEvent(VMOnboarding.UiEvents.DropdownEvents.DropdownLanguagesEvents.OnSelect(it))
+        },
         onBtnNextClicked = {
             vm.onEvent(ButtonNextEvents.OnClick)
         },
@@ -93,6 +110,7 @@ fun ScrOnboarding(
 @Composable
 private fun ScrOnboarding(
     uiState: UiState,
+    onSelectLanguage: (Language) -> Unit,
     onBtnNextClicked: () -> Unit,
     onTabSelected: (Int) -> Unit,
     onFinishedOnboarding: () -> Unit
@@ -100,7 +118,9 @@ private fun ScrOnboarding(
     when(uiState.onboardingPages){
         Loading -> LoadingScreen()
         is Success -> ScreenContent(
-            onboardingPages = uiState.onboardingPages.onboardingPages,
+            onboardingPages = uiState.onboardingPages.onboardingData.listOfOnboardingPages,
+            configLanguages = uiState.onboardingPages.onboardingData.configLanguages,
+            onSelectLanguage = onSelectLanguage,
             screenState = uiState.screenState,
             onBtnNextClicked = onBtnNextClicked,
             onTabSelected = onTabSelected,
@@ -112,6 +132,8 @@ private fun ScrOnboarding(
 @Composable
 private fun ScreenContent(
     onboardingPages: List<OnboardingPage>,
+    configLanguages: ConfigLanguages,
+    onSelectLanguage: (Language) -> Unit,
     screenState: ScreenState,
     onBtnNextClicked: () -> Unit,
     onTabSelected: (Int) -> Unit,
@@ -122,6 +144,10 @@ private fun ScreenContent(
             .fillMaxSize()
             .testTag(TAG_ONBOARD_SCREEN)
     ) {
+        OnboardingLanguages(
+            configLanguages = configLanguages,
+            onSelectLanguage = onSelectLanguage
+        )
         OnboardingImages(
             modifier = Modifier
                 .weight(1.0f)
@@ -149,6 +175,70 @@ private fun ScreenContent(
             currentPage = screenState.currentPage,
             onTabSelected = onTabSelected
         )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun OnboardingLanguages(
+    configLanguages: ConfigLanguages,
+    onSelectLanguage: (Language) -> Unit
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(1.0f),
+        horizontalArrangement = Arrangement.End,
+        verticalAlignment = Alignment.CenterVertically
+    ){
+        var expanded by remember { mutableStateOf(false) }
+        ExposedDropdownMenuBox(
+            modifier = Modifier.fillMaxWidth(0.4f),
+            expanded = expanded,
+            onExpandedChange = { expanded = !expanded }
+        ) {
+            TextButton(modifier = Modifier
+                .fillMaxWidth()
+                .menuAnchor(), onClick = { expanded = true }) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Image(
+                        modifier = Modifier.size(24.dp),
+                        imageVector = ImageVector.vectorResource(id = configLanguages.configCurrent.language.iconRes),
+                        contentDescription = null
+                    )
+                    Text(
+                        modifier = Modifier.weight(0.8f),
+                        text = stringResource(id = configLanguages.configCurrent.language.title),
+                        textAlign = Center,
+                        maxLines = 1,
+                        overflow = Ellipsis
+                    )
+                }
+            }
+            ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+                configLanguages.languages.forEach {
+                    DropdownMenuItem(
+                        modifier = Modifier.fillMaxWidth(),
+                        leadingIcon = {
+                            Image(
+                                modifier = Modifier.size(24.dp),
+                                imageVector = ImageVector.vectorResource(id = it.iconRes),
+                                contentDescription = null
+                            )
+                        },
+                        text =
+                        { Text(modifier = Modifier.fillMaxWidth(), text = stringResource(id = it.title)) },
+                        onClick = {
+                            expanded = false
+                            onSelectLanguage(it)
+                        },
+                        contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
+                    )
+                }
+            }
+        }
     }
 }
 
@@ -281,26 +371,36 @@ private fun Preview() = ApplicationTheme {
         onBtnNextClicked = {},
         onTabSelected = {},
         onFinishedOnboarding = {},
+        onSelectLanguage = {},
         uiState = UiState(
             screenState = ScreenState(
                 currentPage = 1
             ),
             onboardingPages = Success(
-                onboardingPages = listOf(
-                    OnboardingPage(
-                        imageRes = onboard_image_1,
-                        title = string.onboarding_title_1,
-                        description = string.onboarding_desc_1
+                onboardingData = Onboarding.OnboardingData(
+                    listOfOnboardingPages = listOf(
+                        OnboardingPage(
+                            imageRes = R.drawable.onboard_image_1,
+                            title = string.onboarding_title_1,
+                            description = string.onboarding_desc_1
+                        ),
+                        OnboardingPage(
+                            imageRes = R.drawable.onboard_image_2,
+                            title =  string.onboarding_title_2,
+                            description = string.onboarding_desc_2
+                        ),
+                        OnboardingPage(
+                            imageRes = R.drawable.onboard_image_3,
+                            title =  string.onboarding_title_3,
+                            description = string.onboarding_desc_3
+                        )
                     ),
-                    OnboardingPage(
-                        imageRes = onboard_image_2,
-                        title =  string.onboarding_title_2,
-                        description = string.onboarding_desc_2
-                    ),
-                    OnboardingPage(
-                        imageRes = onboard_image_3,
-                        title =  string.onboarding_title_3,
-                        description = string.onboarding_desc_3
+                    configLanguages = ConfigLanguages(
+                        configCurrent = AppConfig.ConfigCurrent(),
+                        languages = setOf(
+                            Language.EN,
+                            Language.ID
+                        )
                     )
                 )
             )
