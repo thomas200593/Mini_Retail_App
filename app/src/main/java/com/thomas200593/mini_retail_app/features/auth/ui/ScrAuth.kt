@@ -10,9 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme.colorScheme
-import androidx.compose.material3.MaterialTheme.shapes
-import androidx.compose.material3.MaterialTheme.typography
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -22,39 +20,29 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color.Companion.Transparent
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.font.FontWeight.Companion.Bold
-import androidx.compose.ui.text.font.FontWeight.Companion.SemiBold
-import androidx.compose.ui.text.style.TextAlign.Companion.Center
-import androidx.compose.ui.text.style.TextOverflow.Companion.Ellipsis
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.thomas200593.mini_retail_app.BuildConfig.BUILD_TYPE
 import com.thomas200593.mini_retail_app.BuildConfig.VERSION_NAME
-import com.thomas200593.mini_retail_app.R
-import com.thomas200593.mini_retail_app.R.string.str_auth
-import com.thomas200593.mini_retail_app.R.string.str_auth_welcome_message
-import com.thomas200593.mini_retail_app.R.string.str_configuration
-import com.thomas200593.mini_retail_app.R.string.str_error
-import com.thomas200593.mini_retail_app.R.string.str_loading
-import com.thomas200593.mini_retail_app.R.string.str_ok
-import com.thomas200593.mini_retail_app.R.string.str_success
+import com.thomas200593.mini_retail_app.R.string
 import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
 import com.thomas200593.mini_retail_app.app.ui.StateApp
-import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.App.app
-import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.Setting.settings
+import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.App
+import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.Setting
 import com.thomas200593.mini_retail_app.core.ui.component.CustomButton.Common.AppIconButton
 import com.thomas200593.mini_retail_app.core.ui.component.CustomButton.Google
 import com.thomas200593.mini_retail_app.core.ui.component.CustomButton.Google.SignInWithGoogle
 import com.thomas200593.mini_retail_app.core.ui.component.CustomButton.Google.handleClearCredential
-import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AlertDialogContext.ERROR
-import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AlertDialogContext.INFORMATION
-import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AlertDialogContext.SUCCESS
+import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AlertDialogContext
 import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AppAlertDialog
 import com.thomas200593.mini_retail_app.core.ui.component.CustomScreenUtil.LockScreenOrientation
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.navigation.navToAppConfig
@@ -69,7 +57,7 @@ import kotlinx.coroutines.launch
 fun ScrAuth(
     vm: VMAuth = hiltViewModel(),
     stateApp: StateApp = LocalStateApp.current
-){
+) {
     LockScreenOrientation(orientation = SCREEN_ORIENTATION_PORTRAIT)
 
     val coroutineScope = rememberCoroutineScope()
@@ -77,11 +65,13 @@ fun ScrAuth(
     val appContext = LocalContext.current.applicationContext
     val uiState by vm.uiState.collectAsStateWithLifecycle()
 
-    LaunchedEffect(Unit) { handleClearCredential(
-        activityContext = activityContext,
-        onClearSuccess = { vm.onEvent(ScreenEvents.OnOpen) },
-        onClearError = { vm.onEvent(ScreenEvents.OnOpen) }
-    ) }
+    LaunchedEffect(Unit) {
+        handleClearCredential(
+            activityContext = activityContext,
+            onClearSuccess = { vm.onEvent(ScreenEvents.OnOpen) },
+            onClearError = { vm.onEvent(ScreenEvents.OnOpen) }
+        )
+    }
 
     ScreenContent(
         uiState = uiState,
@@ -95,41 +85,45 @@ fun ScrAuth(
                 Google.handleSignIn(
                     activityContext = activityContext,
                     onResultReceived = { vm.onEvent(BtnAuthWithGoogle.OnValidationAuthSession(it)) },
-                    onError = { coroutineScope.launch {
-                        handleClearCredential(
-                            activityContext = activityContext,
-                            onClearSuccess = { vm.onEvent(ScreenEvents.OnOpen) },
-                            onClearError = { vm.onEvent(ScreenEvents.OnOpen) }
-                        )
-                    } },
-                    onDialogDismissed = { coroutineScope.launch {
-                        handleClearCredential(
-                            activityContext = activityContext,
-                            onClearSuccess = { vm.onEvent(ScreenEvents.OnOpen) },
-                            onClearError = { vm.onEvent(ScreenEvents.OnOpen) }
-                        )
-                    } }
+                    onError = {
+                        coroutineScope.launch {
+                            handleClearCredential(
+                                activityContext = activityContext,
+                                onClearSuccess = { vm.onEvent(ScreenEvents.OnOpen) },
+                                onClearError = { vm.onEvent(ScreenEvents.OnOpen) }
+                            )
+                        }
+                    },
+                    onDialogDismissed = {
+                        coroutineScope.launch {
+                            handleClearCredential(
+                                activityContext = activityContext,
+                                onClearSuccess = { vm.onEvent(ScreenEvents.OnOpen) },
+                                onClearError = { vm.onEvent(ScreenEvents.OnOpen) }
+                            )
+                        }
+                    }
                 )
             }
         }
     )
     AppAlertDialog(
         showDialog = uiState.dialogState.uiEnableLoadingDialog,
-        dialogContext = INFORMATION,
+        dialogContext = AlertDialogContext.INFORMATION,
         showIcon = true,
         showTitle = true,
-        title = { Text(stringResource(id = str_loading)) },
+        title = { Text(stringResource(id = string.str_loading)) },
         showBody = true,
-        body = { Text(stringResource(str_auth)) }
+        body = { Text(stringResource(string.str_auth)) }
     )
     AppAlertDialog(
         showDialog = uiState.dialogState.uiEnableSuccessDialog,
-        dialogContext = SUCCESS,
+        dialogContext = AlertDialogContext.SUCCESS,
         showIcon = true,
         showTitle = true,
-        title = { Text(stringResource(id = str_success)) },
+        title = { Text(stringResource(id = string.str_success)) },
         showBody = true,
-        body = { Text(stringResource(str_success)) },
+        body = { Text(stringResource(string.str_success)) },
         useConfirmButton = true,
         confirmButton = {
             TextButton(onClick = {
@@ -137,21 +131,21 @@ fun ScrAuth(
                     coroutineScope.launch { initialize(appContext); stateApp.navController.navToInitial() }
                 }
             })
-            { Text(stringResource(id = str_ok)) }
+            { Text(stringResource(id = string.str_ok)) }
         }
     )
     AppAlertDialog(
         showDialog = uiState.dialogState.uiEnableErrorDialog,
-        dialogContext = ERROR,
+        dialogContext = AlertDialogContext.ERROR,
         showIcon = true,
         showTitle = true,
-        title = { Text(stringResource(id = str_error)) },
+        title = { Text(stringResource(id = string.str_error)) },
         showBody = true,
-        body = { Text(stringResource(str_error)) },
+        body = { Text(stringResource(string.str_error)) },
         useDismissButton = true,
         dismissButton = {
             TextButton(onClick = { coroutineScope.launch { stateApp.navController.navToInitial() } })
-            { Text(stringResource(id = str_ok)) }
+            { Text(stringResource(id = string.str_ok)) }
         }
     )
 }
@@ -163,7 +157,9 @@ private fun ScreenContent(
     onAuthWithGoogle: () -> Unit
 ) {
     Column(
-        modifier = Modifier.fillMaxSize().padding(8.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(48.dp, Alignment.Top)
     ) {
@@ -178,11 +174,11 @@ private fun ScreenContent(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 AppIconButton(
-                    containerColor = Transparent,
-                    contentColor = colorScheme.onSurface,
-                    icon = ImageVector.vectorResource(id = settings),
-                    text = stringResource(id = str_configuration),
-                    onClick = { onNavToConfig.invoke() }
+                    containerColor = Color.Transparent,
+                    contentColor = MaterialTheme.colorScheme.onSurface,
+                    icon = ImageVector.vectorResource(id = Setting.settings),
+                    text = stringResource(id = string.str_configuration),
+                    onClick = { onNavToConfig() }
                 )
             }
         }
@@ -193,40 +189,40 @@ private fun ScreenContent(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Image(
-                imageVector = ImageVector.vectorResource(id = app),
-                contentDescription = stringResource(id = R.string.app_name),
+                imageVector = ImageVector.vectorResource(id = App.app),
+                contentDescription = stringResource(id = string.app_name),
                 alignment = Alignment.Center,
                 modifier = Modifier.height(150.dp)
             )
             Text(
-                text = stringResource(id = R.string.app_name),
-                fontSize = typography.headlineLarge.fontSize,
-                fontWeight = Bold,
-                color = colorScheme.onSurface
+                text = stringResource(id = string.app_name),
+                fontSize = MaterialTheme.typography.headlineLarge.fontSize,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface
             )
             Text(
                 text = "$VERSION_NAME - $BUILD_TYPE",
-                fontWeight = SemiBold,
-                color = colorScheme.primary
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.primary
             )
         }
 
         Surface(
             modifier = Modifier.fillMaxWidth(0.9f),
-            shape = shapes.small,
-            color = colorScheme.secondaryContainer,
+            shape = MaterialTheme.shapes.small,
+            color = MaterialTheme.colorScheme.secondaryContainer,
             shadowElevation = 5.dp
         ) {
             Text(
-                text = stringResource(str_auth_welcome_message),
-                color = colorScheme.onSecondaryContainer,
+                text = stringResource(string.str_auth_welcome_message),
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
                 modifier = Modifier.padding(12.dp),
             )
         }
 
         Surface(
             modifier = Modifier.fillMaxWidth(0.9f),
-            shape = shapes.medium,
+            shape = MaterialTheme.shapes.medium,
         ) {
             SignInWithGoogle(
                 onClick = { onAuthWithGoogle.invoke() },
@@ -235,12 +231,12 @@ private fun ScreenContent(
         }
 
         Text(
-            text = stringResource(id = R.string.str_tnc),
-            fontWeight = SemiBold,
-            color = colorScheme.onTertiaryContainer,
+            text = stringResource(id = string.str_tnc),
+            fontWeight = FontWeight.SemiBold,
+            color = MaterialTheme.colorScheme.onTertiaryContainer,
             maxLines = 1,
-            overflow = Ellipsis,
-            textAlign = Center,
+            overflow = TextOverflow.Ellipsis,
+            textAlign = TextAlign.Center,
             modifier = Modifier.padding(12.dp)
         )
     }
