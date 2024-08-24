@@ -12,7 +12,8 @@ import kotlin.reflect.KType
 import kotlin.reflect.full.createType
 import kotlin.reflect.full.primaryConstructor
 
-@Serializable sealed class ScrGraphs(
+@Serializable
+sealed class ScrGraphs(
     val route: String,
     @DrawableRes val iconRes: Int? = null,
     @StringRes val title: Int? = null,
@@ -37,12 +38,15 @@ import kotlin.reflect.full.primaryConstructor
     /**
      * Initial
      */
-    @Serializable data object Initial: ScrGraphs(
+    @Serializable
+    data object Initial : ScrGraphs(
         route = "r_initial",
         usesAuth = false,
         usesTopBar = false
     )
-    @Serializable data object Initialization: ScrGraphs(
+
+    @Serializable
+    data object Initialization : ScrGraphs(
         route = "r_initialization",
         usesAuth = false,
         usesTopBar = false
@@ -51,7 +55,8 @@ import kotlin.reflect.full.primaryConstructor
     /**
      * Onboarding
      */
-    @Serializable data object Onboarding: ScrGraphs(
+    @Serializable
+    data object Onboarding : ScrGraphs(
         route = "r_onboarding",
         title = string.str_onboarding,
         description = string.str_onboarding,
@@ -62,7 +67,8 @@ import kotlin.reflect.full.primaryConstructor
     /**
      * Auth
      */
-    @Serializable data object Auth: ScrGraphs(
+    @Serializable
+    data object Auth : ScrGraphs(
         route = "r_auth",
         title = string.str_auth,
         usesAuth = false,
@@ -72,79 +78,100 @@ import kotlin.reflect.full.primaryConstructor
     /**
      * App Config
      */
-    @Serializable data object AppConfig: ScrGraphs(
+    @Serializable
+    data object AppConfig : ScrGraphs(
         route = "r_app_config",
         title = string.str_configuration,
         description = string.str_configuration,
         usesAuth = false,
         usesTopBar = true
     )
+
     //App Config General
-    @Serializable data object ConfigGeneral : ScrGraphs(
+    @Serializable
+    data object ConfigGeneral : ScrGraphs(
         route = "r_conf_gen",
         title = string.str_configuration_general,
         description = string.str_configuration_general,
         usesAuth = false,
         usesTopBar = true
     )
-    @Serializable data object Country : ScrGraphs(
+
+    @Serializable
+    data object Country : ScrGraphs(
         route = "r_conf_gen_country",
         title = string.str_country,
         description = string.str_country_desc,
         usesAuth = false,
         usesTopBar = true
     )
-    @Serializable data object Currency: ScrGraphs(
+
+    @Serializable
+    data object Currency : ScrGraphs(
         route = "r_conf_gen_currency",
         title = string.str_currency,
         description = string.str_currency_desc,
         usesAuth = false,
         usesTopBar = true
     )
-    @Serializable data object DynamicColor: ScrGraphs (
+
+    @Serializable
+    data object DynamicColor : ScrGraphs(
         route = "r_conf_gen_dynamic_color",
         title = string.str_dynamic_color,
         description = string.str_dynamic_color_desc,
         usesAuth = false,
         usesTopBar = true
     )
-    @Serializable data object FontSize: ScrGraphs(
+
+    @Serializable
+    data object FontSize : ScrGraphs(
         route = "r_conf_gen_font_size",
         title = string.str_size_font,
         description = string.str_size_font_desc,
         usesAuth = false,
         usesTopBar = true
     )
-    @Serializable data object Language : ScrGraphs(
+
+    @Serializable
+    data object Language : ScrGraphs(
         route = "r_conf_gen_language",
         title = string.str_lang,
         description = string.str_lang_desc,
         usesAuth = false,
         usesTopBar = true
     )
-    @Serializable data object Theme: ScrGraphs (
+
+    @Serializable
+    data object Theme : ScrGraphs(
         route = "r_conf_gen_theme",
         title = string.str_theme,
         description = string.str_theme_desc,
         usesAuth = false,
         usesTopBar = true
     )
-    @Serializable data object Timezone: ScrGraphs(
+
+    @Serializable
+    data object Timezone : ScrGraphs(
         route = "r_conf_gen_timezone",
         title = string.str_timezone,
         description = string.str_timezone,
         usesAuth = false,
         usesTopBar = true
     )
+
     //App Config Data
-    @Serializable data object ConfigData: ScrGraphs(
+    @Serializable
+    data object ConfigData : ScrGraphs(
         route = "r_conf_data",
         title = string.str_configuration_data,
         description = string.str_configuration_data,
         usesAuth = true,
         usesTopBar = true
     )
-    @Serializable data object DataBackup: ScrGraphs(
+
+    @Serializable
+    data object DataBackup : ScrGraphs(
         route = "r_conf_data_backup",
         usesAuth = true,
         usesTopBar = true
@@ -153,7 +180,8 @@ import kotlin.reflect.full.primaryConstructor
     /**
      * Dashboard
      */
-    @Serializable data object Dashboard: ScrGraphs(
+    @Serializable
+    data object Dashboard : ScrGraphs(
         route = "r_dashboard",
         iconRes = dashboard,
         title = string.str_dashboard,
@@ -165,7 +193,8 @@ import kotlin.reflect.full.primaryConstructor
     /**
      * Business
      */
-    @Serializable data object Business: ScrGraphs(
+    @Serializable
+    data object Business : ScrGraphs(
         route = "r_biz",
         iconRes = business,
         title = string.str_business,
@@ -173,22 +202,30 @@ import kotlin.reflect.full.primaryConstructor
         usesAuth = true,
         usesTopBar = true
     )
-    @Serializable data object MasterData: ScrGraphs(
+
+    @Serializable
+    data object MasterData : ScrGraphs(
         route = "r_biz_m_data",
         usesAuth = true,
         usesTopBar = true
     )
-    @Serializable data object Supplier: ScrGraphs(
+
+    @Serializable
+    data object Supplier : ScrGraphs(
         route = "r_biz_m_data_supplier",
         usesAuth = true,
         usesTopBar = true
     )
-    @Serializable data object BizProfile: ScrGraphs(
+
+    @Serializable
+    data object BizProfile : ScrGraphs(
         route = "r_biz_profile",
         usesAuth = true,
         usesTopBar = true
     )
-    @Serializable data object BizProfileAddressesAddUpdate: ScrGraphs(
+
+    @Serializable
+    data object BizProfileAddressesAddUpdate : ScrGraphs(
         route = "r_biz_profile_addresses_add_update",
         usesAuth = true,
         usesTopBar = true
@@ -197,7 +234,8 @@ import kotlin.reflect.full.primaryConstructor
     /**
      * Reporting
      */
-    @Serializable data object Reporting: ScrGraphs(
+    @Serializable
+    data object Reporting : ScrGraphs(
         route = "r_reporting",
         iconRes = reporting,
         title = string.str_reporting,
@@ -209,7 +247,8 @@ import kotlin.reflect.full.primaryConstructor
     /**
      * User Profile
      */
-    @Serializable data object UserProfile: ScrGraphs(
+    @Serializable
+    data object UserProfile : ScrGraphs(
         route = "r_user_profile",
         iconRes = user_profile,
         title = string.str_user_profile,
