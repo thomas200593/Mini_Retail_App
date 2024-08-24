@@ -11,10 +11,10 @@ import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_language.repo
 import com.thomas200593.mini_retail_app.features.onboarding.domain.UCGetOnboardingData
 import com.thomas200593.mini_retail_app.features.onboarding.entity.Onboarding
 import com.thomas200593.mini_retail_app.features.onboarding.repository.RepoOnboarding
-import com.thomas200593.mini_retail_app.features.onboarding.ui.VMOnboarding.UiEvents.ButtonEvents
-import com.thomas200593.mini_retail_app.features.onboarding.ui.VMOnboarding.UiEvents.OnFinishedOnboardingEvent
+import com.thomas200593.mini_retail_app.features.onboarding.ui.VMOnboarding.UiEvents.ButtonEvents.BtnNextEvents
+import com.thomas200593.mini_retail_app.features.onboarding.ui.VMOnboarding.UiEvents.DropdownEvents.DropdownLanguagesEvents
 import com.thomas200593.mini_retail_app.features.onboarding.ui.VMOnboarding.UiEvents.OnOpenEvents
-import com.thomas200593.mini_retail_app.features.onboarding.ui.VMOnboarding.UiEvents.TabRowEvents
+import com.thomas200593.mini_retail_app.features.onboarding.ui.VMOnboarding.UiEvents.TabRowEvents.TabPageSelectionEvents
 import com.thomas200593.mini_retail_app.features.onboarding.ui.VMOnboarding.UiStateOnboardingPages.Loading
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -44,21 +44,27 @@ class VMOnboarding @Inject constructor(
         val screenState: ScreenState = ScreenState()
     )
     data class ScreenState(
-        val currentPage: Int = 0,
-        val maxPage: Int = 0
+        val currentPageIndex: Int = 0,
+        val maxPageIndex: Int = 0
     )
     sealed class UiEvents{
         data object OnOpenEvents: UiEvents()
         sealed class ButtonEvents: UiEvents(){
-            sealed class ButtonNextEvents: ButtonEvents(){ data object OnClick: ButtonNextEvents() }
+            sealed class BtnNextEvents: ButtonEvents(){
+                data object OnNextClickEvents: BtnNextEvents()
+                data object OnFinishClickEvents: BtnNextEvents()
+            }
         }
         sealed class DropdownEvents: UiEvents(){
-            sealed class DropdownLanguagesEvents: DropdownEvents(){ data class OnSelect(val language: Language): DropdownLanguagesEvents() }
+            sealed class DropdownLanguagesEvents: DropdownEvents(){
+                data class OnSelectEvents(val language: Language): DropdownLanguagesEvents()
+            }
         }
         sealed class TabRowEvents: UiEvents(){
-            sealed class TabPageSelection: TabRowEvents(){ data class OnSelect(val index: Int): TabPageSelection() }
+            sealed class TabPageSelectionEvents: TabRowEvents(){
+                data class OnSelectEvents(val index: Int): TabPageSelectionEvents()
+            }
         }
-        data object OnFinishedOnboardingEvent: UiEvents()
     }
 
     private val _uiState = MutableStateFlow(UiState())
@@ -66,11 +72,11 @@ class VMOnboarding @Inject constructor(
 
     fun onEvent(events: UiEvents){
         when(events) {
-            OnOpenEvents -> onOpenEvent()
-            ButtonEvents.ButtonNextEvents.OnClick -> btnNextOnClickEvent()
-            is TabRowEvents.TabPageSelection.OnSelect -> tabPageOnSelectEvent(events.index)
-            OnFinishedOnboardingEvent -> onFinishedOnboardingEvent()
-            is UiEvents.DropdownEvents.DropdownLanguagesEvents.OnSelect -> handleLangChange(events.language)
+            is OnOpenEvents -> onOpenEvent()
+            is BtnNextEvents.OnNextClickEvents -> btnNextOnClickEvent()
+            is BtnNextEvents.OnFinishClickEvents -> onFinishedOnboardingEvent()
+            is TabPageSelectionEvents.OnSelectEvents -> tabPageOnSelectEvent(events.index)
+            is DropdownLanguagesEvents.OnSelectEvents -> handleLangChange(events.language)
         }
     }
 
@@ -85,19 +91,18 @@ class VMOnboarding @Inject constructor(
                 it.copy(
                     onboardingPages = UiStateOnboardingPages.Success(data),
                     screenState = it.screenState.copy(
-                        maxPage = data.listOfOnboardingPages.size
+                        maxPageIndex = data.listOfOnboardingPages.size - 1
                     )
                 )
             }
         }
     }
     private fun btnNextOnClickEvent() = _uiState.update {
-        val nextPage = (it.screenState.currentPage + 1)
-            .coerceAtMost(it.screenState.maxPage - 1)
-        it.copy(screenState = it.screenState.copy(currentPage = nextPage))
+        val nextPage = (it.screenState.currentPageIndex + 1).coerceAtMost(it.screenState.maxPageIndex)
+        it.copy(screenState = it.screenState.copy(currentPageIndex = nextPage))
     }
     private fun tabPageOnSelectEvent(index: Int) =
-        _uiState.update { it.copy(screenState = it.screenState.copy(currentPage = index)) }
+        _uiState.update { it.copy(screenState = it.screenState.copy(currentPageIndex = index)) }
     private fun onFinishedOnboardingEvent() =
         viewModelScope.launch(ioDispatcher) { repoOnboarding.hideOnboarding() }
 }
