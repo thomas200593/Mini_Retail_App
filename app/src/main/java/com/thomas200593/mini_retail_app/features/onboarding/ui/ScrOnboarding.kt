@@ -79,7 +79,7 @@ import kotlinx.coroutines.launch
 fun ScrOnboarding(
     vm: VMOnboarding = hiltViewModel(),
     stateApp: StateApp = LocalStateApp.current
-){
+) {
     val coroutineScope = rememberCoroutineScope()
     val uiState by vm.uiState.collectAsStateWithLifecycle()
     LaunchedEffect(Unit) { vm.onEvent(OnOpenEvents) }
@@ -104,7 +104,7 @@ private fun ScrOnboarding(
     onTabSelected: (Int) -> Unit,
     onFinishedOnboarding: () -> Unit
 ) {
-    when(uiState.onboardingPages){
+    when (uiState.onboardingPages) {
         Loading -> LoadingScreen()
         is Success -> ScreenContent(
             onboardingPages = uiState.onboardingPages.onboardingData.listOfOnboardingPages,
@@ -177,7 +177,7 @@ private fun OnboardingLanguages(
         modifier = Modifier.fillMaxWidth(1.0f),
         horizontalArrangement = Arrangement.End,
         verticalAlignment = Alignment.CenterVertically
-    ){
+    ) {
         var expanded by remember { mutableStateOf(false) }
         ExposedDropdownMenuBox(
             modifier = Modifier.fillMaxWidth(0.4f),
@@ -249,7 +249,7 @@ private fun OnboardingImages(modifier: Modifier, currentPage: OnboardingPage) {
     Box(
         modifier = modifier
             .testTag(Tags.TAG_ONBOARD_SCREEN_IMAGE_VIEW + currentPage.title)
-    ){
+    ) {
         Image(
             painter = painterResource(id = currentPage.imageRes),
             contentDescription = null,
@@ -316,8 +316,11 @@ private fun OnboardingNavigation(
             .testTag(Tags.TAG_ONBOARD_SCREEN_NAV_BUTTON)
             .fillMaxWidth(0.8f),
         onClick = {
-            if (currentPageIndex < maxPageIndex) { onBtnNextClicked() }
-            else { onFinishedOnboarding() }
+            if (currentPageIndex < maxPageIndex) {
+                onBtnNextClicked()
+            } else {
+                onFinishedOnboarding()
+            }
         },
         icon =
         if (currentPageIndex < maxPageIndex) AutoMirrored.Filled.KeyboardArrowRight
@@ -350,7 +353,7 @@ private fun OnboardingTabSelector(
             ) {
                 Box(
                     modifier = Modifier
-                        .testTag(Tags.TAG_ONBOARD_TAG_ROW+index)
+                        .testTag(Tags.TAG_ONBOARD_TAG_ROW + index)
                         .size(8.dp)
                         .background(
                             color = if (index == currentPage) MaterialTheme.colorScheme.onPrimary else Color.LightGray,
@@ -388,12 +391,12 @@ private fun Preview() = ApplicationTheme {
                         ),
                         OnboardingPage(
                             imageRes = R.drawable.onboard_image_2,
-                            title =  string.onboarding_title_2,
+                            title = string.onboarding_title_2,
                             description = string.onboarding_desc_2
                         ),
                         OnboardingPage(
                             imageRes = R.drawable.onboard_image_3,
-                            title =  string.onboarding_title_3,
+                            title = string.onboarding_title_3,
                             description = string.onboarding_desc_3
                         )
                     ),
