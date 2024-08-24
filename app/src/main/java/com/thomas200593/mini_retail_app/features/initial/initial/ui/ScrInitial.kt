@@ -38,7 +38,7 @@ import com.thomas200593.mini_retail_app.features.onboarding.navigation.navToOnbo
 fun ScrInitial(
     vm: VMInitial = hiltViewModel(),
     stateApp: StateApp = LocalStateApp.current
-){
+) {
     val context = LocalContext.current
     val uiState by vm.uiState.collectAsStateWithLifecycle()
     LaunchedEffect(Unit) { vm.onEvent(UiEvents.OnOpenEvents) }
@@ -51,12 +51,13 @@ fun ScrInitial(
             val navOpt = Builder()
                 .setPopUpTo(route = G_INITIAL, inclusive = true, saveState = true)
                 .setLaunchSingleTop(true).setRestoreState(true).build()
-            when(userData.authSessionToken?.authProvider){
+            when (userData.authSessionToken?.authProvider) {
                 GOOGLE -> Toast.makeText(
                     context,
                     "$welcomeMessage! ${(userData.oAuth2UserMetadata as Google).name}.",
                     LENGTH_SHORT
                 ).show()
+
                 else -> Unit
             }
             stateApp.navController.navToDashboard(navOpt)
@@ -71,13 +72,14 @@ private fun ScrInitial(
     onNavToInitialization: () -> Unit,
     onNavToAuth: () -> Unit,
     onNavToDashboard: (String, UserData) -> Unit
-) = when(uiState.initial){
+) = when (uiState.initial) {
     Loading -> LoadingScreen()
     is Error -> ErrorScreen(
         title = stringResource(id = string.str_error),
         errorMessage = "${uiState.initial.t.message} : ${uiState.initial.t.cause}",
         showIcon = true
     )
+
     is Success -> ScreenContent(
         initial = uiState.initial.initial,
         onNavToOnboarding = onNavToOnboarding,
@@ -94,14 +96,15 @@ private fun ScreenContent(
     onNavToInitialization: () -> Unit,
     onNavToAuth: () -> Unit,
     onNavToDashboard: (String, UserData) -> Unit
-) = when(initial.firstTimeStatus){
-    YES -> when(initial.configCurrent.onboardingStatus){
+) = when (initial.firstTimeStatus) {
+    YES -> when (initial.configCurrent.onboardingStatus) {
         SHOW -> onNavToOnboarding.invoke()
         HIDE -> onNavToInitialization.invoke()
     }
-    NO -> when(initial.configCurrent.onboardingStatus){
+
+    NO -> when (initial.configCurrent.onboardingStatus) {
         SHOW -> onNavToOnboarding.invoke()
-        HIDE -> when(initial.session == null){
+        HIDE -> when (initial.session == null) {
             true -> onNavToAuth.invoke()
             false -> onNavToDashboard.invoke(stringResource(string.str_welcome), initial.session)
         }
