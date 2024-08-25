@@ -46,7 +46,6 @@ import androidx.credentials.ClearCredentialStateRequest
 import androidx.credentials.CredentialManager.Companion.create
 import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
-import androidx.credentials.exceptions.ClearCredentialException
 import androidx.credentials.exceptions.GetCredentialCancellationException
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential.Companion.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL
@@ -59,7 +58,7 @@ import com.thomas200593.mini_retail_app.features.auth.entity.AuthSessionToken
 import com.thomas200593.mini_retail_app.features.auth.entity.OAuthProvider.GOOGLE
 
 object CustomButton {
-    object Common{
+    object Common {
         @Composable
         fun AppIconButton(
             modifier: Modifier = Modifier,
@@ -73,12 +72,14 @@ object CustomButton {
             contentColor: Color = buttonColors().contentColor,
             disabledContainerColor: Color = buttonColors().disabledContainerColor,
             disabledContentColor: Color = buttonColors().disabledContentColor
-        ){
+        ) {
             Button(
                 onClick = onClick,
                 enabled = enabled,
                 shape = shape,
-                modifier = modifier.fillMaxWidth().padding(padding),
+                modifier = modifier
+                    .fillMaxWidth()
+                    .padding(padding),
                 colors = ButtonColors(
                     containerColor = containerColor,
                     contentColor = contentColor,
@@ -109,7 +110,7 @@ object CustomButton {
         }
     }
 
-    object Google{
+    object Google {
         @Composable
         fun SignInWithGoogle(
             modifier: Modifier = Modifier,
@@ -124,9 +125,11 @@ object CustomButton {
             btnShadowElevation: Dp = 9.dp,
             progressIndicatorColor: Color = MaterialTheme.colorScheme.primary,
             onClick: () -> Unit
-        ){
+        ) {
             var btnText by remember { mutableStateOf(primaryText) }
-            LaunchedEffect(btnLoadingState) { btnText = if(btnLoadingState) secondaryText else primaryText }
+            LaunchedEffect(btnLoadingState) {
+                btnText = if (btnLoadingState) secondaryText else primaryText
+            }
             Surface(
                 modifier = modifier.clickable(
                     enabled = !btnLoadingState,
@@ -138,23 +141,30 @@ object CustomButton {
                 shadowElevation = btnShadowElevation
             ) {
                 Row(
-                    modifier = Modifier.padding(10.dp).animateContentSize(
-                        animationSpec = tween(durationMillis = 300, easing = LinearOutSlowInEasing)
-                    ),
+                    modifier = Modifier
+                        .padding(10.dp)
+                        .animateContentSize(
+                            animationSpec = tween(
+                                durationMillis = 300,
+                                easing = LinearOutSlowInEasing
+                            )
+                        ),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center
-                ){
+                ) {
                     Icon(
                         imageVector = ImageVector.vectorResource(id = googleIcon),
                         contentDescription = null,
-                        modifier = Modifier.size(20.dp).padding(start = 2.dp),
+                        modifier = Modifier
+                            .size(20.dp)
+                            .padding(start = 2.dp),
                         tint = Unspecified
                     )
                     Text(
                         text = btnText,
                         modifier = Modifier.padding(start = 10.dp, end = 2.dp)
                     )
-                    if(btnLoadingState){
+                    if (btnLoadingState) {
                         Spacer(modifier = Modifier.width(16.dp))
                         CircularProgressIndicator(
                             modifier = Modifier.size(16.dp),
@@ -171,7 +181,7 @@ object CustomButton {
             onResultReceived: (AuthSessionToken) -> Unit,
             onError: (Throwable) -> Unit,
             onDialogDismissed: (Throwable) -> Unit
-        ){
+        ) {
             runCatching {
                 val credentialManager = create(activityContext)
                 val googleIdOptions = GetGoogleIdOption.Builder()
@@ -180,13 +190,16 @@ object CustomButton {
                     .setAutoSelectEnabled(false)
                     .setServerClientId(BuildConfig.GOOGLE_AUTH_WEB_ID)
                     .build()
+
                 val credentialRequest = GetCredentialRequest.Builder()
                     .addCredentialOption(googleIdOptions)
                     .build()
+
                 val result = credentialManager.getCredential(
                     context = activityContext,
                     request = credentialRequest
                 )
+
                 when (val credential = result.credential) {
                     is CustomCredential -> {
                         if (credential.type == TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
@@ -195,39 +208,41 @@ object CustomButton {
                             val idToken = googleIdCredential.idToken
                             val authSessionToken = AuthSessionToken(authProvider, idToken)
                             if (validateToken(authSessionToken)) {
-                                onResultReceived(authSessionToken)
-                            }
-                            else {
+                                authSessionToken
+                            } else {
                                 throw Throwable("Token Validation Failed.")
                             }
-                        }
-                        else {
+                        } else {
                             throw Throwable("Unexpected type of Credential")
                         }
                     }
+
                     else -> throw Throwable("Unexpected type of Credential")
                 }
-            }.onFailure { throwable ->
-                when (throwable) {
-                    is GetCredentialCancellationException -> onDialogDismissed(throwable)
-                    else -> onError(throwable)
+            }.fold(
+                onSuccess = { authSessionToken -> onResultReceived(authSessionToken) },
+                onFailure = { throwable ->
+                    when (throwable) {
+                        is GetCredentialCancellationException -> onDialogDismissed(throwable)
+                        else -> onError(throwable)
+                    }
                 }
-            }
+            )
         }
 
         suspend fun handleClearCredential(
             activityContext: Activity,
             onClearSuccess: () -> Unit,
             onClearError: (Throwable) -> Unit
-        ){
-            try {
+        ) {
+            runCatching {
                 val credentialManager = create(context = activityContext)
                 val clearCredentialRequest = ClearCredentialStateRequest()
                 credentialManager.clearCredentialState(request = clearCredentialRequest)
-                onClearSuccess()
-            }
-            catch (t: ClearCredentialException) { onClearError(t) }
-            catch (t: Throwable) { onClearError(t) }
+            }.fold(
+                onSuccess = { onClearSuccess() },
+                onFailure = { throwable -> onClearError(throwable) }
+            )
         }
     }
 }
