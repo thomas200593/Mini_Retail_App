@@ -24,7 +24,7 @@ fun NavGraphBuilder.navGraphAppConfig(){
     }
 }
 
-fun NavController.navToAppConfig(destAppConfig: DestAppConfig?){
+fun NavController.navToAppConfig(destAppConfig: DestAppConfig? = null){
     val navOptions = navOptions { launchSingleTop = true; restoreState = true }
     this.navigate(
         route = destAppConfig?.route ?: G_APP_CONFIG,

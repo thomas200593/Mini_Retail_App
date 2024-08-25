@@ -121,4 +121,5 @@
     <string name="str_biz_links">Tautan Bisnis</string>
     <string name="str_biz_links_not_set">Anda belum mengatur tautan bisnis. Mau atur sekarang?</string>
     <string name="str_welcome">Selamat datang</string>
+    <string name="str_close">Tutup</string>
 </resources>

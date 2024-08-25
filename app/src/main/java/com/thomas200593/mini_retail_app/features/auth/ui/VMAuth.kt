@@ -6,21 +6,20 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers.Dispatchers.IO
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.di.Dispatcher
-import com.thomas200593.mini_retail_app.core.design_system.util.HlpStateFlow.update
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Error
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Idle
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Loading
-import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState.Success
 import com.thomas200593.mini_retail_app.features.auth.domain.UCValidateAuthSessionAndSave
 import com.thomas200593.mini_retail_app.features.auth.entity.AuthSessionToken
 import com.thomas200593.mini_retail_app.features.auth.repository.RepoAuth
-import com.thomas200593.mini_retail_app.features.auth.ui.VMAuth.UiEvents.BtnAuthWithGoogle
-import com.thomas200593.mini_retail_app.features.auth.ui.VMAuth.UiEvents.ScreenEvents.OnOpen
+import com.thomas200593.mini_retail_app.features.auth.ui.VMAuth.UiEvents.ButtonEvents.BtnAppConfigEvents
+import com.thomas200593.mini_retail_app.features.auth.ui.VMAuth.UiEvents.ButtonEvents.BtnAuthGoogleEvents
+import com.thomas200593.mini_retail_app.features.auth.ui.VMAuth.UiEvents.ButtonEvents.BtnTncEvents
+import com.thomas200593.mini_retail_app.features.auth.ui.VMAuth.UiEvents.DialogEvents.DlgAuthFailedEvent
+import com.thomas200593.mini_retail_app.features.auth.ui.VMAuth.UiEvents.DialogEvents.DlgAuthSuccessEvent
+import com.thomas200593.mini_retail_app.features.auth.ui.VMAuth.UiEvents.OnOpenEvents
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -32,25 +31,46 @@ class VMAuth @Inject constructor(
 ): ViewModel() {
     data class UiState(
         val dialogState: DialogState = DialogState(),
-        val authVldState: ResourceState<AuthSessionToken> = Idle,
-        val authBtnGoogleState: AuthBtnGoogleState = AuthBtnGoogleState()
+        val btnGoogleUiState: BtnGoogleUiState = BtnGoogleUiState(),
+        val authValidationResult: AuthValidationResult = AuthValidationResult.Idle
     )
-    data class AuthBtnGoogleState(
-        val uiInProgress: Boolean = false
-    )
+    sealed interface AuthValidationResult {
+        data object Idle: AuthValidationResult
+        data object Loading: AuthValidationResult
+        data class Success(val authSessionToken: AuthSessionToken): AuthValidationResult
+        data class Error(val throwable: Throwable): AuthValidationResult
+    }
     data class DialogState(
-        val uiEnableLoadingDialog: MutableState<Boolean> = mutableStateOf(false),
-        val uiEnableSuccessDialog: MutableState<Boolean> = mutableStateOf(false),
-        val uiEnableErrorDialog: MutableState<Boolean> = mutableStateOf(false)
+        val dlgAuthLoading: MutableState<Boolean> = mutableStateOf(false),
+        val dlgAuthSuccess: MutableState<Boolean> = mutableStateOf(false),
+        val dlgAuthError: MutableState<Boolean> = mutableStateOf(false)
     )
-    sealed class UiEvents{
-        sealed class ScreenEvents: UiEvents() {
-            data object OnOpen: ScreenEvents()
+    data class BtnGoogleUiState(
+        val loading: Boolean = false
+    )
+    sealed class UiEvents {
+        data object OnOpenEvents: UiEvents()
+        sealed class ButtonEvents: UiEvents() {
+            sealed class BtnAppConfigEvents: ButtonEvents() {
+                data object OnClick: BtnAppConfigEvents()
+            }
+            sealed class BtnAuthGoogleEvents: ButtonEvents() {
+                data object OnClick: BtnAuthGoogleEvents()
+                data class OnResultReceived(val authSessionToken: AuthSessionToken): BtnAuthGoogleEvents()
+                data class OnResultError(val throwable: Throwable): BtnAuthGoogleEvents()
+                data class OnDismissed(val throwable: Throwable): BtnAuthGoogleEvents()
+            }
+            sealed class BtnTncEvents: ButtonEvents() {
+                data object OnClick: BtnTncEvents()
+            }
         }
-        sealed class BtnAuthWithGoogle: UiEvents() {
-            data object OnClick: BtnAuthWithGoogle()
-            data class OnValidationAuthSession(val authSessionToken: AuthSessionToken): BtnAuthWithGoogle()
-            data object OnDismissSuccessDialog: BtnAuthWithGoogle()
+        sealed class DialogEvents: UiEvents() {
+            sealed class DlgAuthSuccessEvent: DialogEvents() {
+                data object OnConfirm: DlgAuthSuccessEvent()
+            }
+            sealed class DlgAuthFailedEvent: DialogEvents() {
+                data object OnDismissed: DlgAuthFailedEvent()
+            }
         }
     }
 
@@ -58,63 +78,87 @@ class VMAuth @Inject constructor(
     val uiState = _uiState.asStateFlow()
 
     fun onEvent(events: UiEvents) {
-        when(events){
-            OnOpen -> initialization()
-            BtnAuthWithGoogle.OnClick -> handleGoogleButtonClick()
-            is BtnAuthWithGoogle.OnValidationAuthSession -> handleAuthVldResult(events.authSessionToken)
-            BtnAuthWithGoogle.OnDismissSuccessDialog -> _uiState.update { it.copy(dialogState = DialogState()) }
+        when(events) {
+            is OnOpenEvents -> onOpenEvent()
+            is BtnAppConfigEvents.OnClick -> onOpenEvent()
+            is BtnAuthGoogleEvents.OnClick -> btnAuthGoogleOnClickEvent()
+            is BtnAuthGoogleEvents.OnResultReceived -> btnAuthGoogleOnResultReceivedEvent(events.authSessionToken)
+            is BtnAuthGoogleEvents.OnResultError -> btnAuthGoogleOnResultErrorEvent(events.throwable)
+            is BtnAuthGoogleEvents.OnDismissed -> onOpenEvent()
+            is BtnTncEvents.OnClick -> onOpenEvent()
+            is DlgAuthSuccessEvent.OnConfirm -> btnAuthGoogleOnConfirmEvent()
+            is DlgAuthFailedEvent.OnDismissed -> onOpenEvent()
         }
     }
-    private fun handleAuthVldResult(authSessionToken: AuthSessionToken) =
+
+    private fun updateDialogState(
+        dlgAuthLoading: Boolean = false,
+        dlgAuthSuccess: Boolean = false,
+        dlgAuthError: Boolean = false
+    ) = _uiState.update {
+        it.copy(
+            dialogState = it.dialogState.copy(
+                dlgAuthLoading = mutableStateOf(dlgAuthLoading),
+                dlgAuthSuccess = mutableStateOf(dlgAuthSuccess),
+                dlgAuthError = mutableStateOf(dlgAuthError)
+            )
+        )
+    }
+    private fun resetDialogState() = _uiState.update {
+        it.copy(dialogState = DialogState())
+    }
+    private fun resetBtnGoogleUiState() = _uiState.update {
+        it.copy(btnGoogleUiState = BtnGoogleUiState())
+    }
+    private fun resetAuthResultState() = _uiState.update {
+        it.copy(authValidationResult = AuthValidationResult.Idle)
+    }
+    private fun onOpenEvent() = viewModelScope.launch(ioDispatcher) {
+        repoAuth.clearAuthSessionToken().also {
+            resetBtnGoogleUiState()
+            resetDialogState()
+            resetAuthResultState()
+        }
+    }
+    private fun btnAuthGoogleOnClickEvent() = _uiState.update {
+        it.copy(btnGoogleUiState = it.btnGoogleUiState.copy(loading = true))
+    }
+    private fun btnAuthGoogleOnResultReceivedEvent(authSessionToken: AuthSessionToken) {
+        updateDialogState(dlgAuthLoading = true)
+        _uiState.update { it.copy(authValidationResult = AuthValidationResult.Loading) }
         viewModelScope.launch(ioDispatcher) {
-            updateDialogState(loading = true, success = false, error = false)
-            _uiState.update { it.copy(authVldState = Loading) }
-            try{
-                if(ucValidateAuthSessionAndSave.invoke(authSessionToken)) {
-                    updateDialogState(loading = false, success = true, error = false)
-                    _uiState.update { it.copy(authVldState = Success(authSessionToken)) }
+            if(ucValidateAuthSessionAndSave.invoke(authSessionToken)) {
+                _uiState.update {
+                    it.copy(
+                        authValidationResult = AuthValidationResult.Success(authSessionToken = authSessionToken)
+                    )
                 }
-                else{
-                    updateDialogState(loading = false, success = false, error = true)
-                    _uiState.update {
-                        it.copy(
-                            authVldState = Error(Throwable("Cannot authenticate with Google")),
-                            authBtnGoogleState = AuthBtnGoogleState()
-                        )
-                    }
+                resetDialogState()
+                resetBtnGoogleUiState()
+                updateDialogState(dlgAuthSuccess = true)
+            }
+            else {
+                _uiState.update {
+                    it.copy(
+                        authValidationResult = AuthValidationResult.Error(Throwable("Cannot Authenticate with Google!"))
+                    )
                 }
-            } catch (e: Throwable) {
-                updateDialogState(loading = false, error = true, success = false)
-                _uiState.update { it.copy(authVldState = Error(e)) }
+                updateDialogState(dlgAuthError = true)
             }
         }
-    private fun initialization() = viewModelScope.launch(ioDispatcher) {
-        _uiState.update {
-            it.copy(
-                authBtnGoogleState = AuthBtnGoogleState(),
-                authVldState = Idle, dialogState = DialogState()
-            )
-        }
-        repoAuth.clearAuthSessionToken()
     }
-    private fun handleGoogleButtonClick() {
-        _uiState.update {
-            it.copy(authBtnGoogleState = it.authBtnGoogleState.copy(uiInProgress = true))
-        }
+    private fun btnAuthGoogleOnConfirmEvent() {
+        resetDialogState()
+        resetBtnGoogleUiState()
+        resetAuthResultState()
     }
-    private fun updateDialogState(
-        loading: Boolean = false,
-        success: Boolean = false,
-        error: Boolean = false
-    ) {
+    private fun btnAuthGoogleOnResultErrorEvent(throwable: Throwable) {
+        resetDialogState()
+        resetBtnGoogleUiState()
+        resetAuthResultState()
         _uiState.update {
-            it.copy(
-                dialogState = it.dialogState.copy(
-                    uiEnableLoadingDialog = mutableStateOf(loading),
-                    uiEnableSuccessDialog = mutableStateOf(success),
-                    uiEnableErrorDialog = mutableStateOf(error)
-                )
-            )
+            it.copy(authValidationResult = AuthValidationResult.Error(throwable))
         }
+        updateDialogState(dlgAuthError = true)
     }
 }

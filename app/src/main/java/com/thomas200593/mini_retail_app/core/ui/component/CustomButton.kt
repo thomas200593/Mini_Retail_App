@@ -48,11 +48,9 @@ import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
 import androidx.credentials.exceptions.ClearCredentialException
 import androidx.credentials.exceptions.GetCredentialCancellationException
-import androidx.credentials.exceptions.GetCredentialException
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential.Companion.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential.Companion.createFrom
-import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
 import com.thomas200593.mini_retail_app.BuildConfig
 import com.thomas200593.mini_retail_app.core.design_system.util.HlpJwt.GoogleOAuth2
 import com.thomas200593.mini_retail_app.core.design_system.util.HlpJwt.GoogleOAuth2.validateToken
@@ -174,33 +172,47 @@ object CustomButton {
             onError: (Throwable) -> Unit,
             onDialogDismissed: (Throwable) -> Unit
         ){
-            val credentialManager = create(activityContext)
-            val googleIdOptions = GetGoogleIdOption.Builder().setFilterByAuthorizedAccounts(false)
-                .setNonce(GoogleOAuth2.generateTokenNonce()).setAutoSelectEnabled(false)
-                .setServerClientId(BuildConfig.GOOGLE_AUTH_WEB_ID).build()
-            val credentialRequest = GetCredentialRequest.Builder().addCredentialOption(googleIdOptions)
-                .build()
-            try{
-                val result = credentialManager.getCredential(context = activityContext, request = credentialRequest)
-                when(val credential = result.credential){
+            runCatching {
+                val credentialManager = create(activityContext)
+                val googleIdOptions = GetGoogleIdOption.Builder()
+                    .setFilterByAuthorizedAccounts(false)
+                    .setNonce(GoogleOAuth2.generateTokenNonce())
+                    .setAutoSelectEnabled(false)
+                    .setServerClientId(BuildConfig.GOOGLE_AUTH_WEB_ID)
+                    .build()
+                val credentialRequest = GetCredentialRequest.Builder()
+                    .addCredentialOption(googleIdOptions)
+                    .build()
+                val result = credentialManager.getCredential(
+                    context = activityContext,
+                    request = credentialRequest
+                )
+                when (val credential = result.credential) {
                     is CustomCredential -> {
-                        if(credential.type == TYPE_GOOGLE_ID_TOKEN_CREDENTIAL){
+                        if (credential.type == TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
                             val googleIdCredential = createFrom(credential.data)
                             val authProvider = GOOGLE
                             val idToken = googleIdCredential.idToken
                             val authSessionToken = AuthSessionToken(authProvider, idToken)
-                            if(validateToken(authSessionToken))
-                            { onResultReceived(authSessionToken) }
-                            else { onError(Throwable("Token Validation Failed.")) }
+                            if (validateToken(authSessionToken)) {
+                                onResultReceived(authSessionToken)
+                            }
+                            else {
+                                throw Throwable("Token Validation Failed.")
+                            }
                         }
-                        else{ onError(Throwable("Unexpected type of Credential")) }
+                        else {
+                            throw Throwable("Unexpected type of Credential")
+                        }
                     }
-                    else -> { onError(Throwable("Unexpected type of Credential")) }
+                    else -> throw Throwable("Unexpected type of Credential")
+                }
+            }.onFailure { throwable ->
+                when (throwable) {
+                    is GetCredentialCancellationException -> onDialogDismissed(throwable)
+                    else -> onError(throwable)
                 }
             }
-            catch (e: GetCredentialException){ onError(e) }
-            catch (e: GoogleIdTokenParsingException){ onError(e) }
-            catch (e: GetCredentialCancellationException){ onDialogDismissed(e) }
         }
 
         suspend fun handleClearCredential(
@@ -208,14 +220,14 @@ object CustomButton {
             onClearSuccess: () -> Unit,
             onClearError: (Throwable) -> Unit
         ){
-            val credentialManager = create(context = activityContext)
-            val clearCredentialRequest = ClearCredentialStateRequest()
-            try{
+            try {
+                val credentialManager = create(context = activityContext)
+                val clearCredentialRequest = ClearCredentialStateRequest()
                 credentialManager.clearCredentialState(request = clearCredentialRequest)
                 onClearSuccess()
             }
-            catch (t: ClearCredentialException){ onClearError(t) }
-            catch (t: Exception){ onClearError(t) }
+            catch (t: ClearCredentialException) { onClearError(t) }
+            catch (t: Throwable) { onClearError(t) }
         }
     }
 }
