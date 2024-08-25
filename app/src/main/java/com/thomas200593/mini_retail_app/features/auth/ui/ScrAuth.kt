@@ -22,8 +22,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,9 +33,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.credentials.exceptions.GetCredentialUnsupportedException
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.thomas200593.mini_retail_app.BuildConfig.BUILD_TYPE
@@ -46,7 +42,6 @@ import com.thomas200593.mini_retail_app.R.string
 import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
 import com.thomas200593.mini_retail_app.app.ui.StateApp
 import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons
-import com.thomas200593.mini_retail_app.core.ui.common.CustomThemes.ApplicationTheme
 import com.thomas200593.mini_retail_app.core.ui.component.CustomButton.Common.AppIconButton
 import com.thomas200593.mini_retail_app.core.ui.component.CustomButton.Google.SignInWithGoogle
 import com.thomas200593.mini_retail_app.core.ui.component.CustomButton.Google.handleClearCredential
@@ -55,8 +50,6 @@ import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog
 import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AppAlertDialog
 import com.thomas200593.mini_retail_app.core.ui.component.CustomScreenUtil.LockScreenOrientation
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.navigation.navToAppConfig
-import com.thomas200593.mini_retail_app.features.auth.ui.VMAuth.BtnGoogleUiState
-import com.thomas200593.mini_retail_app.features.auth.ui.VMAuth.DialogState
 import com.thomas200593.mini_retail_app.features.auth.ui.VMAuth.UiEvents.ButtonEvents.BtnAppConfigEvents
 import com.thomas200593.mini_retail_app.features.auth.ui.VMAuth.UiEvents.ButtonEvents.BtnAuthGoogleEvents
 import com.thomas200593.mini_retail_app.features.auth.ui.VMAuth.UiEvents.ButtonEvents.BtnTncEvents
@@ -350,29 +343,4 @@ fun TncSection(
             modifier = Modifier.padding(12.dp)
         )
     }
-}
-
-@Composable
-@Preview
-private fun Preview() = ApplicationTheme {
-    ScrAuth(
-        onNavToAppConfig = {},
-        onAuthGoogle = {},
-        onNavToTnc = {},
-        dlgAuthSuccessOnConfirm = {},
-        dlgAuthFailedOnDismiss = {},
-        uiState = UiState(
-            btnGoogleUiState = BtnGoogleUiState(
-                loading = false
-            ),
-            dialogState = DialogState(
-                dlgAuthLoading = remember { mutableStateOf(false) },
-                dlgAuthSuccess = remember { mutableStateOf(false) },
-                dlgAuthError = remember { mutableStateOf(true) }
-            ),
-            authValidationResult = VMAuth.AuthValidationResult.Error(
-                throwable = GetCredentialUnsupportedException()
-            )
-        )
-    )
 }
