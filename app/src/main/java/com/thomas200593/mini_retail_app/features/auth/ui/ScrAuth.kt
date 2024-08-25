@@ -294,7 +294,7 @@ private fun AppTitleSection() {
 }
 
 @Composable
-fun WelcomeMessageSection() {
+private fun WelcomeMessageSection() {
     Surface(
         modifier = Modifier.fillMaxWidth(0.9f),
         shape = MaterialTheme.shapes.small,
@@ -310,7 +310,7 @@ fun WelcomeMessageSection() {
 }
 
 @Composable
-fun AuthWithGoogleSection(
+private fun AuthWithGoogleSection(
     uiState: UiState,
     onAuthGoogle: () -> Unit
 ) {
@@ -326,7 +326,7 @@ fun AuthWithGoogleSection(
 }
 
 @Composable
-fun TncSection(
+private fun TncSection(
     onNavToTnc: () -> Unit
 ) {
     Surface(
