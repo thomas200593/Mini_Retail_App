@@ -102,9 +102,7 @@ fun ScrAuth(
                         activityContext = activityContext,
                         onResultReceived = { vm.onEvent(BtnAuthGoogleEvents.OnResultReceived(it)) },
                         onError = { vm.onEvent(BtnAuthGoogleEvents.OnResultError(it)) },
-                        onDialogDismissed = {
-                            vm.onEvent(BtnAuthGoogleEvents.OnDismissed(it))
-                        }
+                        onDialogDismissed = { vm.onEvent(BtnAuthGoogleEvents.OnDismissed(it)) }
                     )
                 }
             }

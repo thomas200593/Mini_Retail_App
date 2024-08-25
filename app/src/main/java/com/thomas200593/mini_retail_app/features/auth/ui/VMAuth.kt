@@ -84,7 +84,7 @@ class VMAuth @Inject constructor(
             is BtnAuthGoogleEvents.OnClick -> btnAuthGoogleOnClickEvent()
             is BtnAuthGoogleEvents.OnResultReceived -> btnAuthGoogleOnResultReceivedEvent(events.authSessionToken)
             is BtnAuthGoogleEvents.OnResultError -> btnAuthGoogleOnResultErrorEvent(events.throwable)
-            is BtnAuthGoogleEvents.OnDismissed -> onOpenEvent()
+            is BtnAuthGoogleEvents.OnDismissed -> btnAuthGoogleOnResultDismissed(events.throwable)
             is BtnTncEvents.OnClick -> onOpenEvent()
             is DlgAuthSuccessEvent.OnConfirm -> btnAuthGoogleOnConfirmEvent()
             is DlgAuthFailedEvent.OnDismissed -> onOpenEvent()
@@ -140,7 +140,7 @@ class VMAuth @Inject constructor(
             else {
                 _uiState.update {
                     it.copy(
-                        authValidationResult = AuthValidationResult.Error(Throwable("Cannot Authenticate with Google!"))
+                        authValidationResult = AuthValidationResult.Error(Throwable("Client cannot authenticate with Google!"))
                     )
                 }
                 updateDialogState(dlgAuthError = true)
@@ -156,6 +156,12 @@ class VMAuth @Inject constructor(
         resetDialogState()
         resetBtnGoogleUiState()
         resetAuthResultState()
+        _uiState.update {
+            it.copy(authValidationResult = AuthValidationResult.Error(throwable))
+        }
+        updateDialogState(dlgAuthError = true)
+    }
+    private fun btnAuthGoogleOnResultDismissed(throwable: Throwable) {
         _uiState.update {
             it.copy(authValidationResult = AuthValidationResult.Error(throwable))
         }
