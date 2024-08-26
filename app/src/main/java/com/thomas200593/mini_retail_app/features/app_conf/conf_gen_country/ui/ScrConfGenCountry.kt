@@ -1,23 +1,70 @@
 package com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.ui
 
 import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons.AutoMirrored
+import androidx.compose.material.icons.Icons.Default
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowRight
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs
 import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
 import com.thomas200593.mini_retail_app.app.ui.StateApp
-import com.thomas200593.mini_retail_app.core.ui.common.CustomThemes.ApplicationTheme
+import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
+import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar.ProvideTopAppBarAction
+import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar.ProvideTopAppBarNavigationIcon
+import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar.ProvideTopAppBarTitle
+import com.thomas200593.mini_retail_app.core.ui.component.CustomButton.Common.AppIconButton
+import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AlertDialogContext
+import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AppAlertDialog
+import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.ThreeRowCardItem
 import com.thomas200593.mini_retail_app.core.ui.component.CustomScreenUtil.LockScreenOrientation
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.entity.ConfigCountry
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.entity.Country
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.ui.VMConfGenCountry.UiEvents.ButtonEvents.BtnNavBackEvents
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.ui.VMConfGenCountry.UiEvents.ButtonEvents.BtnScrDescEvents
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.ui.VMConfGenCountry.UiEvents.ButtonEvents.BtnSetPrefCountryEvents
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.ui.VMConfGenCountry.UiEvents.DialogEvents.DlgDenySetDataEvents
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.ui.VMConfGenCountry.UiEvents.OnOpenEvents
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.ui.VMConfGenCountry.UiState
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.ui.VMConfGenCountry.UiStateConfigCountry.Loading
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.ui.VMConfGenCountry.UiStateConfigCountry.Success
+import kotlinx.coroutines.launch
 
 @Composable
 fun ScrConfGenCountry(
@@ -31,16 +78,40 @@ fun ScrConfGenCountry(
     val sessionState by stateApp.isSessionValid.collectAsStateWithLifecycle()
     val currentScreen = ScrGraphs.getByRoute(stateApp.destCurrent)
 
-    LaunchedEffect(sessionState) { /*TODO*/ }
+    LaunchedEffect(sessionState) { vm.onEvent(OnOpenEvents(sessionState)) }
 
     ScrConfGenCountry(
         uiState = uiState,
         currentScreen = currentScreen,
-        onNavigateBack = {/*TODO*/ },
-        onShowScrDesc = {/*TODO*/},
-        onDismissDlgScrDesc = {/*TODO*/},
-        onSetData = {/*TODO*/},
-        onDismissDlgDenySetData = {/*TODO*/}
+        onNavigateBack = {
+            vm.onEvent(BtnNavBackEvents.OnClick).also {
+                coroutineScope.launch { stateApp.onNavUp() }
+            }
+        },
+        onShowScrDesc = { vm.onEvent(BtnScrDescEvents.OnClick) },
+        onDismissDlgScrDesc = { vm.onEvent(BtnScrDescEvents.OnDismiss) },
+        onSetData = { country ->
+            currentScreen?.let {
+                when(sessionState) {
+                    SessionState.Loading -> Unit
+                    is SessionState.Invalid -> {
+                        if (it.usesAuth) {
+                            vm.onEvent(BtnSetPrefCountryEvents.OnDeny)
+                        } else {
+                            vm.onEvent(BtnSetPrefCountryEvents.OnAllow(country))
+                        }
+                    }
+                    is SessionState.Valid -> {
+                        vm.onEvent(BtnSetPrefCountryEvents.OnAllow(country))
+                    }
+                }
+            }
+        },
+        onDismissDlgDenySetData = {
+            vm.onEvent(DlgDenySetDataEvents.OnDismiss).also {
+                coroutineScope.launch { stateApp.onNavUp() }
+            }
+        }
     )
 }
 
@@ -49,10 +120,10 @@ private fun ScrConfGenCountry(
     uiState: UiState,
     currentScreen: ScrGraphs?,
     onNavigateBack: () -> Unit,
-    onShowScrDesc: () -> Unit,
+    onShowScrDesc: (String) -> Unit,
     onDismissDlgScrDesc: () -> Unit,
     onSetData: (Country) -> Unit,
-    onDismissDlgDenySetData: () -> Unit
+    onDismissDlgDenySetData: () -> Unit,
 ) {
     currentScreen?.let {
         HandleDialogs(
@@ -70,7 +141,7 @@ private fun ScrConfGenCountry(
     when(uiState.configCountry) {
         Loading -> Unit
         is Success -> ScreenContent(
-            menuPreferences = uiState.configCountry.configCountry,
+            configCountry = uiState.configCountry.configCountry,
             onSetData = onSetData
         )
     }
@@ -82,181 +153,115 @@ private fun HandleDialogs(
     currentScreen: ScrGraphs,
     onDismissDlgScrDesc: () -> Unit,
     onDismissDlgDenySetData: () -> Unit
-) {/*TODO*/}
+) {
+    AppAlertDialog(
+        showDialog = uiState.dialogState.dlgLoadingAuth,
+        dialogContext = AlertDialogContext.INFORMATION,
+        showTitle = true,
+        title = {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) { CircularProgressIndicator() }
+        },
+        showBody = true,
+        body = {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) { Text(text = "Authenticating") }
+        }
+    )
+    AppAlertDialog(
+        showDialog = uiState.dialogState.dlgLoadingGetData,
+        dialogContext = AlertDialogContext.INFORMATION,
+        showTitle = true,
+        title = {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) { CircularProgressIndicator() }
+        },
+        showBody = true,
+        body = {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) { Text(text = "Getting Menu Data") }
+        }
+    )
+    AppAlertDialog(
+        showDialog = uiState.dialogState.dlgDenySetData,
+        dialogContext = AlertDialogContext.ERROR,
+        showTitle = true,
+        title = { Text(text = stringResource(id = R.string.str_error)) },
+        showBody = true,
+        body = {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text(text = "Access Denied! Authentication Required")
+            }
+        },
+        useDismissButton = true,
+        dismissButton = {
+            AppIconButton(
+                onClick = onDismissDlgDenySetData,
+                icon = Default.Close,
+                text = stringResource(id = R.string.str_close),
+                containerColor = MaterialTheme.colorScheme.error,
+                contentColor = MaterialTheme.colorScheme.onError
+            )
+        }
+    )
+    AppAlertDialog(
+        showDialog = uiState.dialogState.dlgScrDesc,
+        dialogContext = AlertDialogContext.INFORMATION,
+        showIcon = true,
+        showTitle = true,
+        title = { currentScreen.title?.let { Text(text = stringResource(id = it)) } },
+        showBody = true,
+        body = {
+            currentScreen.description?.let {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .verticalScroll(rememberScrollState()),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) { Text(text = stringResource(id = it)) }
+            }
+        },
+        useDismissButton = true,
+        dismissButton = {
+            AppIconButton(
+                onClick = onDismissDlgScrDesc,
+                icon = Default.Close,
+                text = stringResource(id = R.string.str_close)
+            )
+        }
+    )
+}
 
 @Composable
 private fun TopAppBar(
     scrGraphs: ScrGraphs,
     onNavigateBack: () -> Unit,
-    onShowScrDesc: () -> Unit
-) {/*TODO*/}
-
-@Composable
-private fun ScreenContent(
-    menuPreferences: ConfigCountry,
-    onSetData: (Country) -> Unit
-) {/*TODO*/}
-
-@Composable
-@Preview
-private fun Preview() = ApplicationTheme {
-    ScrConfGenCountry(
-        onNavigateBack = {},
-        onShowScrDesc = {},
-        onDismissDlgScrDesc = {},
-        onSetData = {},
-        onDismissDlgDenySetData = {},
-        currentScreen = ScrGraphs.ConfGenCountry,
-        uiState = UiState()
-    )
-}
-
-/*
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.sizeIn
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons.AutoMirrored
-import androidx.compose.material.icons.Icons.Default
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
-import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowRight
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material3.ButtonDefaults.IconSize
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme.colorScheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color.Companion.Green
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.font.FontWeight.Companion.Bold
-import androidx.compose.ui.text.style.TextAlign.Companion.Center
-import androidx.compose.ui.text.style.TextAlign.Companion.Start
-import androidx.compose.ui.text.style.TextOverflow.Companion.Ellipsis
-import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.thomas200593.mini_retail_app.R.string
-import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
-import com.thomas200593.mini_retail_app.app.ui.StateApp
-import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.Country.country
-import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar.ProvideTopAppBarAction
-import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar.ProvideTopAppBarNavigationIcon
-import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar.ProvideTopAppBarTitle
-import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AlertDialogContext.ERROR
-import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AlertDialogContext.INFORMATION
-import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AppAlertDialog
-import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.ErrorScreen
-import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.ThreeRowCardItem
-import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.entity.ConfigCountry
-import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.entity.Country
-import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.ui.VMConfGenCountry.UiEvents.ButtonEvents.BtnNavBackEvents
-import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.ui.VMConfGenCountry.UiEvents.ButtonEvents.BtnSelectCountryEvents
-import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.ui.VMConfGenCountry.UiEvents.OnOpenEvents
-import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.ui.VMConfGenCountry.UiStateConfigCountry.Error
-import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.ui.VMConfGenCountry.UiStateConfigCountry.Loading
-import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.ui.VMConfGenCountry.UiStateConfigCountry.Success
-
-@Composable
-fun ScrConfGenCountry(
-    vm: VMConfGenCountry = hiltViewModel(),
-    stateApp: StateApp = LocalStateApp.current
-){
-    val sessionState by stateApp.isSessionValid.collectAsStateWithLifecycle()
-    val uiState by vm.uiState.collectAsStateWithLifecycle()
-    LaunchedEffect(sessionState) { vm.onEvent(OnOpenEvents(sessionState)) }
-    TopAppBar(onNavigateBack = { vm.onEvent(BtnNavBackEvents.OnClick).also{ stateApp.onNavUp() }})
-    when(uiState.configCountry){
-        Loading -> Unit
-        is Error -> ErrorScreen(
-            title = stringResource(id = string.str_error),
-            errorMessage = stringResource(id = string.str_error_fetching_preferences),
-            showIcon = true
-        )
-        is Success -> ScreenContent(
-            configCountry = (uiState.configCountry as Success).configCountry,
-            onSaveSelectedCountry = { vm.onEvent(BtnSelectCountryEvents.OnClick(sessionState, it)) }
-        )
-    }
-    AppAlertDialog(
-        showDialog = uiState.dialogState.dlgVldAuthEnabled,
-        dialogContext = INFORMATION,
-        showIcon = true,
-        showTitle = true,
-        title = { Text(text = stringResource(id = string.str_loading))},
-        showBody = true,
-        body = { Text(text = stringResource(id = string.str_loading))},
-    )
-    AppAlertDialog(
-        showDialog = uiState.dialogState.dlgLoadDataEnabled,
-        dialogContext = INFORMATION,
-        showIcon = true,
-        showTitle = true,
-        title = { Text(text = stringResource(id = string.str_loading))},
-        showBody = true,
-        body = { Text(text = stringResource(id = string.str_loading))},
-    )
-    AppAlertDialog(
-        showDialog = uiState.dialogState.dlgLoadDataErrorEnabled,
-        dialogContext = ERROR,
-        showIcon = true,
-        showTitle = true,
-        title = { Text(text = stringResource(id = string.str_error))},
-        showBody = true,
-        body = { Text("Load Data Error") },
-        useConfirmButton = true,
-        confirmButton = {
-            TextButton(onClick = { vm.onEvent(OnOpenEvents(sessionState)) })
-            { Text(stringResource(id = string.str_ok)) }
-        }
-    )
-    AppAlertDialog(
-        showDialog = uiState.dialogState.dlgDenyAccessEnabled,
-        dialogContext = ERROR,
-        showIcon = true,
-        showTitle = true,
-        title = { Text(text = stringResource(id = string.str_error))},
-        showBody = true,
-        body = { Text("Forbidden Access Get Data") },
-        useConfirmButton = true,
-        confirmButton = {
-            TextButton(onClick = { vm.onEvent(OnOpenEvents(sessionState)) })
-            { Text(stringResource(id = string.str_ok)) }
-        }
-    )
-    AppAlertDialog(
-        showDialog = uiState.dialogState.dlgDenySaveDataEnabled,
-        dialogContext = ERROR,
-        showIcon = true,
-        showTitle = true,
-        title = { Text(text = stringResource(id = string.str_error))},
-        showBody = true,
-        body = { Text("Forbidden Access To Save Data") },
-        useConfirmButton = true,
-        confirmButton = {
-            TextButton(onClick = { vm.onEvent(OnOpenEvents(sessionState)) })
-            { Text(stringResource(id = string.str_ok)) }
-        }
-    )
-}
-
-@Composable
-private fun TopAppBar(onNavigateBack: () -> Unit) {
+    onShowScrDesc: (String) -> Unit
+) {
     ProvideTopAppBarNavigationIcon {
-        Surface(onClick = onNavigateBack, modifier = Modifier) {
+        Surface(
+            onClick = onNavigateBack,
+            modifier = Modifier
+        ) {
             Icon(
                 modifier = Modifier,
                 imageVector = AutoMirrored.Filled.KeyboardArrowLeft,
@@ -270,29 +275,41 @@ private fun TopAppBar(onNavigateBack: () -> Unit) {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ){
-            Icon(
-                modifier = Modifier.sizeIn(maxHeight = IconSize),
-                imageVector = ImageVector.vectorResource(id = country),
-                contentDescription = null
-            )
-            Text(
-                text = stringResource(id = string.str_country),
-                maxLines = 1,
-                overflow = Ellipsis
-            )
+            scrGraphs.iconRes?.let {
+                Icon(
+                    modifier = Modifier.sizeIn(maxHeight = ButtonDefaults.IconSize),
+                    imageVector = ImageVector.vectorResource(id = it),
+                    contentDescription = null
+                )
+            }
+            scrGraphs.title?.let {
+                Text(
+                    text = stringResource(id = it),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
         }
     }
-    ProvideTopAppBarAction {
-        Row(
-            modifier = Modifier.padding(end = 20.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        ){
-            Icon(
-                modifier = Modifier.sizeIn(maxHeight = IconSize),
-                imageVector = Default.Info,
-                contentDescription = null
-            )
+    scrGraphs.description?.let {
+        ProvideTopAppBarAction {
+            Row(
+                modifier = Modifier,
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ){
+                val desc = stringResource(id = it)
+                Surface(
+                    onClick = { onShowScrDesc(desc) },
+                    modifier = Modifier
+                        .sizeIn(maxHeight = ButtonDefaults.IconSize),
+                ) {
+                    Icon(
+                        imageVector = Default.Info,
+                        contentDescription = null
+                    )
+                }
+            }
         }
     }
 }
@@ -300,25 +317,37 @@ private fun TopAppBar(onNavigateBack: () -> Unit) {
 @Composable
 private fun ScreenContent(
     configCountry: ConfigCountry,
-    onSaveSelectedCountry: (Country) -> Unit
+    onSetData: (Country) -> Unit
 ) {
     val currentData = configCountry.configCurrent.country
     val preferencesList = configCountry.countries
     Column(
-        modifier = Modifier.fillMaxSize().padding(4.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(4.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-        Text(
-            text = "${stringResource(id = string.str_country)} : ${currentData.displayName}",
-            modifier = Modifier.fillMaxWidth().padding(4.dp),
-            fontWeight = Bold,
-            maxLines = 1,
-            overflow = Ellipsis,
-            textAlign = Center,
-        )
+        Surface(
+            modifier = Modifier,
+            color = MaterialTheme.colorScheme.surface,
+            contentColor = MaterialTheme.colorScheme.onSurface
+        ) {
+            Text(
+                text = "${stringResource(id = R.string.str_country)} : ${currentData.displayName}",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(4.dp),
+                fontWeight = FontWeight.Bold,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                textAlign = TextAlign.Center,
+            )
+        }
         LazyColumn(
-            modifier = Modifier.fillMaxSize().padding(8.dp),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(8.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -329,42 +358,48 @@ private fun ScreenContent(
                         Text(
                             text = data.isoCode,
                             modifier = Modifier.fillMaxWidth(),
-                            textAlign = Center,
-                            fontWeight = Bold,
+                            textAlign = TextAlign.Center,
+                            fontWeight = FontWeight.Bold,
                             maxLines = 1,
-                            overflow = Ellipsis
+                            overflow = TextOverflow.Ellipsis
                         )
                         HorizontalDivider()
                         Text(
                             text = data.iso03Country,
                             modifier = Modifier.fillMaxWidth(),
-                            textAlign = Center,
-                            fontWeight = Bold,
+                            textAlign = TextAlign.Center,
+                            fontWeight = FontWeight.Bold,
                             maxLines = 1,
-                            overflow = Ellipsis
+                            overflow = TextOverflow.Ellipsis
                         )
                     },
                     secondRowContent = {
                         Text(
                             text = data.displayName,
                             modifier = Modifier.fillMaxWidth(),
-                            textAlign = Start,
-                            fontWeight = Bold,
+                            textAlign = TextAlign.Start,
+                            fontWeight = FontWeight.Bold,
                             maxLines = 1,
-                            overflow = Ellipsis
+                            overflow = TextOverflow.Ellipsis
                         )
                     },
                     thirdRowContent = {
                         Surface(
                             modifier = Modifier.fillMaxWidth(),
-                            onClick = { onSaveSelectedCountry(data) }
+                            onClick = { onSetData(data) }
                         ) {
                             Icon(
-                                imageVector = if (data == currentData) { Default.CheckCircle }
-                                else { AutoMirrored.Outlined.KeyboardArrowRight },
+                                imageVector = if (data == currentData) {
+                                    Default.CheckCircle
+                                } else {
+                                    AutoMirrored.Outlined.KeyboardArrowRight
+                                },
                                 contentDescription = null,
-                                tint = if (data == currentData) { Green }
-                                else { colorScheme.onTertiaryContainer }
+                                tint = if (data == currentData) {
+                                    Color.Green
+                                } else {
+                                    MaterialTheme.colorScheme.onTertiaryContainer
+                                }
                             )
                         }
                     }
@@ -372,4 +407,4 @@ private fun ScreenContent(
             }
         }
     }
-}*/
+}

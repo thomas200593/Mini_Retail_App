@@ -27,7 +27,7 @@ fun NavController.navToConfData(
 ){
     val navOptions = navOptions { launchSingleTop = true; restoreState = true }
     this.navigate(
-        route = destConfData?.route?: G_CONFIG_DATA,
+        route = destConfData?.scrGraphs?.route?: G_CONFIG_DATA,
         navOptions = navOptions
     )
 }

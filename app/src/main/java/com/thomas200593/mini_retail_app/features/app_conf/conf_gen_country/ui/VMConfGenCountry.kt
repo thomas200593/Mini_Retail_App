@@ -1,8 +1,11 @@
 package com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.ui
 
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.entity.ConfigCountry
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.entity.Country
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.ui.VMConfGenCountry.UiEvents.ButtonEvents.BtnNavBackEvents
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.ui.VMConfGenCountry.UiEvents.ButtonEvents.BtnScrDescEvents
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.ui.VMConfGenCountry.UiEvents.ButtonEvents.BtnSetPrefCountryEvents
@@ -23,6 +26,13 @@ class VMConfGenCountry @Inject constructor(
     }
     data class UiState(
         val configCountry: UiStateConfigCountry = Loading,
+        val dialogState: DialogState = DialogState()
+    )
+    data class DialogState(
+        val dlgLoadingAuth: MutableState<Boolean> = mutableStateOf(false),
+        val dlgLoadingGetData: MutableState<Boolean> = mutableStateOf(false),
+        val dlgDenySetData: MutableState<Boolean> = mutableStateOf(false),
+        val dlgScrDesc: MutableState<Boolean> = mutableStateOf(false)
     )
     sealed class UiEvents {
         data class OnOpenEvents(val sessionState: SessionState): UiEvents()
@@ -35,7 +45,7 @@ class VMConfGenCountry @Inject constructor(
                 data object OnDismiss: BtnScrDescEvents()
             }
             sealed class BtnSetPrefCountryEvents: ButtonEvents() {
-                data object OnAllow: BtnSetPrefCountryEvents()
+                data class OnAllow(val country: Country): BtnSetPrefCountryEvents()
                 data object OnDeny: BtnSetPrefCountryEvents()
             }
         }
