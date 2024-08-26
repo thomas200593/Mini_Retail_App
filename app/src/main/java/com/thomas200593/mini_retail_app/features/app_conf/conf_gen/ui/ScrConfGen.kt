@@ -247,7 +247,7 @@ private fun HandleDialogs(
 }
 
 @Composable
-fun TopAppBar(
+private fun TopAppBar(
     scrGraphs: ScrGraphs,
     onNavigateBack: () -> Unit,
     onShowScrDesc: (String) -> Unit
@@ -310,7 +310,7 @@ fun TopAppBar(
 }
 
 @Composable
-fun ScreenContent(
+private fun ScreenContent(
     menuPreferences: Set<DestConfGen>,
     onNavToMenu: (DestConfGen) -> Unit
 ) {

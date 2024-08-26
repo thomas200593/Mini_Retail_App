@@ -1,5 +1,117 @@
 package com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.ui
 
+import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs
+import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
+import com.thomas200593.mini_retail_app.app.ui.StateApp
+import com.thomas200593.mini_retail_app.core.ui.common.CustomThemes.ApplicationTheme
+import com.thomas200593.mini_retail_app.core.ui.component.CustomScreenUtil.LockScreenOrientation
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.entity.ConfigCountry
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.entity.Country
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.ui.VMConfGenCountry.UiState
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.ui.VMConfGenCountry.UiStateConfigCountry.Loading
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.ui.VMConfGenCountry.UiStateConfigCountry.Success
+
+@Composable
+fun ScrConfGenCountry(
+    vm: VMConfGenCountry = hiltViewModel(),
+    stateApp: StateApp = LocalStateApp.current
+) {
+    LockScreenOrientation(orientation = SCREEN_ORIENTATION_PORTRAIT)
+
+    val coroutineScope = rememberCoroutineScope()
+    val uiState by vm.uiState.collectAsStateWithLifecycle()
+    val sessionState by stateApp.isSessionValid.collectAsStateWithLifecycle()
+    val currentScreen = ScrGraphs.getByRoute(stateApp.destCurrent)
+
+    LaunchedEffect(sessionState) { /*TODO*/ }
+
+    ScrConfGenCountry(
+        uiState = uiState,
+        currentScreen = currentScreen,
+        onNavigateBack = {/*TODO*/ },
+        onShowScrDesc = {/*TODO*/},
+        onDismissDlgScrDesc = {/*TODO*/},
+        onSetData = {/*TODO*/},
+        onDismissDlgDenySetData = {/*TODO*/}
+    )
+}
+
+@Composable
+private fun ScrConfGenCountry(
+    uiState: UiState,
+    currentScreen: ScrGraphs?,
+    onNavigateBack: () -> Unit,
+    onShowScrDesc: () -> Unit,
+    onDismissDlgScrDesc: () -> Unit,
+    onSetData: (Country) -> Unit,
+    onDismissDlgDenySetData: () -> Unit
+) {
+    currentScreen?.let {
+        HandleDialogs(
+            uiState = uiState,
+            currentScreen = it,
+            onDismissDlgScrDesc = onDismissDlgScrDesc,
+            onDismissDlgDenySetData = onDismissDlgDenySetData
+        )
+        TopAppBar(
+            scrGraphs = it,
+            onNavigateBack = onNavigateBack,
+            onShowScrDesc = onShowScrDesc
+        )
+    }
+    when(uiState.configCountry) {
+        Loading -> Unit
+        is Success -> ScreenContent(
+            menuPreferences = uiState.configCountry.configCountry,
+            onSetData = onSetData
+        )
+    }
+}
+
+@Composable
+private fun HandleDialogs(
+    uiState: UiState,
+    currentScreen: ScrGraphs,
+    onDismissDlgScrDesc: () -> Unit,
+    onDismissDlgDenySetData: () -> Unit
+) {/*TODO*/}
+
+@Composable
+private fun TopAppBar(
+    scrGraphs: ScrGraphs,
+    onNavigateBack: () -> Unit,
+    onShowScrDesc: () -> Unit
+) {/*TODO*/}
+
+@Composable
+private fun ScreenContent(
+    menuPreferences: ConfigCountry,
+    onSetData: (Country) -> Unit
+) {/*TODO*/}
+
+@Composable
+@Preview
+private fun Preview() = ApplicationTheme {
+    ScrConfGenCountry(
+        onNavigateBack = {},
+        onShowScrDesc = {},
+        onDismissDlgScrDesc = {},
+        onSetData = {},
+        onDismissDlgDenySetData = {},
+        currentScreen = ScrGraphs.ConfGenCountry,
+        uiState = UiState()
+    )
+}
+
+/*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -260,4 +372,4 @@ private fun ScreenContent(
             }
         }
     }
-}
+}*/

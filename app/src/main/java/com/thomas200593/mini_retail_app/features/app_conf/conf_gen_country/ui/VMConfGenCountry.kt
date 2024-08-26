@@ -1,5 +1,68 @@
 package com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.ui
 
+import androidx.lifecycle.ViewModel
+import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.entity.ConfigCountry
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.ui.VMConfGenCountry.UiEvents.ButtonEvents.BtnNavBackEvents
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.ui.VMConfGenCountry.UiEvents.ButtonEvents.BtnScrDescEvents
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.ui.VMConfGenCountry.UiEvents.ButtonEvents.BtnSetPrefCountryEvents
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.ui.VMConfGenCountry.UiEvents.DialogEvents.DlgDenySetDataEvents
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.ui.VMConfGenCountry.UiStateConfigCountry.Loading
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import javax.inject.Inject
+
+@HiltViewModel
+class VMConfGenCountry @Inject constructor(
+
+): ViewModel() {
+    sealed interface UiStateConfigCountry {
+        data object Loading: UiStateConfigCountry
+        data class Success(val configCountry: ConfigCountry): UiStateConfigCountry
+    }
+    data class UiState(
+        val configCountry: UiStateConfigCountry = Loading,
+    )
+    sealed class UiEvents {
+        data class OnOpenEvents(val sessionState: SessionState): UiEvents()
+        sealed class ButtonEvents: UiEvents() {
+            sealed class BtnNavBackEvents: ButtonEvents() {
+                data object OnClick: BtnNavBackEvents()
+            }
+            sealed class BtnScrDescEvents: ButtonEvents() {
+                data object OnClick: BtnScrDescEvents()
+                data object OnDismiss: BtnScrDescEvents()
+            }
+            sealed class BtnSetPrefCountryEvents: ButtonEvents() {
+                data object OnAllow: BtnSetPrefCountryEvents()
+                data object OnDeny: BtnSetPrefCountryEvents()
+            }
+        }
+        sealed class DialogEvents: UiEvents() {
+            sealed class DlgDenySetDataEvents: DialogEvents() {
+                data object OnDismiss: DlgDenySetDataEvents()
+            }
+        }
+    }
+
+    private val _uiState = MutableStateFlow(UiState())
+    val uiState = _uiState.asStateFlow()
+
+    fun onEvent(events: UiEvents) {
+        when(events) {
+            is UiEvents.OnOpenEvents -> {/*TODO*/}
+            is BtnNavBackEvents.OnClick -> {/*TODO*/}
+            is BtnScrDescEvents.OnClick -> {/*TODO*/}
+            is BtnScrDescEvents.OnDismiss -> {/*TODO*/}
+            is BtnSetPrefCountryEvents.OnDeny -> {/*TODO*/}
+            is BtnSetPrefCountryEvents.OnAllow -> {/*TODO*/}
+            is DlgDenySetDataEvents.OnDismiss -> {/*TODO*/}
+        }
+    }
+}
+
+/*
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -143,4 +206,4 @@ class VMConfGenCountry @Inject constructor(
             )
         ) }
     }
-}
+}*/
