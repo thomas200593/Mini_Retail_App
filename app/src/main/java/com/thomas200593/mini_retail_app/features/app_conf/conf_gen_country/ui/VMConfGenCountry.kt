@@ -4,21 +4,30 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
+import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers.Dispatchers.IO
+import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.di.Dispatcher
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen.ui.VMConfGen.DialogState
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.domain.UCGetConfCountry
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.entity.ConfigCountry
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.entity.Country
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.repository.RepoConfGenCountry
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.ui.VMConfGenCountry.UiEvents.ButtonEvents.BtnNavBackEvents
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.ui.VMConfGenCountry.UiEvents.ButtonEvents.BtnScrDescEvents
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.ui.VMConfGenCountry.UiEvents.ButtonEvents.BtnSetPrefCountryEvents
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.ui.VMConfGenCountry.UiEvents.DialogEvents.DlgDenySetDataEvents
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.ui.VMConfGenCountry.UiStateConfigCountry.Loading
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 @HiltViewModel
 class VMConfGenCountry @Inject constructor(
-
+    private val repoConfGenCountry: RepoConfGenCountry,
+    private val ucGetConfCountry: UCGetConfCountry,
+    @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
 ): ViewModel() {
     sealed interface UiStateConfigCountry {
         data object Loading: UiStateConfigCountry
@@ -61,7 +70,7 @@ class VMConfGenCountry @Inject constructor(
 
     fun onEvent(events: UiEvents) {
         when(events) {
-            is UiEvents.OnOpenEvents -> {/*TODO*/}
+            is UiEvents.OnOpenEvents -> onOpenEvent(events.sessionState)
             is BtnNavBackEvents.OnClick -> {/*TODO*/}
             is BtnScrDescEvents.OnClick -> {/*TODO*/}
             is BtnScrDescEvents.OnDismiss -> {/*TODO*/}
@@ -69,6 +78,27 @@ class VMConfGenCountry @Inject constructor(
             is BtnSetPrefCountryEvents.OnAllow -> {/*TODO*/}
             is DlgDenySetDataEvents.OnDismiss -> {/*TODO*/}
         }
+    }
+
+    private fun resetUiStateConfigCountry() = _uiState.update { it.copy(configCountry = Loading) }
+    private fun updateDialogState(
+        dlgLoadingAuth: Boolean = false,
+        dlgLoadingGetData: Boolean = false,
+        dlgDenySetData: Boolean = false,
+        dlgScrDesc: Boolean = false
+    ) = _uiState.update {
+        it.copy(
+            dialogState = it.dialogState.copy(
+                dlgLoadingAuth = mutableStateOf(dlgLoadingAuth),
+                dlgLoadingGetData = mutableStateOf(dlgLoadingGetData),
+                dlgDenySetData = mutableStateOf(dlgDenySetData),
+                dlgScrDesc = mutableStateOf(dlgScrDesc)
+            )
+        )
+    }
+    private fun resetDialogState() = _uiState.update { it.copy(dialogState = DialogState()) }
+    private fun onOpenEvent(sessionState: SessionState) {
+        /*TODO*/
     }
 }
 
