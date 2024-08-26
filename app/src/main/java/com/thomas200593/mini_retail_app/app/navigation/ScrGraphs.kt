@@ -99,7 +99,7 @@ sealed class ScrGraphs(
 
     //App Config General
     @Serializable
-    data object ConfigGeneral : ScrGraphs(
+    data object AppConfigGeneral : ScrGraphs(
         route = "r_conf_gen",
         iconRes = CustomIcons.Setting.settings_general,
         title = string.str_configuration_general,
@@ -109,7 +109,7 @@ sealed class ScrGraphs(
     )
 
     @Serializable
-    data object Country : ScrGraphs(
+    data object ConfGenCountry : ScrGraphs(
         route = "r_conf_gen_country",
         iconRes = CustomIcons.Setting.settings_data,
         title = string.str_country,
@@ -119,7 +119,7 @@ sealed class ScrGraphs(
     )
 
     @Serializable
-    data object Currency : ScrGraphs(
+    data object ConfGenCurrency : ScrGraphs(
         route = "r_conf_gen_currency",
         iconRes = CustomIcons.Currency.currency,
         title = string.str_currency,
@@ -129,7 +129,7 @@ sealed class ScrGraphs(
     )
 
     @Serializable
-    data object DynamicColor : ScrGraphs(
+    data object ConfGenDynamicColor : ScrGraphs(
         route = "r_conf_gen_dynamic_color",
         iconRes = CustomIcons.DynamicColor.dynamic_color,
         title = string.str_dynamic_color,
@@ -139,7 +139,7 @@ sealed class ScrGraphs(
     )
 
     @Serializable
-    data object FontSize : ScrGraphs(
+    data object ConfGenFontSize : ScrGraphs(
         route = "r_conf_gen_font_size",
         iconRes = CustomIcons.Font.font,
         title = string.str_size_font,
@@ -149,7 +149,7 @@ sealed class ScrGraphs(
     )
 
     @Serializable
-    data object Language : ScrGraphs(
+    data object ConfGenLanguage : ScrGraphs(
         route = "r_conf_gen_language",
         iconRes = CustomIcons.Language.language,
         title = string.str_lang,
@@ -159,7 +159,7 @@ sealed class ScrGraphs(
     )
 
     @Serializable
-    data object Theme : ScrGraphs(
+    data object ConfGenTheme : ScrGraphs(
         route = "r_conf_gen_theme",
         iconRes = CustomIcons.Theme.theme,
         title = string.str_theme,
@@ -169,7 +169,7 @@ sealed class ScrGraphs(
     )
 
     @Serializable
-    data object Timezone : ScrGraphs(
+    data object ConfGenTimezone : ScrGraphs(
         route = "r_conf_gen_timezone",
         iconRes = CustomIcons.Timezone.timezone,
         title = string.str_timezone,
@@ -180,7 +180,7 @@ sealed class ScrGraphs(
 
     //App Config Data
     @Serializable
-    data object ConfigData : ScrGraphs(
+    data object AppConfigData : ScrGraphs(
         route = "r_conf_data",
         iconRes = CustomIcons.Setting.settings_data,
         title = string.str_configuration_data,

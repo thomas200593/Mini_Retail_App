@@ -6,14 +6,14 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navOptions
 import androidx.navigation.navigation
 import com.thomas200593.mini_retail_app.app.navigation.NavGraph.G_CONFIG_GENERAL
-import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs.ConfigGeneral
-import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs.Country
-import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs.Currency
-import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs.DynamicColor
-import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs.FontSize
-import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs.Language
-import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs.Theme
-import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs.Timezone
+import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs.AppConfigGeneral
+import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs.ConfGenCountry
+import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs.ConfGenCurrency
+import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs.ConfGenDynamicColor
+import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs.ConfGenFontSize
+import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs.ConfGenLanguage
+import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs.ConfGenTheme
+import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs.ConfGenTimezone
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen.ui.ScrConfGen
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.ui.ScrConfGenCountry
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_currency.ui.ScrConfGenCurrency
@@ -26,48 +26,46 @@ import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_timezone.ui.S
 fun NavGraphBuilder.navGraphConfGen() {
     navigation(
         route = G_CONFIG_GENERAL,
-        startDestination = ConfigGeneral.route
+        startDestination = AppConfigGeneral.route
     ){
         composable(
-            route = ConfigGeneral.route
+            route = AppConfigGeneral.route
         ){ ScrConfGen() }
 
         composable(
-            route = Country.route
+            route = ConfGenCountry.route
         ){ ScrConfGenCountry() }
 
         composable(
-            route = Language.route
+            route = ConfGenLanguage.route
         ){ ScrConfGenLanguage() }
 
         composable(
-            route = Timezone.route
+            route = ConfGenTimezone.route
         ){ ScrConfGenTimezone() }
 
         composable(
-            route = Theme.route
+            route = ConfGenTheme.route
         ){ ScrConfGenTheme() }
 
         composable(
-            route = DynamicColor.route
+            route = ConfGenDynamicColor.route
         ){ ScrConfGenDynamicColor() }
 
         composable(
-            route = FontSize.route
+            route = ConfGenFontSize.route
         ){ ScrConfGenFontSize() }
 
         composable(
-            route = Currency.route
+            route = ConfGenCurrency.route
         ){ ScrConfGenCurrency() }
     }
 }
 
-fun NavController.navToConfGen(
-    destConfGen: DestConfGen?
-) {
+fun NavController.navToConfGen(destConfGen: DestConfGen? = null) {
     val navOptions = navOptions { launchSingleTop = true; restoreState = true }
     this.navigate(
-        route = destConfGen?.route?: G_CONFIG_GENERAL,
+        route = destConfGen?.scrGraphs?.route ?: G_CONFIG_GENERAL,
         navOptions = navOptions
     )
 }

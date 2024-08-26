@@ -111,7 +111,7 @@ fun ScrBizProfile(
         uiState = uiState,
         onSessionLoading = { vm.onEvent(OnSessionLoadingEvents) },
         onSessionInvalid = { vm.onEvent(OnSessionInvalidEvents) },
-        //BtnNavBack
+        //BtnNavBackEvents
         onNavigateBack = { vm.onEvent(BtnNavBackEvents.OnClick).apply { stateApp.onNavUp() } },
         //BizIdName
         onUpdateBizIdName = { vm.onEvent(BizIdNameBtnEvents.BtnUpdateEvents.OnClick) },
@@ -1302,7 +1302,7 @@ private fun BizAddressesSection(
                                         horizontalAlignment = Alignment.CenterHorizontally,
                                         verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically)
                                     ) {
-                                        //Country
+                                        //ConfGenCountry
                                         address.country?.let {
                                             Column(
                                                 modifier = Modifier.fillMaxWidth(),

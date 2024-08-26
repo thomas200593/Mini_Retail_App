@@ -51,6 +51,7 @@ import com.thomas200593.mini_retail_app.core.ui.component.CustomScreenUtil.LockS
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.navigation.DestAppConfig
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.navigation.navToAppConfig
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.ui.VMAppConfig.UiEvents.ButtonEvents.BtnMenuSelectionEvents
+import com.thomas200593.mini_retail_app.features.app_conf.app_config.ui.VMAppConfig.UiEvents.ButtonEvents.BtnNavBackEvents
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.ui.VMAppConfig.UiEvents.ButtonEvents.BtnScrDescEvents
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.ui.VMAppConfig.UiEvents.ButtonEvents.DialogEvents.DlgDenyAccessEvents
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.ui.VMAppConfig.UiEvents.OnOpenEvents
@@ -76,8 +77,10 @@ fun ScrAppConfig(
     ScrAppConfig(
         uiState = uiState,
         currentScreen = currentScreen,
-        onNavigateBack = { vm.onEvent(OnOpenEvents(sessionState)).also {
-            coroutineScope.launch { stateApp.onNavUp() } }
+        onNavigateBack = {
+            vm.onEvent(BtnNavBackEvents.OnClick).also {
+                coroutineScope.launch { stateApp.onNavUp() }
+            }
         },
         onShowScrDesc = { vm.onEvent(BtnScrDescEvents.OnClick) },
         onDismissDlgScrDesc = { vm.onEvent(BtnScrDescEvents.OnDismiss) },
@@ -85,8 +88,9 @@ fun ScrAppConfig(
             when(sessionState) {
                 SessionState.Loading -> Unit
                 is SessionState.Invalid -> {
-                    if(menu.scrGraphs.usesAuth) { vm.onEvent(BtnMenuSelectionEvents.OnDeny) }
-                    else {
+                    if(menu.scrGraphs.usesAuth) {
+                        vm.onEvent(BtnMenuSelectionEvents.OnDeny)
+                    } else {
                         vm.onEvent(BtnMenuSelectionEvents.OnAllow).also {
                             coroutineScope.launch { stateApp.navController.navToAppConfig(menu) }
                         }
@@ -99,7 +103,11 @@ fun ScrAppConfig(
                 }
             }
         },
-        onDismissDlgDenyAccessMenu = { vm.onEvent(DlgDenyAccessEvents.OnDismiss(sessionState)) }
+        onDismissDlgDenyAccessMenu = {
+            vm.onEvent(DlgDenyAccessEvents.OnDismiss).also {
+                coroutineScope.launch { stateApp.onNavUp() }
+            }
+        }
     )
 }
 
@@ -128,12 +136,10 @@ private fun ScrAppConfig(
     }
     when(uiState.destAppConfig) {
         Loading -> Unit
-        is Success -> {
-            ScreenContent(
-                menuPreferences = uiState.destAppConfig.destAppConfig,
-                onNavToMenu = onNavToMenu
-            )
-        }
+        is Success -> ScreenContent(
+            menuPreferences = uiState.destAppConfig.destAppConfig,
+            onNavToMenu = onNavToMenu
+        )
     }
 }
 

@@ -6,16 +6,16 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navOptions
 import androidx.navigation.navigation
 import com.thomas200593.mini_retail_app.app.navigation.NavGraph.G_CONFIG_DATA
-import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs.ConfigData
+import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs.AppConfigData
 import com.thomas200593.mini_retail_app.features.app_conf.conf_data.ui.ScrConfData
 
 fun NavGraphBuilder.navGraphConfData() {
     navigation(
         route = G_CONFIG_DATA,
-        startDestination = ConfigData.route
+        startDestination = AppConfigData.route
     ){
         composable(
-            route = ConfigData.route
+            route = AppConfigData.route
         ){ ScrConfData() }
 
         //More Screen
