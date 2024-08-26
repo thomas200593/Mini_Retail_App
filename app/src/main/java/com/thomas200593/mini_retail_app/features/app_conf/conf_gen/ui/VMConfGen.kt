@@ -3,12 +3,14 @@ package com.thomas200593.mini_retail_app.features.app_conf.conf_gen.ui
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers.Dispatchers.IO
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.di.Dispatcher
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen.navigation.DestConfGen
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen.repository.RepoConfGen
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen.ui.VMConfGen.UiEvents.ButtonEvents.BtnMenuSelectionEvents
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen.ui.VMConfGen.UiEvents.ButtonEvents.BtnNavBackEvents
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen.ui.VMConfGen.UiEvents.ButtonEvents.BtnScrDescEvents
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen.ui.VMConfGen.UiEvents.ButtonEvents.DialogEvents.DlgDenyAccessEvents
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen.ui.VMConfGen.UiEvents.OnOpenEvents
@@ -17,6 +19,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -41,6 +46,9 @@ class VMConfGen @Inject constructor(
     sealed class UiEvents {
         data class OnOpenEvents(val sessionState: SessionState): UiEvents()
         sealed class ButtonEvents: UiEvents() {
+            sealed class BtnNavBackEvents: ButtonEvents() {
+                data object OnClick: BtnNavBackEvents()
+            }
             sealed class BtnScrDescEvents: ButtonEvents() {
                 data object OnClick: BtnScrDescEvents()
                 data object OnDismiss: BtnScrDescEvents()
@@ -51,7 +59,7 @@ class VMConfGen @Inject constructor(
             }
             sealed class DialogEvents: UiEvents() {
                 sealed class DlgDenyAccessEvents: DialogEvents() {
-                    data class OnDismiss(val sessionState: SessionState): DlgDenyAccessEvents()
+                    data object OnDismiss: DlgDenyAccessEvents()
                 }
             }
         }
@@ -62,12 +70,92 @@ class VMConfGen @Inject constructor(
 
     fun onEvent(events: UiEvents) {
         when(events) {
-            is OnOpenEvents -> {/*TODO*/}
-            is BtnScrDescEvents.OnClick -> {/*TODO*/}
-            is BtnScrDescEvents.OnDismiss -> {/*TODO*/}
-            is DlgDenyAccessEvents.OnDismiss -> {/*TODO*/}
-            is BtnMenuSelectionEvents.OnAllow -> {/*TODO*/}
-            is BtnMenuSelectionEvents.OnDeny -> {/*TODO*/}
+            is OnOpenEvents -> onOpenEvent(events.sessionState)
+            is BtnNavBackEvents.OnClick -> onNavBackEvent()
+            is BtnScrDescEvents.OnClick -> onShowScrDescEvent()
+            is BtnScrDescEvents.OnDismiss -> onHideScrDescEvent()
+            is BtnMenuSelectionEvents.OnDeny -> onDenyAccess()
+            is BtnMenuSelectionEvents.OnAllow -> onAllowAccess()
+            is DlgDenyAccessEvents.OnDismiss -> onDismissDenyAccessDlg()
         }
+    }
+
+    private fun resetUiStateDestConfGen() = _uiState.update { it.copy(destConfGen = Loading) }
+    private fun updateDialogState(
+        dlgLoadingAuth: Boolean = false,
+        dlgLoadingGetMenu: Boolean = false,
+        dlgDenyAccessMenu: Boolean = false,
+        dlgScrDesc: Boolean = false
+    ) = _uiState.update {
+        it.copy(
+            dialogState = it.dialogState.copy(
+                dlgLoadingAuth = mutableStateOf(dlgLoadingAuth),
+                dlgLoadingGetMenu = mutableStateOf(dlgLoadingGetMenu),
+                dlgDenyAccessMenu = mutableStateOf(dlgDenyAccessMenu),
+                dlgScrDesc = mutableStateOf(dlgScrDesc)
+            )
+        )
+    }
+    private fun resetDialogState() = _uiState.update { it.copy(dialogState = DialogState()) }
+    private fun onOpenEvent(sessionState: SessionState) {
+        resetUiStateDestConfGen()
+        resetDialogState()
+        when(sessionState) {
+            SessionState.Loading -> {
+                updateDialogState(dlgLoadingAuth = true)
+            }
+            is SessionState.Invalid -> viewModelScope.launch {
+                resetDialogState()
+                updateDialogState(dlgLoadingGetMenu = true)
+                repoConfGen.getMenuData().flowOn(ioDispatcher).collect{ menuData ->
+                    _uiState.update {
+                        it.copy(
+                            destConfGen = UiStateDestConfGen.Success(
+                                destConfGen = menuData.filterNot { menu ->
+                                    menu.scrGraphs.usesAuth
+                                }.toSet()
+                            ),
+                            dialogState = DialogState()
+                        )
+                    }
+                }
+            }
+            is SessionState.Valid -> viewModelScope.launch {
+                resetDialogState()
+                updateDialogState(dlgLoadingGetMenu = true)
+                repoConfGen.getMenuData().flowOn(ioDispatcher).collect{ menuData ->
+                    _uiState.update {
+                        it.copy(
+                            destConfGen = UiStateDestConfGen.Success(
+                                destConfGen = menuData
+                            ),
+                            dialogState = DialogState()
+                        )
+                    }
+                }
+            }
+        }
+    }
+    private fun onNavBackEvent() {
+        resetDialogState()
+        resetUiStateDestConfGen()
+    }
+    private fun onShowScrDescEvent() {
+        resetDialogState()
+        updateDialogState(dlgScrDesc = true)
+    }
+    private fun onHideScrDescEvent() {
+        resetDialogState()
+    }
+    private fun onDenyAccess() {
+        resetDialogState()
+        updateDialogState(dlgDenyAccessMenu = true)
+    }
+    private fun onAllowAccess() {
+        resetDialogState()
+    }
+    private fun onDismissDenyAccessDlg() {
+        resetDialogState()
+        resetUiStateDestConfGen()
     }
 }

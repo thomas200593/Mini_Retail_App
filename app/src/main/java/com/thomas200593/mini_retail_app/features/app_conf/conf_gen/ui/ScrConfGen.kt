@@ -39,6 +39,7 @@ import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs
 import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
 import com.thomas200593.mini_retail_app.app.ui.StateApp
+import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
 import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar.ProvideTopAppBarAction
 import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar.ProvideTopAppBarNavigationIcon
 import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar.ProvideTopAppBarTitle
@@ -48,9 +49,15 @@ import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AppAlertD
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.ClickableCardItem
 import com.thomas200593.mini_retail_app.core.ui.component.CustomScreenUtil.LockScreenOrientation
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen.navigation.DestConfGen
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen.navigation.navToConfGen
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen.ui.VMConfGen.UiEvents.ButtonEvents.BtnMenuSelectionEvents
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen.ui.VMConfGen.UiEvents.ButtonEvents.BtnNavBackEvents
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen.ui.VMConfGen.UiEvents.ButtonEvents.BtnScrDescEvents
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen.ui.VMConfGen.UiEvents.ButtonEvents.DialogEvents.DlgDenyAccessEvents
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen.ui.VMConfGen.UiEvents.OnOpenEvents
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen.ui.VMConfGen.UiStateDestConfGen.Loading
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen.ui.VMConfGen.UiStateDestConfGen.Success
+import kotlinx.coroutines.launch
 
 @Composable
 fun ScrConfGen(
@@ -69,11 +76,37 @@ fun ScrConfGen(
     ScrConfGen(
         uiState = uiState,
         currentScreen = currentScreen,
-        onNavigateBack = {/*TODO*/},
-        onShowScrDesc = {/*TODO*/},
-        onDismissDlgScrDesc = {/*TODO*/},
-        onNavToMenu = {/*TODO*/},
-        onDismissDlgDenyAccessMenu = {/*TODO*/}
+        onNavigateBack = {
+            vm.onEvent(BtnNavBackEvents.OnClick).also {
+                coroutineScope.launch { stateApp.onNavUp() }
+            }
+        },
+        onShowScrDesc = { vm.onEvent(BtnScrDescEvents.OnClick) },
+        onDismissDlgScrDesc = { vm.onEvent(BtnScrDescEvents.OnDismiss) },
+        onNavToMenu = { menu ->
+            when(sessionState) {
+                SessionState.Loading -> Unit
+                is SessionState.Invalid -> {
+                    if(menu.scrGraphs.usesAuth) {
+                        vm.onEvent(BtnMenuSelectionEvents.OnDeny)
+                    } else {
+                        vm.onEvent(BtnMenuSelectionEvents.OnAllow).also {
+                            coroutineScope.launch { stateApp.navController.navToConfGen(menu) }
+                        }
+                    }
+                }
+                is SessionState.Valid -> {
+                    vm.onEvent(DlgDenyAccessEvents.OnDismiss).also {
+                        coroutineScope.launch { stateApp.onNavUp() }
+                    }
+                }
+            }
+        },
+        onDismissDlgDenyAccessMenu = {
+            vm.onEvent(DlgDenyAccessEvents.OnDismiss).also {
+                coroutineScope.launch { stateApp.onNavUp() }
+            }
+        }
     )
 }
 
