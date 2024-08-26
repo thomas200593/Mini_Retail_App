@@ -2,11 +2,9 @@ package com.thomas200593.mini_retail_app.app.navigation
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.navigation.NavDestination
 import com.thomas200593.mini_retail_app.R.string
-import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.TopLevelDestinations.business
-import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.TopLevelDestinations.dashboard
-import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.TopLevelDestinations.reporting
-import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.TopLevelDestinations.user_profile
+import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons
 import kotlinx.serialization.Serializable
 import kotlin.reflect.KType
 import kotlin.reflect.full.createType
@@ -25,7 +23,18 @@ sealed class ScrGraphs(
      * Companion Object
      */
     companion object {
-        fun screenWithTopAppBar() = ScrGraphs::class.sealedSubclasses
+
+        fun getByRoute(destCurrent: NavDestination?): ScrGraphs? = ScrGraphs::class.sealedSubclasses
+            .mapNotNull { subClass ->
+                val instance =
+                    subClass.objectInstance ?: subClass.primaryConstructor?.callBy(
+                        subClass.primaryConstructor!!.parameters.associateWith { it.type.defaultValue() }
+                    )
+                instance
+            }
+            .firstOrNull { it.route == destCurrent?.route }
+
+        fun getScreenRoutesUsesTopBar() = ScrGraphs::class.sealedSubclasses
             .mapNotNull { subclass ->
                 val instance =
                     subclass.objectInstance ?: subclass.primaryConstructor?.callBy(
@@ -81,6 +90,7 @@ sealed class ScrGraphs(
     @Serializable
     data object AppConfig : ScrGraphs(
         route = "r_app_config",
+        iconRes = CustomIcons.Setting.settings,
         title = string.str_configuration,
         description = string.str_configuration,
         usesAuth = false,
@@ -91,6 +101,7 @@ sealed class ScrGraphs(
     @Serializable
     data object ConfigGeneral : ScrGraphs(
         route = "r_conf_gen",
+        iconRes = CustomIcons.Setting.settings_general,
         title = string.str_configuration_general,
         description = string.str_configuration_general,
         usesAuth = false,
@@ -100,6 +111,7 @@ sealed class ScrGraphs(
     @Serializable
     data object Country : ScrGraphs(
         route = "r_conf_gen_country",
+        iconRes = CustomIcons.Setting.settings_data,
         title = string.str_country,
         description = string.str_country_desc,
         usesAuth = false,
@@ -109,6 +121,7 @@ sealed class ScrGraphs(
     @Serializable
     data object Currency : ScrGraphs(
         route = "r_conf_gen_currency",
+        iconRes = CustomIcons.Currency.currency,
         title = string.str_currency,
         description = string.str_currency_desc,
         usesAuth = false,
@@ -118,6 +131,7 @@ sealed class ScrGraphs(
     @Serializable
     data object DynamicColor : ScrGraphs(
         route = "r_conf_gen_dynamic_color",
+        iconRes = CustomIcons.DynamicColor.dynamic_color,
         title = string.str_dynamic_color,
         description = string.str_dynamic_color_desc,
         usesAuth = false,
@@ -127,6 +141,7 @@ sealed class ScrGraphs(
     @Serializable
     data object FontSize : ScrGraphs(
         route = "r_conf_gen_font_size",
+        iconRes = CustomIcons.Font.font,
         title = string.str_size_font,
         description = string.str_size_font_desc,
         usesAuth = false,
@@ -136,6 +151,7 @@ sealed class ScrGraphs(
     @Serializable
     data object Language : ScrGraphs(
         route = "r_conf_gen_language",
+        iconRes = CustomIcons.Language.language,
         title = string.str_lang,
         description = string.str_lang_desc,
         usesAuth = false,
@@ -145,6 +161,7 @@ sealed class ScrGraphs(
     @Serializable
     data object Theme : ScrGraphs(
         route = "r_conf_gen_theme",
+        iconRes = CustomIcons.Theme.theme,
         title = string.str_theme,
         description = string.str_theme_desc,
         usesAuth = false,
@@ -154,6 +171,7 @@ sealed class ScrGraphs(
     @Serializable
     data object Timezone : ScrGraphs(
         route = "r_conf_gen_timezone",
+        iconRes = CustomIcons.Timezone.timezone,
         title = string.str_timezone,
         description = string.str_timezone,
         usesAuth = false,
@@ -164,6 +182,7 @@ sealed class ScrGraphs(
     @Serializable
     data object ConfigData : ScrGraphs(
         route = "r_conf_data",
+        iconRes = CustomIcons.Setting.settings_data,
         title = string.str_configuration_data,
         description = string.str_configuration_data,
         usesAuth = true,
@@ -173,6 +192,9 @@ sealed class ScrGraphs(
     @Serializable
     data object DataBackup : ScrGraphs(
         route = "r_conf_data_backup",
+        iconRes = CustomIcons.Data.backup,
+        title = string.str_backup,
+        description = string.str_backup_desc,
         usesAuth = true,
         usesTopBar = true
     )
@@ -183,7 +205,7 @@ sealed class ScrGraphs(
     @Serializable
     data object Dashboard : ScrGraphs(
         route = "r_dashboard",
-        iconRes = dashboard,
+        iconRes = CustomIcons.TopLevelDestinations.dashboard,
         title = string.str_dashboard,
         description = string.str_dashboard,
         usesAuth = true,
@@ -196,7 +218,7 @@ sealed class ScrGraphs(
     @Serializable
     data object Business : ScrGraphs(
         route = "r_biz",
-        iconRes = business,
+        iconRes = CustomIcons.TopLevelDestinations.business,
         title = string.str_business,
         description = string.str_business,
         usesAuth = true,
@@ -206,6 +228,9 @@ sealed class ScrGraphs(
     @Serializable
     data object MasterData : ScrGraphs(
         route = "r_biz_m_data",
+        iconRes = CustomIcons.Data.master_data,
+        title = string.str_biz_master_data,
+        description = string.str_biz_master_data_desc,
         usesAuth = true,
         usesTopBar = true
     )
@@ -213,6 +238,9 @@ sealed class ScrGraphs(
     @Serializable
     data object Supplier : ScrGraphs(
         route = "r_biz_m_data_supplier",
+        iconRes = CustomIcons.Supplier.supplier,
+        title = string.str_supplier,
+        description = string.str_supplier_desc,
         usesAuth = true,
         usesTopBar = true
     )
@@ -220,6 +248,9 @@ sealed class ScrGraphs(
     @Serializable
     data object BizProfile : ScrGraphs(
         route = "r_biz_profile",
+        iconRes = CustomIcons.Business.business_profile,
+        title = string.str_business_profile,
+        description = string.str_business_profile_desc,
         usesAuth = true,
         usesTopBar = true
     )
@@ -237,7 +268,7 @@ sealed class ScrGraphs(
     @Serializable
     data object Reporting : ScrGraphs(
         route = "r_reporting",
-        iconRes = reporting,
+        iconRes = CustomIcons.TopLevelDestinations.reporting,
         title = string.str_reporting,
         description = string.str_reporting,
         usesAuth = true,
@@ -250,7 +281,7 @@ sealed class ScrGraphs(
     @Serializable
     data object UserProfile : ScrGraphs(
         route = "r_user_profile",
-        iconRes = user_profile,
+        iconRes = CustomIcons.TopLevelDestinations.user_profile,
         title = string.str_user_profile,
         description = string.str_user_profile,
         usesAuth = true,
