@@ -19,8 +19,11 @@ interface RepoConfGenCountry {
 internal class RepoImplConfGenCountry @Inject constructor(
     private val dataStore: DataStorePreferences,
     @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
-): RepoConfGenCountry{
+) : RepoConfGenCountry {
     override fun getCountries(): Flow<List<Country>> =
         flow { emit(getCountryList()) }.flowOn(ioDispatcher)
-    override suspend fun setCountry(country: Country) { dataStore.setCountry(country) }
+
+    override suspend fun setCountry(country: Country) {
+        dataStore.setCountry(country)
+    }
 }
