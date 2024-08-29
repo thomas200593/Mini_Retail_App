@@ -1,6 +1,5 @@
 package com.thomas200593.mini_retail_app.features.onboarding.ui
 
-import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -47,22 +46,17 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.R.string
 import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
 import com.thomas200593.mini_retail_app.app.ui.StateApp
-import com.thomas200593.mini_retail_app.core.ui.common.CustomThemes.ApplicationTheme
 import com.thomas200593.mini_retail_app.core.ui.component.CustomButton.Common.AppIconButton
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.LoadingScreen
-import com.thomas200593.mini_retail_app.features.app_conf.app_config.entity.AppConfig
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_language.entity.ConfigLanguages
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_language.entity.Language
 import com.thomas200593.mini_retail_app.features.initial.initialization.navigation.navToInitialization
-import com.thomas200593.mini_retail_app.features.onboarding.entity.Onboarding
 import com.thomas200593.mini_retail_app.features.onboarding.entity.Onboarding.OnboardingPage
 import com.thomas200593.mini_retail_app.features.onboarding.entity.Onboarding.Tags
 import com.thomas200593.mini_retail_app.features.onboarding.ui.VMOnboarding.ScreenState
@@ -82,16 +76,17 @@ fun ScrOnboarding(
 ) {
     val coroutineScope = rememberCoroutineScope()
     val uiState by vm.uiState.collectAsStateWithLifecycle()
+
     LaunchedEffect(Unit) { vm.onEvent(OnOpenEvents) }
+
     ScrOnboarding(
         uiState = uiState,
         onSelectLanguage = { vm.onEvent(DropdownLanguagesEvents.OnSelectEvents(it)) },
         onBtnNextClicked = { vm.onEvent(BtnNextEvents.OnNextClickEvents) },
         onTabSelected = { vm.onEvent(TabPageSelectionEvents.OnSelectEvents(it)) },
         onFinishedOnboarding = {
-            vm.onEvent(BtnNextEvents.OnFinishClickEvents).also {
-                coroutineScope.launch { stateApp.navController.navToInitialization() }
-            }
+            vm.onEvent(BtnNextEvents.OnFinishClickEvents)
+                .also { coroutineScope.launch { stateApp.navController.navToInitialization() } }
         }
     )
 }
@@ -363,52 +358,4 @@ private fun OnboardingTabSelector(
             }
         }
     }
-}
-
-@Composable
-@Preview(
-    showBackground = true,
-    uiMode = Configuration.UI_MODE_NIGHT_YES,
-    locale = "in"
-)
-private fun Preview() = ApplicationTheme {
-    ScrOnboarding(
-        onBtnNextClicked = {},
-        onTabSelected = {},
-        onFinishedOnboarding = {},
-        onSelectLanguage = {},
-        uiState = UiState(
-            screenState = ScreenState(
-                currentPageIndex = 0
-            ),
-            onboardingPages = Success(
-                onboardingData = Onboarding.OnboardingData(
-                    listOfOnboardingPages = listOf(
-                        OnboardingPage(
-                            imageRes = R.drawable.onboard_image_1,
-                            title = string.onboarding_title_1,
-                            description = string.onboarding_desc_1
-                        ),
-                        OnboardingPage(
-                            imageRes = R.drawable.onboard_image_2,
-                            title = string.onboarding_title_2,
-                            description = string.onboarding_desc_2
-                        ),
-                        OnboardingPage(
-                            imageRes = R.drawable.onboard_image_3,
-                            title = string.onboarding_title_3,
-                            description = string.onboarding_desc_3
-                        )
-                    ),
-                    configLanguages = ConfigLanguages(
-                        configCurrent = AppConfig.ConfigCurrent(),
-                        languages = setOf(
-                            Language.EN,
-                            Language.ID
-                        )
-                    )
-                )
-            )
-        ),
-    )
 }
