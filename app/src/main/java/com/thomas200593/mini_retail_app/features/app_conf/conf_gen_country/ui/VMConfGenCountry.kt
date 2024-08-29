@@ -32,42 +32,49 @@ class VMConfGenCountry @Inject constructor(
     private val ucGetConfCountry: UCGetConfCountry,
     private val repoConfGenCountry: RepoConfGenCountry,
     @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
-): ViewModel() {
+) : ViewModel() {
     sealed interface UiStateConfigCountry {
-        data object Loading: UiStateConfigCountry
-        data class Success(val configCountry: ConfigCountry): UiStateConfigCountry
+        data object Loading : UiStateConfigCountry
+        data class Success(val configCountry: ConfigCountry) : UiStateConfigCountry
     }
+
     data class UiState(
         val configCountry: UiStateConfigCountry = Loading,
         val dialogState: DialogState = DialogState()
     )
+
     data class DialogState(
         val dlgLoadingAuth: MutableState<Boolean> = mutableStateOf(false),
         val dlgLoadingGetData: MutableState<Boolean> = mutableStateOf(false),
         val dlgDenySetData: MutableState<Boolean> = mutableStateOf(false),
         val dlgScrDesc: MutableState<Boolean> = mutableStateOf(false)
     )
+
     sealed class UiEvents {
         data class OnOpenEvents(
             val sessionState: SessionState,
             val currentScreen: ScrGraphs
-        ): UiEvents()
-        sealed class ButtonEvents: UiEvents() {
-            sealed class BtnNavBackEvents: ButtonEvents() {
-                data object OnClick: BtnNavBackEvents()
+        ) : UiEvents()
+
+        sealed class ButtonEvents : UiEvents() {
+            sealed class BtnNavBackEvents : ButtonEvents() {
+                data object OnClick : BtnNavBackEvents()
             }
-            sealed class BtnScrDescEvents: ButtonEvents() {
-                data object OnClick: BtnScrDescEvents()
-                data object OnDismiss: BtnScrDescEvents()
+
+            sealed class BtnScrDescEvents : ButtonEvents() {
+                data object OnClick : BtnScrDescEvents()
+                data object OnDismiss : BtnScrDescEvents()
             }
-            sealed class BtnSetPrefCountryEvents: ButtonEvents() {
-                data class OnAllow(val country: Country): BtnSetPrefCountryEvents()
-                data object OnDeny: BtnSetPrefCountryEvents()
+
+            sealed class BtnSetPrefCountryEvents : ButtonEvents() {
+                data class OnAllow(val country: Country) : BtnSetPrefCountryEvents()
+                data object OnDeny : BtnSetPrefCountryEvents()
             }
         }
-        sealed class DialogEvents: UiEvents() {
-            sealed class DlgDenySetDataEvents: DialogEvents() {
-                data object OnDismiss: DlgDenySetDataEvents()
+
+        sealed class DialogEvents : UiEvents() {
+            sealed class DlgDenySetDataEvents : DialogEvents() {
+                data object OnDismiss : DlgDenySetDataEvents()
             }
         }
     }
@@ -76,7 +83,7 @@ class VMConfGenCountry @Inject constructor(
     val uiState = _uiState.asStateFlow()
 
     fun onEvent(events: UiEvents) {
-        when(events) {
+        when (events) {
             is OnOpenEvents -> onOpenEvent(events.sessionState, events.currentScreen)
             is BtnNavBackEvents.OnClick -> onNavBackEvent()
             is BtnScrDescEvents.OnClick -> onShowScrDescEvent()
@@ -103,21 +110,23 @@ class VMConfGenCountry @Inject constructor(
             )
         )
     }
+
     private fun resetDialogState() = _uiState.update { it.copy(dialogState = DialogState()) }
     private fun onOpenEvent(sessionState: SessionState, currentScreen: ScrGraphs) {
         resetUiStateConfigCountry()
         resetDialogState()
-        when(sessionState) {
+        when (sessionState) {
             SessionState.Loading -> {
                 updateDialogState(dlgLoadingAuth = true)
             }
+
             is SessionState.Invalid -> {
-                if(currentScreen.usesAuth) {
+                if (currentScreen.usesAuth) {
                     onDenySet()
                 } else {
                     resetUiStateConfigCountry()
                     updateDialogState(dlgLoadingGetData = true)
-                    viewModelScope.launch{
+                    viewModelScope.launch {
                         resetUiStateConfigCountry()
                         updateDialogState(dlgLoadingGetData = true)
                         ucGetConfCountry.invoke().flowOn(ioDispatcher).collect { data ->
@@ -131,7 +140,8 @@ class VMConfGenCountry @Inject constructor(
                     }
                 }
             }
-            is SessionState.Valid -> viewModelScope.launch{
+
+            is SessionState.Valid -> viewModelScope.launch {
                 resetUiStateConfigCountry()
                 updateDialogState(dlgLoadingGetData = true)
                 ucGetConfCountry.invoke().flowOn(ioDispatcher).collect { data ->
@@ -145,27 +155,33 @@ class VMConfGenCountry @Inject constructor(
             }
         }
     }
+
     private fun onNavBackEvent() {
         resetDialogState()
         resetUiStateConfigCountry()
     }
+
     private fun onShowScrDescEvent() {
         resetDialogState()
         updateDialogState(dlgScrDesc = true)
     }
+
     private fun onHideScrDescEvent() {
         resetDialogState()
     }
+
     private fun onDenySet() {
         resetDialogState()
         updateDialogState(dlgDenySetData = true)
     }
+
     private fun onAllowSet(country: Country) {
         resetDialogState()
         viewModelScope.launch {
             repoConfGenCountry.setCountry(country = country)
         }
     }
+
     private fun onDismissDenySetDlg() {
         resetDialogState()
         resetUiStateConfigCountry()
