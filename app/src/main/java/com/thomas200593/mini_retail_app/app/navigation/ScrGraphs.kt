@@ -111,7 +111,7 @@ sealed class ScrGraphs(
     @Serializable
     data object ConfGenCountry : ScrGraphs(
         route = "r_conf_gen_country",
-        iconRes = CustomIcons.Setting.settings_data,
+        iconRes = CustomIcons.Country.country,
         title = string.str_country,
         description = string.str_country_desc,
         usesAuth = false,
