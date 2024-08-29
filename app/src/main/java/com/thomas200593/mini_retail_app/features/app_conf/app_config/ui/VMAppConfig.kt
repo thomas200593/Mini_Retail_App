@@ -28,38 +28,44 @@ import javax.inject.Inject
 class VMAppConfig @Inject constructor(
     private val repoAppConf: RepoAppConf,
     @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
-): ViewModel() {
+) : ViewModel() {
     sealed interface UiStateDestAppConfig {
-        data object Loading: UiStateDestAppConfig
-        data class Success(val destAppConfig: Set<DestAppConfig>): UiStateDestAppConfig
+        data object Loading : UiStateDestAppConfig
+        data class Success(val destAppConfig: Set<DestAppConfig>) : UiStateDestAppConfig
     }
+
     data class UiState(
         val destAppConfig: UiStateDestAppConfig = Loading,
         val dialogState: DialogState = DialogState()
     )
+
     data class DialogState(
         val dlgLoadingAuth: MutableState<Boolean> = mutableStateOf(false),
         val dlgLoadingGetMenu: MutableState<Boolean> = mutableStateOf(false),
         val dlgDenyAccessMenu: MutableState<Boolean> = mutableStateOf(false),
         val dlgScrDesc: MutableState<Boolean> = mutableStateOf(false)
     )
+
     sealed class UiEvents {
-        data class OnOpenEvents(val sessionState: SessionState): UiEvents()
-        sealed class ButtonEvents: UiEvents() {
-            sealed class BtnNavBackEvents: ButtonEvents() {
-                data object OnClick: BtnNavBackEvents()
+        data class OnOpenEvents(val sessionState: SessionState) : UiEvents()
+        sealed class ButtonEvents : UiEvents() {
+            sealed class BtnNavBackEvents : ButtonEvents() {
+                data object OnClick : BtnNavBackEvents()
             }
-            sealed class BtnScrDescEvents: ButtonEvents() {
-                data object OnClick: BtnScrDescEvents()
-                data object OnDismiss: BtnScrDescEvents()
+
+            sealed class BtnScrDescEvents : ButtonEvents() {
+                data object OnClick : BtnScrDescEvents()
+                data object OnDismiss : BtnScrDescEvents()
             }
-            sealed class BtnMenuSelectionEvents: ButtonEvents() {
-                data object OnAllow: BtnMenuSelectionEvents()
-                data object OnDeny: BtnMenuSelectionEvents()
+
+            sealed class BtnMenuSelectionEvents : ButtonEvents() {
+                data object OnAllow : BtnMenuSelectionEvents()
+                data object OnDeny : BtnMenuSelectionEvents()
             }
-            sealed class DialogEvents: UiEvents() {
-                sealed class DlgDenyAccessEvents: DialogEvents() {
-                    data object OnDismiss: DlgDenyAccessEvents()
+
+            sealed class DialogEvents : UiEvents() {
+                sealed class DlgDenyAccessEvents : DialogEvents() {
+                    data object OnDismiss : DlgDenyAccessEvents()
                 }
             }
         }
@@ -69,7 +75,7 @@ class VMAppConfig @Inject constructor(
     val uiState = _uiState.asStateFlow()
 
     fun onEvent(events: UiEvents) {
-        when(events) {
+        when (events) {
             is OnOpenEvents -> onOpenEvent(events.sessionState)
             is BtnNavBackEvents.OnClick -> onNavBackEvent()
             is BtnScrDescEvents.OnClick -> onShowScrDescEvent()
@@ -96,14 +102,16 @@ class VMAppConfig @Inject constructor(
             )
         )
     }
+
     private fun resetDialogState() = _uiState.update { it.copy(dialogState = DialogState()) }
     private fun onOpenEvent(sessionState: SessionState) {
         resetUiStateDestAppConfig()
         resetDialogState()
-        when(sessionState) {
+        when (sessionState) {
             SessionState.Loading -> {
                 updateDialogState(dlgLoadingAuth = true)
             }
+
             is SessionState.Invalid -> viewModelScope.launch {
                 resetDialogState()
                 updateDialogState(dlgLoadingGetMenu = true)
@@ -120,6 +128,7 @@ class VMAppConfig @Inject constructor(
                     }
                 }
             }
+
             is SessionState.Valid -> viewModelScope.launch {
                 resetDialogState()
                 updateDialogState(dlgLoadingGetMenu = true)
@@ -136,24 +145,30 @@ class VMAppConfig @Inject constructor(
             }
         }
     }
+
     private fun onNavBackEvent() {
         resetDialogState()
         resetUiStateDestAppConfig()
     }
+
     private fun onShowScrDescEvent() {
         resetDialogState()
         updateDialogState(dlgScrDesc = true)
     }
+
     private fun onHideScrDescEvent() {
         resetDialogState()
     }
+
     private fun onDenyAccess() {
         resetDialogState()
         updateDialogState(dlgDenyAccessMenu = true)
     }
+
     private fun onAllowAccess() {
         resetDialogState()
     }
+
     private fun onDismissDenyAccessDlg() {
         resetDialogState()
         resetUiStateDestAppConfig()

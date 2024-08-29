@@ -85,10 +85,10 @@ fun ScrAppConfig(
         onShowScrDesc = { vm.onEvent(BtnScrDescEvents.OnClick) },
         onDismissDlgScrDesc = { vm.onEvent(BtnScrDescEvents.OnDismiss) },
         onNavToMenu = { menu ->
-            when(sessionState) {
+            when (sessionState) {
                 SessionState.Loading -> Unit
                 is SessionState.Invalid -> {
-                    if(menu.scrGraphs.usesAuth) {
+                    if (menu.scrGraphs.usesAuth) {
                         vm.onEvent(BtnMenuSelectionEvents.OnDeny)
                     } else {
                         vm.onEvent(BtnMenuSelectionEvents.OnAllow).also {
@@ -96,6 +96,7 @@ fun ScrAppConfig(
                         }
                     }
                 }
+
                 is SessionState.Valid -> {
                     vm.onEvent(BtnMenuSelectionEvents.OnAllow).also {
                         coroutineScope.launch { stateApp.navController.navToAppConfig(menu) }
@@ -134,7 +135,7 @@ private fun ScrAppConfig(
             onShowScrDesc = onShowScrDesc
         )
     }
-    when(uiState.destAppConfig) {
+    when (uiState.destAppConfig) {
         Loading -> Unit
         is Success -> ScreenContent(
             menuPreferences = uiState.destAppConfig.destAppConfig,
@@ -167,7 +168,7 @@ private fun HandleDialogs(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
-            ) { Text(text = "Authenticating")}
+            ) { Text(text = "Authenticating") }
         }
     )
     AppAlertDialog(
@@ -226,7 +227,7 @@ private fun HandleDialogs(
         title = { currentScreen.title?.let { Text(text = stringResource(id = it)) } },
         showBody = true,
         body = {
-            currentScreen.description?.let { 
+            currentScreen.description?.let {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -270,7 +271,7 @@ private fun TopAppBar(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ){
+        ) {
             scrGraphs.iconRes?.let {
                 Icon(
                     modifier = Modifier.sizeIn(maxHeight = ButtonDefaults.IconSize),
@@ -293,7 +294,7 @@ private fun TopAppBar(
                 modifier = Modifier,
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
-            ){
+            ) {
                 val desc = stringResource(id = it)
                 Surface(
                     onClick = { onShowScrDesc(desc) },
