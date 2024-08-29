@@ -89,10 +89,10 @@ import ulid.ULID.Companion.randomULID
 fun ScrInitialization(
     vm: VMInitialization = hiltViewModel(),
     stateApp: StateApp = LocalStateApp.current
-){
+) {
     val coroutineScope = rememberCoroutineScope()
     val uiState by vm.uiState.collectAsStateWithLifecycle()
-    LaunchedEffect(Unit) {vm.onEvent(OnOpenEvents)}
+    LaunchedEffect(Unit) { vm.onEvent(OnOpenEvents) }
     ScrInitialization(
         uiState = uiState,
         onSelectLanguage = { vm.onEvent(OnSelect(it)) },
@@ -121,13 +121,14 @@ private fun ScrInitialization(
     onFormSubmitBtnClicked: (BizProfileShort) -> Unit,
     onFormCancelBtnClicked: () -> Unit
 ) {
-    when(uiState.initialization){
+    when (uiState.initialization) {
         Loading -> LoadingScreen()
         is Error -> ErrorScreen(
             title = stringResource(id = string.str_error),
             errorMessage = uiState.initialization.t.stackTraceToString(),
             showIcon = true
         )
+
         is Success -> ScreenContent(
             uiState = uiState,
             initData = uiState.initialization.data,
@@ -212,13 +213,13 @@ private fun ScreenContent(
             configCurrent = initData.configCurrent,
             onSelectLanguage = onSelectLanguage
         )
-        if(uiState.welcomePanelState.visible){
+        if (uiState.welcomePanelState.visible) {
             WelcomeMessage(
                 onInitBizProfileDefaultBtnClicked = onInitBizProfileDefaultBtnClicked,
                 onInitBizProfileManualBtnClicked = onInitBizProfileManualBtnClicked
             )
         }
-        if(uiState.inputFormState.visible){
+        if (uiState.inputFormState.visible) {
             InitManualForm(
                 inputFormState = uiState.inputFormState,
                 onLegalNameValueChanged = onLegalNameValueChanged,
@@ -241,7 +242,7 @@ private fun LanguageSection(
         modifier = Modifier.fillMaxWidth(1.0f),
         horizontalArrangement = Arrangement.End,
         verticalAlignment = Alignment.CenterVertically
-    ){
+    ) {
         var expanded by remember { mutableStateOf(false) }
         ExposedDropdownMenuBox(
             modifier = Modifier.fillMaxWidth(0.4f),
@@ -282,7 +283,12 @@ private fun LanguageSection(
                             )
                         },
                         text =
-                        { Text(modifier = Modifier.fillMaxWidth(), text = stringResource(id = it.title)) },
+                        {
+                            Text(
+                                modifier = Modifier.fillMaxWidth(),
+                                text = stringResource(id = it.title)
+                            )
+                        },
                         onClick = {
                             expanded = false
                             onSelectLanguage.invoke(it)
@@ -393,7 +399,7 @@ fun InitManualForm(
         modifier = Modifier.fillMaxWidth(),
         shape = shapes.medium,
         color = colorScheme.surfaceContainerHighest
-    ){
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -446,7 +452,7 @@ fun InitManualForm(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                if(inputFormState.fldSubmitBtnEnabled){
+                if (inputFormState.fldSubmitBtnEnabled) {
                     AppIconButton(
                         modifier = Modifier.weight(0.5f),
                         onClick = {
@@ -470,7 +476,13 @@ fun InitManualForm(
                     )
                 }
                 AppIconButton(
-                    modifier = Modifier.weight(if(inputFormState.fldSubmitBtnEnabled){0.5f}else{1.0f}),
+                    modifier = Modifier.weight(
+                        if (inputFormState.fldSubmitBtnEnabled) {
+                            0.5f
+                        } else {
+                            1.0f
+                        }
+                    ),
                     onClick = onFormCancelBtnClicked,
                     icon = ImageVector.vectorResource(id = neutral),
                     text = stringResource(id = string.str_cancel),
