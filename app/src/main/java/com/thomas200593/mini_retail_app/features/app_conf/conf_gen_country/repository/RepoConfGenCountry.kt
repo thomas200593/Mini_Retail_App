@@ -8,7 +8,6 @@ import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.entit
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
@@ -22,6 +21,6 @@ internal class RepoImplConfGenCountry @Inject constructor(
     @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
 ): RepoConfGenCountry{
     override fun getCountries(): Flow<List<Country>> =
-        flow<List<Country>> { flowOf(getCountryList()) }.flowOn(ioDispatcher)
+        flow { emit(getCountryList()) }.flowOn(ioDispatcher)
     override suspend fun setCountry(country: Country) { dataStore.setCountry(country) }
 }

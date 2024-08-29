@@ -4,6 +4,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers.Dispatchers.IO
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.di.Dispatcher
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.domain.UCGetConfCountry
@@ -22,7 +23,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -46,7 +46,7 @@ class VMConfGenCountry @Inject constructor(
         val dlgScrDesc: MutableState<Boolean> = mutableStateOf(false)
     )
     sealed class UiEvents {
-        data object OnOpenEvents: UiEvents()
+        data class OnOpenEvents(val sessionState: SessionState): UiEvents()
         sealed class ButtonEvents: UiEvents() {
             sealed class BtnNavBackEvents: ButtonEvents() {
                 data object OnClick: BtnNavBackEvents()
@@ -72,7 +72,7 @@ class VMConfGenCountry @Inject constructor(
 
     fun onEvent(events: UiEvents) {
         when(events) {
-            is OnOpenEvents -> onOpenEvent()
+            is OnOpenEvents -> onOpenEvent(events.sessionState)
             is BtnNavBackEvents.OnClick -> {/*TODO*/}
             is BtnScrDescEvents.OnClick -> {/*TODO*/}
             is BtnScrDescEvents.OnDismiss -> {/*TODO*/}
@@ -99,45 +99,38 @@ class VMConfGenCountry @Inject constructor(
         )
     }
     private fun resetDialogState() = _uiState.update { it.copy(dialogState = DialogState()) }
-    private fun onOpenEvent() = viewModelScope.launch{
-        ucGetConfCountry.invoke().collect { result ->
-            Timber.d("Result Data : $result")
-        }
-        /*resetUiStateConfigCountry()
+    private fun onOpenEvent(sessionState: SessionState) {
+        resetUiStateConfigCountry()
         resetDialogState()
         when(sessionState) {
             SessionState.Loading -> {
                 updateDialogState(dlgLoadingAuth = true)
             }
             is SessionState.Invalid -> viewModelScope.launch{
-                resetDialogState()
+                resetUiStateConfigCountry()
                 updateDialogState(dlgLoadingGetData = true)
-                ucGetConfCountry.invoke().flowOn(ioDispatcher).collect{ resultData ->
+                ucGetConfCountry.invoke().collect { data ->
                     _uiState.update {
                         it.copy(
-                            configCountry = Success(
-                                configCountry = resultData
-                            ),
+                            configCountry = UiStateConfigCountry.Success(data),
                             dialogState = DialogState()
                         )
                     }
                 }
             }
-            is SessionState.Valid -> viewModelScope.launch {
-                resetDialogState()
+            is SessionState.Valid -> viewModelScope.launch{
+                resetUiStateConfigCountry()
                 updateDialogState(dlgLoadingGetData = true)
-                ucGetConfCountry.invoke().flowOn(ioDispatcher).collect{ resultData ->
+                ucGetConfCountry.invoke().collect { data ->
                     _uiState.update {
                         it.copy(
-                            configCountry = Success(
-                                configCountry = resultData
-                            ),
+                            configCountry = UiStateConfigCountry.Success(data),
                             dialogState = DialogState()
                         )
                     }
                 }
             }
-        }*/
+        }
     }
 }
 
