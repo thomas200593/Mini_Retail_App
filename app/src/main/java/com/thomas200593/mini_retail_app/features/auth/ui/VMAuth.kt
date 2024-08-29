@@ -105,13 +105,19 @@ class VMAuth @Inject constructor(
         )
     }
     private fun resetDialogState() = _uiState.update {
-        it.copy(dialogState = DialogState())
+        it.copy(
+            dialogState = DialogState()
+        )
     }
     private fun resetBtnGoogleUiState() = _uiState.update {
-        it.copy(btnGoogleUiState = BtnGoogleUiState())
+        it.copy(
+            btnGoogleUiState = BtnGoogleUiState()
+        )
     }
     private fun resetAuthResultState() = _uiState.update {
-        it.copy(authValidationResult = AuthValidationResult.Idle)
+        it.copy(
+            authValidationResult = AuthValidationResult.Idle
+        )
     }
     private fun onOpenEvent() = viewModelScope.launch(ioDispatcher) {
         repoAuth.clearAuthSessionToken().also {
@@ -121,16 +127,26 @@ class VMAuth @Inject constructor(
         }
     }
     private fun btnAuthGoogleOnClickEvent() = _uiState.update {
-        it.copy(btnGoogleUiState = it.btnGoogleUiState.copy(loading = true))
+        it.copy(
+            btnGoogleUiState = it.btnGoogleUiState.copy(
+                loading = true
+            )
+        )
     }
     private fun btnAuthGoogleOnResultReceivedEvent(authSessionToken: AuthSessionToken) {
         updateDialogState(dlgAuthLoading = true)
-        _uiState.update { it.copy(authValidationResult = AuthValidationResult.Loading) }
+        _uiState.update {
+            it.copy(
+                authValidationResult = AuthValidationResult.Loading
+            )
+        }
         viewModelScope.launch(ioDispatcher) {
             if(ucValidateAuthSessionAndSave.invoke(authSessionToken)) {
                 _uiState.update {
                     it.copy(
-                        authValidationResult = AuthValidationResult.Success(authSessionToken = authSessionToken)
+                        authValidationResult = AuthValidationResult.Success(
+                            authSessionToken = authSessionToken
+                        )
                     )
                 }
                 resetDialogState()
@@ -140,7 +156,11 @@ class VMAuth @Inject constructor(
             else {
                 _uiState.update {
                     it.copy(
-                        authValidationResult = AuthValidationResult.Error(Throwable("Client cannot authenticate with Google!"))
+                        authValidationResult = AuthValidationResult.Error(
+                            throwable = Throwable(
+                                message = "Client cannot authenticate with Google!"
+                            )
+                        )
                     )
                 }
                 updateDialogState(dlgAuthError = true)
@@ -157,13 +177,21 @@ class VMAuth @Inject constructor(
         resetBtnGoogleUiState()
         resetAuthResultState()
         _uiState.update {
-            it.copy(authValidationResult = AuthValidationResult.Error(throwable))
+            it.copy(
+                authValidationResult = AuthValidationResult.Error(
+                    throwable = throwable
+                )
+            )
         }
         updateDialogState(dlgAuthError = true)
     }
     private fun btnAuthGoogleOnResultDismissed(throwable: Throwable) {
         _uiState.update {
-            it.copy(authValidationResult = AuthValidationResult.Error(throwable))
+            it.copy(
+                authValidationResult = AuthValidationResult.Error(
+                    throwable = throwable
+                )
+            )
         }
         updateDialogState(dlgAuthError = true)
     }
