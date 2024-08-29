@@ -82,7 +82,9 @@ fun ScrConfGenCountry(
         key1 = sessionState,
         key2 = currentScreen
     ) {
-        currentScreen?.let { vm.onEvent(OnOpenEvents(sessionState, it)) }
+        currentScreen?.let {
+            vm.onEvent(OnOpenEvents(sessionState, it))
+        }
     }
 
     ScrConfGenCountry(
