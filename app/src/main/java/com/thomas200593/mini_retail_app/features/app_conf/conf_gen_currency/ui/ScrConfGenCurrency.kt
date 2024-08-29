@@ -1,6 +1,257 @@
 package com.thomas200593.mini_retail_app.features.app_conf.conf_gen_currency.ui
 
+import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons.AutoMirrored
+import androidx.compose.material.icons.Icons.Default
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.thomas200593.mini_retail_app.R
+import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs
+import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
+import com.thomas200593.mini_retail_app.app.ui.StateApp
+import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar.ProvideTopAppBarAction
+import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar.ProvideTopAppBarNavigationIcon
+import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar.ProvideTopAppBarTitle
+import com.thomas200593.mini_retail_app.core.ui.component.CustomButton.Common.AppIconButton
+import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AlertDialogContext
+import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AppAlertDialog
+import com.thomas200593.mini_retail_app.core.ui.component.CustomScreenUtil.LockScreenOrientation
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_currency.entity.ConfigCurrency
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_currency.ui.VMConfGenCurrency.UiEvents.OnOpenEvents
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_currency.ui.VMConfGenCurrency.UiStateConfigCurrency.Loading
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_currency.ui.VMConfGenCurrency.UiStateConfigCurrency.Success
+
+@Composable
+fun ScrConfGenCurrency(
+    vm: VMConfGenCurrency = hiltViewModel(),
+    stateApp: StateApp = LocalStateApp.current
+) {
+    LockScreenOrientation(orientation = SCREEN_ORIENTATION_PORTRAIT)
+
+    val coroutineScope = rememberCoroutineScope()
+    val uiState by vm.uiState.collectAsStateWithLifecycle()
+    val sessionState by stateApp.isSessionValid.collectAsStateWithLifecycle()
+    val currentScreen = ScrGraphs.getByRoute(stateApp.destCurrent)
+
+    LaunchedEffect(key1 = sessionState, key2 = currentScreen)
+    { currentScreen?.let { vm.onEvent(OnOpenEvents(sessionState, it)) } }
+
+    ScrConfGenCurrency(
+        uiState = uiState,
+        currentScreen = currentScreen
+    )
+}
+
+@Composable
+private fun ScrConfGenCurrency(uiState: VMConfGenCurrency.UiState, currentScreen: ScrGraphs?) {
+    currentScreen?.let {
+        HandleDialogs(
+            uiState = uiState,
+            currentScreen = it
+        )
+        TopAppBar(
+            scrGraphs = it
+        )
+    }
+    when(uiState.configCurrency) {
+        Loading -> Unit
+        is Success -> ScreenContent(
+            configCurrency = uiState.configCurrency.configCurrency
+        )
+    }
+}
+
+@Composable
+private fun HandleDialogs(uiState: VMConfGenCurrency.UiState, currentScreen: ScrGraphs) {
+    AppAlertDialog(
+        showDialog = uiState.dialogState.dlgLoadingAuth,
+        dialogContext = AlertDialogContext.INFORMATION,
+        showTitle = true,
+        title = {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) { CircularProgressIndicator() }
+        },
+        showBody = true,
+        body = {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) { Text(text = "Authenticating") }
+        }
+    )
+    AppAlertDialog(
+        showDialog = uiState.dialogState.dlgLoadingGetData,
+        dialogContext = AlertDialogContext.INFORMATION,
+        showTitle = true,
+        title = {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) { CircularProgressIndicator() }
+        },
+        showBody = true,
+        body = {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) { Text(text = "Getting Menu Data") }
+        }
+    )
+    AppAlertDialog(
+        showDialog = uiState.dialogState.dlgDenySetData,
+        dialogContext = AlertDialogContext.ERROR,
+        showTitle = true,
+        title = { Text(text = stringResource(id = R.string.str_error)) },
+        showBody = true,
+        body = {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text(text = "Access Denied! Authentication Required")
+            }
+        },
+        useDismissButton = true,
+        dismissButton = {
+            AppIconButton(
+                onClick = {/*TODO*/},
+                icon = Default.Close,
+                text = stringResource(id = R.string.str_close),
+                containerColor = MaterialTheme.colorScheme.error,
+                contentColor = MaterialTheme.colorScheme.onError
+            )
+        }
+    )
+    AppAlertDialog(
+        showDialog = uiState.dialogState.dlgScrDesc,
+        dialogContext = AlertDialogContext.INFORMATION,
+        showIcon = true,
+        showTitle = true,
+        title = { currentScreen.title?.let { Text(text = stringResource(id = it)) } },
+        showBody = true,
+        body = {
+            currentScreen.description?.let {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .verticalScroll(rememberScrollState()),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) { Text(text = stringResource(id = it)) }
+            }
+        },
+        useDismissButton = true,
+        dismissButton = {
+            AppIconButton(
+                onClick = {/*TODO*/},
+                icon = Default.Close,
+                text = stringResource(id = R.string.str_close)
+            )
+        }
+    )
+}
+
+@Composable
+private fun TopAppBar(scrGraphs: ScrGraphs) {
+    ProvideTopAppBarNavigationIcon {
+        Surface(
+            onClick = {/*TODO*/},
+            modifier = Modifier
+        ) {
+            Icon(
+                modifier = Modifier,
+                imageVector = AutoMirrored.Filled.KeyboardArrowLeft,
+                contentDescription = null
+            )
+        }
+    }
+    ProvideTopAppBarTitle {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            scrGraphs.iconRes?.let {
+                Icon(
+                    modifier = Modifier.sizeIn(maxHeight = ButtonDefaults.IconSize),
+                    imageVector = ImageVector.vectorResource(id = it),
+                    contentDescription = null
+                )
+            }
+            scrGraphs.title?.let {
+                Text(
+                    text = stringResource(id = it),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+        }
+    }
+    scrGraphs.description?.let {
+        ProvideTopAppBarAction {
+            Row(
+                modifier = Modifier,
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                val desc = stringResource(id = it)
+                Surface(
+                    onClick = { /*TODO*/ },
+                    modifier = Modifier
+                        .sizeIn(maxHeight = ButtonDefaults.IconSize),
+                ) {
+                    Icon(
+                        imageVector = Default.Info,
+                        contentDescription = null
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun ScreenContent(configCurrency: ConfigCurrency) {
+    /*TODO*/
+}
+
+/*import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -170,7 +421,7 @@ private fun ScreenContent(
             overflow = Ellipsis,
             textAlign = Center,
         )
-        /*TODO Add Searchbar*/
+
         LazyColumn(
             modifier = Modifier.fillMaxSize().padding(8.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp),
@@ -226,4 +477,4 @@ private fun ScreenContent(
             }
         }
     }
-}
+}*/
