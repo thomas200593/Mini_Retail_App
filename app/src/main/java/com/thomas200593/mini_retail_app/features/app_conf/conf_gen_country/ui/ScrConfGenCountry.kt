@@ -93,7 +93,7 @@ fun ScrConfGenCountry(
         onDismissDlgScrDesc = { vm.onEvent(BtnScrDescEvents.OnDismiss) },
         onSetData = { country ->
             currentScreen?.let {
-                when(sessionState) {
+                when (sessionState) {
                     SessionState.Loading -> Unit
                     is SessionState.Invalid -> {
                         if (it.usesAuth) {
@@ -102,6 +102,7 @@ fun ScrConfGenCountry(
                             vm.onEvent(BtnSetPrefCountryEvents.OnAllow(country))
                         }
                     }
+
                     is SessionState.Valid -> {
                         vm.onEvent(BtnSetPrefCountryEvents.OnAllow(country))
                     }
@@ -139,7 +140,7 @@ private fun ScrConfGenCountry(
             onShowScrDesc = onShowScrDesc
         )
     }
-    when(uiState.configCountry) {
+    when (uiState.configCountry) {
         Loading -> Unit
         is Success -> ScreenContent(
             configCountry = uiState.configCountry.configCountry,
@@ -275,7 +276,7 @@ private fun TopAppBar(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ){
+        ) {
             scrGraphs.iconRes?.let {
                 Icon(
                     modifier = Modifier.sizeIn(maxHeight = ButtonDefaults.IconSize),
@@ -298,7 +299,7 @@ private fun TopAppBar(
                 modifier = Modifier,
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
-            ){
+            ) {
                 val desc = stringResource(id = it)
                 Surface(
                     onClick = { onShowScrDesc(desc) },
@@ -352,7 +353,7 @@ private fun ScreenContent(
             verticalArrangement = Arrangement.spacedBy(10.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            items(count = preferencesList.count()){
+            items(count = preferencesList.count()) {
                 val data = preferencesList[it]
                 ThreeRowCardItem(
                     firstRowContent = {
