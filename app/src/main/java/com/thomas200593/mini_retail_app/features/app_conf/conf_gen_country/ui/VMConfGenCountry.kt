@@ -4,6 +4,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs
 import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers.Dispatchers.IO
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.di.Dispatcher
@@ -23,6 +24,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -46,7 +48,7 @@ class VMConfGenCountry @Inject constructor(
         val dlgScrDesc: MutableState<Boolean> = mutableStateOf(false)
     )
     sealed class UiEvents {
-        data class OnOpenEvents(val sessionState: SessionState): UiEvents()
+        data class OnOpenEvents(val sessionState: SessionState, val currentScreen: ScrGraphs): UiEvents()
         sealed class ButtonEvents: UiEvents() {
             sealed class BtnNavBackEvents: ButtonEvents() {
                 data object OnClick: BtnNavBackEvents()
@@ -72,11 +74,11 @@ class VMConfGenCountry @Inject constructor(
 
     fun onEvent(events: UiEvents) {
         when(events) {
-            is OnOpenEvents -> onOpenEvent(events.sessionState)
+            is OnOpenEvents -> onOpenEvent(events.sessionState, events.currentScreen)
             is BtnNavBackEvents.OnClick -> {/*TODO*/}
             is BtnScrDescEvents.OnClick -> {/*TODO*/}
             is BtnScrDescEvents.OnDismiss -> {/*TODO*/}
-            is BtnSetPrefCountryEvents.OnDeny -> {/*TODO*/}
+            is BtnSetPrefCountryEvents.OnDeny -> btnSetPrefDataOnDenyEvent()
             is BtnSetPrefCountryEvents.OnAllow -> {/*TODO*/}
             is DlgDenySetDataEvents.OnDismiss -> {/*TODO*/}
         }
@@ -99,22 +101,31 @@ class VMConfGenCountry @Inject constructor(
         )
     }
     private fun resetDialogState() = _uiState.update { it.copy(dialogState = DialogState()) }
-    private fun onOpenEvent(sessionState: SessionState) {
+    private fun onOpenEvent(sessionState: SessionState, currentScreen: ScrGraphs) {
+        Timber.d("Current Screen (VM): $currentScreen")
         resetUiStateConfigCountry()
         resetDialogState()
         when(sessionState) {
             SessionState.Loading -> {
                 updateDialogState(dlgLoadingAuth = true)
             }
-            is SessionState.Invalid -> viewModelScope.launch{
-                resetUiStateConfigCountry()
-                updateDialogState(dlgLoadingGetData = true)
-                ucGetConfCountry.invoke().collect { data ->
-                    _uiState.update {
-                        it.copy(
-                            configCountry = UiStateConfigCountry.Success(data),
-                            dialogState = DialogState()
-                        )
+            is SessionState.Invalid -> {
+                if(currentScreen.usesAuth) {
+                    btnSetPrefDataOnDenyEvent()
+                } else {
+                    resetUiStateConfigCountry()
+                    updateDialogState(dlgLoadingGetData = true)
+                    viewModelScope.launch{
+                        resetUiStateConfigCountry()
+                        updateDialogState(dlgLoadingGetData = true)
+                        ucGetConfCountry.invoke().collect { data ->
+                            _uiState.update {
+                                it.copy(
+                                    configCountry = UiStateConfigCountry.Success(data),
+                                    dialogState = DialogState()
+                                )
+                            }
+                        }
                     }
                 }
             }
@@ -131,6 +142,11 @@ class VMConfGenCountry @Inject constructor(
                 }
             }
         }
+    }
+    private fun btnSetPrefDataOnDenyEvent() {
+        resetUiStateConfigCountry()
+        resetDialogState()
+        updateDialogState(dlgDenySetData = true)
     }
 }
 
