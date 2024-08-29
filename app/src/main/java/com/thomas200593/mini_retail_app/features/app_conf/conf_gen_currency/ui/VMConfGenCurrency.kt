@@ -5,24 +5,17 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs
 import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
-import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers.Dispatchers.IO
-import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.di.Dispatcher
-import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_currency.domain.UCGetConfCurrency
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_currency.entity.ConfigCurrency
-import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_currency.repository.RepoConfGenCurrency
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_currency.ui.VMConfGenCurrency.UiEvents.OnOpenEvents
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_currency.ui.VMConfGenCurrency.UiStateConfigCurrency.Loading
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
 @HiltViewModel
 class VMConfGenCurrency @Inject constructor(
-    private val ucGetConfCurrency: UCGetConfCurrency,
-    private val repoConfGenCurrency: RepoConfGenCurrency,
-    @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
+
 ): ViewModel() {
     sealed interface UiStateConfigCurrency {
         data object Loading : UiStateConfigCurrency

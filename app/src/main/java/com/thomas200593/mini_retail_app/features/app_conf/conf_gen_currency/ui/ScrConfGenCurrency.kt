@@ -4,17 +4,23 @@ import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons.AutoMirrored
 import androidx.compose.material.icons.Icons.Default
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowRight
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -25,9 +31,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -42,6 +51,7 @@ import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar.ProvideTo
 import com.thomas200593.mini_retail_app.core.ui.component.CustomButton.Common.AppIconButton
 import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AlertDialogContext
 import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AppAlertDialog
+import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.ThreeRowCardItem
 import com.thomas200593.mini_retail_app.core.ui.component.CustomScreenUtil.LockScreenOrientation
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_currency.entity.ConfigCurrency
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_currency.ui.VMConfGenCurrency.UiEvents.OnOpenEvents
@@ -80,7 +90,7 @@ private fun ScrConfGenCurrency(uiState: VMConfGenCurrency.UiState, currentScreen
             scrGraphs = it
         )
     }
-    when(uiState.configCurrency) {
+    when (uiState.configCurrency) {
         Loading -> Unit
         is Success -> ScreenContent(
             configCurrency = uiState.configCurrency.configCurrency
@@ -150,7 +160,7 @@ private fun HandleDialogs(uiState: VMConfGenCurrency.UiState, currentScreen: Scr
         useDismissButton = true,
         dismissButton = {
             AppIconButton(
-                onClick = {/*TODO*/},
+                onClick = {/*TODO*/ },
                 icon = Default.Close,
                 text = stringResource(id = R.string.str_close),
                 containerColor = MaterialTheme.colorScheme.error,
@@ -179,7 +189,7 @@ private fun HandleDialogs(uiState: VMConfGenCurrency.UiState, currentScreen: Scr
         useDismissButton = true,
         dismissButton = {
             AppIconButton(
-                onClick = {/*TODO*/},
+                onClick = {/*TODO*/ },
                 icon = Default.Close,
                 text = stringResource(id = R.string.str_close)
             )
@@ -191,7 +201,7 @@ private fun HandleDialogs(uiState: VMConfGenCurrency.UiState, currentScreen: Scr
 private fun TopAppBar(scrGraphs: ScrGraphs) {
     ProvideTopAppBarNavigationIcon {
         Surface(
-            onClick = {/*TODO*/},
+            onClick = {/*TODO*/ },
             modifier = Modifier
         ) {
             Icon(
@@ -248,7 +258,94 @@ private fun TopAppBar(scrGraphs: ScrGraphs) {
 
 @Composable
 private fun ScreenContent(configCurrency: ConfigCurrency) {
-    /*TODO*/
+    val currentData = configCurrency.configCurrent.currency
+    val preferencesList = configCurrency.currencies
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(4.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
+        Surface(
+            modifier = Modifier,
+            color = MaterialTheme.colorScheme.surface,
+            contentColor = MaterialTheme.colorScheme.onSurface
+        ) {
+            Text(
+                text = "${stringResource(id = R.string.str_country)} : ${currentData.displayName}",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(4.dp),
+                fontWeight = FontWeight.Bold,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                textAlign = TextAlign.Center,
+            )
+        }
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(8.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            items(count = preferencesList.count()) {
+                val data = preferencesList[it]
+                ThreeRowCardItem(
+                    firstRowContent = {
+                        Text(
+                            text = data.symbol,
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.Center,
+                            fontWeight = FontWeight.Bold,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    },
+                    secondRowContent = {
+                        Text(
+                            text = data.displayName,
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.Start,
+                            fontWeight = FontWeight.Bold,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                        HorizontalDivider()
+                        Text(
+                            text = data.code,
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.Start,
+                            style = MaterialTheme.typography.labelSmall,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    },
+                    thirdRowContent = {
+                        Surface(
+                            modifier = Modifier.fillMaxWidth(),
+                            onClick = { /*TODO*/ }
+                        ) {
+                            Icon(
+                                imageVector = if (data == currentData) {
+                                    Default.CheckCircle
+                                } else {
+                                    AutoMirrored.Outlined.KeyboardArrowRight
+                                },
+                                contentDescription = null,
+                                tint = if (data == currentData) {
+                                    Color.Green
+                                } else {
+                                    MaterialTheme.colorScheme.onTertiaryContainer
+                                }
+                            )
+                        }
+                    }
+                )
+            }
+        }
+    }
 }
 
 /*import androidx.compose.foundation.layout.Arrangement
