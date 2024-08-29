@@ -96,8 +96,8 @@ fun ScrConfGen(
                     }
                 }
                 is SessionState.Valid -> {
-                    vm.onEvent(DlgDenyAccessEvents.OnDismiss).also {
-                        coroutineScope.launch { stateApp.onNavUp() }
+                    vm.onEvent(BtnMenuSelectionEvents.OnAllow).also {
+                        coroutineScope.launch { stateApp.navController.navToConfGen(menu) }
                     }
                 }
             }
