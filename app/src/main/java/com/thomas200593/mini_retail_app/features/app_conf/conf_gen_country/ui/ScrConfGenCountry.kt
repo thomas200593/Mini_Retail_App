@@ -78,9 +78,7 @@ fun ScrConfGenCountry(
     val sessionState by stateApp.isSessionValid.collectAsStateWithLifecycle()
     val currentScreen = ScrGraphs.getByRoute(stateApp.destCurrent)
 
-    LaunchedEffect(sessionState) {
-        currentScreen?.let { vm.onEvent(OnOpenEvents(sessionState, currentScreen)) }
-    }
+    LaunchedEffect(Unit) { vm.onEvent(OnOpenEvents) }
 
     ScrConfGenCountry(
         uiState = uiState,
@@ -141,11 +139,16 @@ private fun ScrConfGenCountry(
         )
     }
     when(uiState.configCountry) {
-        Loading -> Unit
-        is Success -> ScreenContent(
-            configCountry = uiState.configCountry.configCountry,
-            onSetData = onSetData
-        )
+        Loading -> {
+            Text(text = "Loading")
+        }
+        is Success -> {
+            Text(text = "Test Success")
+            /*ScreenContent(
+                configCountry = uiState.configCountry.configCountry,
+                onSetData = onSetData
+            )*/
+        }
     }
 }
 
