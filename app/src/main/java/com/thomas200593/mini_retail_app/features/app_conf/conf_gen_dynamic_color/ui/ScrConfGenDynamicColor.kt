@@ -59,6 +59,7 @@ import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_dynamic_color
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_dynamic_color.ui.VMConfGenDynamicColor.UiEvents.ButtonEvents.BtnScrDescEvents
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_dynamic_color.ui.VMConfGenDynamicColor.UiEvents.ButtonEvents.BtnSetPrefDynamicColorEvents
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_dynamic_color.ui.VMConfGenDynamicColor.UiEvents.DialogEvents.DlgDenySetDataEvents
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_dynamic_color.ui.VMConfGenDynamicColor.UiEvents.OnOpenEvents
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_dynamic_color.ui.VMConfGenDynamicColor.UiStateConfigDynamicColor.Loading
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_dynamic_color.ui.VMConfGenDynamicColor.UiStateConfigDynamicColor.Success
 import kotlinx.coroutines.launch
@@ -76,7 +77,7 @@ fun ScrConfGenDynamicColor(
     val currentScreen = ScrGraphs.getByRoute(stateApp.destCurrent)
 
     LaunchedEffect(key1 = sessionState, key2 = currentScreen)
-    { currentScreen?.let { vm.onEvent(VMConfGenDynamicColor.UiEvents.OnOpenEvents(sessionState, it)) } }
+    { currentScreen?.let { vm.onEvent(OnOpenEvents(sessionState, it)) } }
 
     ScrConfGenDynamicColor(
         uiState = uiState,

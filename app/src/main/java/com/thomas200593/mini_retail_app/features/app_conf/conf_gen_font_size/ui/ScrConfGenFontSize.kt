@@ -1,5 +1,42 @@
 package com.thomas200593.mini_retail_app.features.app_conf.conf_gen_font_size.ui
 
+import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs
+import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
+import com.thomas200593.mini_retail_app.app.ui.StateApp
+import com.thomas200593.mini_retail_app.core.ui.component.CustomScreenUtil.LockScreenOrientation
+
+@Composable
+fun ScrConfGenFontSize(
+    vm: VMConfGenFontSize = hiltViewModel(),
+    stateApp: StateApp = LocalStateApp.current
+) {
+    LockScreenOrientation(orientation = SCREEN_ORIENTATION_PORTRAIT)
+
+    val coroutineScope = rememberCoroutineScope()
+    val sessionState by stateApp.isSessionValid.collectAsStateWithLifecycle()
+    val currentScreen = ScrGraphs.getByRoute(stateApp.destCurrent)
+
+    LaunchedEffect(key1 = sessionState, key2 = currentScreen)
+    { currentScreen?.let { /*TODO*/ } }
+
+    ScrConfGenFontSize()
+}
+
+@Composable
+private fun ScrConfGenFontSize(
+    currentScreen: ScrGraphs
+) {
+
+}
+
+/*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -209,4 +246,4 @@ private fun ScreenContent(
             }
         }
     }
-}
+}*/
