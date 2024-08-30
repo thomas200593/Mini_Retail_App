@@ -72,29 +72,42 @@ fun ScrAppConfig(
     val sessionState by stateApp.isSessionValid.collectAsStateWithLifecycle()
     val currentScreen = ScrGraphs.getByRoute(stateApp.destCurrent)
 
-    LaunchedEffect(sessionState) { vm.onEvent(OnOpenEvents(sessionState)) }
+    LaunchedEffect(sessionState) {
+        vm.onEvent(OnOpenEvents(sessionState))
+    }
 
     ScrAppConfig(
         uiState = uiState,
         currentScreen = currentScreen,
         onNavigateBack = {
             vm.onEvent(BtnNavBackEvents.OnClick).also {
-                coroutineScope.launch { stateApp.onNavUp() }
+                coroutineScope.launch {
+                    stateApp.onNavUp()
+                }
             }
         },
-        onShowScrDesc = { vm.onEvent(BtnScrDescEvents.OnClick) },
-        onDismissDlgScrDesc = { vm.onEvent(BtnScrDescEvents.OnDismiss) },
+        onShowScrDesc = {
+            vm.onEvent(BtnScrDescEvents.OnClick)
+        },
+        onDismissDlgScrDesc = {
+            vm.onEvent(BtnScrDescEvents.OnDismiss)
+        },
         onNavToMenu = { menu ->
             when (sessionState) {
                 SessionState.Loading -> Unit
-                is SessionState.Invalid ->
-                    if (menu.scrGraphs.usesAuth) vm.onEvent(BtnMenuSelectionEvents.OnDeny)
-                    else vm.onEvent(BtnMenuSelectionEvents.OnAllow).also {
-                        coroutineScope.launch { stateApp.navController.navToAppConfig(menu) }
+                is SessionState.Invalid -> if (menu.scrGraphs.usesAuth) {
+                    vm.onEvent(BtnMenuSelectionEvents.OnDeny)
+                } else {
+                    vm.onEvent(BtnMenuSelectionEvents.OnAllow).also {
+                        coroutineScope.launch {
+                            stateApp.navController.navToAppConfig(menu)
+                        }
                     }
-
+                }
                 is SessionState.Valid -> vm.onEvent(BtnMenuSelectionEvents.OnAllow).also {
-                    coroutineScope.launch { stateApp.navController.navToAppConfig(menu) }
+                    coroutineScope.launch {
+                        stateApp.navController.navToAppConfig(menu)
+                    }
                 }
             }
         },
@@ -162,7 +175,7 @@ private fun HandleDialogs(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
-            ) { Text(text = "Authenticating") }
+            ) { Text(text = stringResource(id = string.str_authenticating)) }
         }
     )
     AppAlertDialog(
@@ -266,7 +279,8 @@ private fun TopAppBar(
         ) {
             scrGraphs.iconRes?.let {
                 Icon(
-                    modifier = Modifier.sizeIn(maxHeight = ButtonDefaults.IconSize),
+                    modifier = Modifier
+                        .sizeIn(maxHeight = ButtonDefaults.IconSize),
                     imageVector = ImageVector.vectorResource(id = it),
                     contentDescription = null
                 )
@@ -290,7 +304,8 @@ private fun TopAppBar(
                 val desc = stringResource(id = it)
                 Surface(
                     onClick = { onShowScrDesc(desc) },
-                    modifier = Modifier.sizeIn(maxHeight = ButtonDefaults.IconSize),
+                    modifier = Modifier
+                        .sizeIn(maxHeight = ButtonDefaults.IconSize),
                 ) {
                     Icon(
                         imageVector = Icons.Default.Info,
@@ -318,12 +333,15 @@ private fun ScreenContent(
             val menu = menuPreferences.elementAt(it)
             ClickableCardItem(
                 onClick = { onNavToMenu(menu) },
-                icon = menu.scrGraphs.iconRes?.let { icon -> ImageVector.vectorResource(id = icon) }
-                    ?: Icons.Default.Info,
-                title = menu.scrGraphs.title
-                    ?.let { title -> stringResource(id = title) }.orEmpty(),
-                subtitle = menu.scrGraphs.description
-                    ?.let { desc -> stringResource(id = desc) }.orEmpty()
+                icon = menu.scrGraphs.iconRes?.let { icon ->
+                    ImageVector.vectorResource(id = icon)
+                } ?: Icons.Default.Info,
+                title = menu.scrGraphs.title?.let { title ->
+                    stringResource(id = title)
+                }.orEmpty(),
+                subtitle = menu.scrGraphs.description?.let { desc ->
+                    stringResource(id = desc)
+                }.orEmpty()
             )
         }
     }
