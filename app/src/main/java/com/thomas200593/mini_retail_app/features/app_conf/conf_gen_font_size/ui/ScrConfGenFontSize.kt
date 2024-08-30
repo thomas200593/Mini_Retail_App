@@ -11,6 +11,10 @@ import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs
 import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
 import com.thomas200593.mini_retail_app.app.ui.StateApp
 import com.thomas200593.mini_retail_app.core.ui.component.CustomScreenUtil.LockScreenOrientation
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_font_size.entity.ConfigFontSizes
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_font_size.entity.FontSize
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_font_size.ui.VMConfGenFontSize.UiStateConfigFontSize.Loading
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_font_size.ui.VMConfGenFontSize.UiStateConfigFontSize.Success
 
 @Composable
 fun ScrConfGenFontSize(
@@ -20,21 +24,76 @@ fun ScrConfGenFontSize(
     LockScreenOrientation(orientation = SCREEN_ORIENTATION_PORTRAIT)
 
     val coroutineScope = rememberCoroutineScope()
+    val uiState by vm.uiState.collectAsStateWithLifecycle()
     val sessionState by stateApp.isSessionValid.collectAsStateWithLifecycle()
     val currentScreen = ScrGraphs.getByRoute(stateApp.destCurrent)
 
     LaunchedEffect(key1 = sessionState, key2 = currentScreen)
     { currentScreen?.let { /*TODO*/ } }
 
-    ScrConfGenFontSize()
+    ScrConfGenFontSize(
+        uiState = uiState,
+        currentScreen = currentScreen,
+        onNavigateBack = {/*TODO*/},
+        onShowScrDesc = {/*TODO*/},
+        onDismissDlgScrDesc = {/*TODO*/},
+        onSetData = {/*TODO*/},
+        onDismissDlgDenySetData = {/*TODO*/}
+    )
 }
 
 @Composable
 private fun ScrConfGenFontSize(
-    currentScreen: ScrGraphs
+    uiState: VMConfGenFontSize.UiState,
+    currentScreen: ScrGraphs?,
+    onNavigateBack: () -> Unit,
+    onShowScrDesc: (String) -> Unit,
+    onDismissDlgScrDesc: () -> Unit,
+    onSetData: (FontSize) -> Unit,
+    onDismissDlgDenySetData: () -> Unit
 ) {
-
+    currentScreen?.let {
+        HandleDialogs(
+            uiState = uiState,
+            currentScreen = currentScreen,
+            onDismissDlgScrDesc = onDismissDlgScrDesc,
+            onDismissDlgDenySetData = onDismissDlgDenySetData
+        )
+        TopAppBar(
+            scrGraphs = it,
+            onShowScrDesc = onShowScrDesc,
+            onNavigateBack = onNavigateBack
+        )
+    }
+    when(uiState.configFontSizes) {
+        Loading -> Unit
+        is Success -> ScreenContent(
+            configFontSizes = uiState.configFontSizes.configFontSizes,
+            onSetData = onSetData
+        )
+    }
 }
+
+@Composable
+private fun HandleDialogs(
+    uiState: VMConfGenFontSize.UiState,
+    currentScreen: ScrGraphs,
+    onDismissDlgScrDesc: () -> Unit,
+    onDismissDlgDenySetData: () -> Unit
+) {/*TODO*/}
+
+@Composable
+private fun TopAppBar(
+    scrGraphs: ScrGraphs,
+    onShowScrDesc: (String) -> Unit,
+    onNavigateBack: () -> Unit
+) {/*TODO*/}
+
+@Composable
+private fun ScreenContent(
+    configFontSizes: ConfigFontSizes,
+    onSetData: (FontSize) -> Unit
+) {/*TODO*/}
 
 /*
 import androidx.compose.foundation.layout.Arrangement
