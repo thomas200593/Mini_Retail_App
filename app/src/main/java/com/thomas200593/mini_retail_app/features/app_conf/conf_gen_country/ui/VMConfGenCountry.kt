@@ -18,6 +18,7 @@ import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.ui.VM
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.ui.VMConfGenCountry.UiEvents.DialogEvents.DlgDenySetDataEvents
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.ui.VMConfGenCountry.UiEvents.OnOpenEvents
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.ui.VMConfGenCountry.UiStateConfigCountry.Loading
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.ui.VMConfGenCountry.UiStateConfigCountry.Success
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -124,15 +125,13 @@ class VMConfGenCountry @Inject constructor(
                 if (currentScreen.usesAuth) {
                     onDenySet()
                 } else {
-                    resetUiStateConfigCountry()
-                    updateDialogState(dlgLoadingGetData = true)
                     viewModelScope.launch {
                         resetUiStateConfigCountry()
                         updateDialogState(dlgLoadingGetData = true)
                         ucGetConfCountry.invoke().flowOn(ioDispatcher).collect { data ->
                             _uiState.update {
                                 it.copy(
-                                    configCountry = UiStateConfigCountry.Success(data),
+                                    configCountry = Success(data),
                                     dialogState = DialogState()
                                 )
                             }
@@ -147,7 +146,7 @@ class VMConfGenCountry @Inject constructor(
                 ucGetConfCountry.invoke().flowOn(ioDispatcher).collect { data ->
                     _uiState.update {
                         it.copy(
-                            configCountry = UiStateConfigCountry.Success(data),
+                            configCountry = Success(data),
                             dialogState = DialogState()
                         )
                     }
