@@ -44,6 +44,7 @@ import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs
 import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
 import com.thomas200593.mini_retail_app.app.ui.StateApp
+import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
 import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar.ProvideTopAppBarAction
 import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar.ProvideTopAppBarNavigationIcon
 import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar.ProvideTopAppBarTitle
@@ -54,8 +55,13 @@ import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.ThreeRowCa
 import com.thomas200593.mini_retail_app.core.ui.component.CustomScreenUtil.LockScreenOrientation
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_dynamic_color.entity.ConfigDynamicColor
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_dynamic_color.entity.DynamicColor
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_dynamic_color.ui.VMConfGenDynamicColor.UiEvents.ButtonEvents.BtnNavBackEvents
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_dynamic_color.ui.VMConfGenDynamicColor.UiEvents.ButtonEvents.BtnScrDescEvents
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_dynamic_color.ui.VMConfGenDynamicColor.UiEvents.ButtonEvents.BtnSetPrefDynamicColorEvents
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_dynamic_color.ui.VMConfGenDynamicColor.UiEvents.DialogEvents.DlgDenySetDataEvents
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_dynamic_color.ui.VMConfGenDynamicColor.UiStateConfigDynamicColor.Loading
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_dynamic_color.ui.VMConfGenDynamicColor.UiStateConfigDynamicColor.Success
+import kotlinx.coroutines.launch
 
 @Composable
 fun ScrConfGenDynamicColor(
@@ -75,11 +81,35 @@ fun ScrConfGenDynamicColor(
     ScrConfGenDynamicColor(
         uiState = uiState,
         currentScreen = currentScreen,
-        onNavigateBack = {/*TODO*/ },
-        onShowScrDesc = {/*TODO*/ },
-        onDismissDlgScrDesc = {/*TODO*/ },
-        onSetData = {/*TODO*/ },
-        onDismissDlgDenySetData = {/*TODO*/ }
+        onNavigateBack = {
+            vm.onEvent(BtnNavBackEvents.OnClick).also {
+                coroutineScope.launch { stateApp.onNavUp() }
+            }
+        },
+        onShowScrDesc = { vm.onEvent(BtnScrDescEvents.OnClick) },
+        onDismissDlgScrDesc = { vm.onEvent(BtnScrDescEvents.OnDismiss) },
+        onSetData = { dynamicColor ->
+            currentScreen?.let {
+                when(sessionState) {
+                    SessionState.Loading -> Unit
+                    is SessionState.Invalid -> {
+                        if(it.usesAuth) {
+                            vm.onEvent(BtnSetPrefDynamicColorEvents.OnDeny)
+                        } else {
+                            vm.onEvent(BtnSetPrefDynamicColorEvents.OnAllow(dynamicColor))
+                        }
+                    }
+                    is SessionState.Valid -> {
+                        vm.onEvent(BtnSetPrefDynamicColorEvents.OnAllow(dynamicColor))
+                    }
+                }
+            }
+        },
+        onDismissDlgDenySetData = {
+            vm.onEvent(DlgDenySetDataEvents.OnDismiss).also {
+                coroutineScope.launch { stateApp.onNavUp() }
+            }
+        }
     )
 }
 
