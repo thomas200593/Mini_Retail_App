@@ -69,10 +69,7 @@ fun ScrConfGenDynamicColor(
     val sessionState by stateApp.isSessionValid.collectAsStateWithLifecycle()
     val currentScreen = ScrGraphs.getByRoute(stateApp.destCurrent)
 
-    LaunchedEffect(
-        key1 = sessionState,
-        key2 = currentScreen
-    )
+    LaunchedEffect(key1 = sessionState, key2 = currentScreen)
     { currentScreen?.let { vm.onEvent(VMConfGenDynamicColor.UiEvents.OnOpenEvents(sessionState, it)) } }
 
     ScrConfGenDynamicColor(
@@ -199,11 +196,7 @@ private fun HandleDialogs(
         dialogContext = AlertDialogContext.INFORMATION,
         showIcon = true,
         showTitle = true,
-        title = {
-            currentScreen.title?.let {
-                Text(text = stringResource(id = it))
-            }
-        },
+        title = { currentScreen.title?.let { Text(text = stringResource(id = it)) } },
         showBody = true,
         body = {
             currentScreen.description?.let {
@@ -303,16 +296,22 @@ private fun ScreenContent(
         verticalArrangement = Arrangement.spacedBy(10.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            text = "${stringResource(id = R.string.str_dynamic_color)} : ${stringResource(id = currentData.title)}",
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(4.dp),
-            fontWeight = FontWeight.Bold,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            textAlign = TextAlign.Center,
-        )
+        Surface(
+            modifier = Modifier,
+            color = MaterialTheme.colorScheme.surface,
+            contentColor = MaterialTheme.colorScheme.onSurface
+        ) {
+            Text(
+                text = "${stringResource(id = R.string.str_dynamic_color)} : ${stringResource(id = currentData.title)}",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(4.dp),
+                fontWeight = FontWeight.Bold,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                textAlign = TextAlign.Center,
+            )
+        }
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
