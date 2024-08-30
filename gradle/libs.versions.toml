@@ -2,7 +2,7 @@
 accompanistPermissions = "0.35.1-alpha"
 accompanistSystemuicontroller = "0.32.0"
 activityKtx = "1.9.1"
-agp = "8.5.2"
+agp = "8.6.0"
 appcompat = "1.7.0"
 coilCompose = "2.6.0"
 constraintlayoutCompose = "1.0.1"
@@ -24,6 +24,7 @@ junitVersion = "1.2.1"
 jwtdecode = "2.0.2"
 kotlin = "1.9.10"
 kotlinxCoroutinesAndroid = "1.8.0"
+kotlinxSerialization = "2.0.10"
 kotlinxSerializationJson = "1.6.3"
 ktor = "2.3.7"
 lifecycleExtensions = "2.2.0"
@@ -31,7 +32,7 @@ lifecycleLivedataKtx = "2.8.4"
 material = "1.12.0"
 material3 = "1.2.1"
 multidex = "2.0.1"
-navigationCompose = "2.8.0-beta07"
+navigationCompose = "2.8.0-rc01"
 okhttp = "4.12.0"
 okhttpUrlconnection = "4.0.1"
 ossLicensesPlugin = "0.10.6"
@@ -124,4 +125,4 @@ android-library = {id = "com.android.library", version.ref="agp"}
 devtools-ksp = {id="com.google.devtools.ksp", version.ref="devtoolsKsp"}
 hilt-android = {id="com.google.dagger.hilt.android", version.ref="hiltAndroid"}
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref="kotlin"}
-kotlinxSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+kotlinxSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlinxSerialization" }

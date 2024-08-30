@@ -87,20 +87,14 @@ fun ScrAppConfig(
         onNavToMenu = { menu ->
             when (sessionState) {
                 SessionState.Loading -> Unit
-                is SessionState.Invalid -> {
-                    if (menu.scrGraphs.usesAuth) {
-                        vm.onEvent(BtnMenuSelectionEvents.OnDeny)
-                    } else {
-                        vm.onEvent(BtnMenuSelectionEvents.OnAllow).also {
-                            coroutineScope.launch { stateApp.navController.navToAppConfig(menu) }
-                        }
-                    }
-                }
-
-                is SessionState.Valid -> {
-                    vm.onEvent(BtnMenuSelectionEvents.OnAllow).also {
+                is SessionState.Invalid ->
+                    if (menu.scrGraphs.usesAuth) vm.onEvent(BtnMenuSelectionEvents.OnDeny)
+                    else vm.onEvent(BtnMenuSelectionEvents.OnAllow).also {
                         coroutineScope.launch { stateApp.navController.navToAppConfig(menu) }
                     }
+
+                is SessionState.Valid -> vm.onEvent(BtnMenuSelectionEvents.OnAllow).also {
+                    coroutineScope.launch { stateApp.navController.navToAppConfig(menu) }
                 }
             }
         },
@@ -204,9 +198,7 @@ private fun HandleDialogs(
                     .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
-            ) {
-                Text(text = "Access Denied! Authentication Required")
-            }
+            ) { Text(text = "Access Denied! Authentication Required") }
         },
         useDismissButton = true,
         dismissButton = {
@@ -298,8 +290,7 @@ private fun TopAppBar(
                 val desc = stringResource(id = it)
                 Surface(
                     onClick = { onShowScrDesc(desc) },
-                    modifier = Modifier
-                        .sizeIn(maxHeight = ButtonDefaults.IconSize),
+                    modifier = Modifier.sizeIn(maxHeight = ButtonDefaults.IconSize),
                 ) {
                     Icon(
                         imageVector = Icons.Default.Info,

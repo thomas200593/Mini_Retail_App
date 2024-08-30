@@ -15,6 +15,7 @@ import com.thomas200593.mini_retail_app.features.app_conf.app_config.ui.VMAppCon
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.ui.VMAppConfig.UiEvents.ButtonEvents.DialogEvents.DlgDenyAccessEvents
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.ui.VMAppConfig.UiEvents.OnOpenEvents
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.ui.VMAppConfig.UiStateDestAppConfig.Loading
+import com.thomas200593.mini_retail_app.features.app_conf.app_config.ui.VMAppConfig.UiStateDestAppConfig.Success
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -33,36 +34,30 @@ class VMAppConfig @Inject constructor(
         data object Loading : UiStateDestAppConfig
         data class Success(val destAppConfig: Set<DestAppConfig>) : UiStateDestAppConfig
     }
-
     data class UiState(
         val destAppConfig: UiStateDestAppConfig = Loading,
         val dialogState: DialogState = DialogState()
     )
-
     data class DialogState(
         val dlgLoadingAuth: MutableState<Boolean> = mutableStateOf(false),
         val dlgLoadingGetMenu: MutableState<Boolean> = mutableStateOf(false),
         val dlgDenyAccessMenu: MutableState<Boolean> = mutableStateOf(false),
         val dlgScrDesc: MutableState<Boolean> = mutableStateOf(false)
     )
-
     sealed class UiEvents {
         data class OnOpenEvents(val sessionState: SessionState) : UiEvents()
         sealed class ButtonEvents : UiEvents() {
             sealed class BtnNavBackEvents : ButtonEvents() {
                 data object OnClick : BtnNavBackEvents()
             }
-
             sealed class BtnScrDescEvents : ButtonEvents() {
                 data object OnClick : BtnScrDescEvents()
                 data object OnDismiss : BtnScrDescEvents()
             }
-
             sealed class BtnMenuSelectionEvents : ButtonEvents() {
                 data object OnAllow : BtnMenuSelectionEvents()
                 data object OnDeny : BtnMenuSelectionEvents()
             }
-
             sealed class DialogEvents : UiEvents() {
                 sealed class DlgDenyAccessEvents : DialogEvents() {
                     data object OnDismiss : DlgDenyAccessEvents()
@@ -78,11 +73,13 @@ class VMAppConfig @Inject constructor(
         when (events) {
             is OnOpenEvents -> onOpenEvent(events.sessionState)
             is BtnNavBackEvents.OnClick -> onNavBackEvent()
-            is BtnScrDescEvents.OnClick -> onShowScrDescEvent()
-            is BtnScrDescEvents.OnDismiss -> onHideScrDescEvent()
-            is BtnMenuSelectionEvents.OnDeny -> onDenyAccess()
-            is BtnMenuSelectionEvents.OnAllow -> onAllowAccess()
-            is DlgDenyAccessEvents.OnDismiss -> onDismissDenyAccessDlg()
+            is BtnScrDescEvents.OnClick ->
+                { resetDialogState(); updateDialogState(dlgScrDesc = true) }
+            is BtnScrDescEvents.OnDismiss -> resetDialogState()
+            is BtnMenuSelectionEvents.OnDeny ->
+                { resetDialogState(); updateDialogState(dlgDenyAccessMenu = true) }
+            is BtnMenuSelectionEvents.OnAllow -> resetDialogState()
+            is DlgDenyAccessEvents.OnDismiss -> onNavBackEvent()
         }
     }
 
@@ -102,42 +99,34 @@ class VMAppConfig @Inject constructor(
             )
         )
     }
-
     private fun resetDialogState() = _uiState.update { it.copy(dialogState = DialogState()) }
     private fun onOpenEvent(sessionState: SessionState) {
         resetUiStateDestAppConfig()
         resetDialogState()
         when (sessionState) {
-            SessionState.Loading -> {
-                updateDialogState(dlgLoadingAuth = true)
-            }
-
+            SessionState.Loading -> updateDialogState(dlgLoadingAuth = true)
             is SessionState.Invalid -> viewModelScope.launch {
                 resetDialogState()
                 updateDialogState(dlgLoadingGetMenu = true)
                 repoAppConf.getMenuData().flowOn(ioDispatcher).collect { menuData ->
                     _uiState.update {
                         it.copy(
-                            destAppConfig = UiStateDestAppConfig.Success(
-                                destAppConfig = menuData.filterNot { menu ->
-                                    menu.scrGraphs.usesAuth
-                                }.toSet()
+                            destAppConfig = Success(
+                                destAppConfig = menuData
+                                    .filterNot { menu -> menu.scrGraphs.usesAuth }.toSet()
                             ),
                             dialogState = DialogState()
                         )
                     }
                 }
             }
-
             is SessionState.Valid -> viewModelScope.launch {
                 resetDialogState()
                 updateDialogState(dlgLoadingGetMenu = true)
                 repoAppConf.getMenuData().flowOn(ioDispatcher).collect { menuData ->
                     _uiState.update {
                         it.copy(
-                            destAppConfig = UiStateDestAppConfig.Success(
-                                destAppConfig = menuData
-                            ),
+                            destAppConfig = Success(destAppConfig = menuData),
                             dialogState = DialogState()
                         )
                     }
@@ -145,32 +134,6 @@ class VMAppConfig @Inject constructor(
             }
         }
     }
-
-    private fun onNavBackEvent() {
-        resetDialogState()
-        resetUiStateDestAppConfig()
-    }
-
-    private fun onShowScrDescEvent() {
-        resetDialogState()
-        updateDialogState(dlgScrDesc = true)
-    }
-
-    private fun onHideScrDescEvent() {
-        resetDialogState()
-    }
-
-    private fun onDenyAccess() {
-        resetDialogState()
-        updateDialogState(dlgDenyAccessMenu = true)
-    }
-
-    private fun onAllowAccess() {
-        resetDialogState()
-    }
-
-    private fun onDismissDenyAccessDlg() {
-        resetDialogState()
-        resetUiStateDestAppConfig()
-    }
+    private fun onNavBackEvent()
+    { resetDialogState(); resetUiStateDestAppConfig() }
 }
