@@ -4,23 +4,25 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs
+import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers.Dispatchers.IO
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.di.Dispatcher
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_dynamic_color.domain.UCGetConfDynamicColor
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_dynamic_color.entity.ConfigDynamicColor
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_dynamic_color.entity.DynamicColor
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_dynamic_color.repository.RepoConfGenDynamicColor
-import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_dynamic_color.ui.VMConfGenDynamicColor.UiEvents.BtnSelectDynamicColorEvents
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_dynamic_color.ui.VMConfGenDynamicColor.UiEvents.ButtonEvents.BtnNavBackEvents
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_dynamic_color.ui.VMConfGenDynamicColor.UiEvents.ButtonEvents.BtnScrDescEvents
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_dynamic_color.ui.VMConfGenDynamicColor.UiEvents.ButtonEvents.BtnSetPrefDynamicColorEvents
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_dynamic_color.ui.VMConfGenDynamicColor.UiEvents.DialogEvents.DlgDenySetDataEvents
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_dynamic_color.ui.VMConfGenDynamicColor.UiEvents.OnOpenEvents
-import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_dynamic_color.ui.VMConfGenDynamicColor.UiStateConfigDynamicColor.Error
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_dynamic_color.ui.VMConfGenDynamicColor.UiStateConfigDynamicColor.Loading
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_dynamic_color.ui.VMConfGenDynamicColor.UiStateConfigDynamicColor.Success
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -28,79 +30,152 @@ import javax.inject.Inject
 
 @HiltViewModel
 class VMConfGenDynamicColor @Inject constructor(
+    private val ucGetConfGenDynamicColor: UCGetConfDynamicColor,
     private val repoConfGenDynamicColor: RepoConfGenDynamicColor,
-    private val ucGetConfDynamicColor: UCGetConfDynamicColor,
     @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
 ): ViewModel() {
-    sealed interface UiStateConfigDynamicColor{
-        data object Loading: UiStateConfigDynamicColor
+    sealed interface UiStateConfigDynamicColor {
+        data object Loading : UiStateConfigDynamicColor
         data class Success(val configDynamicColor: ConfigDynamicColor): UiStateConfigDynamicColor
-        data class Error(val t: Throwable): UiStateConfigDynamicColor
     }
+
     data class UiState(
         val configDynamicColor: UiStateConfigDynamicColor = Loading,
         val dialogState: DialogState = DialogState()
     )
+
     data class DialogState(
-        val dlgLoadDataEnabled : MutableState<Boolean> = mutableStateOf(false),
-        val dlgLoadDataErrorEnabled : MutableState<Boolean> = mutableStateOf(false)
+        val dlgLoadingAuth: MutableState<Boolean> = mutableStateOf(false),
+        val dlgLoadingGetData: MutableState<Boolean> = mutableStateOf(false),
+        val dlgDenySetData: MutableState<Boolean> = mutableStateOf(false),
+        val dlgScrDesc: MutableState<Boolean> = mutableStateOf(false)
     )
+
     sealed class UiEvents {
-        data object OnOpenEvents: UiEvents()
-        sealed class ButtonEvents : UiEvents(){
-            sealed class BtnNavBackEvents: ButtonEvents(){
-                data object OnClick: BtnNavBackEvents()
+        data class OnOpenEvents(
+            val sessionState: SessionState,
+            val currentScreen: ScrGraphs
+        ) : UiEvents()
+
+        sealed class ButtonEvents : UiEvents() {
+            sealed class BtnNavBackEvents : ButtonEvents() {
+                data object OnClick : BtnNavBackEvents()
+            }
+
+            sealed class BtnScrDescEvents : ButtonEvents() {
+                data object OnClick : BtnScrDescEvents()
+                data object OnDismiss : BtnScrDescEvents()
+            }
+
+            sealed class BtnSetPrefDynamicColorEvents : ButtonEvents() {
+                data class OnAllow(val dynamicColor: DynamicColor) : BtnSetPrefDynamicColorEvents()
+                data object OnDeny : BtnSetPrefDynamicColorEvents()
             }
         }
-        sealed class BtnSelectDynamicColorEvents: ButtonEvents(){
-            data class OnClick(val dynamicColor: DynamicColor): BtnSelectDynamicColorEvents()
+
+        sealed class DialogEvents : UiEvents() {
+            sealed class DlgDenySetDataEvents : DialogEvents() {
+                data object OnDismiss : DlgDenySetDataEvents()
+            }
         }
     }
 
     private val _uiState = MutableStateFlow(UiState())
     val uiState = _uiState.asStateFlow()
 
-    fun onEvent(events: UiEvents){
-        when(events){
-            OnOpenEvents -> onOpenEvent()
-            BtnNavBackEvents.OnClick -> onBtnNavBackClicked()
-            is BtnSelectDynamicColorEvents.OnClick -> onSaveSelectedDynamicColor(events.dynamicColor)
+    fun onEvent(events: UiEvents) {
+        when(events) {
+            is OnOpenEvents -> onOpenEvent(events.sessionState, events.currentScreen)
+            is BtnNavBackEvents.OnClick -> onNavBackEvent()
+            is BtnScrDescEvents.OnClick -> onShowScrDescEvent()
+            is BtnScrDescEvents.OnDismiss -> onHideScrDescEvent()
+            is BtnSetPrefDynamicColorEvents.OnDeny -> onDenySet()
+            is BtnSetPrefDynamicColorEvents.OnAllow -> onAllowSet(events.dynamicColor)
+            is DlgDenySetDataEvents.OnDismiss -> onDismissDenySetDlg()
         }
     }
-    private fun onOpenEvent() = viewModelScope.launch(ioDispatcher) {
-        updateDialogState(
-            dlgLoadDataEnabled = true,
-            dlgLoadDataError = false
+
+    private fun resetUiStateConfigDynamicColor() = _uiState.update { it.copy(configDynamicColor = Loading) }
+    private fun updateDialogState(
+        dlgLoadingAuth: Boolean = false,
+        dlgLoadingGetData: Boolean = false,
+        dlgDenySetData: Boolean = false,
+        dlgScrDesc: Boolean = false
+    ) = _uiState.update {
+        it.copy(
+            dialogState = it.dialogState.copy(
+                dlgLoadingAuth = mutableStateOf(dlgLoadingAuth),
+                dlgLoadingGetData = mutableStateOf(dlgLoadingGetData),
+                dlgDenySetData = mutableStateOf(dlgDenySetData),
+                dlgScrDesc = mutableStateOf(dlgScrDesc)
+            )
         )
-        ucGetConfDynamicColor.invoke().flowOn(ioDispatcher)
-            .catch { e -> _uiState.update { it.copy(configDynamicColor = Error(e)) }
-                updateDialogState(
-                    dlgLoadDataEnabled = false,
-                    dlgLoadDataError = true
-                )
+    }
+    private fun resetDialogState() = _uiState.update { it.copy(dialogState = DialogState()) }
+    private fun onOpenEvent(sessionState: SessionState, currentScreen: ScrGraphs) {
+        resetUiStateConfigDynamicColor()
+        resetDialogState()
+        when(sessionState) {
+            SessionState.Loading -> {
+                updateDialogState(dlgLoadingAuth = true)
             }
-            .collect{ result ->
-                _uiState.update { it.copy(
-                    configDynamicColor = Success(result.data),
-                    dialogState = DialogState())
+
+            is SessionState.Invalid -> {
+                if(currentScreen.usesAuth) {
+                    onDenySet()
+                } else {
+                    viewModelScope.launch {
+                        resetUiStateConfigDynamicColor()
+                        updateDialogState(dlgLoadingGetData = true)
+                        ucGetConfGenDynamicColor.invoke().flowOn(ioDispatcher).collect{ data ->
+                            _uiState.update {
+                                it.copy(
+                                    configDynamicColor = Success(data),
+                                    dialogState = DialogState()
+                                )
+                            }
+                        }
+                    }
                 }
             }
-    }
-    private fun onBtnNavBackClicked() =
-        _uiState.update { it.copy(dialogState = DialogState()) }
-    private fun onSaveSelectedDynamicColor(dynamicColor: DynamicColor) =
-        viewModelScope.launch(ioDispatcher) { repoConfGenDynamicColor.setDynamicColor(dynamicColor) }
-    private fun updateDialogState(
-        dlgLoadDataEnabled: Boolean = false,
-        dlgLoadDataError: Boolean = false
-    ) {
-        _uiState.update {
-            it.copy(
-                dialogState = it.dialogState.copy(
-                    dlgLoadDataEnabled = mutableStateOf(dlgLoadDataEnabled),
-                    dlgLoadDataErrorEnabled = mutableStateOf(dlgLoadDataError),
-                )
-            )
+
+            is SessionState.Valid -> viewModelScope.launch {
+                resetUiStateConfigDynamicColor()
+                updateDialogState(dlgLoadingGetData = true)
+                ucGetConfGenDynamicColor.invoke().flowOn(ioDispatcher).collect{ data ->
+                    _uiState.update {
+                        it.copy(
+                            configDynamicColor = Success(data),
+                            dialogState = DialogState()
+                        )
+                    }
+                }
+            }
         }
+    }
+    private fun onNavBackEvent() {
+        resetDialogState()
+        resetUiStateConfigDynamicColor()
+    }
+    private fun onShowScrDescEvent() {
+        resetDialogState()
+        updateDialogState(dlgScrDesc = true)
+    }
+    private fun onHideScrDescEvent() {
+        resetDialogState()
+    }
+    private fun onDenySet() {
+        resetDialogState()
+        updateDialogState(dlgDenySetData = true)
+    }
+    private fun onAllowSet(dynamicColor: DynamicColor) {
+        resetDialogState()
+        viewModelScope.launch {
+            repoConfGenDynamicColor.setDynamicColor(dynamicColor = dynamicColor)
+        }
+    }
+    private fun onDismissDenySetDlg() {
+        resetDialogState()
+        resetUiStateConfigDynamicColor()
     }
 }
