@@ -121,8 +121,7 @@ class VMAppConfig @Inject constructor(
                 }
             }
             is SessionState.Valid -> viewModelScope.launch {
-                resetDialogState()
-                updateDialogState(dlgLoadingGetMenu = true)
+                resetDialogState(); updateDialogState(dlgLoadingGetMenu = true)
                 repoAppConf.getMenuData().flowOn(ioDispatcher).collect { menuData ->
                     _uiState.update {
                         it.copy(
