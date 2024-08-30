@@ -1,15 +1,41 @@
 package com.thomas200593.mini_retail_app.features.app_conf.conf_gen_font_size.ui
 
 import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.icons.Icons.AutoMirrored
+import androidx.compose.material.icons.Icons.Default
+import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowRight
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.thomas200593.mini_retail_app.R.string
 import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs
 import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
 import com.thomas200593.mini_retail_app.app.ui.StateApp
+import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.ThreeRowCardItem
 import com.thomas200593.mini_retail_app.core.ui.component.CustomScreenUtil.LockScreenOrientation
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_font_size.entity.ConfigFontSizes
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_font_size.entity.FontSize
@@ -93,7 +119,74 @@ private fun TopAppBar(
 private fun ScreenContent(
     configFontSizes: ConfigFontSizes,
     onSetData: (FontSize) -> Unit
-) {/*TODO*/}
+) {
+    val currentData = configFontSizes.configCurrent.fontSize
+    val preferencesList = configFontSizes.fontSizes
+
+    Column (
+        modifier = Modifier.fillMaxSize().padding(4.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = "${stringResource(id = string.str_size_font)} : ${stringResource(id = currentData.title)}",
+            modifier = Modifier.fillMaxWidth().padding(4.dp),
+            fontWeight = FontWeight.Bold,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            textAlign = TextAlign.Center,
+        )
+        LazyColumn (
+            modifier = Modifier.fillMaxSize().padding(4.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            items(count = preferencesList.count()){
+                val data = preferencesList.elementAt(it)
+                ThreeRowCardItem(
+                    firstRowContent = {
+                        Surface(modifier = Modifier.fillMaxWidth()) {
+                            Icon(
+                                imageVector = ImageVector.vectorResource(data.iconRes),
+                                contentDescription = null
+                            )
+                        }
+                    },
+                    secondRowContent = {
+                        Text(
+                            text = stringResource(id = data.title),
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.Start,
+                            fontWeight = FontWeight.Bold,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    },
+                    thirdRowContent = {
+                        Surface(
+                            modifier = Modifier.fillMaxWidth(),
+                            onClick = { onSetData(data) }
+                        ) {
+                            Icon(
+                                imageVector = if (data == currentData) {
+                                    Default.CheckCircle
+                                } else {
+                                    AutoMirrored.Outlined.KeyboardArrowRight
+                                },
+                                contentDescription = null,
+                                tint = if (data == currentData) {
+                                    Color.Green
+                                } else {
+                                    MaterialTheme.colorScheme.onTertiaryContainer
+                                }
+                            )
+                        }
+                    }
+                )
+            }
+        }
+    }
+}
 
 /*
 import androidx.compose.foundation.layout.Arrangement
