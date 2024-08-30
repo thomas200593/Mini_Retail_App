@@ -59,7 +59,8 @@ import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_dynamic_color
 
 @Composable
 fun ScrConfGenDynamicColor(
-    vm: VMConfGenDynamicColor = hiltViewModel(), stateApp: StateApp = LocalStateApp.current
+    vm: VMConfGenDynamicColor = hiltViewModel(),
+    stateApp: StateApp = LocalStateApp.current
 ) {
     LockScreenOrientation(orientation = SCREEN_ORIENTATION_PORTRAIT)
 
@@ -68,23 +69,21 @@ fun ScrConfGenDynamicColor(
     val sessionState by stateApp.isSessionValid.collectAsStateWithLifecycle()
     val currentScreen = ScrGraphs.getByRoute(stateApp.destCurrent)
 
-    LaunchedEffect(key1 = sessionState, key2 = currentScreen) {
-        currentScreen?.let {
-            vm.onEvent(
-                VMConfGenDynamicColor.UiEvents.OnOpenEvents(
-                    sessionState, it
-                )
-            )
-        }
-    }
+    LaunchedEffect(
+        key1 = sessionState,
+        key2 = currentScreen
+    )
+    { currentScreen?.let { vm.onEvent(VMConfGenDynamicColor.UiEvents.OnOpenEvents(sessionState, it)) } }
 
-    ScrConfGenDynamicColor(uiState = uiState,
+    ScrConfGenDynamicColor(
+        uiState = uiState,
         currentScreen = currentScreen,
         onNavigateBack = {/*TODO*/ },
         onShowScrDesc = {/*TODO*/ },
         onDismissDlgScrDesc = {/*TODO*/ },
         onSetData = {/*TODO*/ },
-        onDismissDlgDenySetData = {/*TODO*/ })
+        onDismissDlgDenySetData = {/*TODO*/ }
+    )
 }
 
 @Composable
@@ -105,7 +104,9 @@ private fun ScrConfGenDynamicColor(
             onDismissDlgDenySetData = onDismissDlgDenySetData
         )
         TopAppBar(
-            scrGraphs = it, onShowScrDesc = onShowScrDesc, onNavigateBack = onNavigateBack
+            scrGraphs = it,
+            onShowScrDesc = onShowScrDesc,
+            onNavigateBack = onNavigateBack
         )
     }
     when (uiState.configDynamicColor) {
@@ -125,7 +126,8 @@ private fun HandleDialogs(
     onDismissDlgScrDesc: () -> Unit,
     onDismissDlgDenySetData: () -> Unit
 ) {
-    AppAlertDialog(showDialog = uiState.dialogState.dlgLoadingAuth,
+    AppAlertDialog(
+        showDialog = uiState.dialogState.dlgLoadingAuth,
         dialogContext = AlertDialogContext.INFORMATION,
         showTitle = true,
         title = {
@@ -142,8 +144,10 @@ private fun HandleDialogs(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) { Text(text = "Authenticating") }
-        })
-    AppAlertDialog(showDialog = uiState.dialogState.dlgLoadingGetData,
+        }
+    )
+    AppAlertDialog(
+        showDialog = uiState.dialogState.dlgLoadingGetData,
         dialogContext = AlertDialogContext.INFORMATION,
         showTitle = true,
         title = {
@@ -160,8 +164,10 @@ private fun HandleDialogs(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) { Text(text = "Getting Menu Data") }
-        })
-    AppAlertDialog(showDialog = uiState.dialogState.dlgDenySetData,
+        }
+    )
+    AppAlertDialog(
+        showDialog = uiState.dialogState.dlgDenySetData,
         dialogContext = AlertDialogContext.ERROR,
         showTitle = true,
         title = { Text(text = stringResource(id = R.string.str_error)) },
@@ -186,12 +192,18 @@ private fun HandleDialogs(
                 containerColor = MaterialTheme.colorScheme.error,
                 contentColor = MaterialTheme.colorScheme.onError
             )
-        })
-    AppAlertDialog(showDialog = uiState.dialogState.dlgScrDesc,
+        }
+    )
+    AppAlertDialog(
+        showDialog = uiState.dialogState.dlgScrDesc,
         dialogContext = AlertDialogContext.INFORMATION,
         showIcon = true,
         showTitle = true,
-        title = { currentScreen.title?.let { Text(text = stringResource(id = it)) } },
+        title = {
+            currentScreen.title?.let {
+                Text(text = stringResource(id = it))
+            }
+        },
         showBody = true,
         body = {
             currentScreen.description?.let {
@@ -211,16 +223,20 @@ private fun HandleDialogs(
                 icon = Default.Close,
                 text = stringResource(id = R.string.str_close)
             )
-        })
+        }
+    )
 }
 
 @Composable
 private fun TopAppBar(
-    scrGraphs: ScrGraphs, onShowScrDesc: (String) -> Unit, onNavigateBack: () -> Unit
+    scrGraphs: ScrGraphs,
+    onShowScrDesc: (String) -> Unit,
+    onNavigateBack: () -> Unit
 ) {
     ProvideTopAppBarNavigationIcon {
         Surface(
-            onClick = onNavigateBack, modifier = Modifier
+            onClick = onNavigateBack,
+            modifier = Modifier
         ) {
             Icon(
                 modifier = Modifier,
@@ -244,7 +260,9 @@ private fun TopAppBar(
             }
             scrGraphs.title?.let {
                 Text(
-                    text = stringResource(id = it), maxLines = 1, overflow = TextOverflow.Ellipsis
+                    text = stringResource(id = it),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
             }
         }
@@ -262,7 +280,8 @@ private fun TopAppBar(
                     modifier = Modifier.sizeIn(maxHeight = ButtonDefaults.IconSize),
                 ) {
                     Icon(
-                        imageVector = Default.Info, contentDescription = null
+                        imageVector = Default.Info,
+                        contentDescription = null
                     )
                 }
             }
@@ -272,7 +291,8 @@ private fun TopAppBar(
 
 @Composable
 private fun ScreenContent(
-    configDynamicColor: ConfigDynamicColor, onSetData: (DynamicColor) -> Unit
+    configDynamicColor: ConfigDynamicColor,
+    onSetData: (DynamicColor) -> Unit
 ) {
     val currentData = configDynamicColor.configCurrent.dynamicColor
     val preferencesList = configDynamicColor.dynamicColors
@@ -304,13 +324,16 @@ private fun ScreenContent(
                 val data = preferencesList.elementAt(it)
                 ThreeRowCardItem(
                     firstRowContent = {
-                        Surface(modifier = Modifier.fillMaxWidth()) {
+                        Surface(
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
                             Icon(
                                 imageVector = ImageVector.vectorResource(data.iconRes),
                                 contentDescription = null
                             )
                         }
-                    }, secondRowContent = {
+                    },
+                    secondRowContent = {
                         Text(
                             text = stringResource(id = data.title),
                             modifier = Modifier.fillMaxWidth(),
@@ -319,14 +342,20 @@ private fun ScreenContent(
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )
-                    }, thirdRowContent = {
-                        Surface(modifier = Modifier.fillMaxWidth(), onClick = { onSetData(data) }) {
+                    },
+                    thirdRowContent = {
+                        Surface(
+                            modifier = Modifier.fillMaxWidth(),
+                            onClick = { onSetData(data) }
+                        ) {
                             Icon(
                                 imageVector = if (data == currentData) {
                                     Default.CheckCircle
                                 } else {
                                     AutoMirrored.Outlined.KeyboardArrowRight
-                                }, contentDescription = null, tint = if (data == currentData) {
+                                },
+                                contentDescription = null,
+                                tint = if (data == currentData) {
                                     Color.Green
                                 } else {
                                     MaterialTheme.colorScheme.onTertiaryContainer

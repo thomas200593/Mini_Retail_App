@@ -335,7 +335,7 @@ private fun ScreenContent(
             contentColor = MaterialTheme.colorScheme.onSurface
         ) {
             Text(
-                text = "${stringResource(id = R.string.str_country)} : ${currentData.displayName}",
+                text = "${stringResource(id = R.string.str_currency)} : ${currentData.displayName}",
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(4.dp),
