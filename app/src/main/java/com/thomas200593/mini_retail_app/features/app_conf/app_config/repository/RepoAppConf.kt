@@ -5,6 +5,7 @@ import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.di.Dispatcher
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.entity.AppConfig.ConfigCurrent
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.navigation.DestAppConfig
+import com.thomas200593.mini_retail_app.features.app_conf.app_config.navigation.DestAppConfig.entries
 import com.thomas200593.mini_retail_app.features.initial.initial.entity.FirstTimeStatus
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
@@ -25,8 +26,7 @@ internal class RepoAppConfImpl @Inject constructor(
 ): RepoAppConf {
     override val configCurrent: Flow<ConfigCurrent> = dataStore.configCurrent.flowOn(ioDispatcher)
     override val firstTimeStatus: Flow<FirstTimeStatus> = dataStore.firstTimeStatus.flowOn(ioDispatcher)
-    override suspend fun setFirstTimeStatus(firstTimeStatus: FirstTimeStatus) {
-        dataStore.setFirstTimeStatus(firstTimeStatus)
-    }
-    override fun getMenuData() = flowOf(DestAppConfig.entries.toSet()).flowOn(ioDispatcher)
+    override suspend fun setFirstTimeStatus(firstTimeStatus: FirstTimeStatus)
+    { dataStore.setFirstTimeStatus(firstTimeStatus) }
+    override fun getMenuData() = flowOf(entries.toSet()).flowOn(ioDispatcher)
 }

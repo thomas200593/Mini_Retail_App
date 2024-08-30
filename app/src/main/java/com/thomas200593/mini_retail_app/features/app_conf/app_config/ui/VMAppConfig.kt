@@ -20,6 +20,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -104,7 +105,7 @@ class VMAppConfig @Inject constructor(
             SessionState.Loading -> updateDialogState(dlgLoadingAuth = true)
             is SessionState.Invalid -> viewModelScope.launch {
                 resetDialogState(); updateDialogState(dlgLoadingGetMenu = true)
-                repoAppConf.getMenuData().flowOn(ioDispatcher).collect { menuData ->
+                repoAppConf.getMenuData().flowOn(ioDispatcher).collectLatest { menuData ->
                     _uiState.update {
                         it.copy(
                             destAppConfig = Success(
@@ -119,7 +120,7 @@ class VMAppConfig @Inject constructor(
             }
             is SessionState.Valid -> viewModelScope.launch {
                 resetDialogState(); updateDialogState(dlgLoadingGetMenu = true)
-                repoAppConf.getMenuData().flowOn(ioDispatcher).collect { menuData ->
+                repoAppConf.getMenuData().flowOn(ioDispatcher).collectLatest { menuData ->
                     _uiState.update {
                         it.copy(
                             destAppConfig = Success(destAppConfig = menuData),
