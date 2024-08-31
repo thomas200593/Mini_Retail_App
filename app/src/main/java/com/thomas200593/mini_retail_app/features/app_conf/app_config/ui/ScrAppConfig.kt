@@ -87,8 +87,7 @@ fun ScrAppConfig(
             when (sessionState) {
                 SessionState.Loading -> Unit
                 is SessionState.Invalid ->
-                    if (menu.scrGraphs.usesAuth)
-                        vm.onEvent(BtnMenuSelectionEvents.OnDeny)
+                    if (menu.scrGraphs.usesAuth) vm.onEvent(BtnMenuSelectionEvents.OnDeny)
                     else vm.onEvent(BtnMenuSelectionEvents.OnAllow)
                         .also { coroutineScope.launch { stateApp.navController.navToAppConfig(menu) } }
 

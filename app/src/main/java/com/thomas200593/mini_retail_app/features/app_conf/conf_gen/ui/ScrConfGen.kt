@@ -35,7 +35,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.thomas200593.mini_retail_app.R
+import com.thomas200593.mini_retail_app.R.string
 import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs
 import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
 import com.thomas200593.mini_retail_app.app.ui.StateApp
@@ -77,35 +77,26 @@ fun ScrConfGen(
         uiState = uiState,
         currentScreen = currentScreen,
         onNavigateBack = {
-            vm.onEvent(BtnNavBackEvents.OnClick).also {
-                coroutineScope.launch { stateApp.onNavUp() }
-            }
+            vm.onEvent(BtnNavBackEvents.OnClick)
+                .also { coroutineScope.launch { stateApp.onNavUp() } }
         },
         onShowScrDesc = { vm.onEvent(BtnScrDescEvents.OnClick) },
         onDismissDlgScrDesc = { vm.onEvent(BtnScrDescEvents.OnDismiss) },
         onNavToMenu = { menu ->
-            when(sessionState) {
+            when (sessionState) {
                 SessionState.Loading -> Unit
-                is SessionState.Invalid -> {
-                    if(menu.scrGraphs.usesAuth) {
-                        vm.onEvent(BtnMenuSelectionEvents.OnDeny)
-                    } else {
-                        vm.onEvent(BtnMenuSelectionEvents.OnAllow).also {
-                            coroutineScope.launch { stateApp.navController.navToConfGen(menu) }
-                        }
-                    }
-                }
-                is SessionState.Valid -> {
-                    vm.onEvent(BtnMenuSelectionEvents.OnAllow).also {
-                        coroutineScope.launch { stateApp.navController.navToConfGen(menu) }
-                    }
-                }
+                is SessionState.Invalid ->
+                    if (menu.scrGraphs.usesAuth) vm.onEvent(BtnMenuSelectionEvents.OnDeny)
+                    else vm.onEvent(BtnMenuSelectionEvents.OnAllow)
+                        .also { coroutineScope.launch { stateApp.navController.navToConfGen(menu) } }
+
+                is SessionState.Valid -> vm.onEvent(BtnMenuSelectionEvents.OnAllow)
+                    .also { coroutineScope.launch { stateApp.navController.navToConfGen(menu) } }
             }
         },
         onDismissDlgDenyAccessMenu = {
-            vm.onEvent(DlgDenyAccessEvents.OnDismiss).also {
-                coroutineScope.launch { stateApp.onNavUp() }
-            }
+            vm.onEvent(DlgDenyAccessEvents.OnDismiss)
+                .also { coroutineScope.launch { stateApp.onNavUp() } }
         }
     )
 }
@@ -133,7 +124,7 @@ private fun ScrConfGen(
             onShowScrDesc = onShowScrDesc
         )
     }
-    when(uiState.destConfGen) {
+    when (uiState.destConfGen) {
         Loading -> Unit
         is Success -> ScreenContent(
             menuPreferences = uiState.destConfGen.destConfGen,
@@ -166,7 +157,7 @@ private fun HandleDialogs(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
-            ) { Text(text = "Authenticating")}
+            ) { Text(text = stringResource(id = string.str_authenticating)) }
         }
     )
     AppAlertDialog(
@@ -186,14 +177,14 @@ private fun HandleDialogs(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
-            ) { Text(text = "Getting Menu Data") }
+            ) { Text(text = stringResource(id = string.str_loading_data)) }
         }
     )
     AppAlertDialog(
         showDialog = uiState.dialogState.dlgDenyAccessMenu,
         dialogContext = AlertDialogContext.ERROR,
         showTitle = true,
-        title = { Text(text = stringResource(id = R.string.str_error)) },
+        title = { Text(text = stringResource(id = string.str_error)) },
         showBody = true,
         body = {
             Column(
@@ -202,16 +193,14 @@ private fun HandleDialogs(
                     .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
-            ) {
-                Text(text = "Access Denied! Authentication Required")
-            }
+            ) { Text(text = stringResource(id = string.str_deny_access_auth_required)) }
         },
         useDismissButton = true,
         dismissButton = {
             AppIconButton(
                 onClick = onDismissDlgDenyAccessMenu,
                 icon = Icons.Default.Close,
-                text = stringResource(id = R.string.str_close),
+                text = stringResource(id = string.str_close),
                 containerColor = MaterialTheme.colorScheme.error,
                 contentColor = MaterialTheme.colorScheme.onError
             )
@@ -240,7 +229,7 @@ private fun HandleDialogs(
             AppIconButton(
                 onClick = onDismissDlgScrDesc,
                 icon = Icons.Default.Close,
-                text = stringResource(id = R.string.str_close)
+                text = stringResource(id = string.str_close)
             )
         }
     )
@@ -269,10 +258,11 @@ private fun TopAppBar(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ){
+        ) {
             scrGraphs.iconRes?.let {
                 Icon(
-                    modifier = Modifier.sizeIn(maxHeight = ButtonDefaults.IconSize),
+                    modifier = Modifier
+                        .sizeIn(maxHeight = ButtonDefaults.IconSize),
                     imageVector = ImageVector.vectorResource(id = it),
                     contentDescription = null
                 )
@@ -292,7 +282,7 @@ private fun TopAppBar(
                 modifier = Modifier,
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
-            ){
+            ) {
                 val desc = stringResource(id = it)
                 Surface(
                     onClick = { onShowScrDesc(desc) },
@@ -327,10 +317,9 @@ private fun ScreenContent(
                 onClick = { onNavToMenu(menu) },
                 icon = menu.scrGraphs.iconRes?.let { icon -> ImageVector.vectorResource(id = icon) }
                     ?: Icons.Default.Info,
-                title = menu.scrGraphs.title
-                    ?.let { title -> stringResource(id = title) }.orEmpty(),
-                subtitle = menu.scrGraphs.description
-                    ?.let { desc -> stringResource(id = desc) }.orEmpty()
+                title = menu.scrGraphs.title?.let { title -> stringResource(id = title) }.orEmpty(),
+                subtitle = menu.scrGraphs.description?.let { desc -> stringResource(id = desc) }
+                    .orEmpty()
             )
         }
     }
