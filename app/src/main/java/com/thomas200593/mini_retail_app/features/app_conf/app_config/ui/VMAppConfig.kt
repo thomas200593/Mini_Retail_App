@@ -123,9 +123,7 @@ class VMAppConfig @Inject constructor(
                 repoAppConf.getMenuData().flowOn(ioDispatcher).collectLatest { menuData ->
                     _uiState.update {
                         it.copy(
-                            destAppConfig = Success(
-                                destAppConfig = menuData
-                            ),
+                            destAppConfig = Success(destAppConfig = menuData),
                             dialogState = DialogState()
                         )
                     }
