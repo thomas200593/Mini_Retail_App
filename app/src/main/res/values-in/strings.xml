@@ -123,4 +123,6 @@
     <string name="str_welcome">Selamat datang</string>
     <string name="str_close">Tutup</string>
     <string name="str_authenticating">Mengotentikasi…</string>
+    <string name="str_loading_data">Memuat Data</string>
+    <string name="str_deny_access_auth_required">Akses Ditolak! Otentikasi Dibutuhkan</string>
 </resources>
