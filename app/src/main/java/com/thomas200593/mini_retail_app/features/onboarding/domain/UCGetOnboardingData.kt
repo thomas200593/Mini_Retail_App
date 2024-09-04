@@ -22,7 +22,7 @@ class UCGetOnboardingData @Inject constructor(
     ) { langConfig, onboardingPages ->
         Onboarding.OnboardingData(
             listOfOnboardingPages = onboardingPages,
-            configLanguages = langConfig.data
+            configLanguages = langConfig
         )
     }.flowOn(ioDispatcher)
 }
