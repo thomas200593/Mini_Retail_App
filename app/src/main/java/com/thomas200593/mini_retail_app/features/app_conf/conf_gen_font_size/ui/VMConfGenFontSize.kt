@@ -56,23 +56,19 @@ class VMConfGenFontSize @Inject constructor(
             val sessionState: SessionState,
             val currentScreen: ScrGraphs
         ) : UiEvents()
-
         sealed class ButtonEvents : UiEvents() {
             sealed class BtnNavBackEvents : ButtonEvents() {
                 data object OnClick : BtnNavBackEvents()
             }
-
             sealed class BtnScrDescEvents : ButtonEvents() {
                 data object OnClick : BtnScrDescEvents()
                 data object OnDismiss : BtnScrDescEvents()
             }
-
             sealed class BtnSetPrefFontSizeEvents : ButtonEvents() {
                 data class OnAllow(val fontSize: FontSize) : BtnSetPrefFontSizeEvents()
                 data object OnDeny : BtnSetPrefFontSizeEvents()
             }
         }
-
         sealed class DialogEvents : UiEvents() {
             sealed class DlgDenySetDataEvents : DialogEvents() {
                 data object OnDismiss : DlgDenySetDataEvents()
