@@ -12,7 +12,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.Icons.AutoMirrored
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Info
@@ -35,7 +34,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.thomas200593.mini_retail_app.R.string
+import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs
 import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
 import com.thomas200593.mini_retail_app.app.ui.StateApp
@@ -65,7 +64,7 @@ fun ScrAppConfig(
     vm: VMAppConfig = hiltViewModel(),
     stateApp: StateApp = LocalStateApp.current
 ) {
-    LockScreenOrientation(orientation = SCREEN_ORIENTATION_PORTRAIT)
+    LockScreenOrientation(SCREEN_ORIENTATION_PORTRAIT)
 
     val coroutineScope = rememberCoroutineScope()
     val uiState by vm.uiState.collectAsStateWithLifecycle()
@@ -90,7 +89,6 @@ fun ScrAppConfig(
                     if (menu.scrGraphs.usesAuth) vm.onEvent(BtnMenuSelectionEvents.OnDeny)
                     else vm.onEvent(BtnMenuSelectionEvents.OnAllow)
                         .also { coroutineScope.launch { stateApp.navController.navToAppConfig(menu) } }
-
                 is SessionState.Valid -> vm.onEvent(BtnMenuSelectionEvents.OnAllow)
                     .also { coroutineScope.launch { stateApp.navController.navToAppConfig(menu) } }
             }
@@ -158,7 +156,7 @@ private fun HandleDialogs(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
-            ) { Text(text = stringResource(id = string.str_authenticating)) }
+            ) { Text(text = stringResource(id = R.string.str_authenticating)) }
         }
     )
     AppAlertDialog(
@@ -178,30 +176,28 @@ private fun HandleDialogs(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
-            ) { Text(text = stringResource(id = string.str_loading_data)) }
+            ) { Text(text = stringResource(id = R.string.str_loading_data)) }
         }
     )
     AppAlertDialog(
         showDialog = uiState.dialogState.dlgDenyAccessMenu,
         dialogContext = AlertDialogContext.ERROR,
         showTitle = true,
-        title = { Text(text = stringResource(id = string.str_error)) },
+        title = { Text(text = stringResource(id = R.string.str_error)) },
         showBody = true,
         body = {
             Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .verticalScroll(rememberScrollState()),
+                modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
-            ) { Text(text = stringResource(id = string.str_deny_access_auth_required)) }
+            ) { Text(text = stringResource(id = R.string.str_deny_access_auth_required)) }
         },
         useDismissButton = true,
         dismissButton = {
             AppIconButton(
                 onClick = onDismissDlgDenyAccessMenu,
                 icon = Icons.Default.Close,
-                text = stringResource(id = string.str_close),
+                text = stringResource(id = R.string.str_close),
                 containerColor = MaterialTheme.colorScheme.error,
                 contentColor = MaterialTheme.colorScheme.onError
             )
@@ -217,9 +213,7 @@ private fun HandleDialogs(
         body = {
             currentScreen.description?.let {
                 Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .verticalScroll(rememberScrollState()),
+                    modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState()),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) { Text(text = stringResource(id = it)) }
@@ -230,7 +224,7 @@ private fun HandleDialogs(
             AppIconButton(
                 onClick = onDismissDlgScrDesc,
                 icon = Icons.Default.Close,
-                text = stringResource(id = string.str_close)
+                text = stringResource(id = R.string.str_close)
             )
         }
     )
@@ -249,7 +243,7 @@ private fun TopAppBar(
         ) {
             Icon(
                 modifier = Modifier,
-                imageVector = AutoMirrored.Filled.KeyboardArrowLeft,
+                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                 contentDescription = null
             )
         }
@@ -262,8 +256,7 @@ private fun TopAppBar(
         ) {
             scrGraphs.iconRes?.let {
                 Icon(
-                    modifier = Modifier
-                        .sizeIn(maxHeight = ButtonDefaults.IconSize),
+                    modifier = Modifier.sizeIn(maxHeight = ButtonDefaults.IconSize),
                     imageVector = ImageVector.vectorResource(id = it),
                     contentDescription = null
                 )
@@ -287,8 +280,7 @@ private fun TopAppBar(
                 val desc = stringResource(id = it)
                 Surface(
                     onClick = { onShowScrDesc(desc) },
-                    modifier = Modifier
-                        .sizeIn(maxHeight = ButtonDefaults.IconSize),
+                    modifier = Modifier.sizeIn(maxHeight = ButtonDefaults.IconSize),
                 ) {
                     Icon(
                         imageVector = Icons.Default.Info,
@@ -306,9 +298,7 @@ private fun ScreenContent(
     onNavToMenu: (DestAppConfig) -> Unit
 ) {
     LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(8.dp),
+        modifier = Modifier.fillMaxSize().padding(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {

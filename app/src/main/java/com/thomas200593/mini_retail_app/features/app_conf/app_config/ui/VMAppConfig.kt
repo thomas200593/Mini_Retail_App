@@ -109,9 +109,8 @@ class VMAppConfig @Inject constructor(
                     _uiState.update {
                         it.copy(
                             destAppConfig = Success(
-                                destAppConfig = menuData.filterNot { menu ->
-                                    menu.scrGraphs.usesAuth
-                                }.toSet()
+                                destAppConfig = menuData.filterNot { menu -> menu.scrGraphs.usesAuth }
+                                    .toSet()
                             ),
                             dialogState = DialogState()
                         )
