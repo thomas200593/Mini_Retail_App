@@ -11,8 +11,7 @@ import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons.AutoMirrored
-import androidx.compose.material.icons.Icons.Default
+import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowRight
 import androidx.compose.material.icons.filled.CheckCircle
@@ -84,9 +83,8 @@ fun ScrConfGenCurrency(
         uiState = uiState,
         currentScreen = currentScreen,
         onNavigateBack = {
-            vm.onEvent(BtnNavBackEvents.OnClick).also {
-                coroutineScope.launch { stateApp.onNavUp() }
-            }
+            vm.onEvent(BtnNavBackEvents.OnClick)
+                .also { coroutineScope.launch { stateApp.onNavUp() } }
         },
         onShowScrDesc = { vm.onEvent(BtnScrDescEvents.OnClick) },
         onDismissDlgScrDesc = { vm.onEvent(BtnScrDescEvents.OnDismiss) },
@@ -94,24 +92,17 @@ fun ScrConfGenCurrency(
             currentScreen?.let {
                 when(sessionState) {
                     SessionState.Loading -> Unit
-                    is SessionState.Invalid -> {
-                        if (it.usesAuth) {
-                            vm.onEvent(BtnSetPrefCurrencyEvents.OnDeny)
-                        } else {
-                            vm.onEvent(BtnSetPrefCurrencyEvents.OnAllow(currency))
-                        }
-                    }
-
-                    is SessionState.Valid -> {
+                    is SessionState.Invalid ->
+                        if (it.usesAuth) vm.onEvent(BtnSetPrefCurrencyEvents.OnDeny)
+                        else vm.onEvent(BtnSetPrefCurrencyEvents.OnAllow(currency))
+                    is SessionState.Valid ->
                         vm.onEvent(BtnSetPrefCurrencyEvents.OnAllow(currency))
-                    }
                 }
             }
         },
         onDismissDlgDenySetData = {
-            vm.onEvent(DlgDenySetDataEvents.OnDismiss).also {
-                coroutineScope.launch { stateApp.onNavUp() }
-            }
+            vm.onEvent(DlgDenySetDataEvents.OnDismiss)
+                .also { coroutineScope.launch { stateApp.onNavUp() } }
         }
     )
 }
@@ -172,7 +163,7 @@ private fun HandleDialogs(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
-            ) { Text(text = "Authenticating") }
+            ) { Text(text = stringResource(id = R.string.str_authenticating)) }
         }
     )
     AppAlertDialog(
@@ -192,7 +183,7 @@ private fun HandleDialogs(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
-            ) { Text(text = "Getting Menu Data") }
+            ) { Text(text = stringResource(id = R.string.str_loading_data)) }
         }
     )
     AppAlertDialog(
@@ -203,20 +194,16 @@ private fun HandleDialogs(
         showBody = true,
         body = {
             Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .verticalScroll(rememberScrollState()),
+                modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
-            ) {
-                Text(text = "Access Denied! Authentication Required")
-            }
+            ) { Text(text = stringResource(id = R.string.str_deny_access_auth_required)) }
         },
         useDismissButton = true,
         dismissButton = {
             AppIconButton(
                 onClick = onDismissDlgDenySetData,
-                icon = Default.Close,
+                icon = Icons.Default.Close,
                 text = stringResource(id = R.string.str_close),
                 containerColor = MaterialTheme.colorScheme.error,
                 contentColor = MaterialTheme.colorScheme.onError
@@ -233,9 +220,7 @@ private fun HandleDialogs(
         body = {
             currentScreen.description?.let {
                 Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .verticalScroll(rememberScrollState()),
+                    modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState()),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) { Text(text = stringResource(id = it)) }
@@ -245,7 +230,7 @@ private fun HandleDialogs(
         dismissButton = {
             AppIconButton(
                 onClick = onDismissDlgScrDesc,
-                icon = Default.Close,
+                icon = Icons.Default.Close,
                 text = stringResource(id = R.string.str_close)
             )
         }
@@ -265,7 +250,7 @@ private fun TopAppBar(
         ) {
             Icon(
                 modifier = Modifier,
-                imageVector = AutoMirrored.Filled.KeyboardArrowLeft,
+                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                 contentDescription = null
             )
         }
@@ -302,11 +287,10 @@ private fun TopAppBar(
                 val desc = stringResource(id = it)
                 Surface(
                     onClick = { onShowScrDesc(desc) },
-                    modifier = Modifier
-                        .sizeIn(maxHeight = ButtonDefaults.IconSize),
+                    modifier = Modifier.sizeIn(maxHeight = ButtonDefaults.IconSize),
                 ) {
                     Icon(
-                        imageVector = Default.Info,
+                        imageVector = Icons.Default.Info,
                         contentDescription = null
                     )
                 }
@@ -323,9 +307,7 @@ private fun ScreenContent(
     val currentData = configCurrency.configCurrent.currency
     val preferencesList = configCurrency.currencies
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(4.dp),
+        modifier = Modifier.fillMaxSize().padding(4.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
@@ -336,9 +318,7 @@ private fun ScreenContent(
         ) {
             Text(
                 text = "${stringResource(id = R.string.str_currency)} : ${currentData.displayName}",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(4.dp),
+                modifier = Modifier.fillMaxWidth().padding(4.dp),
                 fontWeight = FontWeight.Bold,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
@@ -346,9 +326,7 @@ private fun ScreenContent(
             )
         }
         LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(8.dp),
+            modifier = Modifier.fillMaxSize().padding(8.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -390,17 +368,13 @@ private fun ScreenContent(
                             onClick = { onSetData(data) }
                         ) {
                             Icon(
-                                imageVector = if (data == currentData) {
-                                    Default.CheckCircle
-                                } else {
-                                    AutoMirrored.Outlined.KeyboardArrowRight
-                                },
+                                imageVector =
+                                    if (data == currentData) Icons.Default.CheckCircle
+                                    else Icons.AutoMirrored.Outlined.KeyboardArrowRight,
                                 contentDescription = null,
-                                tint = if (data == currentData) {
-                                    Color.Green
-                                } else {
-                                    MaterialTheme.colorScheme.onTertiaryContainer
-                                }
+                                tint =
+                                    if (data == currentData) Color.Green
+                                    else MaterialTheme.colorScheme.onTertiaryContainer
                             )
                         }
                     }

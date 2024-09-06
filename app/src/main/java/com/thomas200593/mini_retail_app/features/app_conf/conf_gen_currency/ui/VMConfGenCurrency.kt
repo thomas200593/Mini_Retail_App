@@ -38,44 +38,37 @@ class VMConfGenCurrency @Inject constructor(
         data object Loading : UiStateConfigCurrency
         data class Success(val configCurrency: ConfigCurrency): UiStateConfigCurrency
     }
-
     data class UiState(
         val configCurrency: UiStateConfigCurrency = Loading,
         val dialogState: DialogState = DialogState()
     )
-
     data class DialogState(
         val dlgLoadingAuth: MutableState<Boolean> = mutableStateOf(false),
         val dlgLoadingGetData: MutableState<Boolean> = mutableStateOf(false),
         val dlgDenySetData: MutableState<Boolean> = mutableStateOf(false),
         val dlgScrDesc: MutableState<Boolean> = mutableStateOf(false)
     )
-
-    sealed class UiEvents {
+    sealed interface UiEvents {
         data class OnOpenEvents(
             val sessionState: SessionState,
             val currentScreen: ScrGraphs
-        ) : UiEvents()
-
-        sealed class ButtonEvents : UiEvents() {
-            sealed class BtnNavBackEvents : ButtonEvents() {
-                data object OnClick : BtnNavBackEvents()
+        ) : UiEvents
+        sealed interface ButtonEvents : UiEvents {
+            sealed interface BtnNavBackEvents : ButtonEvents {
+                data object OnClick : BtnNavBackEvents
             }
-
-            sealed class BtnScrDescEvents : ButtonEvents() {
-                data object OnClick : BtnScrDescEvents()
-                data object OnDismiss : BtnScrDescEvents()
+            sealed interface BtnScrDescEvents : ButtonEvents {
+                data object OnClick : BtnScrDescEvents
+                data object OnDismiss : BtnScrDescEvents
             }
-
-            sealed class BtnSetPrefCurrencyEvents : ButtonEvents() {
-                data class OnAllow(val currency: Currency) : BtnSetPrefCurrencyEvents()
-                data object OnDeny : BtnSetPrefCurrencyEvents()
+            sealed interface BtnSetPrefCurrencyEvents : ButtonEvents {
+                data class OnAllow(val currency: Currency) : BtnSetPrefCurrencyEvents
+                data object OnDeny : BtnSetPrefCurrencyEvents
             }
         }
-
-        sealed class DialogEvents : UiEvents() {
-            sealed class DlgDenySetDataEvents : DialogEvents() {
-                data object OnDismiss : DlgDenySetDataEvents()
+        sealed interface DialogEvents : UiEvents {
+            sealed interface DlgDenySetDataEvents : DialogEvents {
+                data object OnDismiss : DlgDenySetDataEvents
             }
         }
     }
@@ -86,62 +79,50 @@ class VMConfGenCurrency @Inject constructor(
     fun onEvent(events: UiEvents) {
         when(events) {
             is OnOpenEvents -> onOpenEvent(events.sessionState, events.currentScreen)
-            is BtnNavBackEvents.OnClick -> onNavBackEvent()
-            is BtnScrDescEvents.OnClick -> onShowScrDescEvent()
-            is BtnScrDescEvents.OnDismiss -> onHideScrDescEvent()
+            is BtnNavBackEvents.OnClick -> resetDialogAndUiState()
+            is BtnScrDescEvents.OnClick ->
+                { resetDialogState(); updateDialogState(dlgScrDesc = true) }
+            is BtnScrDescEvents.OnDismiss -> resetDialogState()
             is BtnSetPrefCurrencyEvents.OnDeny -> onDenySet()
             is BtnSetPrefCurrencyEvents.OnAllow -> onAllowSet(events.currency)
-            is DlgDenySetDataEvents.OnDismiss -> onDismissDenySetDlg()
+            is DlgDenySetDataEvents.OnDismiss -> resetDialogAndUiState()
         }
     }
 
-    private fun resetUiStateConfigCurrency() = _uiState.update { it.copy(configCurrency = Loading) }
     private fun updateDialogState(
         dlgLoadingAuth: Boolean = false,
         dlgLoadingGetData: Boolean = false,
         dlgDenySetData: Boolean = false,
         dlgScrDesc: Boolean = false
-    ) = _uiState.update {
-        it.copy(
-            dialogState = it.dialogState.copy(
-                dlgLoadingAuth = mutableStateOf(dlgLoadingAuth),
-                dlgLoadingGetData = mutableStateOf(dlgLoadingGetData),
-                dlgDenySetData = mutableStateOf(dlgDenySetData),
-                dlgScrDesc = mutableStateOf(dlgScrDesc)
-            )
+    ) = _uiState.update { it.copy(
+        dialogState = it.dialogState.copy(
+            dlgLoadingAuth = mutableStateOf(dlgLoadingAuth),
+            dlgLoadingGetData = mutableStateOf(dlgLoadingGetData),
+            dlgDenySetData = mutableStateOf(dlgDenySetData),
+            dlgScrDesc = mutableStateOf(dlgScrDesc)
         )
-    }
+    ) }
     private fun resetDialogState() = _uiState.update { it.copy(dialogState = DialogState()) }
+    private fun resetUiStateConfigCurrency() = _uiState.update { it.copy(configCurrency = Loading) }
+    private fun resetDialogAndUiState() { resetDialogState(); resetUiStateConfigCurrency() }
     private fun onOpenEvent(sessionState: SessionState, currentScreen: ScrGraphs) {
-        resetUiStateConfigCurrency()
-        resetDialogState()
+        resetUiStateConfigCurrency(); resetDialogState()
         when(sessionState) {
-            SessionState.Loading -> {
-                updateDialogState(dlgLoadingAuth = true)
-            }
-
-            is SessionState.Invalid -> {
-                if(currentScreen.usesAuth) {
-                    onDenySet()
-                } else {
-                    viewModelScope.launch {
-                        resetUiStateConfigCurrency()
-                        updateDialogState(dlgLoadingGetData = true)
-                        ucGetConfCurrency.invoke().flowOn(ioDispatcher).collect{ data ->
-                            _uiState.update {
-                                it.copy(
-                                    configCurrency = Success(data),
-                                    dialogState = DialogState()
-                                )
-                            }
-                        }
+            SessionState.Loading -> updateDialogState(dlgLoadingAuth = true)
+            is SessionState.Invalid -> if(currentScreen.usesAuth) onDenySet()
+            else viewModelScope.launch {
+                resetUiStateConfigCurrency(); updateDialogState(dlgLoadingGetData = true)
+                ucGetConfCurrency.invoke().flowOn(ioDispatcher).collect{ data ->
+                    _uiState.update {
+                        it.copy(
+                            configCurrency = Success(data),
+                            dialogState = DialogState()
+                        )
                     }
                 }
             }
-
             is SessionState.Valid -> viewModelScope.launch {
-                resetUiStateConfigCurrency()
-                updateDialogState(dlgLoadingGetData = true)
+                resetUiStateConfigCurrency(); updateDialogState(dlgLoadingGetData = true)
                 ucGetConfCurrency.invoke().flowOn(ioDispatcher).collect{ data ->
                     _uiState.update {
                         it.copy(
@@ -153,29 +134,9 @@ class VMConfGenCurrency @Inject constructor(
             }
         }
     }
-    private fun onNavBackEvent() {
-        resetDialogState()
-        resetUiStateConfigCurrency()
-    }
-    private fun onShowScrDescEvent() {
-        resetDialogState()
-        updateDialogState(dlgScrDesc = true)
-    }
-    private fun onHideScrDescEvent() {
-        resetDialogState()
-    }
-    private fun onDenySet() {
-        resetDialogState()
-        updateDialogState(dlgDenySetData = true)
-    }
+    private fun onDenySet() { resetDialogState(); updateDialogState(dlgDenySetData = true) }
     private fun onAllowSet(currency: Currency) {
         resetDialogState()
-        viewModelScope.launch {
-            repoConfGenCurrency.setCurrency(currency = currency)
-        }
-    }
-    private fun onDismissDenySetDlg() {
-        resetDialogState()
-        resetUiStateConfigCurrency()
+        viewModelScope.launch { repoConfGenCurrency.setCurrency(currency = currency) }
     }
 }
