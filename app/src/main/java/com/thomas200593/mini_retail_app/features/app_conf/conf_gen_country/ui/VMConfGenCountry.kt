@@ -48,27 +48,27 @@ class VMConfGenCountry @Inject constructor(
         val dlgDenySetData: MutableState<Boolean> = mutableStateOf(false),
         val dlgScrDesc: MutableState<Boolean> = mutableStateOf(false)
     )
-    sealed class UiEvents {
+    sealed interface UiEvents {
         data class OnOpenEvents(
             val sessionState: SessionState,
             val currentScreen: ScrGraphs
-        ) : UiEvents()
-        sealed class ButtonEvents : UiEvents() {
-            sealed class BtnNavBackEvents : ButtonEvents() {
-                data object OnClick : BtnNavBackEvents()
+        ) : UiEvents
+        sealed interface ButtonEvents : UiEvents {
+            sealed interface BtnNavBackEvents : ButtonEvents {
+                data object OnClick : BtnNavBackEvents
             }
-            sealed class BtnScrDescEvents : ButtonEvents() {
-                data object OnClick : BtnScrDescEvents()
-                data object OnDismiss : BtnScrDescEvents()
+            sealed interface BtnScrDescEvents : ButtonEvents {
+                data object OnClick : BtnScrDescEvents
+                data object OnDismiss : BtnScrDescEvents
             }
-            sealed class BtnSetPrefCountryEvents : ButtonEvents() {
-                data class OnAllow(val country: Country) : BtnSetPrefCountryEvents()
-                data object OnDeny : BtnSetPrefCountryEvents()
+            sealed interface BtnSetPrefCountryEvents : ButtonEvents {
+                data class OnAllow(val country: Country) : BtnSetPrefCountryEvents
+                data object OnDeny : BtnSetPrefCountryEvents
             }
         }
-        sealed class DialogEvents : UiEvents() {
-            sealed class DlgDenySetDataEvents : DialogEvents() {
-                data object OnDismiss : DlgDenySetDataEvents()
+        sealed interface DialogEvents : UiEvents {
+            sealed interface DlgDenySetDataEvents : DialogEvents {
+                data object OnDismiss : DlgDenySetDataEvents
             }
         }
     }

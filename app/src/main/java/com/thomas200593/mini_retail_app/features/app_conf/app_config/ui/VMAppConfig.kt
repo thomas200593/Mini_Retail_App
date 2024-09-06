@@ -45,23 +45,23 @@ class VMAppConfig @Inject constructor(
         val dlgDenyAccessMenu: MutableState<Boolean> = mutableStateOf(false),
         val dlgScrDesc: MutableState<Boolean> = mutableStateOf(false)
     )
-    sealed class UiEvents {
-        data class OnOpenEvents(val sessionState: SessionState) : UiEvents()
-        sealed class ButtonEvents : UiEvents() {
-            sealed class BtnNavBackEvents : ButtonEvents() {
-                data object OnClick : BtnNavBackEvents()
+    sealed interface UiEvents {
+        data class OnOpenEvents(val sessionState: SessionState) : UiEvents
+        sealed interface ButtonEvents : UiEvents {
+            sealed interface BtnNavBackEvents : ButtonEvents {
+                data object OnClick : BtnNavBackEvents
             }
-            sealed class BtnScrDescEvents : ButtonEvents() {
-                data object OnClick : BtnScrDescEvents()
-                data object OnDismiss : BtnScrDescEvents()
+            sealed interface BtnScrDescEvents : ButtonEvents {
+                data object OnClick : BtnScrDescEvents
+                data object OnDismiss : BtnScrDescEvents
             }
-            sealed class BtnMenuSelectionEvents : ButtonEvents() {
-                data object OnAllow : BtnMenuSelectionEvents()
-                data object OnDeny : BtnMenuSelectionEvents()
+            sealed interface BtnMenuSelectionEvents : ButtonEvents {
+                data object OnAllow : BtnMenuSelectionEvents
+                data object OnDeny : BtnMenuSelectionEvents
             }
-            sealed class DialogEvents : UiEvents() {
-                sealed class DlgDenyAccessEvents : DialogEvents() {
-                    data object OnDismiss : DlgDenyAccessEvents()
+            sealed interface DialogEvents : UiEvents {
+                sealed interface  DlgDenyAccessEvents : DialogEvents {
+                    data object OnDismiss : DlgDenyAccessEvents
                 }
             }
         }
@@ -109,8 +109,9 @@ class VMAppConfig @Inject constructor(
                     _uiState.update {
                         it.copy(
                             destAppConfig = Success(
-                                destAppConfig = menuData.filterNot { menu -> menu.scrGraphs.usesAuth }
-                                    .toSet()
+                                destAppConfig = menuData.filterNot { menu ->
+                                    menu.scrGraphs.usesAuth
+                                }.toSet()
                             ),
                             dialogState = DialogState()
                         )
