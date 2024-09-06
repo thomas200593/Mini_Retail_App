@@ -369,11 +369,13 @@ private fun ScreenContent(
                             onClick = { onSetData(data) }
                         ) {
                             Icon(
-                                imageVector = if (data == currentData) { Icons.Default.CheckCircle }
-                                else { Icons.AutoMirrored.Outlined.KeyboardArrowRight },
+                                imageVector =
+                                    if (data == currentData) Icons.Default.CheckCircle
+                                    else Icons.AutoMirrored.Outlined.KeyboardArrowRight,
                                 contentDescription = null,
-                                tint = if (data == currentData) { Color.Green }
-                                else { MaterialTheme.colorScheme.onTertiaryContainer }
+                                tint =
+                                    if (data == currentData) Color.Green
+                                    else MaterialTheme.colorScheme.onTertiaryContainer
                             )
                         }
                     }
