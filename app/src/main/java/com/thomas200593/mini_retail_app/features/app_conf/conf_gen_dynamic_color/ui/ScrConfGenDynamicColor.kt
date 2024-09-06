@@ -11,8 +11,7 @@ import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons.AutoMirrored
-import androidx.compose.material.icons.Icons.Default
+import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowRight
 import androidx.compose.material.icons.filled.CheckCircle
@@ -69,23 +68,22 @@ fun ScrConfGenDynamicColor(
     vm: VMConfGenDynamicColor = hiltViewModel(),
     stateApp: StateApp = LocalStateApp.current
 ) {
-    LockScreenOrientation(orientation = SCREEN_ORIENTATION_PORTRAIT)
+    LockScreenOrientation(SCREEN_ORIENTATION_PORTRAIT)
 
     val coroutineScope = rememberCoroutineScope()
     val uiState by vm.uiState.collectAsStateWithLifecycle()
     val sessionState by stateApp.isSessionValid.collectAsStateWithLifecycle()
     val currentScreen = ScrGraphs.getByRoute(stateApp.destCurrent)
 
-    LaunchedEffect(key1 = sessionState, key2 = currentScreen)
+    LaunchedEffect(sessionState, currentScreen)
     { currentScreen?.let { vm.onEvent(OnOpenEvents(sessionState, it)) } }
 
     ScrConfGenDynamicColor(
         uiState = uiState,
         currentScreen = currentScreen,
         onNavigateBack = {
-            vm.onEvent(BtnNavBackEvents.OnClick).also {
-                coroutineScope.launch { stateApp.onNavUp() }
-            }
+            vm.onEvent(BtnNavBackEvents.OnClick)
+                .also { coroutineScope.launch { stateApp.onNavUp() } }
         },
         onShowScrDesc = { vm.onEvent(BtnScrDescEvents.OnClick) },
         onDismissDlgScrDesc = { vm.onEvent(BtnScrDescEvents.OnDismiss) },
@@ -93,23 +91,17 @@ fun ScrConfGenDynamicColor(
             currentScreen?.let {
                 when(sessionState) {
                     SessionState.Loading -> Unit
-                    is SessionState.Invalid -> {
-                        if(it.usesAuth) {
-                            vm.onEvent(BtnSetPrefDynamicColorEvents.OnDeny)
-                        } else {
-                            vm.onEvent(BtnSetPrefDynamicColorEvents.OnAllow(dynamicColor))
-                        }
-                    }
-                    is SessionState.Valid -> {
+                    is SessionState.Invalid ->
+                        if(it.usesAuth) vm.onEvent(BtnSetPrefDynamicColorEvents.OnDeny)
+                        else vm.onEvent(BtnSetPrefDynamicColorEvents.OnAllow(dynamicColor))
+                    is SessionState.Valid ->
                         vm.onEvent(BtnSetPrefDynamicColorEvents.OnAllow(dynamicColor))
-                    }
                 }
             }
         },
         onDismissDlgDenySetData = {
-            vm.onEvent(DlgDenySetDataEvents.OnDismiss).also {
-                coroutineScope.launch { stateApp.onNavUp() }
-            }
+            vm.onEvent(DlgDenySetDataEvents.OnDismiss)
+                .also { coroutineScope.launch { stateApp.onNavUp() } }
         }
     )
 }
@@ -171,7 +163,7 @@ private fun HandleDialogs(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
-            ) { Text(text = "Authenticating") }
+            ) { Text(text = stringResource(id = R.string.str_authenticating)) }
         }
     )
     AppAlertDialog(
@@ -191,7 +183,7 @@ private fun HandleDialogs(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
-            ) { Text(text = "Getting Menu Data") }
+            ) { Text(text = stringResource(id = R.string.str_loading_data)) }
         }
     )
     AppAlertDialog(
@@ -202,20 +194,16 @@ private fun HandleDialogs(
         showBody = true,
         body = {
             Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .verticalScroll(rememberScrollState()),
+                modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
-            ) {
-                Text(text = "Access Denied! Authentication Required")
-            }
+            ) { Text(text = stringResource(id = R.string.str_deny_access_auth_required)) }
         },
         useDismissButton = true,
         dismissButton = {
             AppIconButton(
                 onClick = onDismissDlgDenySetData,
-                icon = Default.Close,
+                icon = Icons.Default.Close,
                 text = stringResource(id = R.string.str_close),
                 containerColor = MaterialTheme.colorScheme.error,
                 contentColor = MaterialTheme.colorScheme.onError
@@ -232,9 +220,7 @@ private fun HandleDialogs(
         body = {
             currentScreen.description?.let {
                 Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .verticalScroll(rememberScrollState()),
+                    modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState()),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) { Text(text = stringResource(id = it)) }
@@ -244,7 +230,7 @@ private fun HandleDialogs(
         dismissButton = {
             AppIconButton(
                 onClick = onDismissDlgScrDesc,
-                icon = Default.Close,
+                icon = Icons.Default.Close,
                 text = stringResource(id = R.string.str_close)
             )
         }
@@ -264,7 +250,7 @@ private fun TopAppBar(
         ) {
             Icon(
                 modifier = Modifier,
-                imageVector = AutoMirrored.Filled.KeyboardArrowLeft,
+                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                 contentDescription = null
             )
         }
@@ -304,7 +290,7 @@ private fun TopAppBar(
                     modifier = Modifier.sizeIn(maxHeight = ButtonDefaults.IconSize),
                 ) {
                     Icon(
-                        imageVector = Default.Info,
+                        imageVector = Icons.Default.Info,
                         contentDescription = null
                     )
                 }
@@ -321,9 +307,7 @@ private fun ScreenContent(
     val currentData = configDynamicColor.configCurrent.dynamicColor
     val preferencesList = configDynamicColor.dynamicColors
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(4.dp),
+        modifier = Modifier.fillMaxSize().padding(4.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -334,9 +318,7 @@ private fun ScreenContent(
         ) {
             Text(
                 text = "${stringResource(id = R.string.str_dynamic_color)} : ${stringResource(id = currentData.title)}",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(4.dp),
+                modifier = Modifier.fillMaxWidth().padding(4.dp),
                 fontWeight = FontWeight.Bold,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
@@ -344,9 +326,7 @@ private fun ScreenContent(
             )
         }
         LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(4.dp),
+            modifier = Modifier.fillMaxSize().padding(4.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -354,9 +334,7 @@ private fun ScreenContent(
                 val data = preferencesList.elementAt(it)
                 ThreeRowCardItem(
                     firstRowContent = {
-                        Surface(
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
+                        Surface(modifier = Modifier.fillMaxWidth()) {
                             Icon(
                                 imageVector = ImageVector.vectorResource(data.iconRes),
                                 contentDescription = null
@@ -379,17 +357,13 @@ private fun ScreenContent(
                             onClick = { onSetData(data) }
                         ) {
                             Icon(
-                                imageVector = if (data == currentData) {
-                                    Default.CheckCircle
-                                } else {
-                                    AutoMirrored.Outlined.KeyboardArrowRight
-                                },
+                                imageVector =
+                                    if (data == currentData) Icons.Default.CheckCircle
+                                    else Icons.AutoMirrored.Outlined.KeyboardArrowRight,
                                 contentDescription = null,
-                                tint = if (data == currentData) {
-                                    Color.Green
-                                } else {
-                                    MaterialTheme.colorScheme.onTertiaryContainer
-                                }
+                                tint =
+                                    if (data == currentData) Color.Green
+                                    else MaterialTheme.colorScheme.onTertiaryContainer
                             )
                         }
                     }
