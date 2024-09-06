@@ -19,11 +19,8 @@ interface RepoConfGenCurrency {
 class RepoImplConfGenCurrency @Inject constructor(
     private val dataStore: DataStorePreferences,
     @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
-): RepoConfGenCurrency{
-    override fun getCurrencies(): Flow<List<Currency>> =
-        flow{ emit(getCurrencyList()) }.flowOn(ioDispatcher)
-
-    override suspend fun setCurrency(currency: Currency) {
-        dataStore.setCurrency(currency)
-    }
+) : RepoConfGenCurrency{
+    override fun getCurrencies(): Flow<List<Currency>> = flow{ emit(getCurrencyList()) }
+        .flowOn(ioDispatcher)
+    override suspend fun setCurrency(currency: Currency) { dataStore.setCurrency(currency) }
 }
