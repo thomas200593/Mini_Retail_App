@@ -71,14 +71,14 @@ fun ScrConfGenCountry(
     vm: VMConfGenCountry = hiltViewModel(),
     stateApp: StateApp = LocalStateApp.current
 ) {
-    LockScreenOrientation(orientation = SCREEN_ORIENTATION_PORTRAIT)
+    LockScreenOrientation(SCREEN_ORIENTATION_PORTRAIT)
 
     val coroutineScope = rememberCoroutineScope()
     val uiState by vm.uiState.collectAsStateWithLifecycle()
     val sessionState by stateApp.isSessionValid.collectAsStateWithLifecycle()
     val currentScreen = ScrGraphs.getByRoute(stateApp.destCurrent)
 
-    LaunchedEffect(key1 = sessionState, key2 = currentScreen)
+    LaunchedEffect(sessionState, currentScreen)
     { currentScreen?.let { vm.onEvent(OnOpenEvents(sessionState, it)) } }
 
     ScrConfGenCountry(
