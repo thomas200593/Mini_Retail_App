@@ -96,8 +96,8 @@ class VMAppConfig @Inject constructor(
             dlgScrDesc = mutableStateOf(dlgScrDesc)
         )
     ) }
-    private fun resetUiStateDestAppConfig() = _uiState.update { it.copy(destAppConfig = Loading) }
     private fun resetDialogState() = _uiState.update { it.copy(dialogState = DialogState()) }
+    private fun resetUiStateDestAppConfig() = _uiState.update { it.copy(destAppConfig = Loading) }
     private fun resetDialogAndUiState() { resetDialogState(); resetUiStateDestAppConfig() }
     private fun onOpenEvent(sessionState: SessionState) {
         resetUiStateDestAppConfig(); resetDialogState()
