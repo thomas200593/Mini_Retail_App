@@ -105,6 +105,7 @@ class VMConfGenDynamicColor @Inject constructor(
     private fun resetDialogState() = _uiState.update { it.copy(dialogState = DialogState()) }
     private fun resetUiStateConfigDynamicColor() = _uiState.update { it.copy(configDynamicColor = Loading) }
     private fun resetDialogAndUiState() { resetDialogState(); resetUiStateConfigDynamicColor() }
+
     private fun onOpenEvent(sessionState: SessionState, currentScreen: ScrGraphs) {
         resetUiStateConfigDynamicColor(); resetDialogState()
         when(sessionState) {

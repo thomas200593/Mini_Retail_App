@@ -11,8 +11,7 @@ import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons.AutoMirrored
-import androidx.compose.material.icons.Icons.Default
+import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowRight
 import androidx.compose.material.icons.filled.CheckCircle
@@ -40,7 +39,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.thomas200593.mini_retail_app.R.string
+import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs
 import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
 import com.thomas200593.mini_retail_app.app.ui.StateApp
@@ -69,23 +68,22 @@ fun ScrConfGenFontSize(
     vm: VMConfGenFontSize = hiltViewModel(),
     stateApp: StateApp = LocalStateApp.current
 ) {
-    LockScreenOrientation(orientation = SCREEN_ORIENTATION_PORTRAIT)
+    LockScreenOrientation(SCREEN_ORIENTATION_PORTRAIT)
 
     val coroutineScope = rememberCoroutineScope()
     val uiState by vm.uiState.collectAsStateWithLifecycle()
     val sessionState by stateApp.isSessionValid.collectAsStateWithLifecycle()
     val currentScreen = ScrGraphs.getByRoute(stateApp.destCurrent)
 
-    LaunchedEffect(key1 = sessionState, key2 = currentScreen)
+    LaunchedEffect(sessionState, currentScreen)
     { currentScreen?.let { vm.onEvent(OnOpenEvents(sessionState, it)) } }
 
     ScrConfGenFontSize(
         uiState = uiState,
         currentScreen = currentScreen,
         onNavigateBack = {
-            vm.onEvent(BtnNavBackEvents.OnClick).also {
-                coroutineScope.launch { stateApp.onNavUp() }
-            }
+            vm.onEvent(BtnNavBackEvents.OnClick)
+                .also { coroutineScope.launch { stateApp.onNavUp() } }
         },
         onShowScrDesc = { vm.onEvent(BtnScrDescEvents.OnClick) },
         onDismissDlgScrDesc = { vm.onEvent(BtnScrDescEvents.OnDismiss) },
@@ -93,23 +91,17 @@ fun ScrConfGenFontSize(
             currentScreen?.let {
                 when(sessionState) {
                     SessionState.Loading -> Unit
-                    is SessionState.Invalid -> {
-                        if(it.usesAuth) {
-                            vm.onEvent(BtnSetPrefFontSizeEvents.OnDeny)
-                        } else {
-                            vm.onEvent(BtnSetPrefFontSizeEvents.OnAllow(fontSize))
-                        }
-                    }
-                    is SessionState.Valid -> {
+                    is SessionState.Invalid ->
+                        if(it.usesAuth) vm.onEvent(BtnSetPrefFontSizeEvents.OnDeny)
+                        else vm.onEvent(BtnSetPrefFontSizeEvents.OnAllow(fontSize))
+                    is SessionState.Valid ->
                         vm.onEvent(BtnSetPrefFontSizeEvents.OnAllow(fontSize))
-                    }
                 }
             }
         },
         onDismissDlgDenySetData = {
-            vm.onEvent(DlgDenySetDataEvents.OnDismiss).also {
-                coroutineScope.launch { stateApp.onNavUp() }
-            }
+            vm.onEvent(DlgDenySetDataEvents.OnDismiss)
+                .also { coroutineScope.launch { stateApp.onNavUp() } }
         }
     )
 }
@@ -170,7 +162,7 @@ private fun HandleDialogs(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
-            ) { Text(text = "Authenticating") }
+            ) { Text(text = stringResource(id = R.string.str_authenticating)) }
         }
     )
     AppAlertDialog(
@@ -190,32 +182,28 @@ private fun HandleDialogs(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
-            ) { Text(text = "Getting Menu Data") }
+            ) { Text(text = stringResource(id = R.string.str_loading_data)) }
         }
     )
     AppAlertDialog(
         showDialog = uiState.dialogState.dlgDenySetData,
         dialogContext = AlertDialogContext.ERROR,
         showTitle = true,
-        title = { Text(text = stringResource(id = string.str_error)) },
+        title = { Text(text = stringResource(id = R.string.str_error)) },
         showBody = true,
         body = {
             Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .verticalScroll(rememberScrollState()),
+                modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
-            ) {
-                Text(text = "Access Denied! Authentication Required")
-            }
+            ) { Text(text = stringResource(id = R.string.str_deny_access_auth_required)) }
         },
         useDismissButton = true,
         dismissButton = {
             AppIconButton(
                 onClick = onDismissDlgDenySetData,
-                icon = Default.Close,
-                text = stringResource(id = string.str_close),
+                icon = Icons.Default.Close,
+                text = stringResource(id = R.string.str_close),
                 containerColor = MaterialTheme.colorScheme.error,
                 contentColor = MaterialTheme.colorScheme.onError
             )
@@ -231,9 +219,7 @@ private fun HandleDialogs(
         body = {
             currentScreen.description?.let {
                 Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .verticalScroll(rememberScrollState()),
+                    modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState()),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) { Text(text = stringResource(id = it)) }
@@ -243,8 +229,8 @@ private fun HandleDialogs(
         dismissButton = {
             AppIconButton(
                 onClick = onDismissDlgScrDesc,
-                icon = Default.Close,
-                text = stringResource(id = string.str_close)
+                icon = Icons.Default.Close,
+                text = stringResource(id = R.string.str_close)
             )
         }
     )
@@ -263,7 +249,7 @@ private fun TopAppBar(
         ) {
             Icon(
                 modifier = Modifier,
-                imageVector = AutoMirrored.Filled.KeyboardArrowLeft,
+                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                 contentDescription = null
             )
         }
@@ -303,7 +289,7 @@ private fun TopAppBar(
                     modifier = Modifier.sizeIn(maxHeight = ButtonDefaults.IconSize),
                 ) {
                     Icon(
-                        imageVector = Default.Info,
+                        imageVector = Icons.Default.Info,
                         contentDescription = null
                     )
                 }
@@ -319,14 +305,13 @@ private fun ScreenContent(
 ) {
     val currentData = configFontSizes.configCurrent.fontSize
     val preferencesList = configFontSizes.fontSizes
-
     Column (
         modifier = Modifier.fillMaxSize().padding(4.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "${stringResource(id = string.str_size_font)} : ${stringResource(id = currentData.title)}",
+            text = "${stringResource(id = R.string.str_size_font)} : ${stringResource(id = currentData.title)}",
             modifier = Modifier.fillMaxWidth().padding(4.dp),
             fontWeight = FontWeight.Bold,
             maxLines = 1,
@@ -365,17 +350,13 @@ private fun ScreenContent(
                             onClick = { onSetData(data) }
                         ) {
                             Icon(
-                                imageVector = if (data == currentData) {
-                                    Default.CheckCircle
-                                } else {
-                                    AutoMirrored.Outlined.KeyboardArrowRight
-                                },
+                                imageVector =
+                                    if (data == currentData) Icons.Default.CheckCircle
+                                    else Icons.AutoMirrored.Outlined.KeyboardArrowRight ,
                                 contentDescription = null,
-                                tint = if (data == currentData) {
-                                    Color.Green
-                                } else {
-                                    MaterialTheme.colorScheme.onTertiaryContainer
-                                }
+                                tint =
+                                    if (data == currentData) Color.Green
+                                    else MaterialTheme.colorScheme.onTertiaryContainer
                             )
                         }
                     }

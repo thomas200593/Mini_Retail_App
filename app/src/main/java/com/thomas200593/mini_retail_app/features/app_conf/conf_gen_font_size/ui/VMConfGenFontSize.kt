@@ -38,40 +38,37 @@ class VMConfGenFontSize @Inject constructor(
         data object Loading : UiStateConfigFontSize
         data class Success(val configFontSizes: ConfigFontSizes): UiStateConfigFontSize
     }
-
     data class UiState(
         val configFontSizes: UiStateConfigFontSize = Loading,
         val dialogState: DialogState = DialogState()
     )
-
     data class DialogState(
         val dlgLoadingAuth: MutableState<Boolean> = mutableStateOf(false),
         val dlgLoadingGetData: MutableState<Boolean> = mutableStateOf(false),
         val dlgDenySetData: MutableState<Boolean> = mutableStateOf(false),
         val dlgScrDesc: MutableState<Boolean> = mutableStateOf(false)
     )
-
-    sealed class UiEvents {
+    sealed interface UiEvents {
         data class OnOpenEvents(
             val sessionState: SessionState,
             val currentScreen: ScrGraphs
-        ) : UiEvents()
-        sealed class ButtonEvents : UiEvents() {
-            sealed class BtnNavBackEvents : ButtonEvents() {
-                data object OnClick : BtnNavBackEvents()
+        ) : UiEvents
+        sealed interface ButtonEvents : UiEvents {
+            sealed interface BtnNavBackEvents : ButtonEvents {
+                data object OnClick : BtnNavBackEvents
             }
-            sealed class BtnScrDescEvents : ButtonEvents() {
-                data object OnClick : BtnScrDescEvents()
-                data object OnDismiss : BtnScrDescEvents()
+            sealed interface BtnScrDescEvents : ButtonEvents {
+                data object OnClick : BtnScrDescEvents
+                data object OnDismiss : BtnScrDescEvents
             }
-            sealed class BtnSetPrefFontSizeEvents : ButtonEvents() {
-                data class OnAllow(val fontSize: FontSize) : BtnSetPrefFontSizeEvents()
-                data object OnDeny : BtnSetPrefFontSizeEvents()
+            sealed interface BtnSetPrefFontSizeEvents : ButtonEvents {
+                data class OnAllow(val fontSize: FontSize) : BtnSetPrefFontSizeEvents
+                data object OnDeny : BtnSetPrefFontSizeEvents
             }
         }
-        sealed class DialogEvents : UiEvents() {
-            sealed class DlgDenySetDataEvents : DialogEvents() {
-                data object OnDismiss : DlgDenySetDataEvents()
+        sealed interface DialogEvents : UiEvents {
+            sealed interface DlgDenySetDataEvents : DialogEvents {
+                data object OnDismiss : DlgDenySetDataEvents
             }
         }
     }
@@ -82,60 +79,51 @@ class VMConfGenFontSize @Inject constructor(
     fun onEvent(events: UiEvents) {
         when(events) {
             is OnOpenEvents -> onOpenEvent(events.sessionState, events.currentScreen)
-            is BtnNavBackEvents.OnClick -> onNavBackEvent()
-            is BtnScrDescEvents.OnClick -> onShowScrDescEvent()
-            is BtnScrDescEvents.OnDismiss -> onHideScrDescEvent()
+            is BtnNavBackEvents.OnClick -> resetDialogAndUiState()
+            is BtnScrDescEvents.OnClick ->
+                { resetDialogState(); updateDialogState(dlgScrDesc = true) }
+            is BtnScrDescEvents.OnDismiss -> resetDialogState()
             is BtnSetPrefFontSizeEvents.OnDeny -> onDenySet()
             is BtnSetPrefFontSizeEvents.OnAllow -> onAllowSet(events.fontSize)
-            is DlgDenySetDataEvents.OnDismiss -> onDismissDenySetDlg()
+            is DlgDenySetDataEvents.OnDismiss -> resetDialogAndUiState()
         }
     }
 
-    private fun resetUiStateConfigFontSize() = _uiState.update { it.copy(configFontSizes = Loading) }
-    private fun resetDialogState() = _uiState.update { it.copy(dialogState = DialogState()) }
     private fun updateDialogState(
         dlgLoadingAuth: Boolean = false,
         dlgLoadingGetData: Boolean = false,
         dlgDenySetData: Boolean = false,
         dlgScrDesc: Boolean = false
-    ) = _uiState.update {
-        it.copy(
-            dialogState = it.dialogState.copy(
-                dlgLoadingAuth = mutableStateOf(dlgLoadingAuth),
-                dlgLoadingGetData = mutableStateOf(dlgLoadingGetData),
-                dlgDenySetData = mutableStateOf(dlgDenySetData),
-                dlgScrDesc = mutableStateOf(dlgScrDesc)
-            )
+    ) = _uiState.update { it.copy(
+        dialogState = it.dialogState.copy(
+            dlgLoadingAuth = mutableStateOf(dlgLoadingAuth),
+            dlgLoadingGetData = mutableStateOf(dlgLoadingGetData),
+            dlgDenySetData = mutableStateOf(dlgDenySetData),
+            dlgScrDesc = mutableStateOf(dlgScrDesc)
         )
-    }
+    ) }
+    private fun resetDialogState() = _uiState.update { it.copy(dialogState = DialogState()) }
+    private fun resetUiStateConfigFontSize() = _uiState.update { it.copy(configFontSizes = Loading) }
+    private fun resetDialogAndUiState() { resetDialogState(); resetUiStateConfigFontSize() }
+
     private fun onOpenEvent(sessionState: SessionState, currentScreen: ScrGraphs) {
-        resetUiStateConfigFontSize()
-        resetDialogState()
+        resetUiStateConfigFontSize(); resetDialogState()
         when(sessionState) {
-            SessionState.Loading -> {
-                updateDialogState(dlgLoadingAuth = true)
-            }
-            is SessionState.Invalid -> {
-                if(currentScreen.usesAuth) {
-                    onDenySet()
-                } else {
-                    viewModelScope.launch {
-                        resetUiStateConfigFontSize()
-                        updateDialogState(dlgLoadingGetData = true)
-                        ucGetConfFontSize.invoke().flowOn(ioDispatcher).collect{ data ->
-                            _uiState.update {
-                                it.copy(
-                                    configFontSizes = Success(data),
-                                    dialogState = DialogState()
-                                )
-                            }
-                        }
+            SessionState.Loading -> updateDialogState(dlgLoadingAuth = true)
+            is SessionState.Invalid -> if(currentScreen.usesAuth) onDenySet()
+            else viewModelScope.launch {
+                resetUiStateConfigFontSize(); updateDialogState(dlgLoadingGetData = true)
+                ucGetConfFontSize.invoke().flowOn(ioDispatcher).collect{ data ->
+                    _uiState.update {
+                        it.copy(
+                            configFontSizes = Success(data),
+                            dialogState = DialogState()
+                        )
                     }
                 }
             }
             is SessionState.Valid -> viewModelScope.launch{
-                resetUiStateConfigFontSize()
-                updateDialogState(dlgLoadingGetData = true)
+                resetUiStateConfigFontSize(); updateDialogState(dlgLoadingGetData = true)
                 ucGetConfFontSize.invoke().flowOn(ioDispatcher).collect{ data ->
                     _uiState.update {
                         it.copy(
@@ -147,29 +135,9 @@ class VMConfGenFontSize @Inject constructor(
             }
         }
     }
-    private fun onNavBackEvent() {
-        resetDialogState()
-        resetUiStateConfigFontSize()
-    }
-    private fun onShowScrDescEvent() {
-        resetDialogState()
-        updateDialogState(dlgScrDesc = true)
-    }
-    private fun onHideScrDescEvent() {
-        resetDialogState()
-    }
-    private fun onDenySet() {
-        resetDialogState()
-        updateDialogState(dlgDenySetData = true)
-    }
+    private fun onDenySet() { resetDialogState(); updateDialogState(dlgDenySetData = true) }
     private fun onAllowSet(fontSize: FontSize) {
         resetDialogState()
-        viewModelScope.launch {
-            repoConfGenFontSize.setFontSize(fontSize = fontSize)
-        }
-    }
-    private fun onDismissDenySetDlg() {
-        resetDialogState()
-        resetUiStateConfigFontSize()
+        viewModelScope.launch { repoConfGenFontSize.setFontSize(fontSize = fontSize) }
     }
 }
