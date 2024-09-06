@@ -7,7 +7,7 @@ import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_language.enti
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_language.entity.Language.entries
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
@@ -21,7 +21,7 @@ internal class RepoImplConfGenLanguage @Inject constructor(
     @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
 ): RepoConfGenLanguage{
     override fun getLanguages(): Flow<Set<Language>> =
-        flow{ emit(entries.toSet()) }.flowOn(ioDispatcher)
+        flowOf(entries.toSet()).flowOn(ioDispatcher)
 
     override suspend fun setLanguage(language: Language) {
         dataStore.setLanguage(language)
