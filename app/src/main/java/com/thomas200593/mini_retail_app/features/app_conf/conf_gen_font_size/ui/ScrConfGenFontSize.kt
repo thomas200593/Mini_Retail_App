@@ -119,7 +119,7 @@ private fun ScrConfGenFontSize(
     currentScreen?.let {
         HandleDialogs(
             uiState = uiState,
-            currentScreen = currentScreen,
+            currentScreen = it,
             onDismissDlgScrDesc = onDismissDlgScrDesc,
             onDismissDlgDenySetData = onDismissDlgDenySetData
         )
