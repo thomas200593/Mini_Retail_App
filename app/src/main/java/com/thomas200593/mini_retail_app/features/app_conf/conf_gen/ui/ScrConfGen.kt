@@ -305,11 +305,12 @@ private fun ScreenContent(
             val menu = menuPreferences.elementAt(it)
             ClickableCardItem(
                 onClick = { onNavToMenu(menu) },
-                icon = menu.scrGraphs.iconRes?.let { icon -> ImageVector.vectorResource(id = icon) }
-                    ?: Icons.Default.Info,
-                title = menu.scrGraphs.title?.let { title -> stringResource(id = title) }.orEmpty(),
-                subtitle = menu.scrGraphs.description?.let { desc -> stringResource(id = desc) }
-                    .orEmpty()
+                icon = menu.scrGraphs.iconRes
+                    ?.let { icon -> ImageVector.vectorResource(id = icon) } ?: Icons.Default.Info,
+                title = menu.scrGraphs.title
+                    ?.let { title -> stringResource(id = title) }.orEmpty(),
+                subtitle = menu.scrGraphs.description
+                    ?.let { desc -> stringResource(id = desc) }.orEmpty()
             )
         }
     }
