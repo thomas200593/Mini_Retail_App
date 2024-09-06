@@ -108,9 +108,8 @@ class VMConfGen @Inject constructor(
                     _uiState.update {
                         it.copy(
                             destConfGen = Success(
-                                destConfGen = menuData.filterNot { menu ->
-                                    menu.scrGraphs.usesAuth
-                                }.toSet()
+                                destConfGen = menuData.filterNot { menu -> menu.scrGraphs.usesAuth }
+                                    .toSet()
                             ),
                             dialogState = DialogState()
                         )
