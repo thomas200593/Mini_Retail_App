@@ -1,5 +1,17 @@
 package com.thomas200593.mini_retail_app.features.app_conf.conf_gen_theme.ui
 
+import androidx.lifecycle.ViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
+
+@HiltViewModel
+class VMConfGenTheme @Inject constructor(
+
+) : ViewModel() {
+
+}
+
+/*
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -100,4 +112,4 @@ class VMConfGenTheme @Inject constructor(
             )
         ) }
     }
-}
+}*/
