@@ -38,7 +38,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.thomas200593.mini_retail_app.BuildConfig.BUILD_TYPE
 import com.thomas200593.mini_retail_app.BuildConfig.VERSION_NAME
-import com.thomas200593.mini_retail_app.R.string
+import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
 import com.thomas200593.mini_retail_app.app.ui.StateApp
 import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons
@@ -50,6 +50,7 @@ import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog
 import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AppAlertDialog
 import com.thomas200593.mini_retail_app.core.ui.component.CustomScreenUtil.LockScreenOrientation
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.navigation.navToAppConfig
+import com.thomas200593.mini_retail_app.features.auth.ui.VMAuth.AuthValidationResult.Error
 import com.thomas200593.mini_retail_app.features.auth.ui.VMAuth.UiEvents.ButtonEvents.BtnAppConfigEvents
 import com.thomas200593.mini_retail_app.features.auth.ui.VMAuth.UiEvents.ButtonEvents.BtnAuthGoogleEvents
 import com.thomas200593.mini_retail_app.features.auth.ui.VMAuth.UiEvents.ButtonEvents.BtnTncEvents
@@ -66,12 +67,12 @@ fun ScrAuth(
     vm: VMAuth = hiltViewModel(),
     stateApp: StateApp = LocalStateApp.current
 ) {
-    LockScreenOrientation(orientation = SCREEN_ORIENTATION_PORTRAIT)
+    LockScreenOrientation(SCREEN_ORIENTATION_PORTRAIT)
 
-    val uiState by vm.uiState.collectAsStateWithLifecycle()
     val activityContext = (LocalContext.current as Activity)
     val appContext = activityContext.applicationContext
     val coroutineScope = rememberCoroutineScope()
+    val uiState by vm.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         handleClearCredential(
@@ -84,34 +85,33 @@ fun ScrAuth(
     ScrAuth(
         uiState = uiState,
         onNavToAppConfig = {
-            vm.onEvent(BtnAppConfigEvents.OnClick).also {
-                coroutineScope.launch { stateApp.navController.navToAppConfig() }
-            }
+            vm.onEvent(BtnAppConfigEvents.OnClick)
+                .also { coroutineScope.launch { stateApp.navController.navToAppConfig() } }
         },
         onAuthGoogle = {
-            vm.onEvent(BtnAuthGoogleEvents.OnClick).also {
-                coroutineScope.launch {
-                    handleSignIn(
-                        activityContext = activityContext,
-                        onResultReceived = { vm.onEvent(BtnAuthGoogleEvents.OnResultReceived(it)) },
-                        onError = { vm.onEvent(BtnAuthGoogleEvents.OnResultError(it)) },
-                        onDialogDismissed = { vm.onEvent(BtnAuthGoogleEvents.OnDismissed(it)) }
-                    )
+            vm.onEvent(BtnAuthGoogleEvents.OnClick)
+                .also {
+                    coroutineScope.launch {
+                        handleSignIn(
+                            activityContext = activityContext,
+                            onResultReceived = { vm.onEvent(BtnAuthGoogleEvents.OnResultReceived(it)) },
+                            onError = { vm.onEvent(BtnAuthGoogleEvents.OnResultError(it)) },
+                            onDialogDismissed = { vm.onEvent(BtnAuthGoogleEvents.OnDismissed(it)) }
+                        )
+                    }
                 }
-            }
         },
         onNavToTnc = { vm.onEvent(BtnTncEvents.OnClick) },
         dlgAuthSuccessOnConfirm = {
-            vm.onEvent(DlgAuthSuccessEvent.OnConfirm).also {
-                coroutineScope.launch {
-                    ManagerWorkSessionMonitor.initialize(appContext)
-                    stateApp.navController.navToInitial()
+            vm.onEvent(DlgAuthSuccessEvent.OnConfirm)
+                .also {
+                    coroutineScope.launch {
+                        ManagerWorkSessionMonitor.initialize(appContext)
+                        stateApp.navController.navToInitial()
+                    }
                 }
-            }
         },
-        dlgAuthFailedOnDismiss = {
-            vm.onEvent(DlgAuthFailedEvent.OnDismissed)
-        }
+        dlgAuthFailedOnDismiss = { vm.onEvent(DlgAuthFailedEvent.OnDismissed) }
     )
 }
 
@@ -160,7 +160,7 @@ private fun HandleDialogs(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
-            ) { Text(text = stringResource(id = string.str_loading)) }
+            ) { Text(text = stringResource(id = R.string.str_loading)) }
         }
     )
     AppAlertDialog(
@@ -168,13 +168,13 @@ private fun HandleDialogs(
         dialogContext = CustomDialog.AlertDialogContext.SUCCESS,
         showIcon = true,
         showTitle = true,
-        title = { Text(text = "Authentication Success!") },
+        title = { Text(text = stringResource(R.string.str_auth_success)) },
         useConfirmButton = true,
         confirmButton = {
             AppIconButton(
                 onClick = dlgAuthSuccessOnConfirm,
                 icon = Icons.Default.Check,
-                text = stringResource(id = string.str_ok)
+                text = stringResource(id = R.string.str_ok)
             )
         }
     )
@@ -183,19 +183,16 @@ private fun HandleDialogs(
         dialogContext = CustomDialog.AlertDialogContext.ERROR,
         showIcon = true,
         showTitle = true,
-        title = { Text(text = stringResource(id = string.str_error)) },
+        title = { Text(text = stringResource(id = R.string.str_error)) },
         showBody = true,
         body = {
             Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .verticalScroll(rememberScrollState()),
+                modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
                 when(uiState.authValidationResult) {
-                    is VMAuth.AuthValidationResult.Error ->
-                        Text(text = uiState.authValidationResult.throwable.toString())
+                    is Error -> Text(text = uiState.authValidationResult.throwable.toString())
                     else -> Unit
                 }
             }
@@ -205,7 +202,7 @@ private fun HandleDialogs(
             AppIconButton(
                 onClick = dlgAuthFailedOnDismiss,
                 icon = Icons.Default.Close,
-                text = stringResource(id = string.str_close),
+                text = stringResource(id = R.string.str_close),
                 containerColor = MaterialTheme.colorScheme.error,
                 contentColor = MaterialTheme.colorScheme.onError
             )
@@ -221,9 +218,7 @@ private fun ScreenContent(
     onNavToTnc: () -> Unit
 ) {
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(8.dp),
+        modifier = Modifier.fillMaxSize().padding(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(48.dp, Alignment.Top)
     ) {
@@ -236,9 +231,7 @@ private fun ScreenContent(
 }
 
 @Composable
-private fun AppConfigSection(
-    onNavToAppConfig: () -> Unit
-) {
+private fun AppConfigSection(onNavToAppConfig: () -> Unit) {
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.Start,
@@ -253,7 +246,7 @@ private fun AppConfigSection(
                 containerColor = Color.Transparent,
                 contentColor = MaterialTheme.colorScheme.onSurface,
                 icon = ImageVector.vectorResource(id = CustomIcons.Setting.settings),
-                text = stringResource(id = string.str_configuration),
+                text = stringResource(id = R.string.str_configuration),
                 onClick = onNavToAppConfig
             )
         }
@@ -269,14 +262,14 @@ private fun AppTitleSection() {
     ) {
         Image(
             imageVector = ImageVector.vectorResource(id = CustomIcons.App.app),
-            contentDescription = stringResource(id = string.app_name),
+            contentDescription = stringResource(id = R.string.app_name),
             alignment = Alignment.Center,
             modifier = Modifier
                 .height(150.dp)
                 .fillMaxWidth()
         )
         Text(
-            text = stringResource(id = string.app_name),
+            text = stringResource(id = R.string.app_name),
             textAlign = TextAlign.Center,
             fontSize = MaterialTheme.typography.headlineLarge.fontSize,
             fontWeight = FontWeight.Bold,
@@ -302,7 +295,7 @@ private fun WelcomeMessageSection() {
         shadowElevation = 5.dp
     ) {
         Text(
-            text = stringResource(string.str_auth_welcome_message),
+            text = stringResource(R.string.str_auth_welcome_message),
             color = MaterialTheme.colorScheme.onSecondaryContainer,
             modifier = Modifier.padding(12.dp),
         )
@@ -310,10 +303,7 @@ private fun WelcomeMessageSection() {
 }
 
 @Composable
-private fun AuthWithGoogleSection(
-    uiState: UiState,
-    onAuthGoogle: () -> Unit
-) {
+private fun AuthWithGoogleSection(uiState: UiState, onAuthGoogle: () -> Unit) {
     Surface(
         modifier = Modifier.fillMaxWidth(0.9f),
         shape = MaterialTheme.shapes.medium,
@@ -326,15 +316,10 @@ private fun AuthWithGoogleSection(
 }
 
 @Composable
-private fun TncSection(
-    onNavToTnc: () -> Unit
-) {
-    Surface(
-        onClick = onNavToTnc,
-        color = Color.Transparent
-    ) {
+private fun TncSection(onNavToTnc: () -> Unit) {
+    Surface(onClick = onNavToTnc, color = Color.Transparent) {
         Text(
-            text = stringResource(id = string.str_tnc),
+            text = stringResource(id = R.string.str_tnc),
             fontWeight = FontWeight.SemiBold,
             color = MaterialTheme.colorScheme.onTertiaryContainer,
             maxLines = 1,
