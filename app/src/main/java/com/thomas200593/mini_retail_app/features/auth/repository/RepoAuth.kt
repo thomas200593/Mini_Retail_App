@@ -28,11 +28,10 @@ class RepoAuthImpl @Inject constructor(
     }
     override suspend fun clearAuthSessionToken() { dataStore.clearAuthSessionToken() }
     override suspend fun saveAuthSessionToken(authSessionToken: AuthSessionToken)
-    { dataStore.saveAuthSessionToken(authSessionToken) }
-    override suspend fun mapAuthSessionTokenToUserData(authSessionToken: AuthSessionToken): UserData? {
-        return when(authSessionToken.authProvider){
-            OAuthProvider.GOOGLE -> { GoogleOAuth2.mapToUserData(authSessionToken) }
-            else -> { null }
+        { dataStore.saveAuthSessionToken(authSessionToken) }
+    override suspend fun mapAuthSessionTokenToUserData(authSessionToken: AuthSessionToken): UserData? =
+        when(authSessionToken.authProvider) {
+            OAuthProvider.GOOGLE -> GoogleOAuth2.mapToUserData(authSessionToken)
+            else -> null
         }
-    }
 }

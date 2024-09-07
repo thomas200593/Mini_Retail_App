@@ -9,6 +9,7 @@ import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers
 import com.thomas200593.mini_retail_app.features.auth.domain.UCValidateAuthSessionAndSave
 import com.thomas200593.mini_retail_app.features.auth.entity.AuthSessionToken
 import com.thomas200593.mini_retail_app.features.auth.repository.RepoAuth
+import com.thomas200593.mini_retail_app.features.auth.ui.VMAuth.AuthValidationResult.Idle
 import com.thomas200593.mini_retail_app.features.auth.ui.VMAuth.UiEvents.ButtonEvents.BtnAppConfigEvents
 import com.thomas200593.mini_retail_app.features.auth.ui.VMAuth.UiEvents.ButtonEvents.BtnAuthGoogleEvents
 import com.thomas200593.mini_retail_app.features.auth.ui.VMAuth.UiEvents.ButtonEvents.BtnTncEvents
@@ -32,7 +33,7 @@ class VMAuth @Inject constructor(
     data class UiState(
         val dialogState: DialogState = DialogState(),
         val btnGoogleUiState: BtnGoogleUiState = BtnGoogleUiState(),
-        val authValidationResult: AuthValidationResult = AuthValidationResult.Idle
+        val authValidationResult: AuthValidationResult = Idle
     )
     sealed interface AuthValidationResult {
         data object Idle: AuthValidationResult
@@ -48,28 +49,28 @@ class VMAuth @Inject constructor(
     data class BtnGoogleUiState(
         val loading: Boolean = false
     )
-    sealed class UiEvents {
-        data object OnOpenEvents: UiEvents()
-        sealed class ButtonEvents: UiEvents() {
-            sealed class BtnAppConfigEvents: ButtonEvents() {
-                data object OnClick: BtnAppConfigEvents()
+    sealed interface UiEvents {
+        data object OnOpenEvents: UiEvents
+        sealed interface ButtonEvents: UiEvents {
+            sealed interface BtnAppConfigEvents: ButtonEvents {
+                data object OnClick: BtnAppConfigEvents
             }
-            sealed class BtnAuthGoogleEvents: ButtonEvents() {
-                data object OnClick: BtnAuthGoogleEvents()
-                data class OnResultReceived(val authSessionToken: AuthSessionToken): BtnAuthGoogleEvents()
-                data class OnResultError(val throwable: Throwable): BtnAuthGoogleEvents()
-                data class OnDismissed(val throwable: Throwable): BtnAuthGoogleEvents()
+            sealed interface BtnAuthGoogleEvents: ButtonEvents {
+                data object OnClick: BtnAuthGoogleEvents
+                data class OnResultReceived(val authSessionToken: AuthSessionToken): BtnAuthGoogleEvents
+                data class OnResultError(val throwable: Throwable): BtnAuthGoogleEvents
+                data class OnDismissed(val throwable: Throwable): BtnAuthGoogleEvents
             }
-            sealed class BtnTncEvents: ButtonEvents() {
-                data object OnClick: BtnTncEvents()
+            sealed interface BtnTncEvents: ButtonEvents {
+                data object OnClick: BtnTncEvents
             }
         }
-        sealed class DialogEvents: UiEvents() {
-            sealed class DlgAuthSuccessEvent: DialogEvents() {
-                data object OnConfirm: DlgAuthSuccessEvent()
+        sealed interface DialogEvents: UiEvents {
+            sealed interface DlgAuthSuccessEvent: DialogEvents {
+                data object OnConfirm: DlgAuthSuccessEvent
             }
-            sealed class DlgAuthFailedEvent: DialogEvents() {
-                data object OnDismissed: DlgAuthFailedEvent()
+            sealed interface DlgAuthFailedEvent: DialogEvents {
+                data object OnDismissed: DlgAuthFailedEvent
             }
         }
     }
@@ -82,7 +83,8 @@ class VMAuth @Inject constructor(
             is OnOpenEvents -> onOpenEvent()
             is BtnAppConfigEvents.OnClick -> onOpenEvent()
             is BtnAuthGoogleEvents.OnClick -> btnAuthGoogleOnClickEvent()
-            is BtnAuthGoogleEvents.OnResultReceived -> btnAuthGoogleOnResultReceivedEvent(events.authSessionToken)
+            is BtnAuthGoogleEvents.OnResultReceived ->
+                btnAuthGoogleOnResultReceivedEvent(events.authSessionToken)
             is BtnAuthGoogleEvents.OnResultError -> btnAuthGoogleOnResultErrorEvent(events.throwable)
             is BtnAuthGoogleEvents.OnDismissed -> btnAuthGoogleOnResultDismissed(events.throwable)
             is BtnTncEvents.OnClick -> onOpenEvent()
@@ -95,36 +97,19 @@ class VMAuth @Inject constructor(
         dlgAuthLoading: Boolean = false,
         dlgAuthSuccess: Boolean = false,
         dlgAuthError: Boolean = false
-    ) = _uiState.update {
-        it.copy(
-            dialogState = it.dialogState.copy(
-                dlgAuthLoading = mutableStateOf(dlgAuthLoading),
-                dlgAuthSuccess = mutableStateOf(dlgAuthSuccess),
-                dlgAuthError = mutableStateOf(dlgAuthError)
-            )
+    ) = _uiState.update { it.copy(
+        dialogState = it.dialogState.copy(
+            dlgAuthLoading = mutableStateOf(dlgAuthLoading),
+            dlgAuthSuccess = mutableStateOf(dlgAuthSuccess),
+            dlgAuthError = mutableStateOf(dlgAuthError)
         )
-    }
-    private fun resetDialogState() = _uiState.update {
-        it.copy(
-            dialogState = DialogState()
-        )
-    }
-    private fun resetBtnGoogleUiState() = _uiState.update {
-        it.copy(
-            btnGoogleUiState = BtnGoogleUiState()
-        )
-    }
-    private fun resetAuthResultState() = _uiState.update {
-        it.copy(
-            authValidationResult = AuthValidationResult.Idle
-        )
-    }
+    ) }
+    private fun resetDialogState() = _uiState.update { it.copy(dialogState = DialogState()) }
+    private fun resetBtnGoogleUiState() = _uiState.update { it.copy(btnGoogleUiState = BtnGoogleUiState()) }
+    private fun resetAuthResultState() = _uiState.update { it.copy(authValidationResult = Idle) }
     private fun onOpenEvent() = viewModelScope.launch(ioDispatcher) {
-        repoAuth.clearAuthSessionToken().also {
-            resetBtnGoogleUiState()
-            resetDialogState()
-            resetAuthResultState()
-        }
+        repoAuth.clearAuthSessionToken()
+            .also { resetBtnGoogleUiState(); resetDialogState(); resetAuthResultState() }
     }
     private fun btnAuthGoogleOnClickEvent() = _uiState.update {
         it.copy(
@@ -149,9 +134,7 @@ class VMAuth @Inject constructor(
                         )
                     )
                 }
-                resetDialogState()
-                resetBtnGoogleUiState()
-                updateDialogState(dlgAuthSuccess = true)
+                resetDialogState(); resetBtnGoogleUiState(); updateDialogState(dlgAuthSuccess = true)
             }
             else {
                 _uiState.update {
@@ -167,15 +150,10 @@ class VMAuth @Inject constructor(
             }
         }
     }
-    private fun btnAuthGoogleOnConfirmEvent() {
-        resetDialogState()
-        resetBtnGoogleUiState()
-        resetAuthResultState()
-    }
+    private fun btnAuthGoogleOnConfirmEvent()
+        { resetDialogState(); resetBtnGoogleUiState(); resetAuthResultState() }
     private fun btnAuthGoogleOnResultErrorEvent(throwable: Throwable) {
-        resetDialogState()
-        resetBtnGoogleUiState()
-        resetAuthResultState()
+        resetDialogState(); resetBtnGoogleUiState(); resetAuthResultState()
         _uiState.update {
             it.copy(
                 authValidationResult = AuthValidationResult.Error(
