@@ -38,40 +38,37 @@ class VMConfGenTheme @Inject constructor(
         data object Loading : UiStateConfigTheme
         data class Success(val configThemes: ConfigThemes) : UiStateConfigTheme
     }
-
     data class UiState(
         val configThemes: UiStateConfigTheme = Loading,
         val dialogState: DialogState = DialogState()
     )
-
     data class DialogState(
         val dlgLoadingAuth: MutableState<Boolean> = mutableStateOf(false),
         val dlgLoadingGetData: MutableState<Boolean> = mutableStateOf(false),
         val dlgDenySetData: MutableState<Boolean> = mutableStateOf(false),
         val dlgScrDesc: MutableState<Boolean> = mutableStateOf(false)
     )
-
-    sealed class UiEvents {
+    sealed interface UiEvents {
         data class OnOpenEvents(
             val sessionState: SessionState,
             val currentScreen: ScrGraphs
-        ) : UiEvents()
-        sealed class ButtonEvents : UiEvents() {
-            sealed class BtnNavBackEvents : ButtonEvents() {
-                data object OnClick : BtnNavBackEvents()
+        ) : UiEvents
+        sealed interface ButtonEvents : UiEvents {
+            sealed interface BtnNavBackEvents : ButtonEvents {
+                data object OnClick : BtnNavBackEvents
             }
-            sealed class BtnScrDescEvents : ButtonEvents() {
-                data object OnClick : BtnScrDescEvents()
-                data object OnDismiss : BtnScrDescEvents()
+            sealed interface BtnScrDescEvents : ButtonEvents {
+                data object OnClick : BtnScrDescEvents
+                data object OnDismiss : BtnScrDescEvents
             }
-            sealed class BtnSetPrefThemeEvents : ButtonEvents() {
-                data class OnAllow(val theme: Theme) : BtnSetPrefThemeEvents()
-                data object OnDeny : BtnSetPrefThemeEvents()
+            sealed interface BtnSetPrefThemeEvents : ButtonEvents {
+                data class OnAllow(val theme: Theme) : BtnSetPrefThemeEvents
+                data object OnDeny : BtnSetPrefThemeEvents
             }
         }
-        sealed class DialogEvents : UiEvents() {
-            sealed class DlgDenySetDataEvents : DialogEvents() {
-                data object OnDismiss : DlgDenySetDataEvents()
+        sealed interface DialogEvents : UiEvents {
+            sealed interface DlgDenySetDataEvents : DialogEvents {
+                data object OnDismiss : DlgDenySetDataEvents
             }
         }
     }
@@ -82,60 +79,50 @@ class VMConfGenTheme @Inject constructor(
     fun onEvent(events: UiEvents) {
         when(events) {
             is OnOpenEvents -> onOpenEvent(events.sessionState, events.currentScreen)
-            is BtnNavBackEvents.OnClick -> onNavBackEvent()
-            is BtnScrDescEvents.OnClick -> onShowScrDescEvent()
-            is BtnScrDescEvents.OnDismiss -> onHideScrDescEvent()
+            is BtnNavBackEvents.OnClick -> resetDialogAndUiState()
+            is BtnScrDescEvents.OnClick ->
+                { resetDialogState(); updateDialogState(dlgScrDesc = true) }
+            is BtnScrDescEvents.OnDismiss -> resetDialogState()
             is BtnSetPrefThemeEvents.OnDeny -> onDenySet()
             is BtnSetPrefThemeEvents.OnAllow -> onAllowSet(events.theme)
-            is DlgDenySetDataEvents.OnDismiss -> onDismissDenySetDlg()
+            is DlgDenySetDataEvents.OnDismiss -> resetDialogAndUiState()
         }
     }
 
-    private fun resetUiStateConfigTheme() = _uiState.update { it.copy(configThemes = Loading) }
-    private fun resetDialogState() = _uiState.update { it.copy(dialogState = DialogState()) }
     private fun updateDialogState(
         dlgLoadingAuth: Boolean = false,
         dlgLoadingGetData: Boolean = false,
         dlgDenySetData: Boolean = false,
         dlgScrDesc: Boolean = false
-    ) = _uiState.update {
-        it.copy(
-            dialogState = it.dialogState.copy(
-                dlgLoadingAuth = mutableStateOf(dlgLoadingAuth),
-                dlgLoadingGetData = mutableStateOf(dlgLoadingGetData),
-                dlgDenySetData = mutableStateOf(dlgDenySetData),
-                dlgScrDesc = mutableStateOf(dlgScrDesc)
-            )
+    ) = _uiState.update { it.copy(
+        dialogState = it.dialogState.copy(
+            dlgLoadingAuth = mutableStateOf(dlgLoadingAuth),
+            dlgLoadingGetData = mutableStateOf(dlgLoadingGetData),
+            dlgDenySetData = mutableStateOf(dlgDenySetData),
+            dlgScrDesc = mutableStateOf(dlgScrDesc)
         )
-    }
+    ) }
+    private fun resetDialogState() = _uiState.update { it.copy(dialogState = DialogState()) }
+    private fun resetUiStateConfigTheme() = _uiState.update { it.copy(configThemes = Loading) }
+    private fun resetDialogAndUiState() { resetDialogState(); resetUiStateConfigTheme() }
     private fun onOpenEvent(sessionState: SessionState, currentScreen: ScrGraphs) {
-        resetUiStateConfigTheme()
-        resetDialogState()
+        resetUiStateConfigTheme(); resetDialogState()
         when(sessionState) {
-            SessionState.Loading -> {
-                updateDialogState(dlgLoadingAuth = true)
-            }
-            is SessionState.Invalid -> {
-                if(currentScreen.usesAuth) {
-                    onDenySet()
-                } else {
-                    viewModelScope.launch {
-                        resetUiStateConfigTheme()
-                        updateDialogState(dlgLoadingGetData = true)
-                        ucGetConfGenTheme.invoke().flowOn(ioDispatcher).collect{ data ->
-                            _uiState.update {
-                                it.copy(
-                                    configThemes = Success(data),
-                                    dialogState = DialogState()
-                                )
-                            }
-                        }
+            SessionState.Loading -> updateDialogState(dlgLoadingAuth = true)
+            is SessionState.Invalid -> if(currentScreen.usesAuth) onDenySet()
+            else viewModelScope.launch {
+                resetUiStateConfigTheme(); updateDialogState(dlgLoadingGetData = true)
+                ucGetConfGenTheme.invoke().flowOn(ioDispatcher).collect{ data ->
+                    _uiState.update {
+                        it.copy(
+                            configThemes = Success(data),
+                            dialogState = DialogState()
+                        )
                     }
                 }
             }
             is SessionState.Valid -> viewModelScope.launch {
-                resetUiStateConfigTheme()
-                updateDialogState(dlgLoadingGetData = true)
+                resetUiStateConfigTheme(); updateDialogState(dlgLoadingGetData = true)
                 ucGetConfGenTheme.invoke().flowOn(ioDispatcher).collect{ data ->
                     _uiState.update {
                         it.copy(
@@ -147,27 +134,9 @@ class VMConfGenTheme @Inject constructor(
             }
         }
     }
-    private fun onNavBackEvent() {
-        resetDialogState()
-        resetUiStateConfigTheme()
-    }
-    private fun onShowScrDescEvent() {
-        resetDialogState()
-        updateDialogState(dlgScrDesc = true)
-    }
-    private fun onHideScrDescEvent() {
-        resetDialogState()
-    }
-    private fun onDenySet() {
-        resetDialogState()
-        updateDialogState(dlgDenySetData = true)
-    }
+    private fun onDenySet() { resetDialogState(); updateDialogState(dlgDenySetData = true) }
     private fun onAllowSet(theme: Theme) {
         resetDialogState()
         viewModelScope.launch { repoConfGenTheme.setTheme(theme) }
-    }
-    private fun onDismissDenySetDlg() {
-        resetDialogState()
-        resetUiStateConfigTheme()
     }
 }
