@@ -41,40 +41,37 @@ class VMConfGenLanguage @Inject constructor(
         data object Loading : UiStateConfigLanguage
         data class Success(val configLanguages: ConfigLanguages) : UiStateConfigLanguage
     }
-
     data class UiState(
         val configLanguages: UiStateConfigLanguage = Loading,
         val dialogState: DialogState = DialogState()
     )
-
     data class DialogState(
         val dlgLoadingAuth: MutableState<Boolean> = mutableStateOf(false),
         val dlgLoadingGetData: MutableState<Boolean> = mutableStateOf(false),
         val dlgDenySetData: MutableState<Boolean> = mutableStateOf(false),
         val dlgScrDesc: MutableState<Boolean> = mutableStateOf(false)
     )
-
-    sealed class UiEvents {
+    sealed interface UiEvents {
         data class OnOpenEvents(
             val sessionState: SessionState,
             val currentScreen: ScrGraphs
-        ) : UiEvents()
-        sealed class ButtonEvents : UiEvents() {
-            sealed class BtnNavBackEvents : ButtonEvents() {
-                data object OnClick : BtnNavBackEvents()
+        ) : UiEvents
+        sealed interface ButtonEvents : UiEvents {
+            sealed interface BtnNavBackEvents : ButtonEvents {
+                data object OnClick : BtnNavBackEvents
             }
-            sealed class BtnScrDescEvents : ButtonEvents() {
-                data object OnClick : BtnScrDescEvents()
-                data object OnDismiss : BtnScrDescEvents()
+            sealed interface BtnScrDescEvents : ButtonEvents {
+                data object OnClick : BtnScrDescEvents
+                data object OnDismiss : BtnScrDescEvents
             }
-            sealed class BtnSetPrefLanguageEvents : ButtonEvents() {
-                data class OnAllow(val language: Language) : BtnSetPrefLanguageEvents()
-                data object OnDeny : BtnSetPrefLanguageEvents()
+            sealed interface BtnSetPrefLanguageEvents : ButtonEvents {
+                data class OnAllow(val language: Language) : BtnSetPrefLanguageEvents
+                data object OnDeny : BtnSetPrefLanguageEvents
             }
         }
-        sealed class DialogEvents : UiEvents() {
-            sealed class DlgDenySetDataEvents : DialogEvents() {
-                data object OnDismiss : DlgDenySetDataEvents()
+        sealed interface DialogEvents : UiEvents {
+            sealed interface DlgDenySetDataEvents : DialogEvents {
+                data object OnDismiss : DlgDenySetDataEvents
             }
         }
     }
@@ -85,60 +82,50 @@ class VMConfGenLanguage @Inject constructor(
     fun onEvent(events: UiEvents) {
         when(events) {
             is OnOpenEvents -> onOpenEvent(events.sessionState, events.currentScreen)
-            is BtnNavBackEvents.OnClick -> onNavBackEvent()
-            is BtnScrDescEvents.OnClick -> onShowScrDescEvent()
-            is BtnScrDescEvents.OnDismiss -> onHideScrDescEvent()
+            is BtnNavBackEvents.OnClick -> resetDialogAndUiState()
+            is BtnScrDescEvents.OnClick ->
+                { resetDialogState(); updateDialogState(dlgScrDesc = true) }
+            is BtnScrDescEvents.OnDismiss -> resetDialogState()
             is BtnSetPrefLanguageEvents.OnDeny -> onDenySet()
             is BtnSetPrefLanguageEvents.OnAllow -> onAllowSet(events.language)
-            is DlgDenySetDataEvents.OnDismiss -> onDismissDenySetDlg()
+            is DlgDenySetDataEvents.OnDismiss -> resetDialogAndUiState()
         }
     }
 
-    private fun resetUiStateConfigLanguage() = _uiState.update { it.copy(configLanguages = Loading) }
-    private fun resetDialogState() = _uiState.update { it.copy(dialogState = DialogState()) }
     private fun updateDialogState(
         dlgLoadingAuth: Boolean = false,
         dlgLoadingGetData: Boolean = false,
         dlgDenySetData: Boolean = false,
         dlgScrDesc: Boolean = false
-    ) = _uiState.update {
-        it.copy(
-            dialogState = it.dialogState.copy(
-                dlgLoadingAuth = mutableStateOf(dlgLoadingAuth),
-                dlgLoadingGetData = mutableStateOf(dlgLoadingGetData),
-                dlgDenySetData = mutableStateOf(dlgDenySetData),
-                dlgScrDesc = mutableStateOf(dlgScrDesc)
-            )
+    ) = _uiState.update { it.copy(
+        dialogState = it.dialogState.copy(
+            dlgLoadingAuth = mutableStateOf(dlgLoadingAuth),
+            dlgLoadingGetData = mutableStateOf(dlgLoadingGetData),
+            dlgDenySetData = mutableStateOf(dlgDenySetData),
+            dlgScrDesc = mutableStateOf(dlgScrDesc)
         )
-    }
+    ) }
+    private fun resetDialogState() = _uiState.update { it.copy(dialogState = DialogState()) }
+    private fun resetUiStateConfigLanguage() = _uiState.update { it.copy(configLanguages = Loading) }
+    private fun resetDialogAndUiState() { resetDialogState(); resetUiStateConfigLanguage() }
     private fun onOpenEvent(sessionState: SessionState, currentScreen: ScrGraphs) {
-        resetUiStateConfigLanguage()
-        resetDialogState()
+        resetUiStateConfigLanguage(); resetDialogState()
         when(sessionState) {
-            SessionState.Loading -> {
-                updateDialogState(dlgLoadingAuth = true)
-            }
-            is SessionState.Invalid -> {
-                if(currentScreen.usesAuth) {
-                    onDenySet()
-                } else {
-                    viewModelScope.launch {
-                        resetUiStateConfigLanguage()
-                        updateDialogState(dlgLoadingGetData = true)
-                        ucGetConfGenLanguage.invoke().flowOn(ioDispatcher).collect{ data ->
-                            _uiState.update {
-                                it.copy(
-                                    configLanguages = Success(data),
-                                    dialogState = DialogState()
-                                )
-                            }
-                        }
+            SessionState.Loading -> updateDialogState(dlgLoadingAuth = true)
+            is SessionState.Invalid -> if(currentScreen.usesAuth) onDenySet()
+            else viewModelScope.launch {
+                resetUiStateConfigLanguage(); updateDialogState(dlgLoadingGetData = true)
+                ucGetConfGenLanguage.invoke().flowOn(ioDispatcher).collect{ data ->
+                    _uiState.update {
+                        it.copy(
+                            configLanguages = Success(data),
+                            dialogState = DialogState()
+                        )
                     }
                 }
             }
             is SessionState.Valid -> viewModelScope.launch{
-                resetUiStateConfigLanguage()
-                updateDialogState(dlgLoadingGetData = true)
+                resetUiStateConfigLanguage(); updateDialogState(dlgLoadingGetData = true)
                 ucGetConfGenLanguage.invoke().flowOn(ioDispatcher).collect{ data ->
                     _uiState.update {
                         it.copy(
@@ -150,30 +137,12 @@ class VMConfGenLanguage @Inject constructor(
             }
         }
     }
-    private fun onNavBackEvent() {
-        resetDialogState()
-        resetUiStateConfigLanguage()
-    }
-    private fun onShowScrDescEvent() {
-        resetDialogState()
-        updateDialogState(dlgScrDesc = true)
-    }
-    private fun onHideScrDescEvent() {
-        resetDialogState()
-    }
-    private fun onDenySet() {
-        resetDialogState()
-        updateDialogState(dlgDenySetData = true)
-    }
+    private fun onDenySet() { resetDialogState(); updateDialogState(dlgDenySetData = true) }
     private fun onAllowSet(language: Language) {
         resetDialogState()
         viewModelScope.launch {
             repoConfGenLanguage.setLanguage(language = language)
             setApplicationLocales(create(Locale(language.code)))
         }
-    }
-    private fun onDismissDenySetDlg() {
-        resetDialogState()
-        resetUiStateConfigLanguage()
     }
 }
