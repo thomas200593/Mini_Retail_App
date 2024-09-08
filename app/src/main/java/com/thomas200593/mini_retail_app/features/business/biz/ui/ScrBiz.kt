@@ -1,5 +1,60 @@
 package com.thomas200593.mini_retail_app.features.business.biz.ui
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs
+import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
+import com.thomas200593.mini_retail_app.app.ui.StateApp
+import com.thomas200593.mini_retail_app.features.business.biz.ui.VMBiz.UiStateDestBiz.Loading
+import com.thomas200593.mini_retail_app.features.business.biz.ui.VMBiz.UiStateDestBiz.Success
+
+@Composable
+fun ScrBiz(
+    vm: VMBiz = hiltViewModel(),
+    stateApp: StateApp = LocalStateApp.current
+) {
+    val coroutineScope = rememberCoroutineScope()
+    val uiState by vm.uiState.collectAsStateWithLifecycle()
+    val sessionState by stateApp.isSessionValid.collectAsStateWithLifecycle()
+    val currentScreen = ScrGraphs.getByRoute(stateApp.destCurrent)
+
+    LaunchedEffect(sessionState, currentScreen) { /*TODO*/ }
+
+    ScrBiz(
+        uiState = uiState,
+        currentScreen = currentScreen
+    )
+}
+
+@Composable
+private fun ScrBiz(
+    uiState: VMBiz.UiState,
+    currentScreen: ScrGraphs?
+) {
+    currentScreen?.let {
+        HandleDialogs()
+        TopAppBar()
+    }
+    when(uiState.destBiz) {
+        Loading -> Unit
+        is Success -> ScreenContent()
+    }
+}
+
+@Composable
+private fun HandleDialogs() { /*TODO*/ }
+
+@Composable
+private fun TopAppBar() { /*TODO*/ }
+
+@Composable
+private fun ScreenContent() { /*TODO*/ }
+
+/*
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -190,4 +245,4 @@ private fun ScreenContent(
             }
         }
     }
-}
+}*/

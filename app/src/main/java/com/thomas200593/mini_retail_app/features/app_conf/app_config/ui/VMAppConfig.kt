@@ -12,7 +12,7 @@ import com.thomas200593.mini_retail_app.features.app_conf.app_config.repository.
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.ui.VMAppConfig.UiEvents.ButtonEvents.BtnMenuSelectionEvents
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.ui.VMAppConfig.UiEvents.ButtonEvents.BtnNavBackEvents
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.ui.VMAppConfig.UiEvents.ButtonEvents.BtnScrDescEvents
-import com.thomas200593.mini_retail_app.features.app_conf.app_config.ui.VMAppConfig.UiEvents.ButtonEvents.DialogEvents.DlgDenyAccessEvents
+import com.thomas200593.mini_retail_app.features.app_conf.app_config.ui.VMAppConfig.UiEvents.DialogEvents.DlgDenyAccessEvents
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.ui.VMAppConfig.UiEvents.OnOpenEvents
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.ui.VMAppConfig.UiStateDestAppConfig.Loading
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.ui.VMAppConfig.UiStateDestAppConfig.Success
@@ -59,10 +59,10 @@ class VMAppConfig @Inject constructor(
                 data object OnAllow : BtnMenuSelectionEvents
                 data object OnDeny : BtnMenuSelectionEvents
             }
-            sealed interface DialogEvents : UiEvents {
-                sealed interface  DlgDenyAccessEvents : DialogEvents {
-                    data object OnDismiss : DlgDenyAccessEvents
-                }
+        }
+        sealed interface DialogEvents : UiEvents {
+            sealed interface  DlgDenyAccessEvents : DialogEvents {
+                data object OnDismiss : DlgDenyAccessEvents
             }
         }
     }

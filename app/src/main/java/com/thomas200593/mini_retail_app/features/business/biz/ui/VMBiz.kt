@@ -3,6 +3,61 @@ package com.thomas200593.mini_retail_app.features.business.biz.ui
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs
+import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
+import com.thomas200593.mini_retail_app.features.business.biz.navigation.DestBiz
+import com.thomas200593.mini_retail_app.features.business.biz.ui.VMBiz.UiStateDestBiz.Loading
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import javax.inject.Inject
+
+@HiltViewModel
+class VMBiz @Inject constructor() : ViewModel() {
+    sealed interface UiStateDestBiz {
+        data object Loading: UiStateDestBiz
+        data class Success(val destBiz: Set<DestBiz>): UiStateDestBiz
+    }
+    data class UiState(
+        val destBiz: UiStateDestBiz = Loading,
+        val dialogState: DialogState = DialogState()
+    )
+    data class DialogState(
+        val dlgLoadingAuth: MutableState<Boolean> = mutableStateOf(false),
+        val dlgLoadingGetMenu: MutableState<Boolean> = mutableStateOf(false),
+        val dlgDenyAccessMenu: MutableState<Boolean> = mutableStateOf(false),
+        val dlgScrDesc: MutableState<Boolean> = mutableStateOf(false)
+    )
+    sealed interface UiEvents {
+        data class OnOpenEvents(
+            val sessionState: SessionState,
+            val currentScreen: ScrGraphs
+        ): UiEvents
+        sealed interface ButtonEvents: UiEvents {
+            sealed interface BtnScrDescEvents : ButtonEvents {
+                data object OnClick: BtnScrDescEvents
+                data object OnDismiss : BtnScrDescEvents
+            }
+            sealed interface BtnMenuSelectionEvents : ButtonEvents {
+                data object OnAllow : BtnMenuSelectionEvents
+                data object OnDeny : BtnMenuSelectionEvents
+            }
+        }
+        sealed interface DialogEvents : UiEvents {
+            sealed interface DlgDenyAccessEvents : DialogEvents {
+                data object OnDismiss : DlgDenyAccessEvents
+            }
+        }
+    }
+
+    private val _uiState = MutableStateFlow(UiState())
+    val uiState = _uiState.asStateFlow()
+}
+
+/*
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers.Dispatchers.IO
@@ -100,4 +155,4 @@ class VMBiz @Inject constructor(
             )
         ) }
     }
-}
+}*/
