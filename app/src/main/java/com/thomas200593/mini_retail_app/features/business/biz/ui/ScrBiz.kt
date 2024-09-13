@@ -86,16 +86,18 @@ fun ScrBiz(
                 SessionState.Loading -> Unit
                 is SessionState.Invalid ->
                     if(menu.scrGraphs.usesAuth) vm.onEvent(BtnMenuSelectionEvents.OnDeny)
-                    else vm.onEvent(BtnMenuSelectionEvents.OnAllow).also {
+                    else vm.onEvent(BtnMenuSelectionEvents.OnAllow)
+                        .also {
+                            coroutineScope.launch {
+                                stateApp.navController.navToBiz(navOptions = navOptions, destBiz = menu)
+                            }
+                        }
+                is SessionState.Valid -> vm.onEvent(BtnMenuSelectionEvents.OnAllow)
+                    .also {
                         coroutineScope.launch {
                             stateApp.navController.navToBiz(navOptions = navOptions, destBiz = menu)
                         }
                     }
-                is SessionState.Valid -> vm.onEvent(BtnMenuSelectionEvents.OnAllow).also {
-                    coroutineScope.launch {
-                        stateApp.navController.navToBiz(navOptions = navOptions, destBiz = menu)
-                    }
-                }
             }
         }
     )
