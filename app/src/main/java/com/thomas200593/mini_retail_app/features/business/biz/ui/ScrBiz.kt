@@ -36,18 +36,27 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.navOptions
 import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs
 import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
 import com.thomas200593.mini_retail_app.app.ui.StateApp
+import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
 import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar.ProvideTopAppBarAction
 import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar.ProvideTopAppBarTitle
 import com.thomas200593.mini_retail_app.core.ui.component.CustomButton.Common.AppIconButton
 import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AlertDialogContext
 import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AppAlertDialog
+import com.thomas200593.mini_retail_app.features.auth.navigation.navToAuth
 import com.thomas200593.mini_retail_app.features.business.biz.navigation.DestBiz
+import com.thomas200593.mini_retail_app.features.business.biz.navigation.navToBiz
+import com.thomas200593.mini_retail_app.features.business.biz.ui.VMBiz.UiEvents.ButtonEvents.BtnMenuSelectionEvents
+import com.thomas200593.mini_retail_app.features.business.biz.ui.VMBiz.UiEvents.ButtonEvents.BtnScrDescEvents
+import com.thomas200593.mini_retail_app.features.business.biz.ui.VMBiz.UiEvents.DialogEvents.DlgDenyAccessEvents
+import com.thomas200593.mini_retail_app.features.business.biz.ui.VMBiz.UiEvents.OnOpenEvents
 import com.thomas200593.mini_retail_app.features.business.biz.ui.VMBiz.UiStateDestBiz.Loading
 import com.thomas200593.mini_retail_app.features.business.biz.ui.VMBiz.UiStateDestBiz.Success
+import kotlinx.coroutines.launch
 
 @Composable
 fun ScrBiz(
@@ -59,15 +68,36 @@ fun ScrBiz(
     val sessionState by stateApp.isSessionValid.collectAsStateWithLifecycle()
     val currentScreen = ScrGraphs.getByRoute(stateApp.destCurrent)
 
-    LaunchedEffect(sessionState, currentScreen) { /*TODO*/ }
+    LaunchedEffect(sessionState, currentScreen)
+    { currentScreen?.let { vm.onEvent(OnOpenEvents(sessionState, it)) } }
 
     ScrBiz(
         uiState = uiState,
         currentScreen = currentScreen,
-        onShowScrDesc = { /*TODO*/ },
-        onDismissDlgScrDesc = { /*TODO*/ },
-        onDismissDlgDenyAccessMenu = { /*TODO*/ },
-        onNavToMenu = { /*TODO*/ }
+        onShowScrDesc = { vm.onEvent(BtnScrDescEvents.OnClick) },
+        onDismissDlgScrDesc = { vm.onEvent(BtnScrDescEvents.OnDismiss) },
+        onDismissDlgDenyAccessMenu = {
+            vm.onEvent(DlgDenyAccessEvents.OnDismiss)
+                .also { coroutineScope.launch { stateApp.navController.navToAuth() } }
+        },
+        onNavToMenu = { menu ->
+            val navOptions = navOptions{ launchSingleTop=true; restoreState=true }
+            when(sessionState) {
+                SessionState.Loading -> Unit
+                is SessionState.Invalid ->
+                    if(menu.scrGraphs.usesAuth) vm.onEvent(BtnMenuSelectionEvents.OnDeny)
+                    else vm.onEvent(BtnMenuSelectionEvents.OnAllow).also {
+                        coroutineScope.launch {
+                            stateApp.navController.navToBiz(navOptions = navOptions, destBiz = menu)
+                        }
+                    }
+                is SessionState.Valid -> vm.onEvent(BtnMenuSelectionEvents.OnAllow).also {
+                    coroutineScope.launch {
+                        stateApp.navController.navToBiz(navOptions = navOptions, destBiz = menu)
+                    }
+                }
+            }
+        }
     )
 }
 
@@ -276,12 +306,14 @@ private fun ScreenContent(
                     ) {
                         Icon(
                             modifier = Modifier.padding(8.dp),
-                            imageVector = ImageVector.vectorResource(id = menu.iconRes),
+                            imageVector = menu.scrGraphs.iconRes
+                                ?.let { icon -> ImageVector.vectorResource(icon) } ?: Icons.Default.Info,
                             contentDescription = null
                         )
                     }
                     Text(
-                        text = stringResource(id = menu.title),
+                        text = menu.scrGraphs.title
+                            ?.let { title -> stringResource(id = title) }.orEmpty(),
                         modifier = Modifier.fillMaxWidth(),
                         color = MaterialTheme.colorScheme.onTertiaryContainer,
                         textAlign = TextAlign.Center,

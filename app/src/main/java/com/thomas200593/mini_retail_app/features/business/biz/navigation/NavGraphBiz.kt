@@ -40,7 +40,7 @@ fun NavController.navToBiz(
     destBiz: DestBiz? = null
 ) {
     this.navigate(
-        route = destBiz?.route?: G_BUSINESS,
+        route = destBiz?.scrGraphs?.route?: G_BUSINESS,
         navOptions
     )
 }
