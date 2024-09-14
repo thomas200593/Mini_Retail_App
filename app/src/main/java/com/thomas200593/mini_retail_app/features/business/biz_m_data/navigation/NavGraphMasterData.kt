@@ -32,7 +32,7 @@ fun NavController.navToMasterData(
     destMasterData: DestMasterData? = null
 ){
     this.navigate(
-        route = destMasterData?.route?: G_MASTER_DATA,
+        route = destMasterData?.scrGraphs?.route?: G_MASTER_DATA,
         navOptions
     )
 }
