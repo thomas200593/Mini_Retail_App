@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.ButtonDefaults
@@ -43,6 +44,7 @@ import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
 import com.thomas200593.mini_retail_app.app.ui.StateApp
 import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
 import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar.ProvideTopAppBarAction
+import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar.ProvideTopAppBarNavigationIcon
 import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar.ProvideTopAppBarTitle
 import com.thomas200593.mini_retail_app.core.ui.component.CustomButton.Common.AppIconButton
 import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AlertDialogContext
@@ -51,6 +53,7 @@ import com.thomas200593.mini_retail_app.features.auth.navigation.navToAuth
 import com.thomas200593.mini_retail_app.features.business.biz_m_data.navigation.DestMasterData
 import com.thomas200593.mini_retail_app.features.business.biz_m_data.navigation.navToMasterData
 import com.thomas200593.mini_retail_app.features.business.biz_m_data.ui.VMMasterData.UiEvents.ButtonEvents.BtnMenuSelectionEvents
+import com.thomas200593.mini_retail_app.features.business.biz_m_data.ui.VMMasterData.UiEvents.ButtonEvents.BtnNavBackEvents
 import com.thomas200593.mini_retail_app.features.business.biz_m_data.ui.VMMasterData.UiEvents.ButtonEvents.BtnScrDescEvents
 import com.thomas200593.mini_retail_app.features.business.biz_m_data.ui.VMMasterData.UiEvents.DialogEvents.DlgDenyAccessEvents
 import com.thomas200593.mini_retail_app.features.business.biz_m_data.ui.VMMasterData.UiEvents.OnOpenEvents
@@ -74,6 +77,10 @@ fun ScrMasterData(
     ScrMasterData(
         uiState = uiState,
         currentScreen = currentScreen,
+        onNavigateBack = {
+            vm.onEvent(BtnNavBackEvents.OnClick)
+                .also { coroutineScope.launch { stateApp.onNavUp() } }
+        },
         onShowScrDesc = { vm.onEvent(BtnScrDescEvents.OnClick) },
         onDismissDlgScrDesc = { vm.onEvent(BtnScrDescEvents.OnDismiss) },
         onDismissDlgDenyAccessMenu = {
@@ -107,6 +114,7 @@ fun ScrMasterData(
 private fun ScrMasterData(
     uiState: VMMasterData.UiState,
     currentScreen: ScrGraphs?,
+    onNavigateBack: () -> Unit,
     onShowScrDesc: (String) -> Unit,
     onDismissDlgScrDesc: () -> Unit,
     onDismissDlgDenyAccessMenu: () -> Unit,
@@ -121,6 +129,7 @@ private fun ScrMasterData(
         )
         TopAppBar(
             scrGraphs = it,
+            onNavigateBack = onNavigateBack,
             onShowScrDesc = onShowScrDesc
         )
     }
@@ -234,8 +243,21 @@ private fun HandleDialogs(
 @Composable
 private fun TopAppBar(
     scrGraphs: ScrGraphs,
+    onNavigateBack: () -> Unit,
     onShowScrDesc: (String) -> Unit
 ) {
+    ProvideTopAppBarNavigationIcon {
+        Surface(
+            onClick = onNavigateBack,
+            modifier = Modifier
+        ) {
+            Icon(
+                modifier = Modifier,
+                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+                contentDescription = null
+            )
+        }
+    }
     ProvideTopAppBarTitle {
         Row(
             modifier = Modifier.fillMaxWidth(),

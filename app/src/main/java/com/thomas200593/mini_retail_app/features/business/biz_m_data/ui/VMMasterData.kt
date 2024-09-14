@@ -11,6 +11,7 @@ import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers
 import com.thomas200593.mini_retail_app.features.business.biz_m_data.navigation.DestMasterData
 import com.thomas200593.mini_retail_app.features.business.biz_m_data.repository.RepoMasterData
 import com.thomas200593.mini_retail_app.features.business.biz_m_data.ui.VMMasterData.UiEvents.ButtonEvents.BtnMenuSelectionEvents
+import com.thomas200593.mini_retail_app.features.business.biz_m_data.ui.VMMasterData.UiEvents.ButtonEvents.BtnNavBackEvents
 import com.thomas200593.mini_retail_app.features.business.biz_m_data.ui.VMMasterData.UiEvents.ButtonEvents.BtnScrDescEvents
 import com.thomas200593.mini_retail_app.features.business.biz_m_data.ui.VMMasterData.UiEvents.DialogEvents.DlgDenyAccessEvents
 import com.thomas200593.mini_retail_app.features.business.biz_m_data.ui.VMMasterData.UiEvents.OnOpenEvents
@@ -51,6 +52,9 @@ class VMMasterData @Inject constructor(
             val currentScreen: ScrGraphs
         ): UiEvents
         sealed interface ButtonEvents: UiEvents {
+            sealed interface BtnNavBackEvents : ButtonEvents {
+                data object OnClick : BtnNavBackEvents
+            }
             sealed interface BtnScrDescEvents : ButtonEvents {
                 data object OnClick : BtnScrDescEvents
                 data object OnDismiss : BtnScrDescEvents
@@ -73,6 +77,7 @@ class VMMasterData @Inject constructor(
     fun onEvent(events: UiEvents) {
         when(events) {
             is OnOpenEvents -> onOpenEvent(events.sessionState, events.currentScreen)
+            is BtnNavBackEvents.OnClick -> resetDialogAndUiState()
             is BtnScrDescEvents.OnClick ->
                 { resetDialogState(); updateDialogState(dlgScrDesc = true) }
             is BtnScrDescEvents.OnDismiss -> resetDialogState()
