@@ -1,19 +1,17 @@
 package com.thomas200593.mini_retail_app.features.initial.initialization.ui
 
-import androidx.appcompat.app.AppCompatDelegate.setApplicationLocales
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import androidx.core.os.LocaleListCompat.create
+import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers.Dispatchers.IO
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.di.Dispatcher
-import com.thomas200593.mini_retail_app.core.design_system.util.HlpStateFlow.update
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
 import com.thomas200593.mini_retail_app.core.ui.component.CustomForm.Component.UseCase.InputFieldValidation.RegularTextValidation
 import com.thomas200593.mini_retail_app.core.ui.component.CustomForm.Component.UseCase.UiText
-import com.thomas200593.mini_retail_app.core.ui.component.CustomForm.Component.UseCase.UiText.StringResource
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_language.entity.Language
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_language.repository.RepoConfGenLanguage
 import com.thomas200593.mini_retail_app.features.business.biz_profile.entity.BizProfileShort
@@ -22,22 +20,22 @@ import com.thomas200593.mini_retail_app.features.initial.initialization.domain.U
 import com.thomas200593.mini_retail_app.features.initial.initialization.entity.Initialization
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.ButtonEvents.BtnInitDefaultBizProfileEvents
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.ButtonEvents.BtnInitManualBizProfileEvents
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.DialogEvents.DlgResError
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.DialogEvents.DlgResSuccess
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.DropdownEvents.DDLanguage
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.InputFormEvents.BtnCancelEvents
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.InputFormEvents.BtnSubmitEvents
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.InputFormEvents.CommonNameEvents
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.InputFormEvents.LegalNameEvents
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.OnOpenEvents
-import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiStateInitialization.Error
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiStateInitialization.Loading
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiStateInitialization.Success
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.Locale
 import javax.inject.Inject
@@ -48,62 +46,68 @@ class VMInitialization @Inject constructor(
     private val ucSetInitBizProfile: UCSetInitialBizProfile,
     private val repoConfGenLanguage: RepoConfGenLanguage,
     @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
-): ViewModel() {
+) : ViewModel() {
     sealed interface UiStateInitialization{
         data object Loading: UiStateInitialization
         data class Success(val data: Initialization): UiStateInitialization
-        data class Error(val t: Throwable): UiStateInitialization
     }
     data class UiState(
         val initialization: UiStateInitialization = Loading,
-        val welcomePanelState: WelcomePanelState = WelcomePanelState(),
-        val inputFormState: InputFormState = InputFormState(),
+        val panelWelcomeMessageState: PanelWelcomeMessageState = PanelWelcomeMessageState(),
+        val panelInputFormState: PanelInputFormState = PanelInputFormState(),
         val dialogState: DialogState = DialogState(),
-        val initBizProfileResult: ResourceState<BizProfileShort> = ResourceState.Idle
-    )
-    data class WelcomePanelState(val visible: Boolean = true)
-    data class InputFormState(
-        val visible: Boolean = false,
-        val legalName: String = String(),
-        val legalNameError: UiText? = StringResource(R.string.str_field_required),
-        val commonName: String = String(),
-        val commonNameError: UiText? = StringResource(R.string.str_field_required),
-        val fldSubmitBtnEnabled: Boolean = false,
+        val initBizProfileOperationResult: ResourceState<BizProfileShort> = ResourceState.Idle
     )
     data class DialogState(
-        val dlgLoadingEnabled: MutableState<Boolean> = mutableStateOf(false),
-        val dlgSuccessEnabled: MutableState<Boolean> = mutableStateOf(false),
-        val dlgErrorEnabled: MutableState<Boolean> = mutableStateOf(false)
+        val dlgResLoading: MutableState<Boolean> = mutableStateOf(false),
+        val dlgResSuccess: MutableState<Boolean> = mutableStateOf(false),
+        val dlgResError: MutableState<Boolean> = mutableStateOf(false)
     )
-    sealed class UiEvents{
-        data object OnOpenEvents: UiEvents()
-        sealed class InputFormEvents: UiEvents() {
-            sealed class LegalNameEvents: InputFormEvents() {
-                data class ValueChanged(val legalName: String): LegalNameEvents()
+    data class PanelWelcomeMessageState(val visible: Boolean = true)
+    data class PanelInputFormState(
+        val visible: Boolean = false,
+        val legalName: String = String(),
+        val legalNameError: UiText? = UiText.StringResource(R.string.str_field_required),
+        val commonName: String = String(),
+        val commonNameError: UiText? = UiText.StringResource(R.string.str_field_required),
+        val fldSubmitBtnEnabled: Boolean = false,
+    )
+
+    sealed interface UiEvents{
+        data object OnOpenEvents: UiEvents
+        sealed interface InputFormEvents: UiEvents {
+            sealed interface LegalNameEvents: InputFormEvents {
+                data class ValueChanged(val legalName: String): LegalNameEvents
             }
-            sealed class CommonNameEvents: InputFormEvents(){
-                data class ValueChanged(val commonName: String): CommonNameEvents()
+            sealed interface CommonNameEvents: InputFormEvents {
+                data class ValueChanged(val commonName: String): CommonNameEvents
             }
-            sealed class BtnSubmitEvents: InputFormEvents(){
-                data class OnClick(val bizProfileShort: BizProfileShort): BtnSubmitEvents()
+            sealed interface BtnSubmitEvents: InputFormEvents {
+                data class OnClick(val bizProfileShort: BizProfileShort): BtnSubmitEvents
             }
-            sealed class BtnCancelEvents: InputFormEvents(){
-                data object OnClick: BtnCancelEvents()
+            sealed interface BtnCancelEvents: InputFormEvents {
+                data object OnClick: BtnCancelEvents
             }
         }
-        sealed class DropdownEvents: UiEvents(){
-            sealed class DDLanguage: DropdownEvents(){
-                data class OnSelect(val language: Language): DDLanguage()
+        sealed interface DropdownEvents: UiEvents {
+            sealed interface DDLanguage: DropdownEvents{
+                data class OnSelect(val language: Language): DDLanguage
             }
         }
-        sealed class ButtonEvents: UiEvents(){
-            sealed class BtnInitDefaultBizProfileEvents: ButtonEvents(){
-                data class OnClick(
-                    val bizProfileShort: BizProfileShort
-                ): BtnInitDefaultBizProfileEvents()
+        sealed interface ButtonEvents: UiEvents {
+            sealed interface BtnInitDefaultBizProfileEvents: ButtonEvents {
+                data class OnClick(val bizProfileShort: BizProfileShort): BtnInitDefaultBizProfileEvents
             }
-            sealed class BtnInitManualBizProfileEvents: ButtonEvents(){
-                data object OnClick: BtnInitManualBizProfileEvents()
+            sealed interface BtnInitManualBizProfileEvents: ButtonEvents {
+                data object OnClick: BtnInitManualBizProfileEvents
+            }
+        }
+        sealed interface DialogEvents: UiEvents {
+            sealed interface DlgResSuccess: DialogEvents {
+                data object OnConfirm: DlgResSuccess
+            }
+            sealed interface DlgResError: DialogEvents {
+                data object OnDismiss: DlgResError
             }
         }
     }
@@ -112,112 +116,140 @@ class VMInitialization @Inject constructor(
     val uiState = _uiState.asStateFlow()
 
     fun onEvent(events: UiEvents) {
-        when(events){
-            OnOpenEvents -> onOpenEvent()
+        when(events) {
+            is OnOpenEvents -> onOpenEvent()
             is DDLanguage.OnSelect -> onSelectLanguageEvent(events.language)
             is BtnInitDefaultBizProfileEvents.OnClick -> doInitBizProfile(events.bizProfileShort)
-            BtnInitManualBizProfileEvents.OnClick -> doShowForm()
-            is LegalNameEvents.ValueChanged -> formLegalNameValueChanged(events.legalName)
-            is CommonNameEvents.ValueChanged -> formCommonNameValueChanged(events.commonName)
+            is BtnInitManualBizProfileEvents.OnClick -> doShowPanelInputForm()
+            is LegalNameEvents.ValueChanged -> frmValChgLegalName(events.legalName)
+            is CommonNameEvents.ValueChanged -> frmValChgCommonName(events.commonName)
             is BtnSubmitEvents.OnClick -> doInitBizProfile(events.bizProfileShort)
-            BtnCancelEvents.OnClick -> doResetForm()
+            is BtnCancelEvents.OnClick -> doResetUiState()
+            is DlgResSuccess.OnConfirm -> doResetUiState()
+            is DlgResError.OnDismiss -> doResetUiState()
         }
     }
-    private fun onOpenEvent() = viewModelScope.launch(ioDispatcher) {
-        ucGetInitializationData.invoke().flowOn(ioDispatcher)
-            .catch { e -> _uiState.update { it.copy(initialization = Error(e)) } }
-            .collectLatest { result -> _uiState.update { it.copy(initialization = Success(result.data)) } }
+
+    private fun updateDialogState(
+        dlgResLoading: Boolean = false,
+        dlgResSuccess: Boolean = false,
+        dlgResError: Boolean = false
+    ) = _uiState.update {
+        it.copy(
+            dialogState = it.dialogState.copy(
+                dlgResLoading = mutableStateOf(dlgResLoading),
+                dlgResSuccess = mutableStateOf(dlgResSuccess),
+                dlgResError = mutableStateOf(dlgResError)
+            )
+        )
     }
-    private fun onSelectLanguageEvent(language: Language) = viewModelScope.launch(ioDispatcher) {
+    private fun resetDialogState() =
+        _uiState.update { it.copy(dialogState = DialogState()) }
+
+    private fun updatePanelWelcomeMessageState(
+        visible: Boolean = true
+    ) = _uiState.update {
+        it.copy(
+            panelWelcomeMessageState = it.panelWelcomeMessageState.copy(
+                visible = visible
+            )
+        )
+    }
+    private fun resetPanelWelcomeMessageState() =
+        _uiState.update { it.copy(panelWelcomeMessageState = PanelWelcomeMessageState()) }
+
+    private fun updatePanelInputFormState(
+        visible: Boolean = PanelInputFormState().visible,
+        legalName: String = PanelInputFormState().legalName,
+        legalNameError: UiText? = PanelInputFormState().legalNameError,
+        commonName: String = PanelInputFormState().commonName,
+        commonNameError: UiText? = PanelInputFormState().commonNameError,
+        fldSubmitBtnEnabled: Boolean = PanelInputFormState().fldSubmitBtnEnabled
+    ) = _uiState.update {
+        it.copy(
+            panelInputFormState = it.panelInputFormState.copy(
+                visible = visible,
+                legalName = legalName,
+                legalNameError = legalNameError,
+                commonName = commonName,
+                commonNameError = commonNameError,
+                fldSubmitBtnEnabled = fldSubmitBtnEnabled
+            )
+        )
+    }
+    private fun resetPanelInputFormState() =
+        _uiState.update { it.copy(panelInputFormState = PanelInputFormState()) }
+    private fun onOpenEvent() = viewModelScope.launch {
+        ucGetInitializationData().flowOn(ioDispatcher)
+            .collect { result -> _uiState.update { it.copy(initialization = Success(result.data)) } }
+    }
+    private fun onSelectLanguageEvent(language: Language) = viewModelScope.launch {
         repoConfGenLanguage.setLanguage(language)
-        setApplicationLocales( create(Locale(language.code)) )
+        AppCompatDelegate.setApplicationLocales(LocaleListCompat.create(Locale(language.code)))
     }
-    private fun doShowForm() {
-        _uiState.update { it.copy(
-            welcomePanelState = it.welcomePanelState.copy(visible = false),
-            inputFormState = it.inputFormState.copy(visible = true)
-        ) }
+    private fun doInitBizProfile(bizProfileShort: BizProfileShort) = viewModelScope.launch {
+        resetDialogState(); updateDialogState(dlgResLoading = true)
+        updatePanelWelcomeMessageState(true); updatePanelInputFormState(visible = false)
+        val operationResult = runCatching { ucSetInitBizProfile.invoke(bizProfileShort) }
+            .fold(
+                onSuccess = { result -> if(result != null) Pair(true, result) else Pair(false, null) },
+                onFailure = { throwable -> Pair(false, throwable) }
+            )
+        resetDialogState()
+        val (isSuccess, resultOrError) = operationResult
+        if(isSuccess && resultOrError is BizProfileShort) {
+            _uiState.update { it.copy(initBizProfileOperationResult = ResourceState.Success(data = resultOrError)) }
+            updateDialogState(dlgResSuccess = true)
+        } else if(resultOrError is Throwable) {
+            _uiState.update { it.copy(initBizProfileOperationResult = ResourceState.Error(t = resultOrError)) }
+            updateDialogState(dlgResError = true)
+        } else {
+            _uiState.update { it.copy(initBizProfileOperationResult = ResourceState.Empty) }
+            updateDialogState(dlgResError = true)
+        }
     }
-    private fun formLegalNameValueChanged(legalName: String) {
-        _uiState.update { it.copy(inputFormState = it.inputFormState.copy(legalName = legalName)) }
+    private fun doShowPanelInputForm()
+    { updatePanelWelcomeMessageState(visible = false); updatePanelInputFormState(visible = true) }
+    private fun doResetUiState()
+    {
+        resetPanelInputFormState()
+        resetPanelWelcomeMessageState()
+        resetDialogState()
+        _uiState.update { it.copy(initBizProfileOperationResult = ResourceState.Idle) }
+        onOpenEvent()
+    }
+
+    //Forms
+    private fun frmValChgLegalName(legalName: String) {
+        _uiState.update { it.copy(panelInputFormState = it.panelInputFormState.copy(legalName = legalName)) }
         formSubmitBtnShouldEnable()
     }
-    private fun formLegalNameValidation(): Boolean {
+    private fun frmVldLegalName(): Boolean {
         val result = RegularTextValidation()
             .execute(
-                input = _uiState.value.inputFormState.legalName,
+                input = _uiState.value.panelInputFormState.legalName,
                 required = true,
                 maxLength = 100
             )
-        _uiState.update { it.copy(inputFormState = it.inputFormState.copy(legalNameError = result.errorMessage)) }
+        _uiState.update { it.copy(panelInputFormState = it.panelInputFormState.copy(legalNameError = result.errorMessage)) }
         return result.isSuccess
     }
-    private fun formCommonNameValueChanged(commonName: String) {
-        _uiState.update { it.copy(inputFormState = it.inputFormState.copy(commonName = commonName)) }
+    private fun frmValChgCommonName(commonName: String) {
+        _uiState.update { it.copy(panelInputFormState = it.panelInputFormState.copy(commonName = commonName)) }
         formSubmitBtnShouldEnable()
     }
-    private fun formCommonNameValidation(): Boolean {
+    private fun frmVldCommonName(): Boolean {
         val result = RegularTextValidation()
-            .execute(input = _uiState.value.inputFormState.commonName, required = true, maxLength = 100)
-        _uiState.update { it.copy(inputFormState = it.inputFormState.copy(commonNameError = result.errorMessage)) }
+            .execute(
+                input = _uiState.value.panelInputFormState.commonName,
+                required = true,
+                maxLength = 100
+            )
+        _uiState.update { it.copy(panelInputFormState = it.panelInputFormState.copy(commonNameError = result.errorMessage)) }
         return result.isSuccess
     }
     private fun formSubmitBtnShouldEnable() {
-        val result = formLegalNameValidation() && formCommonNameValidation()
-        _uiState.update { it.copy(inputFormState = it.inputFormState.copy(fldSubmitBtnEnabled = result)) }
-    }
-    private fun doInitBizProfile(bizProfileShort: BizProfileShort) =
-        viewModelScope.launch(ioDispatcher) {
-            updateDialogState(
-                dlgLoadingEnabled = true,
-                dlgSuccessEnabled = false,
-                dlgErrorEnabled = false
-            )
-            _uiState.update { it.copy(initBizProfileResult = ResourceState.Loading) }
-            try {
-                val result = ucSetInitBizProfile.invoke(bizProfileShort)
-                if (result != null) {
-                    updateDialogState(
-                        dlgLoadingEnabled = false,
-                        dlgSuccessEnabled = true,
-                        dlgErrorEnabled = false
-                    )
-                    _uiState.update { it.copy(initBizProfileResult = ResourceState.Success(data = result)) }
-                } else {
-                    updateDialogState(
-                        dlgLoadingEnabled = false,
-                        dlgSuccessEnabled = false,
-                        dlgErrorEnabled = false
-                    )
-                    _uiState.update { it.copy(initBizProfileResult = ResourceState.Empty) }
-                }
-            } catch (e: Throwable) {
-                updateDialogState(
-                    dlgLoadingEnabled = false,
-                    dlgSuccessEnabled = false,
-                    dlgErrorEnabled = true
-                )
-                _uiState.update { it.copy(initBizProfileResult = ResourceState.Error(e)) }
-            }
-        }
-    private fun doResetForm() {
-        _uiState.update { it.copy(
-            welcomePanelState = WelcomePanelState(),
-            dialogState = DialogState(),
-            inputFormState = InputFormState()
-        ) }
-    }
-    private fun updateDialogState(
-        dlgLoadingEnabled: Boolean = false,
-        dlgSuccessEnabled: Boolean = false,
-        dlgErrorEnabled: Boolean = false
-    ) {
-        _uiState.update { it.copy(
-            dialogState = it.dialogState.copy(
-                dlgLoadingEnabled = mutableStateOf(dlgLoadingEnabled),
-                dlgSuccessEnabled = mutableStateOf(dlgSuccessEnabled),
-                dlgErrorEnabled = mutableStateOf(dlgErrorEnabled)
-            )
-        ) }
+        val result = frmVldLegalName() && frmVldCommonName()
+        _uiState.update { it.copy(panelInputFormState = it.panelInputFormState.copy(fldSubmitBtnEnabled = result)) }
     }
 }
