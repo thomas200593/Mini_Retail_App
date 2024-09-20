@@ -7,7 +7,11 @@ import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.thomas200593.mini_retail_app.R
+import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.AuditTrail
+import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.Industries
+import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.LegalType
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.RepoIndustries
+import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.Taxation
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers.Dispatchers.IO
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.di.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
@@ -15,6 +19,7 @@ import com.thomas200593.mini_retail_app.core.ui.component.CustomForm.Component.U
 import com.thomas200593.mini_retail_app.core.ui.component.CustomForm.Component.UseCase.UiText
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_language.entity.Language
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_language.repository.RepoConfGenLanguage
+import com.thomas200593.mini_retail_app.features.business.biz_profile.entity.BizName
 import com.thomas200593.mini_retail_app.features.business.biz_profile.entity.BizProfileShort
 import com.thomas200593.mini_retail_app.features.initial.initialization.domain.UCGetInitializationData
 import com.thomas200593.mini_retail_app.features.initial.initialization.domain.UCSetInitialBizProfile
@@ -39,6 +44,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import ulid.ULID
 import java.util.Locale
 import javax.inject.Inject
 
@@ -103,7 +109,7 @@ class VMInitialization @Inject constructor(
         }
         sealed interface ButtonEvents: UiEvents {
             sealed interface BtnInitDefaultBizProfileEvents: ButtonEvents {
-                data class OnClick(val bizProfileShort: BizProfileShort): BtnInitDefaultBizProfileEvents
+                data object OnClick: BtnInitDefaultBizProfileEvents
             }
             sealed interface BtnInitManualBizProfileEvents: ButtonEvents {
                 data object OnClick: BtnInitManualBizProfileEvents
@@ -119,6 +125,15 @@ class VMInitialization @Inject constructor(
         }
     }
 
+    private val _bizProfileDefault = BizProfileShort(
+        seqId = 0,
+        genId = ULID.randomULID(),
+        bizName = BizName(legalName = "My-Corporation", commonName = "My Corp"),
+        bizIndustry = Industries(identityKey = repoIndustries.getIdentityKeyDefault()),
+        bizLegalType = LegalType(identifierKey = 0),
+        bizTaxation = Taxation(identifierKey = 0),
+        auditTrail = AuditTrail()
+    )
     private val _uiState = MutableStateFlow(UiState())
     val uiState = _uiState.asStateFlow()
 
@@ -126,7 +141,7 @@ class VMInitialization @Inject constructor(
         when(events) {
             is OnOpenEvents -> onOpenEvent()
             is DDLanguage.OnSelect -> onSelectLanguageEvent(events.language)
-            is BtnInitDefaultBizProfileEvents.OnClick -> doInitBizProfile(events.bizProfileShort)
+            is BtnInitDefaultBizProfileEvents.OnClick -> doInitBizProfile(_bizProfileDefault)
             is BtnInitManualBizProfileEvents.OnClick -> doShowPanelInputForm()
             is LegalNameEvents.ValueChanged -> frmValChgLegalName(events.legalName)
             is CommonNameEvents.ValueChanged -> frmValChgCommonName(events.commonName)
@@ -172,7 +187,7 @@ class VMInitialization @Inject constructor(
         legalNameError: UiText? = PanelInputFormState().legalNameError,
         commonName: String = PanelInputFormState().commonName,
         commonNameError: UiText? = PanelInputFormState().commonNameError,
-        industryKey: String = repoIndustries.getDefaultKey(),
+        industryKey: String = repoIndustries.getIdentityKeyDefault(),
         fldSubmitBtnEnabled: Boolean = PanelInputFormState().fldSubmitBtnEnabled
     ) = _uiState.update {
         it.copy(

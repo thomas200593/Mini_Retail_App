@@ -21,7 +21,7 @@ data class Industries(
 )
 
 interface RepoIndustries {
-    fun getDefaultKey(): String
+    fun getIdentityKeyDefault(): String
     fun getRefData(): Flow<Map<String, String>>
 }
 
@@ -29,7 +29,7 @@ class RepoIndustriesImpl @Inject constructor(
     @ApplicationContext private val context: Context,
     @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
 ) : RepoIndustries {
-    override fun getDefaultKey(): String =
+    override fun getIdentityKeyDefault(): String =
         StringArrayResource(BizIndustries).asMap(context).entries.first().key
     override fun getRefData(): Flow<Map<String, String>> =
         flowOf(StringArrayResource(BizIndustries).asMap(context)).flowOn(ioDispatcher)

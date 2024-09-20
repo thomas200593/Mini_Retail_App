@@ -92,7 +92,7 @@ fun ScrInitialization(
     ScrInitialization(
         uiState = uiState,
         onSelectLanguage = { vm.onEvent(DDLanguage.OnSelect(it)) },
-        onInitBizProfileDefaultBtnClicked = { vm.onEvent(BtnInitDefaultBizProfileEvents.OnClick(it)) },
+        onInitBizProfileDefaultBtnClicked = { vm.onEvent(BtnInitDefaultBizProfileEvents.OnClick) },
         onInitBizProfileManualBtnClicked = { vm.onEvent(BtnInitManualBizProfileEvents.OnClick) },
         onLegalNameValueChanged = { vm.onEvent(LegalNameEvents.ValueChanged(it)) },
         onCommonNameValueChanged = { vm.onEvent(CommonNameEvents.ValueChanged(it)) },
@@ -114,7 +114,7 @@ fun ScrInitialization(
 private fun ScrInitialization(
     uiState: UiState,
     onSelectLanguage: (Language) -> Unit,
-    onInitBizProfileDefaultBtnClicked: (BizProfileShort) -> Unit,
+    onInitBizProfileDefaultBtnClicked: () -> Unit,
     onInitBizProfileManualBtnClicked: () -> Unit,
     onLegalNameValueChanged: (String) -> Unit,
     onCommonNameValueChanged: (String) -> Unit,
@@ -202,7 +202,7 @@ private fun ScreenContent(
     uiState: UiState,
     initData: Initialization,
     onSelectLanguage: (Language) -> Unit,
-    onInitBizProfileDefaultBtnClicked: (BizProfileShort) -> Unit,
+    onInitBizProfileDefaultBtnClicked: () -> Unit,
     onInitBizProfileManualBtnClicked: () -> Unit,
     onLegalNameValueChanged: (String) -> Unit,
     onCommonNameValueChanged: (String) -> Unit,
@@ -315,7 +315,7 @@ private fun LanguageSection(
 @Composable
 private fun PanelWelcomeMessage(
     onInitBizProfileManualBtnClicked: () -> Unit,
-    onInitBizProfileDefaultBtnClicked: (BizProfileShort) -> Unit
+    onInitBizProfileDefaultBtnClicked: () -> Unit
 ) {
     Column(
         modifier = Modifier,
@@ -371,21 +371,7 @@ private fun PanelWelcomeMessage(
             )
         }
     }
-    TextButton(
-        onClick = {
-            onInitBizProfileDefaultBtnClicked(
-                BizProfileShort(
-                    seqId = 0,
-                    genId = ULID.randomULID(),
-                    bizName = BizName(legalName = "My-Company Corp", commonName = "My Company"),
-                    bizIndustry = Industries(identityKey = ""/*TODO*/),
-                    bizLegalType = LegalType(identifierKey = 0),
-                    bizTaxation = Taxation(identifierKey = 0),
-                    auditTrail = AuditTrail()
-                )
-            )
-        }
-    ) {
+    TextButton(onClick = { onInitBizProfileDefaultBtnClicked() }) {
         Text(
             text = stringResource(R.string.str_init_setup_no),
             textAlign = TextAlign.Center,
@@ -548,7 +534,7 @@ private fun PanelFormInitManualBizProfile(
                                         legalName = inputFormState.legalName,
                                         commonName = inputFormState.commonName
                                     ),
-                                    bizIndustry = Industries(identityKey = ""/*TODO*/),
+                                    bizIndustry = Industries(identityKey = inputFormState.industryKey),
                                     bizLegalType = LegalType(identifierKey = 0),
                                     bizTaxation = Taxation(identifierKey = 0),
                                     auditTrail = AuditTrail()
