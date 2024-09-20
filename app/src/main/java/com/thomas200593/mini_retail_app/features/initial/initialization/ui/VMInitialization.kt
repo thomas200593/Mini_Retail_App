@@ -7,6 +7,7 @@ import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.thomas200593.mini_retail_app.R
+import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.RepoIndustries
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers.Dispatchers.IO
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.di.Dispatcher
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
@@ -22,6 +23,7 @@ import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMIni
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.ButtonEvents.BtnInitManualBizProfileEvents
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.DialogEvents.DlgResError
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.DialogEvents.DlgResSuccess
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.DropdownEvents.DDIndustry
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.DropdownEvents.DDLanguage
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.InputFormEvents.BtnCancelEvents
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.InputFormEvents.BtnSubmitEvents
@@ -45,6 +47,7 @@ class VMInitialization @Inject constructor(
     private val ucGetInitializationData: UCGetInitializationData,
     private val ucSetInitBizProfile: UCSetInitialBizProfile,
     private val repoConfGenLanguage: RepoConfGenLanguage,
+    private val repoIndustries: RepoIndustries,
     @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
     sealed interface UiStateInitialization{
@@ -70,7 +73,8 @@ class VMInitialization @Inject constructor(
         val legalNameError: UiText? = UiText.StringResource(R.string.str_field_required),
         val commonName: String = String(),
         val commonNameError: UiText? = UiText.StringResource(R.string.str_field_required),
-        val fldSubmitBtnEnabled: Boolean = false,
+        val industryKey: String = String(),
+        val fldSubmitBtnEnabled: Boolean = false
     )
 
     sealed interface UiEvents{
@@ -90,8 +94,11 @@ class VMInitialization @Inject constructor(
             }
         }
         sealed interface DropdownEvents: UiEvents {
-            sealed interface DDLanguage: DropdownEvents{
+            sealed interface DDLanguage: DropdownEvents {
                 data class OnSelect(val language: Language): DDLanguage
+            }
+            sealed interface DDIndustry: DropdownEvents {
+                data class OnSelect(val industryKey: String): DDIndustry
             }
         }
         sealed interface ButtonEvents: UiEvents {
@@ -123,6 +130,7 @@ class VMInitialization @Inject constructor(
             is BtnInitManualBizProfileEvents.OnClick -> doShowPanelInputForm()
             is LegalNameEvents.ValueChanged -> frmValChgLegalName(events.legalName)
             is CommonNameEvents.ValueChanged -> frmValChgCommonName(events.commonName)
+            is DDIndustry.OnSelect -> frmValChgIndustry(events.industryKey)
             is BtnSubmitEvents.OnClick -> doInitBizProfile(events.bizProfileShort)
             is BtnCancelEvents.OnClick -> doResetUiState()
             is DlgResSuccess.OnConfirm -> doResetUiState()
@@ -164,6 +172,7 @@ class VMInitialization @Inject constructor(
         legalNameError: UiText? = PanelInputFormState().legalNameError,
         commonName: String = PanelInputFormState().commonName,
         commonNameError: UiText? = PanelInputFormState().commonNameError,
+        industryKey: String = repoIndustries.getDefaultKey(),
         fldSubmitBtnEnabled: Boolean = PanelInputFormState().fldSubmitBtnEnabled
     ) = _uiState.update {
         it.copy(
@@ -173,6 +182,7 @@ class VMInitialization @Inject constructor(
                 legalNameError = legalNameError,
                 commonName = commonName,
                 commonNameError = commonNameError,
+                industryKey = industryKey,
                 fldSubmitBtnEnabled = fldSubmitBtnEnabled
             )
         )
@@ -210,8 +220,7 @@ class VMInitialization @Inject constructor(
     }
     private fun doShowPanelInputForm()
     { updatePanelWelcomeMessageState(visible = false); updatePanelInputFormState(visible = true) }
-    private fun doResetUiState()
-    {
+    private fun doResetUiState() {
         resetPanelInputFormState()
         resetPanelWelcomeMessageState()
         resetDialogState()
@@ -248,6 +257,8 @@ class VMInitialization @Inject constructor(
         _uiState.update { it.copy(panelInputFormState = it.panelInputFormState.copy(commonNameError = result.errorMessage)) }
         return result.isSuccess
     }
+    private fun frmValChgIndustry(industryKey: String) =
+        _uiState.update { it.copy(panelInputFormState = it.panelInputFormState.copy(industryKey = industryKey)) }
     private fun formSubmitBtnShouldEnable() {
         val result = frmVldLegalName() && frmVldCommonName()
         _uiState.update { it.copy(panelInputFormState = it.panelInputFormState.copy(fldSubmitBtnEnabled = result)) }

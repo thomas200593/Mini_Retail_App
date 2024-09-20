@@ -21,9 +21,7 @@ object HlpStringArray{
             is StringArrayResource -> {
                 val keys = LocalContext.current.resources.getStringArray(resArray.resKeyId)
                 val values = LocalContext.current.resources.getStringArray(resArray.resValueId)
-                if(keys.size != values.size){
-                    emptyMap()
-                }else{ keys.zip(values).toMap() }
+                if(keys.size != values.size) emptyMap() else keys.zip(values).toMap()
             }
         }
 

@@ -21,6 +21,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MenuAnchorType.Companion.PrimaryNotEditable
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
@@ -180,10 +181,7 @@ private fun OnboardingLanguages(
             onExpandedChange = { expanded = !expanded }
         ) {
             TextButton(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .menuAnchor()
-                    .padding(4.dp),
+                modifier = Modifier.fillMaxWidth().padding(4.dp).menuAnchor(PrimaryNotEditable, true),
                 border = BorderStroke(1.dp, Color(0xFF747775)),
                 shape = MaterialTheme.shapes.medium,
                 onClick = { expanded = true }

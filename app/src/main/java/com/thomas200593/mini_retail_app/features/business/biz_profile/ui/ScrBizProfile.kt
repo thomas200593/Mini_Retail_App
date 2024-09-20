@@ -653,7 +653,7 @@ private fun BizIdentitySection(
                                     overflow = Ellipsis
                                 )
                                 Text(
-                                    text = it.toString(),
+                                    text = it,
                                     style = typography.bodyMedium
                                 )
                             }
@@ -2063,7 +2063,7 @@ private fun Preview(){
                                     auditTrail = AuditTrail()
                                 ),
                                 industries = Industries(
-                                    identityKey = 0,
+                                    identityKey = ""/*TODO*/,
                                     additionalInfo = "Others",
                                     auditTrail = AuditTrail()
                                 ),

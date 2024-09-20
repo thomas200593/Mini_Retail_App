@@ -1,5 +1,6 @@
 package com.thomas200593.mini_retail_app.features.initial.initialization.ui
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -35,7 +36,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -47,9 +47,10 @@ import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.A
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.Industries
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.LegalType
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.Taxation
+import com.thomas200593.mini_retail_app.core.design_system.util.HlpStringArray.Handler.StringArrayResource
+import com.thomas200593.mini_retail_app.core.design_system.util.HlpStringArray.StringArrayResources.BizIndustries
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
 import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons
-import com.thomas200593.mini_retail_app.core.ui.common.CustomThemes
 import com.thomas200593.mini_retail_app.core.ui.component.CustomButton.Common.AppIconButton
 import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AlertDialogContext
 import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AppAlertDialog
@@ -65,6 +66,7 @@ import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMIni
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.ButtonEvents.BtnInitManualBizProfileEvents
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.DialogEvents.DlgResError
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.DialogEvents.DlgResSuccess
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.DropdownEvents.DDIndustry
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.DropdownEvents.DDLanguage
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.InputFormEvents.BtnCancelEvents
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.InputFormEvents.BtnSubmitEvents
@@ -94,6 +96,7 @@ fun ScrInitialization(
         onInitBizProfileManualBtnClicked = { vm.onEvent(BtnInitManualBizProfileEvents.OnClick) },
         onLegalNameValueChanged = { vm.onEvent(LegalNameEvents.ValueChanged(it)) },
         onCommonNameValueChanged = { vm.onEvent(CommonNameEvents.ValueChanged(it)) },
+        onIndustryValueChanged = { vm.onEvent(DDIndustry.OnSelect(it)) },
         onFormSubmitBtnClicked = { vm.onEvent(BtnSubmitEvents.OnClick(it)) },
         onFormCancelBtnClicked = { vm.onEvent(BtnCancelEvents.OnClick) },
         onInitBizProfileSuccess = {
@@ -115,6 +118,7 @@ private fun ScrInitialization(
     onInitBizProfileManualBtnClicked: () -> Unit,
     onLegalNameValueChanged: (String) -> Unit,
     onCommonNameValueChanged: (String) -> Unit,
+    onIndustryValueChanged: (String) -> Unit,
     onFormSubmitBtnClicked: (BizProfileShort) -> Unit,
     onFormCancelBtnClicked: () -> Unit,
     onInitBizProfileSuccess: () -> Unit,
@@ -135,6 +139,7 @@ private fun ScrInitialization(
             onInitBizProfileManualBtnClicked = onInitBizProfileManualBtnClicked,
             onLegalNameValueChanged = onLegalNameValueChanged,
             onCommonNameValueChanged = onCommonNameValueChanged,
+            onIndustryValueChanged = onIndustryValueChanged,
             onFormSubmitBtnClicked = onFormSubmitBtnClicked,
             onFormCancelBtnClicked = onFormCancelBtnClicked
         )
@@ -201,6 +206,7 @@ private fun ScreenContent(
     onInitBizProfileManualBtnClicked: () -> Unit,
     onLegalNameValueChanged: (String) -> Unit,
     onCommonNameValueChanged: (String) -> Unit,
+    onIndustryValueChanged: (String) -> Unit,
     onFormSubmitBtnClicked: (BizProfileShort) -> Unit,
     onFormCancelBtnClicked: () -> Unit
 ) {
@@ -223,9 +229,11 @@ private fun ScreenContent(
             }
             if(uiState.panelInputFormState.visible) {
                 PanelFormInitManualBizProfile(
+                    industries = initData.industries,
                     inputFormState = uiState.panelInputFormState,
                     onLegalNameValueChanged = onLegalNameValueChanged,
                     onCommonNameValueChanged = onCommonNameValueChanged,
+                    onIndustryValueChanged = onIndustryValueChanged,
                     onFormSubmitBtnClicked = onFormSubmitBtnClicked,
                     onFormCancelBtnClicked = onFormCancelBtnClicked
                 )
@@ -250,7 +258,7 @@ private fun LanguageSection(
         ExposedDropdownMenuBox(
             modifier = Modifier.fillMaxWidth(0.4f),
             expanded = expanded,
-            onExpandedChange = { expanded = !expanded }
+            onExpandedChange = { expanded = expanded.not() }
         ) {
             TextButton(
                 modifier = Modifier.fillMaxWidth().menuAnchor(PrimaryNotEditable, true),
@@ -370,7 +378,7 @@ private fun PanelWelcomeMessage(
                     seqId = 0,
                     genId = ULID.randomULID(),
                     bizName = BizName(legalName = "My-Company Corp", commonName = "My Company"),
-                    bizIndustry = Industries(identityKey = 0),
+                    bizIndustry = Industries(identityKey = ""/*TODO*/),
                     bizLegalType = LegalType(identifierKey = 0),
                     bizTaxation = Taxation(identifierKey = 0),
                     auditTrail = AuditTrail()
@@ -386,11 +394,14 @@ private fun PanelWelcomeMessage(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun PanelFormInitManualBizProfile(
+    industries: Map<String, String>,
     inputFormState: VMInitialization.PanelInputFormState,
     onLegalNameValueChanged: (String) -> Unit,
     onCommonNameValueChanged: (String) -> Unit,
+    onIndustryValueChanged: (String) -> Unit,
     onFormSubmitBtnClicked: (BizProfileShort) -> Unit,
     onFormCancelBtnClicked: () -> Unit
 ) {
@@ -426,6 +437,15 @@ private fun PanelFormInitManualBizProfile(
                 thickness = 2.dp,
                 color = MaterialTheme.colorScheme.onSurface
             )
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = stringResource(id = R.string.str_biz_name),
+                textAlign = TextAlign.Start,
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurface,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
             TextInput(
                 value = inputFormState.legalName,
                 onValueChange = { onLegalNameValueChanged(it) },
@@ -444,6 +464,73 @@ private fun PanelFormInitManualBizProfile(
                 isError = inputFormState.commonNameError != null,
                 errorMessage = inputFormState.commonNameError
             )
+            HorizontalDivider(
+                thickness = 2.dp,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = stringResource(id = R.string.str_biz_industry),
+                textAlign = TextAlign.Start,
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurface,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+            Row(
+                modifier = Modifier.fillMaxWidth(1.0f),
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                var expanded by remember { mutableStateOf(false) }
+                ExposedDropdownMenuBox(
+                    modifier = Modifier.fillMaxWidth(1.0f),
+                    expanded = expanded,
+                    onExpandedChange = { expanded = expanded.not() }
+                ) {
+                    TextButton(
+                        modifier = Modifier.fillMaxWidth().menuAnchor(PrimaryNotEditable, true),
+                        border = BorderStroke(1.dp, Color(0xFF747775)),
+                        shape = MaterialTheme.shapes.medium,
+                        onClick = { expanded = true }
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            StringArrayResource(BizIndustries)
+                                .findByKey(inputFormState.industryKey)?.let {
+                                    Text(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        text = it,
+                                        textAlign = TextAlign.Start,
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis
+                                    )
+                                }
+                        }
+                    }
+                    ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+                        industries.forEach{
+                            DropdownMenuItem(
+                                modifier = Modifier.fillMaxWidth(),
+                                text = {
+                                    Text(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        text = it.value
+                                    )
+                                },
+                                onClick = {
+                                    expanded = false
+                                    onIndustryValueChanged(it.key)
+                                },
+                                contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
+                            )
+                        }
+                    }
+                }
+            }
             Row(
                 modifier = Modifier.fillMaxWidth(1.0f),
                 horizontalArrangement = Arrangement.Center,
@@ -461,7 +548,7 @@ private fun PanelFormInitManualBizProfile(
                                         legalName = inputFormState.legalName,
                                         commonName = inputFormState.commonName
                                     ),
-                                    bizIndustry = Industries(identityKey = 0),
+                                    bizIndustry = Industries(identityKey = ""/*TODO*/),
                                     bizLegalType = LegalType(identifierKey = 0),
                                     bizTaxation = Taxation(identifierKey = 0),
                                     auditTrail = AuditTrail()
@@ -482,35 +569,5 @@ private fun PanelFormInitManualBizProfile(
                 )
             }
         }
-    }
-}
-
-@Composable
-@Preview
-private fun Preview() = CustomThemes.ApplicationTheme {
-    Column(modifier = Modifier.fillMaxSize()) {
-        ScrInitialization (
-            onSelectLanguage = {},
-            onInitBizProfileDefaultBtnClicked = {},
-            onInitBizProfileManualBtnClicked = {},
-            onLegalNameValueChanged = {},
-            onCommonNameValueChanged = {},
-            onFormSubmitBtnClicked = {},
-            onFormCancelBtnClicked = {},
-            onInitBizProfileSuccess = {},
-            onInitBizProfileError = {},
-            uiState = UiState(
-                initBizProfileOperationResult = ResourceState.Idle,
-                dialogState = VMInitialization.DialogState(),
-                panelInputFormState = VMInitialization.PanelInputFormState(),
-                panelWelcomeMessageState = VMInitialization.PanelWelcomeMessageState(),
-                initialization = Success(
-                    data = Initialization(
-                        configCurrent = AppConfig.ConfigCurrent(),
-                        languages = setOf(Language.EN, Language.ID)
-                    )
-                )
-            )
-        )
     }
 }
