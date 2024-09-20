@@ -36,6 +36,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -51,17 +52,20 @@ import com.thomas200593.mini_retail_app.core.design_system.util.HlpStringArray.H
 import com.thomas200593.mini_retail_app.core.design_system.util.HlpStringArray.StringArrayResources.BizIndustries
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
 import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons
+import com.thomas200593.mini_retail_app.core.ui.common.CustomThemes
 import com.thomas200593.mini_retail_app.core.ui.component.CustomButton.Common.AppIconButton
 import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AlertDialogContext
 import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AppAlertDialog
 import com.thomas200593.mini_retail_app.core.ui.component.CustomForm.Component.TextInput
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.LoadingScreen
-import com.thomas200593.mini_retail_app.features.app_conf.app_config.entity.AppConfig
+import com.thomas200593.mini_retail_app.features.app_conf.app_config.entity.AppConfig.ConfigCurrent
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_language.entity.Language
 import com.thomas200593.mini_retail_app.features.business.biz_profile.entity.BizName
 import com.thomas200593.mini_retail_app.features.business.biz_profile.entity.BizProfileShort
 import com.thomas200593.mini_retail_app.features.initial.initial.navigation.navToInitial
 import com.thomas200593.mini_retail_app.features.initial.initialization.entity.Initialization
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.PanelInputFormState
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.PanelWelcomeMessageState
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.ButtonEvents.BtnInitDefaultBizProfileEvents
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.ButtonEvents.BtnInitManualBizProfileEvents
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.DialogEvents.DlgResError
@@ -246,7 +250,7 @@ private fun ScreenContent(
 @Composable
 private fun LanguageSection(
     languages: Set<Language>,
-    configCurrent: AppConfig.ConfigCurrent,
+    configCurrent: ConfigCurrent,
     onSelectLanguage: (Language) -> Unit
 ) {
     Row(
@@ -384,7 +388,7 @@ private fun PanelWelcomeMessage(
 @Composable
 private fun PanelFormInitManualBizProfile(
     industries: Map<String, String>,
-    inputFormState: VMInitialization.PanelInputFormState,
+    inputFormState: PanelInputFormState,
     onLegalNameValueChanged: (String) -> Unit,
     onCommonNameValueChanged: (String) -> Unit,
     onIndustryValueChanged: (String) -> Unit,
@@ -478,6 +482,7 @@ private fun PanelFormInitManualBizProfile(
                         modifier = Modifier.fillMaxWidth().menuAnchor(PrimaryNotEditable, true),
                         border = BorderStroke(1.dp, Color(0xFF747775)),
                         shape = MaterialTheme.shapes.medium,
+                        enabled = !(inputFormState.industryKey.isEmpty() || inputFormState.industryKey.isBlank()),
                         onClick = { expanded = true }
                     ) {
                         Row(
@@ -555,5 +560,49 @@ private fun PanelFormInitManualBizProfile(
                 )
             }
         }
+    }
+}
+
+@Composable
+@Preview
+private fun Preview() = CustomThemes.ApplicationTheme {
+    Column(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        ScrInitialization(
+            onSelectLanguage = {},
+            onInitBizProfileDefaultBtnClicked = {},
+            onInitBizProfileManualBtnClicked = {},
+            onLegalNameValueChanged = {},
+            onCommonNameValueChanged = {},
+            onIndustryValueChanged = {},
+            onFormSubmitBtnClicked = {},
+            onFormCancelBtnClicked = {},
+            onInitBizProfileSuccess = {},
+            onInitBizProfileError = {},
+            uiState = UiState(
+                initialization = Success(
+                    data = Initialization(
+                        configCurrent = ConfigCurrent(),
+                        languages = setOf(Language.EN, Language.ID),
+                        industries = mapOf(
+                            Pair("biz_industry_00001", "Other Business"),
+                            Pair("biz_industry_00002", "Agriculture")
+                        )
+                    )
+                ),
+                initBizProfileOperationResult = ResourceState.Idle,
+                panelWelcomeMessageState = PanelWelcomeMessageState(
+                    visible = false
+                ),
+                panelInputFormState = PanelInputFormState(
+                    visible = true,
+                    legalName = "Test Legal Company Name",
+                    commonName = "Test Common Name",
+                    industryKey = "biz_industry_00001",
+                    fldSubmitBtnEnabled = false
+                )
+            )
+        )
     }
 }

@@ -4,10 +4,49 @@
         <item>biz_industry_00001</item>
         <item>biz_industry_00002</item>
         <item>biz_industry_00003</item>
+        <item>biz_industry_00004</item>
+        <item>biz_industry_00005</item>
+        <item>biz_industry_00006</item>
+        <item>biz_industry_00007</item>
+        <item>biz_industry_00008</item>
+        <item>biz_industry_00009</item>
+        <item>biz_industry_00010</item>
+        <item>biz_industry_00011</item>
+        <item>biz_industry_00012</item>
+        <item>biz_industry_00013</item>
+        <item>biz_industry_00014</item>
+        <item>biz_industry_00015</item>
+        <item>biz_industry_00016</item>
+        <item>biz_industry_00017</item>
+        <item>biz_industry_00018</item>
+        <item>biz_industry_00019</item>
+        <item>biz_industry_00020</item>
+        <item>biz_industry_00021</item>
+        <item>biz_industry_00022</item>
     </string-array>
     <string-array name="biz_industry_values">
         <item>Others</item>
         <item>Agriculture; plantations; other rural sectors</item>
         <item>Basic metal production</item>
+        <item>Chemical industries</item>
+        <item>Commerce</item>
+        <item>Construction</item>
+        <item>Education</item>
+        <item>Financial services; professional services</item>
+        <item>Food; drink; tobacco</item>
+        <item>Forestry; wood; pulp and paper</item>
+        <item>Health services</item>
+        <item>Hotels; catering; tourism</item>
+        <item>Mechanical and electrical engineering</item>
+        <item>Media; culture; graphical</item>
+        <item>Mining (coal; other mining)</item>
+        <item>Oil and gas production; oil refining</item>
+        <item>Postal and telecommunications services</item>
+        <item>Public service</item>
+        <item>Shipping; ports; fisheries; inland waterways</item>
+        <item>Textiles; clothing; leather; footwear</item>
+        <item>Transport (including civil aviation; railways; road transport)</item>
+        <item>Transport equipment manufacturing</item>
+        <item>Utilities (water, gas; electricity)</item>
     </string-array>
 </resources>
