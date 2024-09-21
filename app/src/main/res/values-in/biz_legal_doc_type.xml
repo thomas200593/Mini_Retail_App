@@ -2,8 +2,14 @@
 <resources>
     <string-array name="biz_legal_doc_type_keys">
         <item>biz_legal_doc_type_00001</item>
+        <item>biz_legal_doc_type_00002</item>
+        <item>biz_legal_doc_type_00003</item>
+        <item>biz_legal_doc_type_00004</item>
     </string-array>
     <string-array name="biz_legal_doc_type_values">
         <item>Lainnya</item>
+        <item>Kartu Identitas (Paspor, Kartu Tanda Penduduk)</item>
+        <item>Tanda Daftar Perusahaan</item>
+        <item>Surat Izin Usaha Perdagangan</item>
     </string-array>
 </resources>
