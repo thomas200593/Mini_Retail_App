@@ -2,8 +2,18 @@
 <resources>
     <string-array name="biz_legal_type_keys">
         <item>biz_legal_type_00001</item>
+        <item>biz_legal_type_00002</item>
+        <item>biz_legal_type_00003</item>
+        <item>biz_legal_type_00004</item>
+        <item>biz_legal_type_00005</item>
+        <item>biz_legal_type_00006</item>
     </string-array>
     <string-array name="biz_legal_type_values">
         <item>Others</item>
+        <item>Individual (SME)</item>
+        <item>Business Unit (SME)</item>
+        <item>Private Limited Company</item>
+        <item>Public Company</item>
+        <item>Foundation</item>
     </string-array>
 </resources>

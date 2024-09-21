@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="biz_legal_doc_type_keys">
+        <item>biz_legal_doc_type_00001</item>
+    </string-array>
+    <string-array name="biz_legal_doc_type_values">
+        <item>Lainnya</item>
+    </string-array>
+</resources>

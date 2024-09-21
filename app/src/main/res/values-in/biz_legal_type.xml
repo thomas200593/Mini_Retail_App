@@ -2,9 +2,18 @@
 <resources>
     <string-array name="biz_legal_type_keys">
         <item>biz_legal_type_00001</item>
-       
+        <item>biz_legal_type_00002</item>
+        <item>biz_legal_type_00003</item>
+        <item>biz_legal_type_00004</item>
+        <item>biz_legal_type_00005</item>
+        <item>biz_legal_type_00006</item>
     </string-array>
     <string-array name="biz_legal_type_values">
         <item>Lainnya</item>
+        <item>Perorangan (SME)</item>
+        <item>Unit Bisnis (SME)</item>
+        <item>Perseroan Terbatas</item>
+        <item>Perseroan Terbatas Umum</item>
+        <item>Yayasan</item>
     </string-array>
 </resources>
