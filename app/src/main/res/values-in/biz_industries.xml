@@ -23,6 +23,7 @@
         <item>biz_industry_00020</item>
         <item>biz_industry_00021</item>
         <item>biz_industry_00022</item>
+        <item>biz_industry_00023</item>
     </string-array>
     <string-array name="biz_industry_values">
         <item>Lainnya</item>
