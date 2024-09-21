@@ -539,6 +539,19 @@ private fun PanelFormInitManualBizProfile(
                 placeholder = stringResource(R.string.str_biz_industry_additional_info),
                 singleLine = true
             )
+            HorizontalDivider(
+                thickness = 2.dp,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = stringResource(id = R.string.str_biz_legal),
+                textAlign = TextAlign.Start,
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurface,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
             Row(
                 modifier = Modifier.fillMaxWidth(1.0f),
                 horizontalArrangement = Arrangement.Center,
