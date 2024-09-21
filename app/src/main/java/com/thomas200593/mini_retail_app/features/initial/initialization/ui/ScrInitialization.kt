@@ -221,7 +221,10 @@ private fun ScreenContent(
 ) {
     Surface {
         Column(
-            modifier = Modifier.fillMaxSize().padding(8.dp).verticalScroll(rememberScrollState()),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(8.dp)
+                .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(30.dp, Alignment.Top)
         ) {
@@ -488,7 +491,7 @@ private fun PanelFormInitManualBizProfile(
                     TextButton(
                         modifier = Modifier.fillMaxWidth().menuAnchor(PrimaryNotEditable, true),
                         border = BorderStroke(1.dp, Color(0xFF747775)),
-                        shape = MaterialTheme.shapes.medium,
+                        shape = MaterialTheme.shapes.small,
                         enabled = !(inputFormState.industryKey.isEmpty() || inputFormState.industryKey.isBlank()),
                         onClick = { expanded = true }
                     ) {
@@ -533,7 +536,7 @@ private fun PanelFormInitManualBizProfile(
                 value = inputFormState.industryAdditionalInfo,
                 onValueChange = { onIndustryAdditionalInfoValueChanged(it) },
                 label = stringResource(R.string.str_additional_info),
-                placeholder = "Describe your business industry detail",
+                placeholder = stringResource(R.string.str_biz_industry_additional_info),
                 singleLine = true
             )
             Row(
@@ -613,8 +616,11 @@ private fun Preview() = CustomThemes.ApplicationTheme {
                 panelInputFormState = PanelInputFormState(
                     visible = true,
                     legalName = "Test Legal Company Name",
+                    legalNameError = null,
                     commonName = "Test Common Name",
+                    commonNameError = null,
                     industryKey = "biz_industry_00001",
+                    industryAdditionalInfo = "Additional Information about Industry",
                     fldSubmitBtnEnabled = false
                 )
             )

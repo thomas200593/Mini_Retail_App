@@ -133,4 +133,5 @@
     <string name="str_loading_data">Loading Data</string>
     <string name="str_deny_access_auth_required">Access Denied! Authentication Required</string>
     <string name="str_auth_success">Authentication Success!</string>
+    <string name="str_biz_industry_additional_info">Tell us a bit about your industry (optional).</string>
 </resources>

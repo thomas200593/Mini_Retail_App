@@ -194,6 +194,7 @@ class VMInitialization @Inject constructor(
         commonName: String = PanelInputFormState().commonName,
         commonNameError: UiText? = PanelInputFormState().commonNameError,
         industryKey: String = repoIndustries.getIdentityKeyDefault(),
+        industryAdditionalInfo: String = PanelInputFormState().industryAdditionalInfo,
         fldSubmitBtnEnabled: Boolean = PanelInputFormState().fldSubmitBtnEnabled
     ) = _uiState.update {
         it.copy(
@@ -204,6 +205,7 @@ class VMInitialization @Inject constructor(
                 commonName = commonName,
                 commonNameError = commonNameError,
                 industryKey = industryKey,
+                industryAdditionalInfo = industryAdditionalInfo,
                 fldSubmitBtnEnabled = fldSubmitBtnEnabled
             )
         )
@@ -251,6 +253,7 @@ class VMInitialization @Inject constructor(
 
     //Forms
     private fun frmValChgLegalName(legalName: String) {
+        /*TODO: Trim Text*/
         _uiState.update { it.copy(panelInputFormState = it.panelInputFormState.copy(legalName = legalName)) }
         formSubmitBtnShouldEnable()
     }
@@ -265,6 +268,7 @@ class VMInitialization @Inject constructor(
         return result.isSuccess
     }
     private fun frmValChgCommonName(commonName: String) {
+        /*TODO: Trim Text*/
         _uiState.update { it.copy(panelInputFormState = it.panelInputFormState.copy(commonName = commonName)) }
         formSubmitBtnShouldEnable()
     }
