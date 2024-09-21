@@ -8,7 +8,9 @@ import com.thomas200593.mini_retail_app.R.array
 
 object HlpStringArray{
     enum class StringArrayResources(@ArrayRes val resKeyId: Int, @ArrayRes val resValueId: Int){
-        BizIndustries(resKeyId = array.biz_industry_keys, resValueId = array.biz_industry_values)
+        BizIndustries(resKeyId = array.biz_industry_keys, resValueId = array.biz_industry_values),
+        BizLegalDocType(resKeyId = array.biz_legal_doc_type_keys, resValueId = array.biz_legal_doc_type_values),
+        BizLegalType(resKeyId = array.biz_legal_type_keys, resValueId = array.biz_legal_type_values)
     }
 
     sealed class Handler {
