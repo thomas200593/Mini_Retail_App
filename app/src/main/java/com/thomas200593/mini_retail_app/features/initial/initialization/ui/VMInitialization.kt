@@ -33,6 +33,7 @@ import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMIni
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.InputFormEvents.BtnCancelEvents
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.InputFormEvents.BtnSubmitEvents
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.InputFormEvents.CommonNameEvents
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.InputFormEvents.IndustryAdditionalInfoEvents
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.InputFormEvents.LegalNameEvents
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.OnOpenEvents
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiStateInitialization.Loading
@@ -80,6 +81,7 @@ class VMInitialization @Inject constructor(
         val commonName: String = String(),
         val commonNameError: UiText? = UiText.StringResource(R.string.str_field_required),
         val industryKey: String = String(),
+        val industryAdditionalInfo: String = String(),
         val fldSubmitBtnEnabled: Boolean = false
     )
 
@@ -91,6 +93,9 @@ class VMInitialization @Inject constructor(
             }
             sealed interface CommonNameEvents: InputFormEvents {
                 data class ValueChanged(val commonName: String): CommonNameEvents
+            }
+            sealed interface IndustryAdditionalInfoEvents: InputFormEvents {
+                data class ValueChanged(val additionalInfo: String): IndustryAdditionalInfoEvents
             }
             sealed interface BtnSubmitEvents: InputFormEvents {
                 data class OnClick(val bizProfileShort: BizProfileShort): BtnSubmitEvents
@@ -145,6 +150,7 @@ class VMInitialization @Inject constructor(
             is BtnInitManualBizProfileEvents.OnClick -> doShowPanelInputForm()
             is LegalNameEvents.ValueChanged -> frmValChgLegalName(events.legalName)
             is CommonNameEvents.ValueChanged -> frmValChgCommonName(events.commonName)
+            is IndustryAdditionalInfoEvents.ValueChanged -> frmValChgIndustryAdditionalInfo(events.additionalInfo)
             is DDIndustry.OnSelect -> frmValChgIndustry(events.industryKey)
             is BtnSubmitEvents.OnClick -> doInitBizProfile(events.bizProfileShort)
             is BtnCancelEvents.OnClick -> doResetUiState()
@@ -274,6 +280,11 @@ class VMInitialization @Inject constructor(
     }
     private fun frmValChgIndustry(industryKey: String) =
         _uiState.update { it.copy(panelInputFormState = it.panelInputFormState.copy(industryKey = industryKey)) }
+    private fun frmValChgIndustryAdditionalInfo(industryAdditionalInfo: String) =
+        if(industryAdditionalInfo.length <= 100)
+            _uiState.update { it.copy(panelInputFormState = it.panelInputFormState.copy(industryAdditionalInfo = industryAdditionalInfo)) }
+        else
+            _uiState.update { it.copy(panelInputFormState = it.panelInputFormState.copy(industryAdditionalInfo = industryAdditionalInfo.substring(0, 100))) }
     private fun formSubmitBtnShouldEnable() {
         val result = frmVldLegalName() && frmVldCommonName()
         _uiState.update { it.copy(panelInputFormState = it.panelInputFormState.copy(fldSubmitBtnEnabled = result)) }

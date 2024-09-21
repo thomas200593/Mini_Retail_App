@@ -75,6 +75,7 @@ import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMIni
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.InputFormEvents.BtnCancelEvents
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.InputFormEvents.BtnSubmitEvents
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.InputFormEvents.CommonNameEvents
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.InputFormEvents.IndustryAdditionalInfoEvents
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.InputFormEvents.LegalNameEvents
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.OnOpenEvents
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiState
@@ -101,6 +102,7 @@ fun ScrInitialization(
         onLegalNameValueChanged = { vm.onEvent(LegalNameEvents.ValueChanged(it)) },
         onCommonNameValueChanged = { vm.onEvent(CommonNameEvents.ValueChanged(it)) },
         onIndustryValueChanged = { vm.onEvent(DDIndustry.OnSelect(it)) },
+        onIndustryAdditionalInfoValueChanged = { vm.onEvent(IndustryAdditionalInfoEvents.ValueChanged(it)) },
         onFormSubmitBtnClicked = { vm.onEvent(BtnSubmitEvents.OnClick(it)) },
         onFormCancelBtnClicked = { vm.onEvent(BtnCancelEvents.OnClick) },
         onInitBizProfileSuccess = {
@@ -123,6 +125,7 @@ private fun ScrInitialization(
     onLegalNameValueChanged: (String) -> Unit,
     onCommonNameValueChanged: (String) -> Unit,
     onIndustryValueChanged: (String) -> Unit,
+    onIndustryAdditionalInfoValueChanged: (String) -> Unit,
     onFormSubmitBtnClicked: (BizProfileShort) -> Unit,
     onFormCancelBtnClicked: () -> Unit,
     onInitBizProfileSuccess: () -> Unit,
@@ -144,6 +147,7 @@ private fun ScrInitialization(
             onLegalNameValueChanged = onLegalNameValueChanged,
             onCommonNameValueChanged = onCommonNameValueChanged,
             onIndustryValueChanged = onIndustryValueChanged,
+            onIndustryAdditionalInfoValueChanged = onIndustryAdditionalInfoValueChanged,
             onFormSubmitBtnClicked = onFormSubmitBtnClicked,
             onFormCancelBtnClicked = onFormCancelBtnClicked
         )
@@ -211,6 +215,7 @@ private fun ScreenContent(
     onLegalNameValueChanged: (String) -> Unit,
     onCommonNameValueChanged: (String) -> Unit,
     onIndustryValueChanged: (String) -> Unit,
+    onIndustryAdditionalInfoValueChanged: (String) -> Unit,
     onFormSubmitBtnClicked: (BizProfileShort) -> Unit,
     onFormCancelBtnClicked: () -> Unit
 ) {
@@ -238,6 +243,7 @@ private fun ScreenContent(
                     onLegalNameValueChanged = onLegalNameValueChanged,
                     onCommonNameValueChanged = onCommonNameValueChanged,
                     onIndustryValueChanged = onIndustryValueChanged,
+                    onIndustryAdditionalInfoValueChanged = onIndustryAdditionalInfoValueChanged,
                     onFormSubmitBtnClicked = onFormSubmitBtnClicked,
                     onFormCancelBtnClicked = onFormCancelBtnClicked
                 )
@@ -392,6 +398,7 @@ private fun PanelFormInitManualBizProfile(
     onLegalNameValueChanged: (String) -> Unit,
     onCommonNameValueChanged: (String) -> Unit,
     onIndustryValueChanged: (String) -> Unit,
+    onIndustryAdditionalInfoValueChanged: (String) -> Unit,
     onFormSubmitBtnClicked: (BizProfileShort) -> Unit,
     onFormCancelBtnClicked: () -> Unit
 ) {
@@ -522,6 +529,13 @@ private fun PanelFormInitManualBizProfile(
                     }
                 }
             }
+            TextInput(
+                value = inputFormState.industryAdditionalInfo,
+                onValueChange = { onIndustryAdditionalInfoValueChanged(it) },
+                label = stringResource(R.string.str_additional_info),
+                placeholder = "Describe your business industry detail",
+                singleLine = true
+            )
             Row(
                 modifier = Modifier.fillMaxWidth(1.0f),
                 horizontalArrangement = Arrangement.Center,
@@ -576,6 +590,7 @@ private fun Preview() = CustomThemes.ApplicationTheme {
             onLegalNameValueChanged = {},
             onCommonNameValueChanged = {},
             onIndustryValueChanged = {},
+            onIndustryAdditionalInfoValueChanged = {},
             onFormSubmitBtnClicked = {},
             onFormCancelBtnClicked = {},
             onInitBizProfileSuccess = {},
