@@ -127,4 +127,5 @@
     <string name="str_deny_access_auth_required">Akses Ditolak! Otentikasi Dibutuhkan</string>
     <string name="str_auth_success">Otentikasi Sukses!</string>
     <string name="str_biz_industry_additional_info">Informasikan sedikit mengenai industri Anda (opsional).</string>
+    <string name="str_biz_legal_type_additional_info">Informasikan sedikit mengenai bentuk legal bisnis Anda (opsional).</string>
 </resources>

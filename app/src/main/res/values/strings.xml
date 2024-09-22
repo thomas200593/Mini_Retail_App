@@ -134,4 +134,5 @@
     <string name="str_deny_access_auth_required">Access Denied! Authentication Required</string>
     <string name="str_auth_success">Authentication Success!</string>
     <string name="str_biz_industry_additional_info">Tell us a bit about your industry (optional).</string>
+    <string name="str_biz_legal_type_additional_info">Tell us a bit about your business legal type (optional).</string>
 </resources>

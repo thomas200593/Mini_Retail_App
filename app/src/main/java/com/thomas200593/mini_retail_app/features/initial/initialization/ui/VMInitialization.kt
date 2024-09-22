@@ -11,6 +11,7 @@ import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.A
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.Industries
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.LegalType
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.RepoIndustries
+import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.RepoLegalType
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.Taxation
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers.Dispatchers.IO
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.di.Dispatcher
@@ -30,11 +31,13 @@ import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMIni
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.DialogEvents.DlgResSuccess
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.DropdownEvents.DDIndustry
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.DropdownEvents.DDLanguage
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.DropdownEvents.DDLegalType
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.InputFormEvents.BtnCancelEvents
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.InputFormEvents.BtnSubmitEvents
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.InputFormEvents.CommonNameEvents
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.InputFormEvents.IndustryAdditionalInfoEvents
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.InputFormEvents.LegalNameEvents
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.InputFormEvents.LegalTypeAdditionalInfoEvents
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.OnOpenEvents
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiStateInitialization.Loading
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiStateInitialization.Success
@@ -55,6 +58,7 @@ class VMInitialization @Inject constructor(
     private val ucSetInitBizProfile: UCSetInitialBizProfile,
     private val repoConfGenLanguage: RepoConfGenLanguage,
     private val repoIndustries: RepoIndustries,
+    private val repoLegalType: RepoLegalType,
     @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
     sealed interface UiStateInitialization{
@@ -82,6 +86,8 @@ class VMInitialization @Inject constructor(
         val commonNameError: UiText? = UiText.StringResource(R.string.str_field_required),
         val industryKey: String = String(),
         val industryAdditionalInfo: String = String(),
+        val legalTypeKey: String = String(),
+        val legalTypeAdditionalInfo: String = String(),
         val fldSubmitBtnEnabled: Boolean = false
     )
 
@@ -97,6 +103,9 @@ class VMInitialization @Inject constructor(
             sealed interface IndustryAdditionalInfoEvents: InputFormEvents {
                 data class ValueChanged(val additionalInfo: String): IndustryAdditionalInfoEvents
             }
+            sealed interface LegalTypeAdditionalInfoEvents: InputFormEvents {
+                data class ValueChanged(val additionalInfo: String): LegalTypeAdditionalInfoEvents
+            }
             sealed interface BtnSubmitEvents: InputFormEvents {
                 data class OnClick(val bizProfileShort: BizProfileShort): BtnSubmitEvents
             }
@@ -110,6 +119,9 @@ class VMInitialization @Inject constructor(
             }
             sealed interface DDIndustry: DropdownEvents {
                 data class OnSelect(val industryKey: String): DDIndustry
+            }
+            sealed interface DDLegalType: DropdownEvents {
+                data class OnSelect(val legalTypeKey: String): DDLegalType
             }
         }
         sealed interface ButtonEvents: UiEvents {
@@ -135,7 +147,7 @@ class VMInitialization @Inject constructor(
         genId = ULID.randomULID(),
         bizName = BizName(legalName = "My-Corporation", commonName = "My Corp"),
         bizIndustry = Industries(identityKey = repoIndustries.getIdentityKeyDefault()),
-        bizLegalType = LegalType(identifierKey = 0),
+        bizLegalType = LegalType(identifierKey = repoLegalType.getIdentityKeyDefault()),
         bizTaxation = Taxation(identifierKey = 0),
         auditTrail = AuditTrail()
     )
@@ -150,8 +162,10 @@ class VMInitialization @Inject constructor(
             is BtnInitManualBizProfileEvents.OnClick -> doShowPanelInputForm()
             is LegalNameEvents.ValueChanged -> frmValChgLegalName(events.legalName)
             is CommonNameEvents.ValueChanged -> frmValChgCommonName(events.commonName)
-            is IndustryAdditionalInfoEvents.ValueChanged -> frmValChgIndustryAdditionalInfo(events.additionalInfo)
             is DDIndustry.OnSelect -> frmValChgIndustry(events.industryKey)
+            is IndustryAdditionalInfoEvents.ValueChanged -> frmValChgIndustryAdditionalInfo(events.additionalInfo)
+            is DDLegalType.OnSelect -> frmValChgLegalType(events.legalTypeKey)
+            is LegalTypeAdditionalInfoEvents.ValueChanged -> frmValChgLegalTypeAdditionalInfo(events.additionalInfo)
             is BtnSubmitEvents.OnClick -> doInitBizProfile(events.bizProfileShort)
             is BtnCancelEvents.OnClick -> doResetUiState()
             is DlgResSuccess.OnConfirm -> doResetUiState()
@@ -188,14 +202,16 @@ class VMInitialization @Inject constructor(
         _uiState.update { it.copy(panelWelcomeMessageState = PanelWelcomeMessageState()) }
 
     private fun updatePanelInputFormState(
-        visible: Boolean = PanelInputFormState().visible,
-        legalName: String = PanelInputFormState().legalName,
-        legalNameError: UiText? = PanelInputFormState().legalNameError,
-        commonName: String = PanelInputFormState().commonName,
-        commonNameError: UiText? = PanelInputFormState().commonNameError,
+        visible: Boolean = false,
+        legalName: String = String(),
+        legalNameError: UiText? = UiText.StringResource(R.string.str_field_required),
+        commonName: String = String(),
+        commonNameError: UiText? = UiText.StringResource(R.string.str_field_required),
         industryKey: String = repoIndustries.getIdentityKeyDefault(),
-        industryAdditionalInfo: String = PanelInputFormState().industryAdditionalInfo,
-        fldSubmitBtnEnabled: Boolean = PanelInputFormState().fldSubmitBtnEnabled
+        industryAdditionalInfo: String = String(),
+        legalTypeKey: String = repoLegalType.getIdentityKeyDefault(),
+        legalTypeAdditionalInfo: String = String(),
+        fldSubmitBtnEnabled: Boolean = false
     ) = _uiState.update {
         it.copy(
             panelInputFormState = it.panelInputFormState.copy(
@@ -206,6 +222,8 @@ class VMInitialization @Inject constructor(
                 commonNameError = commonNameError,
                 industryKey = industryKey,
                 industryAdditionalInfo = industryAdditionalInfo,
+                legalTypeKey = legalTypeKey,
+                legalTypeAdditionalInfo = legalTypeAdditionalInfo,
                 fldSubmitBtnEnabled = fldSubmitBtnEnabled
             )
         )
@@ -287,10 +305,13 @@ class VMInitialization @Inject constructor(
     private fun frmValChgIndustry(industryKey: String) =
         _uiState.update { it.copy(panelInputFormState = it.panelInputFormState.copy(industryKey = industryKey)) }
     private fun frmValChgIndustryAdditionalInfo(industryAdditionalInfo: String) =
-        if(industryAdditionalInfo.length <= 100)
-            _uiState.update { it.copy(panelInputFormState = it.panelInputFormState.copy(industryAdditionalInfo = industryAdditionalInfo)) }
-        else
-            _uiState.update { it.copy(panelInputFormState = it.panelInputFormState.copy(industryAdditionalInfo = industryAdditionalInfo.substring(0, 100))) }
+        if(industryAdditionalInfo.length <= 100) _uiState.update { it.copy(panelInputFormState = it.panelInputFormState.copy(industryAdditionalInfo = industryAdditionalInfo)) }
+        else _uiState.update { it.copy(panelInputFormState = it.panelInputFormState.copy(industryAdditionalInfo = industryAdditionalInfo.substring(0, 100))) }
+    private fun frmValChgLegalType(legalTypeKey: String) =
+        _uiState.update { it.copy(panelInputFormState = it.panelInputFormState.copy(legalTypeKey = legalTypeKey)) }
+    private fun frmValChgLegalTypeAdditionalInfo(legalTypeAdditionalInfo: String) =
+        if(legalTypeAdditionalInfo.length <= 100) _uiState.update { it.copy(panelInputFormState = it.panelInputFormState.copy(legalTypeAdditionalInfo = legalTypeAdditionalInfo)) }
+        else _uiState.update { it.copy(panelInputFormState = it.panelInputFormState.copy(legalTypeAdditionalInfo = legalTypeAdditionalInfo.substring(0, 100))) }
     private fun formSubmitBtnShouldEnable() {
         val result = frmVldLegalName() && frmVldCommonName()
         _uiState.update { it.copy(panelInputFormState = it.panelInputFormState.copy(fldSubmitBtnEnabled = result)) }

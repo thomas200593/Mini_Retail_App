@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -50,6 +51,7 @@ import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.L
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.Taxation
 import com.thomas200593.mini_retail_app.core.design_system.util.HlpStringArray.Handler.StringArrayResource
 import com.thomas200593.mini_retail_app.core.design_system.util.HlpStringArray.StringArrayResources.BizIndustries
+import com.thomas200593.mini_retail_app.core.design_system.util.HlpStringArray.StringArrayResources.BizLegalType
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
 import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons
 import com.thomas200593.mini_retail_app.core.ui.common.CustomThemes
@@ -72,11 +74,13 @@ import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMIni
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.DialogEvents.DlgResSuccess
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.DropdownEvents.DDIndustry
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.DropdownEvents.DDLanguage
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.DropdownEvents.DDLegalType
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.InputFormEvents.BtnCancelEvents
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.InputFormEvents.BtnSubmitEvents
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.InputFormEvents.CommonNameEvents
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.InputFormEvents.IndustryAdditionalInfoEvents
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.InputFormEvents.LegalNameEvents
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.InputFormEvents.LegalTypeAdditionalInfoEvents
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.OnOpenEvents
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiState
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiStateInitialization.Loading
@@ -103,6 +107,8 @@ fun ScrInitialization(
         onCommonNameValueChanged = { vm.onEvent(CommonNameEvents.ValueChanged(it)) },
         onIndustryValueChanged = { vm.onEvent(DDIndustry.OnSelect(it)) },
         onIndustryAdditionalInfoValueChanged = { vm.onEvent(IndustryAdditionalInfoEvents.ValueChanged(it)) },
+        onLegalTypeValueChanged = { vm.onEvent(DDLegalType.OnSelect(it)) },
+        onLegalTypeAdditionalInfoValueChanged = { vm.onEvent(LegalTypeAdditionalInfoEvents.ValueChanged(it)) },
         onFormSubmitBtnClicked = { vm.onEvent(BtnSubmitEvents.OnClick(it)) },
         onFormCancelBtnClicked = { vm.onEvent(BtnCancelEvents.OnClick) },
         onInitBizProfileSuccess = {
@@ -126,6 +132,8 @@ private fun ScrInitialization(
     onCommonNameValueChanged: (String) -> Unit,
     onIndustryValueChanged: (String) -> Unit,
     onIndustryAdditionalInfoValueChanged: (String) -> Unit,
+    onLegalTypeValueChanged: (String) -> Unit,
+    onLegalTypeAdditionalInfoValueChanged: (String) -> Unit,
     onFormSubmitBtnClicked: (BizProfileShort) -> Unit,
     onFormCancelBtnClicked: () -> Unit,
     onInitBizProfileSuccess: () -> Unit,
@@ -148,6 +156,8 @@ private fun ScrInitialization(
             onCommonNameValueChanged = onCommonNameValueChanged,
             onIndustryValueChanged = onIndustryValueChanged,
             onIndustryAdditionalInfoValueChanged = onIndustryAdditionalInfoValueChanged,
+            onLegalTypeValueChanged = onLegalTypeValueChanged,
+            onLegalTypeAdditionalInfoValueChanged = onLegalTypeAdditionalInfoValueChanged,
             onFormSubmitBtnClicked = onFormSubmitBtnClicked,
             onFormCancelBtnClicked = onFormCancelBtnClicked
         )
@@ -216,6 +226,8 @@ private fun ScreenContent(
     onCommonNameValueChanged: (String) -> Unit,
     onIndustryValueChanged: (String) -> Unit,
     onIndustryAdditionalInfoValueChanged: (String) -> Unit,
+    onLegalTypeValueChanged: (String) -> Unit,
+    onLegalTypeAdditionalInfoValueChanged: (String) -> Unit,
     onFormSubmitBtnClicked: (BizProfileShort) -> Unit,
     onFormCancelBtnClicked: () -> Unit
 ) {
@@ -224,7 +236,8 @@ private fun ScreenContent(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(8.dp)
-                .verticalScroll(rememberScrollState()),
+                .verticalScroll(rememberScrollState())
+                .imePadding(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(30.dp, Alignment.Top)
         ) {
@@ -242,11 +255,14 @@ private fun ScreenContent(
             if(uiState.panelInputFormState.visible) {
                 PanelFormInitManualBizProfile(
                     industries = initData.industries,
+                    legalType = initData.legalType,
                     inputFormState = uiState.panelInputFormState,
                     onLegalNameValueChanged = onLegalNameValueChanged,
                     onCommonNameValueChanged = onCommonNameValueChanged,
                     onIndustryValueChanged = onIndustryValueChanged,
                     onIndustryAdditionalInfoValueChanged = onIndustryAdditionalInfoValueChanged,
+                    onLegalTypeValueChanged = onLegalTypeValueChanged,
+                    onLegalTypeAdditionalInfoValueChanged = onLegalTypeAdditionalInfoValueChanged,
                     onFormSubmitBtnClicked = onFormSubmitBtnClicked,
                     onFormCancelBtnClicked = onFormCancelBtnClicked
                 )
@@ -275,6 +291,8 @@ private fun LanguageSection(
         ) {
             TextButton(
                 modifier = Modifier.fillMaxWidth().menuAnchor(PrimaryNotEditable, true),
+                border = BorderStroke(1.dp, Color(0xFF747775)),
+                shape = MaterialTheme.shapes.medium,
                 onClick = { expanded = true }) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -397,11 +415,14 @@ private fun PanelWelcomeMessage(
 @Composable
 private fun PanelFormInitManualBizProfile(
     industries: Map<String, String>,
+    legalType: Map<String, String>,
     inputFormState: PanelInputFormState,
     onLegalNameValueChanged: (String) -> Unit,
     onCommonNameValueChanged: (String) -> Unit,
     onIndustryValueChanged: (String) -> Unit,
     onIndustryAdditionalInfoValueChanged: (String) -> Unit,
+    onLegalTypeValueChanged: (String) -> Unit,
+    onLegalTypeAdditionalInfoValueChanged: (String) -> Unit,
     onFormSubmitBtnClicked: (BizProfileShort) -> Unit,
     onFormCancelBtnClicked: () -> Unit
 ) {
@@ -554,6 +575,68 @@ private fun PanelFormInitManualBizProfile(
             )
             Row(
                 modifier = Modifier.fillMaxWidth(1.0f),
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                var expanded by remember { mutableStateOf(false) }
+                ExposedDropdownMenuBox(
+                    modifier = Modifier.fillMaxWidth(1.0f),
+                    expanded = expanded,
+                    onExpandedChange = { expanded = expanded.not() }
+                ) {
+                    TextButton(
+                        modifier = Modifier.fillMaxWidth().menuAnchor(PrimaryNotEditable, true),
+                        border = BorderStroke(1.dp, Color(0xFF747775)),
+                        shape = MaterialTheme.shapes.small,
+                        enabled = !(inputFormState.legalTypeKey.isEmpty() || inputFormState.legalTypeKey.isBlank()),
+                        onClick = { expanded = true }
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            StringArrayResource(BizLegalType)
+                                .findByKey(inputFormState.legalTypeKey)?.let {
+                                    Text(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        text = it,
+                                        textAlign = TextAlign.Start,
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis
+                                    )
+                                }
+                        }
+                    }
+                    ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+                        legalType.forEach{
+                            DropdownMenuItem(
+                                modifier = Modifier.fillMaxWidth(),
+                                text = {
+                                    Text(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        text = it.value
+                                    )
+                                },
+                                onClick = {
+                                    expanded = false
+                                    onLegalTypeValueChanged(it.key)
+                                },
+                                contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
+                            )
+                        }
+                    }
+                }
+            }
+            TextInput(
+                value = inputFormState.legalTypeAdditionalInfo,
+                onValueChange = { onLegalTypeAdditionalInfoValueChanged(it) },
+                label = stringResource(R.string.str_additional_info),
+                placeholder = stringResource(R.string.str_biz_legal_type_additional_info),
+                singleLine = true
+            )
+            Row(
+                modifier = Modifier.fillMaxWidth(1.0f),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -569,8 +652,14 @@ private fun PanelFormInitManualBizProfile(
                                         legalName = inputFormState.legalName,
                                         commonName = inputFormState.commonName
                                     ),
-                                    bizIndustry = Industries(identityKey = inputFormState.industryKey),
-                                    bizLegalType = LegalType(identifierKey = 0),
+                                    bizIndustry = Industries(
+                                        identityKey = inputFormState.industryKey,
+                                        additionalInfo = inputFormState.industryAdditionalInfo
+                                    ),
+                                    bizLegalType = LegalType(
+                                        identifierKey = inputFormState.legalTypeKey,
+                                        additionalInfo = inputFormState.legalTypeAdditionalInfo
+                                    ),
                                     bizTaxation = Taxation(identifierKey = 0),
                                     auditTrail = AuditTrail()
                                 )
@@ -607,6 +696,8 @@ private fun Preview() = CustomThemes.ApplicationTheme {
             onCommonNameValueChanged = {},
             onIndustryValueChanged = {},
             onIndustryAdditionalInfoValueChanged = {},
+            onLegalTypeValueChanged = {},
+            onLegalTypeAdditionalInfoValueChanged = {},
             onFormSubmitBtnClicked = {},
             onFormCancelBtnClicked = {},
             onInitBizProfileSuccess = {},
@@ -619,6 +710,9 @@ private fun Preview() = CustomThemes.ApplicationTheme {
                         industries = mapOf(
                             Pair("biz_industry_00001", "Other Business"),
                             Pair("biz_industry_00002", "Agriculture")
+                        ),
+                        legalType = mapOf(
+                            Pair("biz_legal_type_00001", "Others")
                         )
                     )
                 ),
