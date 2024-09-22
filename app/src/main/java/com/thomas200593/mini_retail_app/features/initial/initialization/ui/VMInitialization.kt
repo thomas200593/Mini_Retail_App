@@ -305,11 +305,13 @@ class VMInitialization @Inject constructor(
     private fun frmValChgIndustry(industryKey: String) =
         _uiState.update { it.copy(panelInputFormState = it.panelInputFormState.copy(industryKey = industryKey)) }
     private fun frmValChgIndustryAdditionalInfo(industryAdditionalInfo: String) =
+        /*TODO TEST USING UPDATE*/
         if(industryAdditionalInfo.length <= 100) _uiState.update { it.copy(panelInputFormState = it.panelInputFormState.copy(industryAdditionalInfo = industryAdditionalInfo)) }
         else _uiState.update { it.copy(panelInputFormState = it.panelInputFormState.copy(industryAdditionalInfo = industryAdditionalInfo.substring(0, 100))) }
     private fun frmValChgLegalType(legalTypeKey: String) =
         _uiState.update { it.copy(panelInputFormState = it.panelInputFormState.copy(legalTypeKey = legalTypeKey)) }
     private fun frmValChgLegalTypeAdditionalInfo(legalTypeAdditionalInfo: String) =
+        /*TODO TEST USING UPDATE*/
         if(legalTypeAdditionalInfo.length <= 100) _uiState.update { it.copy(panelInputFormState = it.panelInputFormState.copy(legalTypeAdditionalInfo = legalTypeAdditionalInfo)) }
         else _uiState.update { it.copy(panelInputFormState = it.panelInputFormState.copy(legalTypeAdditionalInfo = legalTypeAdditionalInfo.substring(0, 100))) }
     private fun formSubmitBtnShouldEnable() {
