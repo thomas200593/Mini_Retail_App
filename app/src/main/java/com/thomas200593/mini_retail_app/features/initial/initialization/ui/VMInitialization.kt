@@ -255,6 +255,7 @@ class VMInitialization @Inject constructor(
     private fun frmValChgLegalName(legalName: String) {
         /*TODO: Trim Text*/
         _uiState.update { it.copy(panelInputFormState = it.panelInputFormState.copy(legalName = legalName)) }
+            .also { frmVldLegalName() }
         formSubmitBtnShouldEnable()
     }
     private fun frmVldLegalName(): Boolean {
@@ -270,6 +271,7 @@ class VMInitialization @Inject constructor(
     private fun frmValChgCommonName(commonName: String) {
         /*TODO: Trim Text*/
         _uiState.update { it.copy(panelInputFormState = it.panelInputFormState.copy(commonName = commonName)) }
+            .also { frmVldCommonName() }
         formSubmitBtnShouldEnable()
     }
     private fun frmVldCommonName(): Boolean {
