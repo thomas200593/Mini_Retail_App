@@ -1,6 +1,7 @@
 package com.thomas200593.mini_retail_app.features.initial.initialization.domain
 
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.RepoIndustries
+import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.RepoLegalDocType
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.RepoLegalType
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers.Dispatchers.IO
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.di.Dispatcher
@@ -16,19 +17,22 @@ class UCGetInitializationData @Inject constructor(
     private val ucGetConfGenLanguage: UCGetConfGenLanguage,
     private val repoIndustries: RepoIndustries,
     private val repoLegalType: RepoLegalType,
+    private val repoLegalDocType: RepoLegalDocType,
     @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
 ){
     operator fun invoke() = combine(
         ucGetConfGenLanguage.invoke(),
         repoIndustries.getRefData(),
         repoLegalType.getRefData(),
-    ){ confGenLang, industries, legalType ->
+        repoLegalDocType.getRefData(),
+    ){ confGenLang, industries, legalType, legalDocType ->
         Success(
             data = Initialization(
                 configCurrent = confGenLang.configCurrent,
                 languages = confGenLang.languages,
                 industries = industries,
-                legalType = legalType
+                legalType = legalType,
+                legalDocType = legalDocType
             )
         )
     }.flowOn(ioDispatcher)

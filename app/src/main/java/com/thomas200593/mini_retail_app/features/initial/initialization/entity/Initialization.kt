@@ -7,5 +7,6 @@ data class Initialization(
     val configCurrent: ConfigCurrent,
     val languages: Set<Language>,
     val industries: Map<String, String>,
-    val legalType: Map<String, String>
+    val legalType: Map<String, String>,
+    val legalDocType: Map<String, String>
 )

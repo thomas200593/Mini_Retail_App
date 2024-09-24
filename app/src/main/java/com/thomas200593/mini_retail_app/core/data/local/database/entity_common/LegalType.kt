@@ -32,7 +32,6 @@ class RepoLegalTypeImpl @Inject constructor(
 ) : RepoLegalType {
     override fun getIdentityKeyDefault(): String =
         StringArrayResource(BizLegalType).asMap(context).entries.first().key
-
     override fun getRefData(): Flow<Map<String, String>> =
         flowOf(StringArrayResource(BizLegalType).asMap(context)).flowOn(ioDispatcher)
 }

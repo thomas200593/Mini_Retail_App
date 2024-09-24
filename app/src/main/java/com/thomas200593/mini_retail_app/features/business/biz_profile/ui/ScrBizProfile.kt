@@ -798,7 +798,7 @@ private fun BizIdentitySection(
                                         overflow = Ellipsis
                                     )
                                     Text(
-                                        text = it.toString(),
+                                        text = it,
                                         style = typography.bodyMedium
                                     )
                                 }
@@ -2072,7 +2072,7 @@ private fun Preview(){
                                     auditTrail = AuditTrail(),
                                     additionalInfo = "PT",
                                     legalDocumentType = LegalDocumentType(
-                                        identifierKey = 0,
+                                        identifierKey = ""/*TODO*/,
                                         additionalInfo = "Doc No Comp-00001",
                                         auditTrail = AuditTrail()
                                     )

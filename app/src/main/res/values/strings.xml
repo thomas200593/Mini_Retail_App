@@ -135,4 +135,6 @@
     <string name="str_auth_success">Authentication Success!</string>
     <string name="str_biz_industry_additional_info">Tell us a bit about your industry (optional).</string>
     <string name="str_biz_legal_type_additional_info">Tell us a bit about your business legal type (optional).</string>
+    <string name="str_biz_legal_docs">Business Legal Documents</string>
+    <string name="str_biz_legal_doc_type_additional_info">Tell us a bit about your business legal document type (optional).</string>
 </resources>
