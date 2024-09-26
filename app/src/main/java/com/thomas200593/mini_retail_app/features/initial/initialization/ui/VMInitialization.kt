@@ -13,12 +13,15 @@ import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.L
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.RepoIndustries
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.RepoLegalDocType
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.RepoLegalType
+import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.RepoTaxation
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.Taxation
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers.Dispatchers.IO
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.di.Dispatcher
+import com.thomas200593.mini_retail_app.core.design_system.util.HlpCountry
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
 import com.thomas200593.mini_retail_app.core.ui.component.CustomForm.Component.UseCase.InputFieldValidation.RegularTextValidation
 import com.thomas200593.mini_retail_app.core.ui.component.CustomForm.Component.UseCase.UiText
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.entity.Country
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_language.entity.Language
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_language.repository.RepoConfGenLanguage
 import com.thomas200593.mini_retail_app.features.business.biz_profile.entity.BizName
@@ -64,6 +67,7 @@ class VMInitialization @Inject constructor(
     private val repoIndustries: RepoIndustries,
     private val repoLegalType: RepoLegalType,
     private val repoLegalDocType: RepoLegalDocType,
+    private val repoTaxation: RepoTaxation,
     @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
     sealed interface UiStateInitialization{
@@ -161,7 +165,7 @@ class VMInitialization @Inject constructor(
         bizName = BizName(legalName = "My-Corporation", commonName = "My Corp"),
         bizIndustry = Industries(identityKey = repoIndustries.getIdentityKeyDefault()),
         bizLegalType = LegalType(identifierKey = repoLegalType.getIdentityKeyDefault()),
-        bizTaxation = Taxation(identifierKey = 0),
+        bizTaxation = Taxation(identifierKey = repoTaxation.getIdentityKeyDefault()),
         auditTrail = AuditTrail()
     )
     private val _uiState = MutableStateFlow(UiState())
@@ -226,6 +230,11 @@ class VMInitialization @Inject constructor(
         legalTypeAdditionalInfo: String = String(),
         legalDocTypeKey: String = repoLegalDocType.getIdentityKeyDefault(),
         legalDocTypeAdditionalInfo: String = String(),
+        taxationTypeKey: String = repoTaxation.getIdentityKeyDefault(),
+        taxationIdDocNumber: String = String(),
+        taxIssuerCountry: Country? = HlpCountry.COUNTRY_DEFAULT,
+        taxRatePercentage: Double = 0.00,
+        taxIncluded: Boolean = false,
         fldSubmitBtnEnabled: Boolean = false
     ) = _uiState.update {
         it.copy(

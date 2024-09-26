@@ -63,6 +63,7 @@ import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AppAlertD
 import com.thomas200593.mini_retail_app.core.ui.component.CustomForm.Component.TextInput
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.LoadingScreen
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.entity.AppConfig.ConfigCurrent
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.entity.Country
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_language.entity.Language
 import com.thomas200593.mini_retail_app.features.business.biz_profile.entity.BizName
 import com.thomas200593.mini_retail_app.features.business.biz_profile.entity.BizProfileShort
@@ -245,10 +246,7 @@ private fun ScreenContent(
 ) {
     Surface {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(8.dp)
-                .verticalScroll(rememberScrollState())
+            modifier = Modifier.fillMaxSize().padding(8.dp).verticalScroll(rememberScrollState())
                 .imePadding(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(30.dp, Alignment.Top)
@@ -305,9 +303,7 @@ private fun LanguageSection(
             onExpandedChange = { expanded = expanded.not() }
         ) {
             TextButton(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .menuAnchor(PrimaryNotEditable, true),
+                modifier = Modifier.fillMaxWidth().menuAnchor(PrimaryNotEditable, true),
                 border = BorderStroke(1.dp, Color(0xFF747775)),
                 shape = MaterialTheme.shapes.medium,
                 onClick = { expanded = true }) {
@@ -395,9 +391,7 @@ private fun PanelWelcomeMessage(
         )
     }
     Surface(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
+        modifier = Modifier.fillMaxWidth().padding(16.dp),
         shape = MaterialTheme.shapes.medium,
         color = MaterialTheme.colorScheme.primaryContainer,
         contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
@@ -408,9 +402,7 @@ private fun PanelWelcomeMessage(
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
+                modifier = Modifier.fillMaxWidth().padding(16.dp),
                 text = stringResource(R.string.str_init_welcome_message),
                 style = MaterialTheme.typography.labelLarge,
                 textAlign = TextAlign.Justify
@@ -536,9 +528,7 @@ private fun PanelFormInitManualBizProfile(
                     onExpandedChange = { expanded = expanded.not() }
                 ) {
                     TextButton(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .menuAnchor(PrimaryNotEditable, true),
+                        modifier = Modifier.fillMaxWidth().menuAnchor(PrimaryNotEditable, true),
                         border = BorderStroke(1.dp, Color(0xFF747775)),
                         shape = MaterialTheme.shapes.small,
                         enabled = !(inputFormState.industryKey.isEmpty() || inputFormState.industryKey.isBlank()),
@@ -669,6 +659,8 @@ private fun PanelFormInitManualBizProfile(
                 thickness = 2.dp,
                 color = MaterialTheme.colorScheme.onSurface
             )
+
+            /*TODO: Give it radio*/
             Text(
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(R.string.str_biz_legal_docs),
@@ -771,7 +763,13 @@ private fun PanelFormInitManualBizProfile(
                                             additionalInfo = inputFormState.legalDocTypeAdditionalInfo
                                         )
                                     ),
-                                    bizTaxation = Taxation(identifierKey = 0),
+                                    bizTaxation = Taxation(
+                                        identifierKey = "biz_tax_type_00001", /*TODO*/
+                                        taxIdDocNumber = "", /*TODO*/
+                                        taxIncluded = false, /*TODO*/
+                                        taxIssuerCountry = null, /*TODO*/
+                                        taxRatePercentage = 0.00 /*TODO*/
+                                    ),
                                     auditTrail = AuditTrail()
                                 )
                             )
@@ -829,6 +827,18 @@ private fun Preview() = CustomThemes.ApplicationTheme {
                         ),
                         legalDocType = mapOf(
                             Pair("biz_legal_doc_type_00001", "Others")
+                        ),
+                        taxation = Pair(
+                            mapOf(
+                                Pair("biz_tax_type_00001", "Non Taxable Business Entity")
+                            ),
+                            listOf(
+                                Country(
+                                    "ID",
+                                    "IDN",
+                                    "Indonesia"
+                                )
+                            )
                         )
                     )
                 ),

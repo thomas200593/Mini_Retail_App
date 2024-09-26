@@ -137,4 +137,6 @@
     <string name="str_biz_legal_type_additional_info">Tell us a bit about your business legal type (optional).</string>
     <string name="str_biz_legal_docs">Business Legal Documents</string>
     <string name="str_biz_legal_doc_type_additional_info">Tell us a bit about your business legal document type (optional).</string>
+    <string name="str_yes">Yes</string>
+    <string name="str_no">No</string>
 </resources>
