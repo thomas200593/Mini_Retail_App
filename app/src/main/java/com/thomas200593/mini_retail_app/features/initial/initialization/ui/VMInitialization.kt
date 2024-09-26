@@ -37,6 +37,7 @@ import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMIni
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.DropdownEvents.DDLanguage
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.DropdownEvents.DDLegalDocType
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.DropdownEvents.DDLegalType
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.DropdownEvents.DDTaxationType
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.InputFormEvents.BtnCancelEvents
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.InputFormEvents.BtnSubmitEvents
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.InputFormEvents.CommonNameEvents
@@ -99,6 +100,7 @@ class VMInitialization @Inject constructor(
         val legalTypeAdditionalInfo: String = String(),
         val legalDocTypeKey: String = String(),
         val legalDocTypeAdditionalInfo: String = String(),
+        val taxationTypeKey: String = String(),
         val fldSubmitBtnEnabled: Boolean = false
     )
 
@@ -139,6 +141,9 @@ class VMInitialization @Inject constructor(
             }
             sealed interface DDLegalDocType: DropdownEvents {
                 data class OnSelect(val legalDocTypeKey: String): DDLegalDocType
+            }
+            sealed interface DDTaxationType: DropdownEvents {
+                data class OnSelect(val taxationTypeKey: String): DDTaxationType
             }
         }
         sealed interface ButtonEvents: UiEvents {
@@ -191,6 +196,7 @@ class VMInitialization @Inject constructor(
             is LegalDocTypeAdditionalInfoEvents.ValueChanged ->
                 if(events.additionalInfo.length <= 100) frmValChgLegalDocTypeAdditionalInfo(events.additionalInfo.trim())
                 else frmValChgLegalDocTypeAdditionalInfo(events.additionalInfo.trim().substring(0, 100))
+            is DDTaxationType.OnSelect -> frmValChgTaxationType(events.taxationTypeKey)
             is BtnSubmitEvents.OnClick -> doInitBizProfile(events.bizProfileShort)
             is BtnCancelEvents.OnClick -> doResetUiState()
             is DlgResSuccess.OnConfirm -> doResetUiState()
@@ -250,6 +256,7 @@ class VMInitialization @Inject constructor(
                 legalTypeAdditionalInfo = legalTypeAdditionalInfo,
                 legalDocTypeKey = legalDocTypeKey,
                 legalDocTypeAdditionalInfo = legalDocTypeAdditionalInfo,
+                taxationTypeKey = taxationTypeKey,
                 fldSubmitBtnEnabled = fldSubmitBtnEnabled
             )
         )
@@ -331,6 +338,8 @@ class VMInitialization @Inject constructor(
         _uiState.update { it.copy(panelInputFormState = it.panelInputFormState.copy(legalDocTypeKey = legalDocTypeKey)) }
     private fun frmValChgLegalDocTypeAdditionalInfo(legalDocTypeAdditionalInfo: String) =
         _uiState.update { it.copy(panelInputFormState = it.panelInputFormState.copy(legalDocTypeAdditionalInfo = legalDocTypeAdditionalInfo)) }
+    private fun frmValChgTaxationType(taxationTypeKey: String) =
+        _uiState.update { it.copy(panelInputFormState = it.panelInputFormState.copy(taxationTypeKey = taxationTypeKey)) }
     private fun formSubmitBtnShouldEnable() = _uiState.update {
         it.copy(
             panelInputFormState = it.panelInputFormState.copy(
