@@ -61,8 +61,8 @@ import com.thomas200593.mini_retail_app.core.ui.common.CustomThemes
 import com.thomas200593.mini_retail_app.core.ui.component.CustomButton.Common.AppIconButton
 import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AlertDialogContext
 import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AppAlertDialog
-import com.thomas200593.mini_retail_app.core.ui.component.CustomForm.Component.TextInput
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.LoadingScreen
+import com.thomas200593.mini_retail_app.core.ui.component.form.CustomForm.TextInput
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.entity.AppConfig.ConfigCurrent
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.entity.Country
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_language.entity.Language

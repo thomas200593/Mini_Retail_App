@@ -17,11 +17,9 @@ import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.R
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.Taxation
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers.Dispatchers.IO
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.di.Dispatcher
-import com.thomas200593.mini_retail_app.core.design_system.util.HlpCountry
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
-import com.thomas200593.mini_retail_app.core.ui.component.CustomForm.Component.UseCase.InputFieldValidation.RegularTextValidation
-import com.thomas200593.mini_retail_app.core.ui.component.CustomForm.Component.UseCase.UiText
-import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.entity.Country
+import com.thomas200593.mini_retail_app.core.ui.component.form.domain.RegularTextValidation
+import com.thomas200593.mini_retail_app.core.ui.component.form.state.UiText
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_language.entity.Language
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_language.repository.RepoConfGenLanguage
 import com.thomas200593.mini_retail_app.features.business.biz_profile.entity.BizName
@@ -173,6 +171,7 @@ class VMInitialization @Inject constructor(
         bizTaxation = Taxation(identifierKey = repoTaxation.getIdentityKeyDefault()),
         auditTrail = AuditTrail()
     )
+    private val _regularTextValidation = RegularTextValidation()
     private val _uiState = MutableStateFlow(UiState())
     val uiState = _uiState.asStateFlow()
 
@@ -182,8 +181,8 @@ class VMInitialization @Inject constructor(
             is DDLanguage.OnSelect -> onSelectLanguageEvent(events.language)
             is BtnInitDefaultBizProfileEvents.OnClick -> doInitBizProfile(_bizProfileDefault)
             is BtnInitManualBizProfileEvents.OnClick -> doShowPanelInputForm()
-            is LegalNameEvents.ValueChanged -> frmValChgLegalName(events.legalName.trim())
-            is CommonNameEvents.ValueChanged -> frmValChgCommonName(events.commonName.trim())
+            is LegalNameEvents.ValueChanged -> frmValChgLegalName(events.legalName)
+            is CommonNameEvents.ValueChanged -> frmValChgCommonName(events.commonName)
             is DDIndustry.OnSelect -> frmValChgIndustry(events.industryKey)
             is IndustryAdditionalInfoEvents.ValueChanged ->
                 if(events.additionalInfo.length <= 100) frmValChgIndustryAdditionalInfo(events.additionalInfo.trim())
@@ -219,53 +218,24 @@ class VMInitialization @Inject constructor(
     }
     private fun resetDialogState() =
         _uiState.update { it.copy(dialogState = DialogState()) }
-    private fun updatePanelWelcomeMessageState(visible: Boolean = true) =
-        _uiState.update { it.copy(panelWelcomeMessageState = it.panelWelcomeMessageState.copy(visible = visible)) }
     private fun resetPanelWelcomeMessageState() =
         _uiState.update { it.copy(panelWelcomeMessageState = PanelWelcomeMessageState()) }
-
-    private fun updatePanelInputFormState(
-        visible: Boolean = false,
-        legalName: String = String(),
-        legalNameError: UiText? = UiText.StringResource(R.string.str_field_required),
-        commonName: String = String(),
-        commonNameError: UiText? = UiText.StringResource(R.string.str_field_required),
-        industryKey: String = repoIndustries.getIdentityKeyDefault(),
-        industryAdditionalInfo: String = String(),
-        legalTypeKey: String = repoLegalType.getIdentityKeyDefault(),
-        legalTypeAdditionalInfo: String = String(),
-        legalDocTypeKey: String = repoLegalDocType.getIdentityKeyDefault(),
-        legalDocTypeAdditionalInfo: String = String(),
-        taxationTypeKey: String = repoTaxation.getIdentityKeyDefault(),
-        taxationIdDocNumber: String = String(),
-        taxIssuerCountry: Country? = HlpCountry.COUNTRY_DEFAULT,
-        taxRatePercentage: Double = 0.00,
-        taxIncluded: Boolean = false,
-        fldSubmitBtnEnabled: Boolean = false
-    ) = _uiState.update {
-        it.copy(
-            panelInputFormState = it.panelInputFormState.copy(
-                visible = visible,
-                legalName = legalName,
-                legalNameError = legalNameError,
-                commonName = commonName,
-                commonNameError = commonNameError,
-                industryKey = industryKey,
-                industryAdditionalInfo = industryAdditionalInfo,
-                legalTypeKey = legalTypeKey,
-                legalTypeAdditionalInfo = legalTypeAdditionalInfo,
-                legalDocTypeKey = legalDocTypeKey,
-                legalDocTypeAdditionalInfo = legalDocTypeAdditionalInfo,
-                taxationTypeKey = taxationTypeKey,
-                fldSubmitBtnEnabled = fldSubmitBtnEnabled
-            )
-        )
-    }
     private fun resetPanelInputFormState() =
         _uiState.update { it.copy(panelInputFormState = PanelInputFormState()) }
     private fun onOpenEvent() = viewModelScope.launch {
-        ucGetInitializationData().flowOn(ioDispatcher)
-            .collectLatest { result -> _uiState.update { it.copy(initialization = Success(result.data)) } }
+        ucGetInitializationData().flowOn(ioDispatcher).collectLatest { result ->
+            _uiState.update {
+                it.copy(
+                    initialization = Success(result.data),
+                    panelInputFormState = PanelInputFormState(
+                        industryKey = repoIndustries.getIdentityKeyDefault(),
+                        legalTypeKey = repoLegalType.getIdentityKeyDefault(),
+                        legalDocTypeKey = repoLegalDocType.getIdentityKeyDefault(),
+                        taxationTypeKey = repoTaxation.getIdentityKeyDefault()
+                    )
+                )
+            }
+        }
     }
     private fun onSelectLanguageEvent(language: Language) = viewModelScope.launch {
         repoConfGenLanguage.setLanguage(language)
@@ -273,7 +243,12 @@ class VMInitialization @Inject constructor(
     }
     private fun doInitBizProfile(bizProfileShort: BizProfileShort) = viewModelScope.launch {
         resetDialogState(); updateDialogState(dlgResLoading = true)
-        updatePanelWelcomeMessageState(true); updatePanelInputFormState(visible = false)
+        _uiState.update {
+            it.copy(
+                panelWelcomeMessageState = it.panelWelcomeMessageState.copy(visible = true),
+                panelInputFormState = it.panelInputFormState.copy(visible = false)
+            )
+        }
         val operationResult = runCatching { ucSetInitBizProfile.invoke(bizProfileShort) }.fold(
             onSuccess = { result -> if(result != null) Pair(true, result) else Pair(false, null) },
             onFailure = { throwable -> Pair(false, throwable) }
@@ -291,8 +266,14 @@ class VMInitialization @Inject constructor(
             updateDialogState(dlgResError = true)
         }
     }
-    private fun doShowPanelInputForm()
-    { updatePanelWelcomeMessageState(visible = false); updatePanelInputFormState(visible = true) }
+    private fun doShowPanelInputForm() {
+        _uiState.update {
+            it.copy(
+                panelWelcomeMessageState = it.panelWelcomeMessageState.copy(visible = false),
+                panelInputFormState = it.panelInputFormState.copy(visible = true)
+            )
+        }
+    }
     private fun doResetUiState() {
         resetPanelInputFormState()
         resetPanelWelcomeMessageState()
@@ -302,28 +283,44 @@ class VMInitialization @Inject constructor(
     }
 
     //Forms
-    private fun frmValChgLegalName(legalName: String) =
+    private fun frmValChgLegalName(legalName: String) {
         _uiState.update { it.copy(panelInputFormState = it.panelInputFormState.copy(legalName = legalName)) }
-            .also { frmVldLegalName(); formSubmitBtnShouldEnable() }
+        frmVldLegalName()
+        formSubmitBtnShouldEnable()
+    }
     private fun frmVldLegalName(): Boolean {
-        val result = RegularTextValidation().execute(
+        val result = _regularTextValidation.execute(
             input = _uiState.value.panelInputFormState.legalName,
             required = true,
             maxLength = 100
         )
-        _uiState.update { it.copy(panelInputFormState = it.panelInputFormState.copy(legalNameError = result.errorMessage)) }
+        _uiState.update {
+            it.copy(
+                panelInputFormState = it.panelInputFormState.copy(
+                    legalNameError = result.errorMessage
+                )
+            )
+        }
         return result.isSuccess
     }
-    private fun frmValChgCommonName(commonName: String) =
+    private fun frmValChgCommonName(commonName: String) = viewModelScope.launch(ioDispatcher) {
         _uiState.update { it.copy(panelInputFormState = it.panelInputFormState.copy(commonName = commonName)) }
-            .also { frmVldCommonName(); formSubmitBtnShouldEnable() }
+        frmVldCommonName()
+        formSubmitBtnShouldEnable()
+    }
     private fun frmVldCommonName(): Boolean {
-        val result = RegularTextValidation().execute(
+        val result = _regularTextValidation.execute(
             input = _uiState.value.panelInputFormState.commonName,
             required = true,
             maxLength = 100
         )
-        _uiState.update { it.copy(panelInputFormState = it.panelInputFormState.copy(commonNameError = result.errorMessage)) }
+        _uiState.update {
+            it.copy(
+                panelInputFormState = it.panelInputFormState.copy(
+                    commonNameError = result.errorMessage
+                )
+            )
+        }
         return result.isSuccess
     }
     private fun frmValChgIndustry(industryKey: String) =
@@ -340,11 +337,14 @@ class VMInitialization @Inject constructor(
         _uiState.update { it.copy(panelInputFormState = it.panelInputFormState.copy(legalDocTypeAdditionalInfo = legalDocTypeAdditionalInfo)) }
     private fun frmValChgTaxationType(taxationTypeKey: String) =
         _uiState.update { it.copy(panelInputFormState = it.panelInputFormState.copy(taxationTypeKey = taxationTypeKey)) }
-    private fun formSubmitBtnShouldEnable() = _uiState.update {
-        it.copy(
-            panelInputFormState = it.panelInputFormState.copy(
-                fldSubmitBtnEnabled = (frmVldLegalName() && frmVldCommonName())
+    private fun formSubmitBtnShouldEnable() {
+        val fldSubmitBtnShouldEnable = (frmVldLegalName() && frmVldCommonName())
+        _uiState.update {
+            it.copy(
+                panelInputFormState = it.panelInputFormState.copy(
+                    fldSubmitBtnEnabled = fldSubmitBtnShouldEnable
+                )
             )
-        )
+        }
     }
 }
