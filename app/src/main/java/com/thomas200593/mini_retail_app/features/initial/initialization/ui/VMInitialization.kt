@@ -227,7 +227,7 @@ class VMInitialization @Inject constructor(
             _uiState.update {
                 it.copy(
                     initialization = Success(result.data),
-                    panelInputFormState = PanelInputFormState(
+                    panelInputFormState = it.panelInputFormState.copy(
                         industryKey = repoIndustries.getIdentityKeyDefault(),
                         legalTypeKey = repoLegalType.getIdentityKeyDefault(),
                         legalDocTypeKey = repoLegalDocType.getIdentityKeyDefault(),
