@@ -18,9 +18,11 @@ import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.R
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.Taxation
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers.Dispatchers.IO
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.di.Dispatcher
+import com.thomas200593.mini_retail_app.core.design_system.util.HlpCountry
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
 import com.thomas200593.mini_retail_app.core.ui.component.form.domain.RegularTextValidation
 import com.thomas200593.mini_retail_app.core.ui.component.form.state.UiText
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.entity.Country
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_language.entity.Language
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_language.repository.RepoConfGenLanguage
 import com.thomas200593.mini_retail_app.features.business.biz_profile.entity.BizName
@@ -36,6 +38,7 @@ import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMIni
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.DropdownEvents.DDLanguage
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.DropdownEvents.DDLegalDocType
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.DropdownEvents.DDLegalType
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.DropdownEvents.DDTaxIssuerCountry
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.DropdownEvents.DDTaxationType
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.InputFormEvents.BtnCancelEvents
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.InputFormEvents.BtnSubmitEvents
@@ -44,6 +47,8 @@ import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMIni
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.InputFormEvents.LegalDocTypeAdditionalInfoEvents
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.InputFormEvents.LegalNameEvents
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.InputFormEvents.LegalTypeAdditionalInfoEvents
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.InputFormEvents.TaxIdDocNumberEvents
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.InputFormEvents.TaxRatePercentageEvents
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.OnOpenEvents
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiStateInitialization.Loading
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiStateInitialization.Success
@@ -100,6 +105,10 @@ class VMInitialization @Inject constructor(
         val legalDocTypeKey: String = String(),
         val legalDocTypeAdditionalInfo: String = String(),
         val taxationTypeKey: String = String(),
+        val taxIdDocNumber: String = String(),
+        val taxIssuerCountry: Country = HlpCountry.COUNTRY_DEFAULT,
+        val taxRatePercentage: Double = 0.00,
+        val taxIncluded: Boolean = false,
         val fldSubmitBtnEnabled: Boolean = false
     )
 
@@ -120,6 +129,12 @@ class VMInitialization @Inject constructor(
             }
             sealed interface LegalDocTypeAdditionalInfoEvents: InputFormEvents {
                 data class ValueChanged(val additionalInfo: String): LegalDocTypeAdditionalInfoEvents
+            }
+            sealed interface TaxIdDocNumberEvents : InputFormEvents {
+                data class ValueChanged(val taxIdDocNumber: String): TaxIdDocNumberEvents
+            }
+            sealed interface TaxRatePercentageEvents : InputFormEvents {
+                data class ValueChanged(val taxRatePercentage: Int): TaxRatePercentageEvents
             }
             sealed interface BtnSubmitEvents: InputFormEvents {
                 data class OnClick(val bizProfileShort: BizProfileShort): BtnSubmitEvents
@@ -143,6 +158,9 @@ class VMInitialization @Inject constructor(
             }
             sealed interface DDTaxationType: DropdownEvents {
                 data class OnSelect(val taxationTypeKey: String): DDTaxationType
+            }
+            sealed interface DDTaxIssuerCountry: DropdownEvents {
+                data class OnSelect(val taxIssuerCountry: Country): DDTaxIssuerCountry
             }
         }
         sealed interface ButtonEvents: UiEvents {
@@ -174,7 +192,9 @@ class VMInitialization @Inject constructor(
                 identifierKey = repoLegalDocType.getIdentityKeyDefault()
             )
         ),
-        bizTaxation = Taxation(identifierKey = repoTaxation.getIdentityKeyDefault()),
+        bizTaxation = Taxation(
+            identifierKey = repoTaxation.getIdentityKeyDefault()
+        ),
         auditTrail = AuditTrail()
     )
     private val _regularTextValidation = RegularTextValidation()
@@ -187,8 +207,8 @@ class VMInitialization @Inject constructor(
             is DDLanguage.OnSelect -> onSelectLanguageEvent(events.language)
             is BtnInitDefaultBizProfileEvents.OnClick -> doInitBizProfile(_bizProfileDefault)
             is BtnInitManualBizProfileEvents.OnClick -> doShowPanelInputForm()
-            is LegalNameEvents.ValueChanged -> frmValChgLegalName(events.legalName)
-            is CommonNameEvents.ValueChanged -> frmValChgCommonName(events.commonName)
+            is LegalNameEvents.ValueChanged -> frmValChgLegalName(events.legalName.trim())
+            is CommonNameEvents.ValueChanged -> frmValChgCommonName(events.commonName.trim())
             is DDIndustry.OnSelect -> frmValChgIndustry(events.industryKey)
             is IndustryAdditionalInfoEvents.ValueChanged ->
                 if(events.additionalInfo.length <= 100) frmValChgIndustryAdditionalInfo(events.additionalInfo.trim())
@@ -202,6 +222,9 @@ class VMInitialization @Inject constructor(
                 if(events.additionalInfo.length <= 100) frmValChgLegalDocTypeAdditionalInfo(events.additionalInfo.trim())
                 else frmValChgLegalDocTypeAdditionalInfo(events.additionalInfo.trim().substring(0, 100))
             is DDTaxationType.OnSelect -> frmValChgTaxationType(events.taxationTypeKey)
+            is TaxIdDocNumberEvents.ValueChanged -> frmValChgTaxIdDocNumber(events.taxIdDocNumber.trim())
+            is DDTaxIssuerCountry.OnSelect -> frmValChgTaxIssuerCountry(events.taxIssuerCountry)
+            is TaxRatePercentageEvents.ValueChanged -> frmValChgTaxRatePercentage(events.taxRatePercentage)
             is BtnSubmitEvents.OnClick -> doInitBizProfile(events.bizProfileShort)
             is BtnCancelEvents.OnClick -> doResetUiState()
             is DlgResSuccess.OnConfirm -> doResetUiState()
@@ -222,22 +245,26 @@ class VMInitialization @Inject constructor(
             )
         )
     }
-    private fun resetDialogState() =
-        _uiState.update { it.copy(dialogState = DialogState()) }
-    private fun resetPanelWelcomeMessageState() =
-        _uiState.update { it.copy(panelWelcomeMessageState = PanelWelcomeMessageState()) }
-    private fun resetPanelInputFormState() =
-        _uiState.update { it.copy(panelInputFormState = PanelInputFormState()) }
+    private fun resetDialogState() = _uiState.update {
+        it.copy(dialogState = DialogState())
+    }
+    private fun resetPanelWelcomeMessageState() = _uiState.update {
+        it.copy(panelWelcomeMessageState = PanelWelcomeMessageState())
+    }
+    private fun resetPanelInputFormState() = _uiState.update {
+        it.copy(panelInputFormState = PanelInputFormState())
+    }
     private fun onOpenEvent() = viewModelScope.launch {
         ucGetInitializationData().flowOn(ioDispatcher).collectLatest { result ->
             _uiState.update {
                 it.copy(
-                    initialization = Success(result.data),
+                    initialization = Success(data = result.data),
                     panelInputFormState = it.panelInputFormState.copy(
                         industryKey = repoIndustries.getIdentityKeyDefault(),
                         legalTypeKey = repoLegalType.getIdentityKeyDefault(),
                         legalDocTypeKey = repoLegalDocType.getIdentityKeyDefault(),
-                        taxationTypeKey = repoTaxation.getIdentityKeyDefault()
+                        taxationTypeKey = repoTaxation.getIdentityKeyDefault(),
+                        taxIssuerCountry = HlpCountry.COUNTRY_DEFAULT
                     )
                 )
             }
@@ -329,20 +356,76 @@ class VMInitialization @Inject constructor(
         }
         return result.isSuccess
     }
-    private fun frmValChgIndustry(industryKey: String) =
-        _uiState.update { it.copy(panelInputFormState = it.panelInputFormState.copy(industryKey = industryKey)) }
-    private fun frmValChgIndustryAdditionalInfo(industryAdditionalInfo: String) =
-        _uiState.update { it.copy(panelInputFormState = it.panelInputFormState.copy(industryAdditionalInfo = industryAdditionalInfo)) }
-    private fun frmValChgLegalType(legalTypeKey: String) =
-        _uiState.update { it.copy(panelInputFormState = it.panelInputFormState.copy(legalTypeKey = legalTypeKey)) }
-    private fun frmValChgLegalTypeAdditionalInfo(legalTypeAdditionalInfo: String) =
-        _uiState.update { it.copy(panelInputFormState = it.panelInputFormState.copy(legalTypeAdditionalInfo = legalTypeAdditionalInfo)) }
-    private fun frmValChgLegalDocType(legalDocTypeKey: String) =
-        _uiState.update { it.copy(panelInputFormState = it.panelInputFormState.copy(legalDocTypeKey = legalDocTypeKey)) }
-    private fun frmValChgLegalDocTypeAdditionalInfo(legalDocTypeAdditionalInfo: String) =
-        _uiState.update { it.copy(panelInputFormState = it.panelInputFormState.copy(legalDocTypeAdditionalInfo = legalDocTypeAdditionalInfo)) }
-    private fun frmValChgTaxationType(taxationTypeKey: String) =
-        _uiState.update { it.copy(panelInputFormState = it.panelInputFormState.copy(taxationTypeKey = taxationTypeKey)) }
+    private fun frmValChgIndustry(industryKey: String) = _uiState.update {
+        it.copy(
+            panelInputFormState = it.panelInputFormState.copy(
+                industryKey = industryKey
+            )
+        )
+    }
+    private fun frmValChgIndustryAdditionalInfo(industryAdditionalInfo: String) = _uiState.update {
+        it.copy(
+            panelInputFormState = it.panelInputFormState.copy(
+                industryAdditionalInfo = industryAdditionalInfo
+            )
+        )
+    }
+    private fun frmValChgLegalType(legalTypeKey: String) = _uiState.update {
+        it.copy(
+            panelInputFormState = it.panelInputFormState.copy(
+                legalTypeKey = legalTypeKey
+            )
+        )
+    }
+    private fun frmValChgLegalTypeAdditionalInfo(legalTypeAdditionalInfo: String) = _uiState.update {
+        it.copy(
+            panelInputFormState = it.panelInputFormState.copy(
+                legalTypeAdditionalInfo = legalTypeAdditionalInfo
+            )
+        )
+    }
+    private fun frmValChgLegalDocType(legalDocTypeKey: String) = _uiState.update {
+        it.copy(
+            panelInputFormState = it.panelInputFormState.copy(
+                legalDocTypeKey = legalDocTypeKey
+            )
+        )
+    }
+    private fun frmValChgLegalDocTypeAdditionalInfo(legalDocTypeAdditionalInfo: String) = _uiState.update {
+        it.copy(
+            panelInputFormState = it.panelInputFormState.copy(
+                legalDocTypeAdditionalInfo = legalDocTypeAdditionalInfo
+            )
+        )
+    }
+    private fun frmValChgTaxationType(taxationTypeKey: String) = _uiState.update {
+        it.copy(
+            panelInputFormState = it.panelInputFormState.copy(
+                taxationTypeKey = taxationTypeKey
+            )
+        )
+    }
+    private fun frmValChgTaxIdDocNumber(taxIdDocNumber: String) = _uiState.update {
+        it.copy(
+            panelInputFormState = it.panelInputFormState.copy(
+                taxIdDocNumber = taxIdDocNumber
+            )
+        )
+    }
+    private fun frmValChgTaxIssuerCountry(taxIssuerCountry: Country) = _uiState.update {
+        it.copy(
+            panelInputFormState = it.panelInputFormState.copy(
+                taxIssuerCountry = taxIssuerCountry
+            )
+        )
+    }
+    private fun frmValChgTaxRatePercentage(taxRatePercentage: Int) = _uiState.update {
+        it.copy(
+            panelInputFormState = it.panelInputFormState.copy(
+                taxRatePercentage = taxRatePercentage.toDouble()
+            )
+        )
+    }
     private fun formSubmitBtnShouldEnable() {
         val fldSubmitBtnShouldEnable = (frmVldLegalName() && frmVldCommonName())
         _uiState.update {

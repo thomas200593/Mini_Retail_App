@@ -35,6 +35,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -80,6 +81,7 @@ import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMIni
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.DropdownEvents.DDLanguage
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.DropdownEvents.DDLegalDocType
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.DropdownEvents.DDLegalType
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.DropdownEvents.DDTaxIssuerCountry
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.DropdownEvents.DDTaxationType
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.InputFormEvents.BtnCancelEvents
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.InputFormEvents.BtnSubmitEvents
@@ -88,6 +90,8 @@ import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMIni
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.InputFormEvents.LegalDocTypeAdditionalInfoEvents
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.InputFormEvents.LegalNameEvents
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.InputFormEvents.LegalTypeAdditionalInfoEvents
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.InputFormEvents.TaxIdDocNumberEvents
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.InputFormEvents.TaxRatePercentageEvents
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.OnOpenEvents
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiState
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiStateInitialization.Loading
@@ -119,6 +123,9 @@ fun ScrInitialization(
         onLegalDocTypeValueChanged = { vm.onEvent(DDLegalDocType.OnSelect(it)) },
         onLegalDocTypeAdditionalInfoValueChanged = { vm.onEvent(LegalDocTypeAdditionalInfoEvents.ValueChanged(it)) },
         onTaxationTypeValueChanged = { vm.onEvent(DDTaxationType.OnSelect(it)) },
+        onTaxIdDocNumberValueChanged = { vm.onEvent(TaxIdDocNumberEvents.ValueChanged(it)) },
+        onTaxIssuerCountryValueChanged = { vm.onEvent(DDTaxIssuerCountry.OnSelect(it)) },
+        onTaxRatePercentageValueChanged = { vm.onEvent(TaxRatePercentageEvents.ValueChanged(it)) },
         onFormSubmitBtnClicked = { vm.onEvent(BtnSubmitEvents.OnClick(it)) },
         onFormCancelBtnClicked = { vm.onEvent(BtnCancelEvents.OnClick) },
         onInitBizProfileSuccess = {
@@ -147,6 +154,9 @@ private fun ScrInitialization(
     onLegalDocTypeValueChanged: (String) -> Unit,
     onLegalDocTypeAdditionalInfoValueChanged: (String) -> Unit,
     onTaxationTypeValueChanged: (String) -> Unit,
+    onTaxIdDocNumberValueChanged: (String) -> Unit,
+    onTaxIssuerCountryValueChanged: (Country) -> Unit,
+    onTaxRatePercentageValueChanged: (Int) -> Unit,
     onFormSubmitBtnClicked: (BizProfileShort) -> Unit,
     onFormCancelBtnClicked: () -> Unit,
     onInitBizProfileSuccess: () -> Unit,
@@ -174,6 +184,9 @@ private fun ScrInitialization(
             onLegalDocTypeValueChanged = onLegalDocTypeValueChanged,
             onLegalDocTypeAdditionalInfoValueChanged = onLegalDocTypeAdditionalInfoValueChanged,
             onTaxationTypeValueChanged = onTaxationTypeValueChanged,
+            onTaxIdDocNumberValueChanged = onTaxIdDocNumberValueChanged,
+            onTaxIssuerCountryValueChanged = onTaxIssuerCountryValueChanged,
+            onTaxRatePercentageValueChanged = onTaxRatePercentageValueChanged,
             onFormSubmitBtnClicked = onFormSubmitBtnClicked,
             onFormCancelBtnClicked = onFormCancelBtnClicked
         )
@@ -247,6 +260,9 @@ private fun ScreenContent(
     onLegalDocTypeValueChanged: (String) -> Unit,
     onLegalDocTypeAdditionalInfoValueChanged: (String) -> Unit,
     onTaxationTypeValueChanged: (String) -> Unit,
+    onTaxIdDocNumberValueChanged: (String) -> Unit,
+    onTaxIssuerCountryValueChanged: (Country) -> Unit,
+    onTaxRatePercentageValueChanged: (Int) -> Unit,
     onFormSubmitBtnClicked: (BizProfileShort) -> Unit,
     onFormCancelBtnClicked: () -> Unit
 ) {
@@ -274,6 +290,7 @@ private fun ScreenContent(
                     legalType = initData.legalType,
                     legalDocType = initData.legalDocType,
                     taxationType = initData.taxation.first,
+                    taxIssuerCountry = initData.taxation.second,
                     inputFormState = uiState.panelInputFormState,
                     onLegalNameValueChanged = onLegalNameValueChanged,
                     onCommonNameValueChanged = onCommonNameValueChanged,
@@ -284,6 +301,9 @@ private fun ScreenContent(
                     onLegalDocTypeValueChanged = onLegalDocTypeValueChanged,
                     onLegalDocTypeAdditionalInfoValueChanged = onLegalDocTypeAdditionalInfoValueChanged,
                     onTaxationTypeValueChanged = onTaxationTypeValueChanged,
+                    onTaxIdDocNumberValueChanged = onTaxIdDocNumberValueChanged,
+                    onTaxIssuerCountryValueChanged = onTaxIssuerCountryValueChanged,
+                    onTaxRatePercentageValueChanged = onTaxRatePercentageValueChanged,
                     onFormSubmitBtnClicked = onFormSubmitBtnClicked,
                     onFormCancelBtnClicked = onFormCancelBtnClicked
                 )
@@ -439,6 +459,7 @@ private fun PanelFormInitManualBizProfile(
     legalType: Map<String, String>,
     legalDocType: Map<String, String>,
     taxationType: Map<String, String>,
+    taxIssuerCountry: List<Country>,
     inputFormState: PanelInputFormState,
     onLegalNameValueChanged: (String) -> Unit,
     onCommonNameValueChanged: (String) -> Unit,
@@ -449,6 +470,9 @@ private fun PanelFormInitManualBizProfile(
     onLegalDocTypeValueChanged: (String) -> Unit,
     onLegalDocTypeAdditionalInfoValueChanged: (String) -> Unit,
     onTaxationTypeValueChanged: (String) -> Unit,
+    onTaxIdDocNumberValueChanged: (String) -> Unit,
+    onTaxIssuerCountryValueChanged: (Country) -> Unit,
+    onTaxRatePercentageValueChanged: (Int) -> Unit,
     onFormSubmitBtnClicked: (BizProfileShort) -> Unit,
     onFormCancelBtnClicked: () -> Unit
 ) {
@@ -528,7 +552,7 @@ private fun PanelFormInitManualBizProfile(
             )
             Row(
                 modifier = Modifier.fillMaxWidth(1.0f),
-                horizontalArrangement = Arrangement.End,
+                horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 var expanded by remember { mutableStateOf(false) }
@@ -603,7 +627,7 @@ private fun PanelFormInitManualBizProfile(
             )
             Row(
                 modifier = Modifier.fillMaxWidth(1.0f),
-                horizontalArrangement = Arrangement.End,
+                horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 var expanded by remember { mutableStateOf(false) }
@@ -680,7 +704,7 @@ private fun PanelFormInitManualBizProfile(
             )
             Row(
                 modifier = Modifier.fillMaxWidth(1.0f),
-                horizontalArrangement = Arrangement.End,
+                horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 var expanded by remember { mutableStateOf(false) }
@@ -757,7 +781,7 @@ private fun PanelFormInitManualBizProfile(
             )
             Row(
                 modifier = Modifier.fillMaxWidth(1.0f),
-                horizontalArrangement = Arrangement.End,
+                horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 var expanded by remember { mutableStateOf(false) }
@@ -812,6 +836,81 @@ private fun PanelFormInitManualBizProfile(
                     }
                 }
             }
+            TextInput(
+                value = inputFormState.taxIdDocNumber,
+                onValueChange = { onTaxIdDocNumberValueChanged(it) },
+                label = stringResource(R.string.str_biz_tax_id_doc_number),
+                placeholder = stringResource(R.string.str_biz_tax_id_doc_number),
+                singleLine = true
+            )
+            Row(
+                modifier = Modifier.fillMaxWidth(1.0f),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                var expanded by remember { mutableStateOf(false) }
+                ExposedDropdownMenuBox(
+                    modifier = Modifier.fillMaxWidth(1.0f),
+                    expanded = expanded,
+                    onExpandedChange = { expanded = expanded.not() }
+                ) {
+                    TextButton(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .menuAnchor(PrimaryNotEditable, true),
+                        border = BorderStroke(1.dp, Color(0xFF747775)),
+                        shape = MaterialTheme.shapes.small,
+                        enabled = !(inputFormState.taxIssuerCountry.displayName.isEmpty() || inputFormState.taxIssuerCountry.displayName.isBlank()),
+                        onClick = { expanded = true }
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            inputFormState.taxIssuerCountry.displayName.let{
+                                Text(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    text = it,
+                                    textAlign = TextAlign.Start,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                            }
+                        }
+                        ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+                            taxIssuerCountry.forEach {
+                                DropdownMenuItem(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    text = {
+                                        Text(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            text = it.displayName
+                                        )
+                                    },
+                                    onClick = {
+                                        expanded = false
+                                        onTaxIssuerCountryValueChanged(it)
+                                    },
+                                    contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+            TextInput(
+                value = inputFormState.taxRatePercentage.toInt().toString(),
+                keyboardType = KeyboardType.Number,
+                onValueChange = {
+                    val newValue = it.take(3).toIntOrNull() ?: 0
+                    onTaxRatePercentageValueChanged(newValue)
+                },
+                label = stringResource(R.string.str_biz_tax_rate_percentage),
+                placeholder = stringResource(R.string.str_biz_tax_rate_percentage),
+                singleLine = true
+            )
+            //TaxIncluded
             Row(
                 modifier = Modifier.fillMaxWidth(1.0f),
                 horizontalArrangement = Arrangement.Center,
@@ -842,11 +941,11 @@ private fun PanelFormInitManualBizProfile(
                                         )
                                     ),
                                     bizTaxation = Taxation(
-                                        identifierKey = "biz_tax_type_00001", /*TODO*/
-                                        taxIdDocNumber = "", /*TODO*/
-                                        taxIncluded = false, /*TODO*/
-                                        taxIssuerCountry = null, /*TODO*/
-                                        taxRatePercentage = 0.00 /*TODO*/
+                                        identifierKey = inputFormState.taxationTypeKey,
+                                        taxIdDocNumber = inputFormState.taxIdDocNumber,
+                                        taxIncluded = inputFormState.taxIncluded,
+                                        taxIssuerCountry = inputFormState.taxIssuerCountry,
+                                        taxRatePercentage = inputFormState.taxRatePercentage
                                     ),
                                     auditTrail = AuditTrail()
                                 )
@@ -888,6 +987,9 @@ private fun Preview() = CustomThemes.ApplicationTheme {
             onLegalDocTypeValueChanged = {},
             onLegalDocTypeAdditionalInfoValueChanged = {},
             onTaxationTypeValueChanged = {},
+            onTaxIdDocNumberValueChanged = {},
+            onTaxIssuerCountryValueChanged = {},
+            onTaxRatePercentageValueChanged = {},
             onFormSubmitBtnClicked = {},
             onFormCancelBtnClicked = {},
             onInitBizProfileSuccess = {},
@@ -938,6 +1040,12 @@ private fun Preview() = CustomThemes.ApplicationTheme {
                     legalDocTypeKey = "biz_legal_doc_type_00001",
                     legalDocTypeAdditionalInfo = "Lain-lain",
                     taxationTypeKey = "biz_tax_type_00001",
+                    taxIdDocNumber = "1234567890",
+                    taxIssuerCountry = Country(
+                        "ID",
+                        "IDN",
+                        "Indonesia"
+                    ),
                     fldSubmitBtnEnabled = false
                 )
             )
