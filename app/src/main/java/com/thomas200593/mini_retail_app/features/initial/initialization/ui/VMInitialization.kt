@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.AuditTrail
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.Industries
+import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.LegalDocumentType
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.LegalType
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.RepoIndustries
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.RepoLegalDocType
@@ -167,7 +168,12 @@ class VMInitialization @Inject constructor(
         genId = ULID.randomULID(),
         bizName = BizName(legalName = "My-Corporation", commonName = "My Corp"),
         bizIndustry = Industries(identityKey = repoIndustries.getIdentityKeyDefault()),
-        bizLegalType = LegalType(identifierKey = repoLegalType.getIdentityKeyDefault()),
+        bizLegalType = LegalType(
+            identifierKey = repoLegalType.getIdentityKeyDefault(),
+            legalDocumentType = LegalDocumentType(
+                identifierKey = repoLegalDocType.getIdentityKeyDefault()
+            )
+        ),
         bizTaxation = Taxation(identifierKey = repoTaxation.getIdentityKeyDefault()),
         auditTrail = AuditTrail()
     )
