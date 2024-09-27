@@ -47,7 +47,7 @@ class NumberTextValidation: BaseValidation<String, ValidationResult> {
             if (!input.matches(it)) {
                 return ValidationResult(
                     isSuccess = false,
-                    errorMessage = UiText.DynamicString("Invalid format")
+                    errorMessage = UiText.StringResource(R.string.str_invalid_format)
                 )
             }
         }

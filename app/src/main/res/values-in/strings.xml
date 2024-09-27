@@ -132,4 +132,5 @@
     <string name="str_biz_legal_doc_type_additional_info">Informasikan sedikit mengenai bentuk dokumen legal bisnis Anda (Opsional).</string>
     <string name="str_yes">Ya</string>
     <string name="str_no">Tidak</string>
+    <string name="str_invalid_format">Format salah</string>
 </resources>
