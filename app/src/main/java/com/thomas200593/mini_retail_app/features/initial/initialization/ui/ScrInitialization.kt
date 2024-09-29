@@ -39,7 +39,6 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -59,7 +58,6 @@ import com.thomas200593.mini_retail_app.core.design_system.util.HlpStringArray.S
 import com.thomas200593.mini_retail_app.core.design_system.util.HlpStringArray.StringArrayResources.BizTaxationType
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
 import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons
-import com.thomas200593.mini_retail_app.core.ui.common.CustomThemes
 import com.thomas200593.mini_retail_app.core.ui.component.CustomButton.Common.AppIconButton
 import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AlertDialogContext
 import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AppAlertDialog
@@ -73,7 +71,6 @@ import com.thomas200593.mini_retail_app.features.business.biz_profile.entity.Biz
 import com.thomas200593.mini_retail_app.features.initial.initial.navigation.navToInitial
 import com.thomas200593.mini_retail_app.features.initial.initialization.entity.Initialization
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.PanelInputFormState
-import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.PanelWelcomeMessageState
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.ButtonEvents.BtnInitDefaultBizProfileEvents
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.ButtonEvents.BtnInitManualBizProfileEvents
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.ButtonEvents.BtnToggleTaxInclusionEvents
@@ -1059,91 +1056,5 @@ private fun PanelFormInitManualBizProfile(
                 )
             }
         }
-    }
-}
-
-@Composable
-@Preview
-private fun Preview() = CustomThemes.ApplicationTheme {
-    Column(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        ScrInitialization(
-            onSelectLanguage = {},
-            onInitBizProfileDefaultBtnClicked = {},
-            onInitBizProfileManualBtnClicked = {},
-            onLegalNameValueChanged = {},
-            onCommonNameValueChanged = {},
-            onIndustryValueChanged = {},
-            onIndustryAdditionalInfoValueChanged = {},
-            onLegalTypeValueChanged = {},
-            onLegalTypeAdditionalInfoValueChanged = {},
-            onLegalDocTypeValueChanged = {},
-            onLegalDocTypeAdditionalInfoValueChanged = {},
-            onTaxationTypeValueChanged = {},
-            onTaxIdDocNumberValueChanged = {},
-            onTaxIssuerCountryValueChanged = {},
-            onTaxRatePercentageValueChanged = {},
-            onTaxIncludedValueChanged = {},
-            onFormSubmitBtnClicked = {},
-            onFormCancelBtnClicked = {},
-            onInitBizProfileSuccess = {},
-            onInitBizProfileError = {},
-            uiState = UiState(
-                initialization = Success(
-                    data = Initialization(
-                        configCurrent = ConfigCurrent(),
-                        languages = setOf(Language.EN, Language.ID),
-                        industries = mapOf(
-                            Pair("biz_industry_00001", "Other Business"),
-                            Pair("biz_industry_00002", "Agriculture")
-                        ),
-                        legalType = mapOf(
-                            Pair("biz_legal_type_00001", "Others")
-                        ),
-                        legalDocType = mapOf(
-                            Pair("biz_legal_doc_type_00001", "Others")
-                        ),
-                        taxation = Pair(
-                            mapOf(
-                                Pair("biz_tax_type_00001", "Non Taxable Business Entity")
-                            ),
-                            listOf(
-                                Country(
-                                    "ID",
-                                    "IDN",
-                                    "Indonesia"
-                                )
-                            )
-                        )
-                    )
-                ),
-                initBizProfileOperationResult = ResourceState.Idle,
-                panelWelcomeMessageState = PanelWelcomeMessageState(
-                    visible = false
-                ),
-                panelInputFormState = PanelInputFormState(
-                    visible = true,
-                    legalName = "Test Legal Company Name",
-                    legalNameError = null,
-                    commonName = "Test Common Name",
-                    commonNameError = null,
-                    industryKey = "biz_industry_00001",
-                    industryAdditionalInfo = "Additional Information about Industry",
-                    legalTypeKey = "biz_legal_type_00001",
-                    legalTypeAdditionalInfo = "Additional Notes",
-                    legalDocTypeKey = "biz_legal_doc_type_00001",
-                    legalDocTypeAdditionalInfo = "Lain-lain",
-                    taxationTypeKey = "biz_tax_type_00001",
-                    taxIdDocNumber = "1234567890",
-                    taxIssuerCountry = Country(
-                        "ID",
-                        "IDN",
-                        "Indonesia"
-                    ),
-                    fldSubmitBtnEnabled = false
-                )
-            )
-        )
     }
 }

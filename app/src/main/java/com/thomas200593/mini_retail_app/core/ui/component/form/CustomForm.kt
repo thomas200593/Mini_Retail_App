@@ -61,10 +61,10 @@ object CustomForm {
         val isTypePassword = (keyboardType == KeyboardType.Password || keyboardType == KeyboardType.NumberPassword)
         val visualTransformation by rememberUpdatedState(
             newValue = if(isTypePassword) {
-                if(isVisible) {PasswordVisualTransformation()}
-                else {VisualTransformation.None}
+                if(isVisible) { PasswordVisualTransformation() }
+                else { VisualTransformation.None }
             }
-            else VisualTransformation.None
+            else { VisualTransformation.None }
         )
         val colorBorder by rememberUpdatedState(
             newValue = when{
