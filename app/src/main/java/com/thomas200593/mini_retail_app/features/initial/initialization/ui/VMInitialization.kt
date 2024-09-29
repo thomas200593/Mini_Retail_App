@@ -32,6 +32,7 @@ import com.thomas200593.mini_retail_app.features.initial.initialization.domain.U
 import com.thomas200593.mini_retail_app.features.initial.initialization.entity.Initialization
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.ButtonEvents.BtnInitDefaultBizProfileEvents
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.ButtonEvents.BtnInitManualBizProfileEvents
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.ButtonEvents.BtnToggleTaxInclusionEvents
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.DialogEvents.DlgResError
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.DialogEvents.DlgResSuccess
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.DropdownEvents.DDIndustry
@@ -170,6 +171,9 @@ class VMInitialization @Inject constructor(
             sealed interface BtnInitManualBizProfileEvents: ButtonEvents {
                 data object OnClick: BtnInitManualBizProfileEvents
             }
+            sealed interface BtnToggleTaxInclusionEvents : ButtonEvents {
+                data class OnClick(val taxIncluded: Boolean): BtnToggleTaxInclusionEvents
+            }
         }
         sealed interface DialogEvents: UiEvents {
             sealed interface DlgResSuccess: DialogEvents {
@@ -225,6 +229,7 @@ class VMInitialization @Inject constructor(
             is TaxIdDocNumberEvents.ValueChanged -> frmValChgTaxIdDocNumber(events.taxIdDocNumber.trim())
             is DDTaxIssuerCountry.OnSelect -> frmValChgTaxIssuerCountry(events.taxIssuerCountry)
             is TaxRatePercentageEvents.ValueChanged -> frmValChgTaxRatePercentage(events.taxRatePercentage)
+            is BtnToggleTaxInclusionEvents.OnClick -> frmValChgTaxIncluded(events.taxIncluded)
             is BtnSubmitEvents.OnClick -> doInitBizProfile(events.bizProfileShort)
             is BtnCancelEvents.OnClick -> doResetUiState()
             is DlgResSuccess.OnConfirm -> doResetUiState()
@@ -423,6 +428,13 @@ class VMInitialization @Inject constructor(
         it.copy(
             panelInputFormState = it.panelInputFormState.copy(
                 taxRatePercentage = taxRatePercentage.toDouble()
+            )
+        )
+    }
+    private fun frmValChgTaxIncluded(taxIncluded: Boolean) = _uiState.update {
+        it.copy(
+            panelInputFormState = it.panelInputFormState.copy(
+                taxIncluded = taxIncluded
             )
         )
     }

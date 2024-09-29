@@ -20,6 +20,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuAnchorType.Companion.PrimaryNotEditable
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -75,6 +76,7 @@ import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMIni
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.PanelWelcomeMessageState
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.ButtonEvents.BtnInitDefaultBizProfileEvents
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.ButtonEvents.BtnInitManualBizProfileEvents
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.ButtonEvents.BtnToggleTaxInclusionEvents
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.DialogEvents.DlgResError
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.DialogEvents.DlgResSuccess
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.DropdownEvents.DDIndustry
@@ -126,6 +128,7 @@ fun ScrInitialization(
         onTaxIdDocNumberValueChanged = { vm.onEvent(TaxIdDocNumberEvents.ValueChanged(it)) },
         onTaxIssuerCountryValueChanged = { vm.onEvent(DDTaxIssuerCountry.OnSelect(it)) },
         onTaxRatePercentageValueChanged = { vm.onEvent(TaxRatePercentageEvents.ValueChanged(it)) },
+        onTaxIncludedValueChanged = { vm.onEvent(BtnToggleTaxInclusionEvents.OnClick(it)) },
         onFormSubmitBtnClicked = { vm.onEvent(BtnSubmitEvents.OnClick(it)) },
         onFormCancelBtnClicked = { vm.onEvent(BtnCancelEvents.OnClick) },
         onInitBizProfileSuccess = {
@@ -157,6 +160,7 @@ private fun ScrInitialization(
     onTaxIdDocNumberValueChanged: (String) -> Unit,
     onTaxIssuerCountryValueChanged: (Country) -> Unit,
     onTaxRatePercentageValueChanged: (Int) -> Unit,
+    onTaxIncludedValueChanged: (Boolean) -> Unit,
     onFormSubmitBtnClicked: (BizProfileShort) -> Unit,
     onFormCancelBtnClicked: () -> Unit,
     onInitBizProfileSuccess: () -> Unit,
@@ -187,6 +191,7 @@ private fun ScrInitialization(
             onTaxIdDocNumberValueChanged = onTaxIdDocNumberValueChanged,
             onTaxIssuerCountryValueChanged = onTaxIssuerCountryValueChanged,
             onTaxRatePercentageValueChanged = onTaxRatePercentageValueChanged,
+            onTaxIncludedValueChanged = onTaxIncludedValueChanged,
             onFormSubmitBtnClicked = onFormSubmitBtnClicked,
             onFormCancelBtnClicked = onFormCancelBtnClicked
         )
@@ -263,6 +268,7 @@ private fun ScreenContent(
     onTaxIdDocNumberValueChanged: (String) -> Unit,
     onTaxIssuerCountryValueChanged: (Country) -> Unit,
     onTaxRatePercentageValueChanged: (Int) -> Unit,
+    onTaxIncludedValueChanged: (Boolean) -> Unit,
     onFormSubmitBtnClicked: (BizProfileShort) -> Unit,
     onFormCancelBtnClicked: () -> Unit
 ) {
@@ -304,6 +310,7 @@ private fun ScreenContent(
                     onTaxIdDocNumberValueChanged = onTaxIdDocNumberValueChanged,
                     onTaxIssuerCountryValueChanged = onTaxIssuerCountryValueChanged,
                     onTaxRatePercentageValueChanged = onTaxRatePercentageValueChanged,
+                    onTaxIncludedValueChanged = onTaxIncludedValueChanged,
                     onFormSubmitBtnClicked = onFormSubmitBtnClicked,
                     onFormCancelBtnClicked = onFormCancelBtnClicked
                 )
@@ -473,6 +480,7 @@ private fun PanelFormInitManualBizProfile(
     onTaxIdDocNumberValueChanged: (String) -> Unit,
     onTaxIssuerCountryValueChanged: (Country) -> Unit,
     onTaxRatePercentageValueChanged: (Int) -> Unit,
+    onTaxIncludedValueChanged: (Boolean) -> Unit,
     onFormSubmitBtnClicked: (BizProfileShort) -> Unit,
     onFormCancelBtnClicked: () -> Unit
 ) {
@@ -519,6 +527,10 @@ private fun PanelFormInitManualBizProfile(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
+            HorizontalDivider(
+                thickness = 2.dp,
+                color = MaterialTheme.colorScheme.onSurface
+            )
             TextInput(
                 value = inputFormState.legalName,
                 onValueChange = { onLegalNameValueChanged(it) },
@@ -549,6 +561,10 @@ private fun PanelFormInitManualBizProfile(
                 color = MaterialTheme.colorScheme.onSurface,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
+            )
+            HorizontalDivider(
+                thickness = 2.dp,
+                color = MaterialTheme.colorScheme.onSurface
             )
             Row(
                 modifier = Modifier.fillMaxWidth(1.0f),
@@ -624,6 +640,10 @@ private fun PanelFormInitManualBizProfile(
                 color = MaterialTheme.colorScheme.onSurface,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
+            )
+            HorizontalDivider(
+                thickness = 2.dp,
+                color = MaterialTheme.colorScheme.onSurface
             )
             Row(
                 modifier = Modifier.fillMaxWidth(1.0f),
@@ -702,6 +722,10 @@ private fun PanelFormInitManualBizProfile(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
+            HorizontalDivider(
+                thickness = 2.dp,
+                color = MaterialTheme.colorScheme.onSurface
+            )
             Row(
                 modifier = Modifier.fillMaxWidth(1.0f),
                 horizontalArrangement = Arrangement.Center,
@@ -779,6 +803,19 @@ private fun PanelFormInitManualBizProfile(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
+            HorizontalDivider(
+                thickness = 2.dp,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = stringResource(R.string.str_biz_tax_type_id),
+                textAlign = TextAlign.Start,
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurface,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
             Row(
                 modifier = Modifier.fillMaxWidth(1.0f),
                 horizontalArrangement = Arrangement.Center,
@@ -842,6 +879,15 @@ private fun PanelFormInitManualBizProfile(
                 label = stringResource(R.string.str_biz_tax_id_doc_number),
                 placeholder = stringResource(R.string.str_biz_tax_id_doc_number),
                 singleLine = true
+            )
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = stringResource(R.string.str_biz_tax_id_issuer_country),
+                textAlign = TextAlign.Start,
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurface,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
             Row(
                 modifier = Modifier.fillMaxWidth(1.0f),
@@ -910,7 +956,55 @@ private fun PanelFormInitManualBizProfile(
                 placeholder = stringResource(R.string.str_biz_tax_rate_percentage),
                 singleLine = true
             )
-            //TaxIncluded
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = stringResource(R.string.str_biz_tax_included),
+                    textAlign = TextAlign.Start,
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(1.0f),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Row(
+                        modifier = Modifier.weight(0.5f),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text =
+                                if(inputFormState.taxIncluded) stringResource(R.string.str_yes)
+                                else stringResource(R.string.str_no),
+                            textAlign = TextAlign.Start,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+                    Row(
+                        modifier = Modifier.weight(0.5f),
+                        horizontalArrangement = Arrangement.End,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        var checked by remember { mutableStateOf(inputFormState.taxIncluded) }
+                        Switch(
+                            modifier = Modifier,
+                            checked = checked,
+                            onCheckedChange = {
+                                checked = checked.not()
+                                onTaxIncludedValueChanged(checked)
+                            }
+                        )
+                    }
+                }
+            }
             Row(
                 modifier = Modifier.fillMaxWidth(1.0f),
                 horizontalArrangement = Arrangement.Center,
@@ -990,6 +1084,7 @@ private fun Preview() = CustomThemes.ApplicationTheme {
             onTaxIdDocNumberValueChanged = {},
             onTaxIssuerCountryValueChanged = {},
             onTaxRatePercentageValueChanged = {},
+            onTaxIncludedValueChanged = {},
             onFormSubmitBtnClicked = {},
             onFormCancelBtnClicked = {},
             onInitBizProfileSuccess = {},
