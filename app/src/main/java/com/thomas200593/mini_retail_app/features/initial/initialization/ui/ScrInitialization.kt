@@ -1016,24 +1016,24 @@ private fun PanelFormInitManualBizProfile(
                                     seqId = 0,
                                     genId = ULID.randomULID(),
                                     bizName = BizName(
-                                        legalName = inputFormState.legalName,
-                                        commonName = inputFormState.commonName
+                                        legalName = inputFormState.legalName.trim(),
+                                        commonName = inputFormState.commonName.trim()
                                     ),
                                     bizIndustry = Industries(
                                         identityKey = inputFormState.industryKey,
-                                        additionalInfo = inputFormState.industryAdditionalInfo
+                                        additionalInfo = inputFormState.industryAdditionalInfo.trim()
                                     ),
                                     bizLegalType = LegalType(
                                         identifierKey = inputFormState.legalTypeKey,
-                                        additionalInfo = inputFormState.legalTypeAdditionalInfo,
+                                        additionalInfo = inputFormState.legalTypeAdditionalInfo.trim(),
                                         legalDocumentType = LegalDocumentType(
                                             identifierKey = inputFormState.legalDocTypeKey,
-                                            additionalInfo = inputFormState.legalDocTypeAdditionalInfo
+                                            additionalInfo = inputFormState.legalDocTypeAdditionalInfo.trim()
                                         )
                                     ),
                                     bizTaxation = Taxation(
                                         identifierKey = inputFormState.taxationTypeKey,
-                                        taxIdDocNumber = inputFormState.taxIdDocNumber,
+                                        taxIdDocNumber = inputFormState.taxIdDocNumber.trim(),
                                         taxIncluded = inputFormState.taxIncluded,
                                         taxIssuerCountry = inputFormState.taxIssuerCountry,
                                         taxRatePercentage = inputFormState.taxRatePercentage

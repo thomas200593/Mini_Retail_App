@@ -280,41 +280,6 @@ class VMInitialization @Inject constructor(
         AppCompatDelegate.setApplicationLocales(LocaleListCompat.create(Locale(language.code)))
     }
     private fun doInitBizProfile(bizProfileShort: BizProfileShort) = viewModelScope.launch {
-        val inputData = bizProfileShort.copy(
-            seqId = bizProfileShort.seqId,
-            genId = bizProfileShort.genId,
-            bizName = bizProfileShort.bizName.copy(
-                legalName = bizProfileShort.bizName.legalName?.trim().orEmpty(),
-                commonName = bizProfileShort.bizName.commonName?.trim().orEmpty(),
-                auditTrail = bizProfileShort.auditTrail
-            ),
-            bizIndustry = bizProfileShort.bizIndustry.copy(
-                identityKey = bizProfileShort.bizIndustry.identityKey,
-                additionalInfo = bizProfileShort.bizIndustry.additionalInfo?.trim().orEmpty(),
-                auditTrail = bizProfileShort.bizIndustry.auditTrail
-            ),
-            bizLegalType = bizProfileShort.bizLegalType.copy(
-                identifierKey = bizProfileShort.bizLegalType.identifierKey,
-                additionalInfo = bizProfileShort.bizLegalType.additionalInfo?.trim().orEmpty(),
-                legalDocumentType = bizProfileShort.bizLegalType.legalDocumentType?.let {
-                    LegalDocumentType(
-                        identifierKey = it.identifierKey,
-                        additionalInfo = it.additionalInfo?.trim().orEmpty(),
-                        auditTrail = it.auditTrail
-                    )
-                },
-                auditTrail = bizProfileShort.bizLegalType.auditTrail
-            ),
-            bizTaxation = bizProfileShort.bizTaxation.copy(
-                identifierKey = bizProfileShort.bizTaxation.identifierKey,
-                taxIdDocNumber = bizProfileShort.bizTaxation.taxIdDocNumber?.trim().orEmpty(),
-                taxIssuerCountry = bizProfileShort.bizTaxation.taxIssuerCountry,
-                taxRatePercentage = bizProfileShort.bizTaxation.taxRatePercentage,
-                taxIncluded = bizProfileShort.bizTaxation.taxIncluded,
-                auditTrail = bizProfileShort.bizTaxation.auditTrail
-            ),
-            auditTrail = bizProfileShort.auditTrail
-        )
         resetDialogState(); updateDialogState(dlgResLoading = true)
         _uiState.update {
             it.copy(
@@ -323,7 +288,7 @@ class VMInitialization @Inject constructor(
             )
         }
         val operationResult = runCatching {
-            ucSetInitBizProfile.invoke(inputData)
+            ucSetInitBizProfile.invoke(bizProfileShort)
         }.fold(
             onSuccess = { result -> if(result != null) Pair(true, result) else Pair(false, null) },
             onFailure = { throwable -> Pair(false, throwable) }
