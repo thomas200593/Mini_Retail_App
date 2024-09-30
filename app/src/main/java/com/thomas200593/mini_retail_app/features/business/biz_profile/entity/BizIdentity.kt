@@ -20,10 +20,10 @@ data class BizIdentity(
 
 class TypeConvBizIdentity{
     @TypeConverter
-    fun toJson(bizIdentity: BizIdentity?): String =
+    fun toJson(bizIdentity: BizIdentity): String =
         Json.encodeToString(bizIdentity)
 
     @TypeConverter
-    fun fromJson(json: String): BizIdentity? =
+    fun fromJson(json: String): BizIdentity =
         Json.decodeFromString(json)
 }

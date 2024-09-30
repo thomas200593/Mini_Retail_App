@@ -520,45 +520,47 @@ private fun BizIdentitySection(
 
                         HorizontalDivider()
 
-                        bizProfile.bizIdentity.bizName.legalName?.let {
-                            Column(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalAlignment = Alignment.Start,
-                                verticalArrangement = Arrangement.Center
-                            ) {
-                                Text(
-                                    text = stringResource(R.string.str_biz_legal_name),
-                                    maxLines = 1,
-                                    fontWeight = FontWeight.Bold,
-                                    style = MaterialTheme.typography.labelSmall,
-                                    overflow = TextOverflow.Ellipsis
-                                )
-                                Text(
-                                    text = it,
-                                    style = MaterialTheme.typography.bodyMedium
-                                )
+                        bizProfile.bizIdentity.bizName.legalName
+                            .takeIf { it.isNotBlank() }?.let {
+                                Column(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalAlignment = Alignment.Start,
+                                    verticalArrangement = Arrangement.Center
+                                ) {
+                                    Text(
+                                        text = stringResource(R.string.str_biz_legal_name),
+                                        maxLines = 1,
+                                        fontWeight = FontWeight.Bold,
+                                        style = MaterialTheme.typography.labelSmall,
+                                        overflow = TextOverflow.Ellipsis
+                                    )
+                                    Text(
+                                        text = it,
+                                        style = MaterialTheme.typography.bodyMedium
+                                    )
+                                }
                             }
-                        }
 
-                        bizProfile.bizIdentity.bizName.commonName?.let {
-                            Column(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalAlignment = Alignment.Start,
-                                verticalArrangement = Arrangement.Center
-                            ) {
-                                Text(
-                                    text = stringResource(R.string.str_biz_common_name),
-                                    maxLines = 1,
-                                    fontWeight = FontWeight.Bold,
-                                    style = MaterialTheme.typography.labelSmall,
-                                    overflow = TextOverflow.Ellipsis
-                                )
-                                Text(
-                                    text = it,
-                                    style = MaterialTheme.typography.bodyMedium
-                                )
+                        bizProfile.bizIdentity.bizName.commonName
+                            .takeIf { it.isNotBlank() }?.let {
+                                Column(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalAlignment = Alignment.Start,
+                                    verticalArrangement = Arrangement.Center
+                                ) {
+                                    Text(
+                                        text = stringResource(R.string.str_biz_common_name),
+                                        maxLines = 1,
+                                        fontWeight = FontWeight.Bold,
+                                        style = MaterialTheme.typography.labelSmall,
+                                        overflow = TextOverflow.Ellipsis
+                                    )
+                                    Text(
+                                        text = it,
+                                        style = MaterialTheme.typography.bodyMedium
+                                    )
+                                }
                             }
-                        }
                     }
                 }
 
@@ -644,24 +646,25 @@ private fun BizIdentitySection(
                             }
                         }
 
-                        bizProfile.bizIdentity.industries.additionalInfo?.let {
-                            Column(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalAlignment = Alignment.Start,
-                                verticalArrangement = Arrangement.Center
-                            ) {
-                                Text(
-                                    text = stringResource(R.string.str_additional_info),
-                                    maxLines = 1,
-                                    fontWeight = FontWeight.Bold,
-                                    style = MaterialTheme.typography.labelSmall,
-                                    overflow = TextOverflow.Ellipsis
-                                )
-                                Text(
-                                    text = it,
-                                    style = MaterialTheme.typography.bodyMedium
-                                )
-                            }
+                        bizProfile.bizIdentity.industries.additionalInfo
+                            .takeIf{ it.isNotBlank() }?.let {
+                                Column(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalAlignment = Alignment.Start,
+                                    verticalArrangement = Arrangement.Center
+                                ) {
+                                    Text(
+                                        text = stringResource(R.string.str_additional_info),
+                                        maxLines = 1,
+                                        fontWeight = FontWeight.Bold,
+                                        style = MaterialTheme.typography.labelSmall,
+                                        overflow = TextOverflow.Ellipsis
+                                    )
+                                    Text(
+                                        text = it,
+                                        style = MaterialTheme.typography.bodyMedium
+                                    )
+                                }
                         }
                     }
                 }
@@ -747,25 +750,26 @@ private fun BizIdentitySection(
                             }
                         }
 
-                        bizProfile.bizIdentity.legalType.additionalInfo?.let {
-                            Column(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalAlignment = Alignment.Start,
-                                verticalArrangement = Arrangement.Center
-                            ) {
-                                Text(
-                                    text = stringResource(R.string.str_additional_info),
-                                    maxLines = 1,
-                                    fontWeight = FontWeight.Bold,
-                                    style = MaterialTheme.typography.labelSmall,
-                                    overflow = TextOverflow.Ellipsis
-                                )
-                                Text(
-                                    text = it,
-                                    style = MaterialTheme.typography.bodyMedium
-                                )
+                        bizProfile.bizIdentity.legalType.additionalInfo
+                            .takeIf { it.isNotBlank() }?.let {
+                                Column(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalAlignment = Alignment.Start,
+                                    verticalArrangement = Arrangement.Center
+                                ) {
+                                    Text(
+                                        text = stringResource(R.string.str_additional_info),
+                                        maxLines = 1,
+                                        fontWeight = FontWeight.Bold,
+                                        style = MaterialTheme.typography.labelSmall,
+                                        overflow = TextOverflow.Ellipsis
+                                    )
+                                    Text(
+                                        text = it,
+                                        style = MaterialTheme.typography.bodyMedium
+                                    )
+                                }
                             }
-                        }
 
                         if (bizProfile.bizIdentity.legalType.legalDocumentType != null) {
                             bizProfile.bizIdentity.legalType.legalDocumentType.identifierKey.let {
@@ -788,25 +792,26 @@ private fun BizIdentitySection(
                                 }
                             }
 
-                            bizProfile.bizIdentity.legalType.legalDocumentType.additionalInfo?.let {
-                                Column(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    horizontalAlignment = Alignment.Start,
-                                    verticalArrangement = Arrangement.Center
-                                ) {
-                                    Text(
-                                        text = stringResource(R.string.str_additional_info),
-                                        maxLines = 1,
-                                        fontWeight = FontWeight.Bold,
-                                        style = MaterialTheme.typography.labelSmall,
-                                        overflow = TextOverflow.Ellipsis
-                                    )
-                                    Text(
-                                        text = it,
-                                        style = MaterialTheme.typography.bodyMedium
-                                    )
+                            bizProfile.bizIdentity.legalType.legalDocumentType.additionalInfo
+                                .takeIf { it.isNotBlank() }?.let {
+                                    Column(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalAlignment = Alignment.Start,
+                                        verticalArrangement = Arrangement.Center
+                                    ) {
+                                        Text(
+                                            text = stringResource(R.string.str_additional_info),
+                                            maxLines = 1,
+                                            fontWeight = FontWeight.Bold,
+                                            style = MaterialTheme.typography.labelSmall,
+                                            overflow = TextOverflow.Ellipsis
+                                        )
+                                        Text(
+                                            text = it,
+                                            style = MaterialTheme.typography.bodyMedium
+                                        )
+                                    }
                                 }
-                            }
                         }
                     }
                 }
@@ -895,27 +900,28 @@ private fun BizIdentitySection(
                             }
                         }
 
-                        bizProfile.bizIdentity.taxation.taxIdDocNumber?.let {
-                            Column(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalAlignment = Alignment.Start,
-                                verticalArrangement = Arrangement.Center
-                            ) {
-                                Text(
-                                    text = stringResource(R.string.str_biz_tax_id_doc_number),
-                                    maxLines = 1,
-                                    fontWeight = FontWeight.Bold,
-                                    style = MaterialTheme.typography.labelSmall,
-                                    overflow = TextOverflow.Ellipsis
-                                )
-                                Text(
-                                    text = it,
-                                    style = MaterialTheme.typography.bodyMedium
-                                )
+                        bizProfile.bizIdentity.taxation.taxIdDocNumber
+                            .takeIf{ it.isNotBlank() }?.let {
+                                Column(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalAlignment = Alignment.Start,
+                                    verticalArrangement = Arrangement.Center
+                                ) {
+                                    Text(
+                                        text = stringResource(R.string.str_biz_tax_id_doc_number),
+                                        maxLines = 1,
+                                        fontWeight = FontWeight.Bold,
+                                        style = MaterialTheme.typography.labelSmall,
+                                        overflow = TextOverflow.Ellipsis
+                                    )
+                                    Text(
+                                        text = it,
+                                        style = MaterialTheme.typography.bodyMedium
+                                    )
+                                }
                             }
-                        }
 
-                        bizProfile.bizIdentity.taxation.taxIssuerCountry?.let {
+                        bizProfile.bizIdentity.taxation.taxIssuerCountry.let {
                             Column(
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalAlignment = Alignment.Start,
@@ -1148,13 +1154,14 @@ private fun BizAddressesSection(
                                         horizontalArrangement = Arrangement.Start,
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
-                                        address.label?.let {
-                                            Text(
-                                                text = it,
-                                                fontWeight = FontWeight.Bold,
-                                                style = MaterialTheme.typography.titleMedium
-                                            )
-                                        }
+                                        address.label
+                                            .takeIf { it.isNotBlank() }?.let {
+                                                Text(
+                                                    text = it,
+                                                    fontWeight = FontWeight.Bold,
+                                                    style = MaterialTheme.typography.titleMedium
+                                                )
+                                            }
                                     }
                                     Row(
                                         modifier = Modifier.weight(0.2f),
@@ -1222,67 +1229,70 @@ private fun BizAddressesSection(
                                         }
 
                                         //Label
-                                        address.label?.let {
-                                            Column(
-                                                modifier = Modifier.fillMaxWidth(),
-                                                horizontalAlignment = Alignment.Start,
-                                                verticalArrangement = Arrangement.Center
-                                            ) {
-                                                Text(
-                                                    text = stringResource(R.string.str_address_label),
-                                                    maxLines = 1,
-                                                    fontWeight = FontWeight.Bold,
-                                                    style = MaterialTheme.typography.labelSmall,
-                                                    overflow = TextOverflow.Ellipsis
-                                                )
-                                                Text(
-                                                    text = it,
-                                                    style = MaterialTheme.typography.bodyMedium
-                                                )
+                                        address.label
+                                            .takeIf{ it.isNotBlank() }?.let {
+                                                Column(
+                                                    modifier = Modifier.fillMaxWidth(),
+                                                    horizontalAlignment = Alignment.Start,
+                                                    verticalArrangement = Arrangement.Center
+                                                ) {
+                                                    Text(
+                                                        text = stringResource(R.string.str_address_label),
+                                                        maxLines = 1,
+                                                        fontWeight = FontWeight.Bold,
+                                                        style = MaterialTheme.typography.labelSmall,
+                                                        overflow = TextOverflow.Ellipsis
+                                                    )
+                                                    Text(
+                                                        text = it,
+                                                        style = MaterialTheme.typography.bodyMedium
+                                                    )
+                                                }
                                             }
-                                        }
 
                                         //Street Line
-                                        address.streetLine?.let {
-                                            Column(
-                                                modifier = Modifier.fillMaxWidth(),
-                                                horizontalAlignment = Alignment.Start,
-                                                verticalArrangement = Arrangement.Center
-                                            ) {
-                                                Text(
-                                                    text = stringResource(R.string.str_address_street_line),
-                                                    maxLines = 1,
-                                                    fontWeight = FontWeight.Bold,
-                                                    style = MaterialTheme.typography.labelSmall,
-                                                    overflow = TextOverflow.Ellipsis
-                                                )
-                                                Text(
-                                                    text = it,
-                                                    style = MaterialTheme.typography.bodyMedium
-                                                )
+                                        address.streetLine
+                                            .takeIf { it.isNotBlank() }?.let {
+                                                Column(
+                                                    modifier = Modifier.fillMaxWidth(),
+                                                    horizontalAlignment = Alignment.Start,
+                                                    verticalArrangement = Arrangement.Center
+                                                ) {
+                                                    Text(
+                                                        text = stringResource(R.string.str_address_street_line),
+                                                        maxLines = 1,
+                                                        fontWeight = FontWeight.Bold,
+                                                        style = MaterialTheme.typography.labelSmall,
+                                                        overflow = TextOverflow.Ellipsis
+                                                    )
+                                                    Text(
+                                                        text = it,
+                                                        style = MaterialTheme.typography.bodyMedium
+                                                    )
+                                                }
                                             }
-                                        }
 
                                         //Postal Code
-                                        address.postalCode?.let {
-                                            Column(
-                                                modifier = Modifier.fillMaxWidth(),
-                                                horizontalAlignment = Alignment.Start,
-                                                verticalArrangement = Arrangement.Center
-                                            ) {
-                                                Text(
-                                                    text = stringResource(R.string.str_postal_code),
-                                                    maxLines = 1,
-                                                    fontWeight = FontWeight.Bold,
-                                                    style = MaterialTheme.typography.labelSmall,
-                                                    overflow = TextOverflow.Ellipsis
-                                                )
-                                                Text(
-                                                    text = it,
-                                                    style = MaterialTheme.typography.bodyMedium
-                                                )
+                                        address.postalCode
+                                            .takeIf{ it.isNotBlank() }?.let {
+                                                Column(
+                                                    modifier = Modifier.fillMaxWidth(),
+                                                    horizontalAlignment = Alignment.Start,
+                                                    verticalArrangement = Arrangement.Center
+                                                ) {
+                                                    Text(
+                                                        text = stringResource(R.string.str_postal_code),
+                                                        maxLines = 1,
+                                                        fontWeight = FontWeight.Bold,
+                                                        style = MaterialTheme.typography.labelSmall,
+                                                        overflow = TextOverflow.Ellipsis
+                                                    )
+                                                    Text(
+                                                        text = it,
+                                                        style = MaterialTheme.typography.bodyMedium
+                                                    )
+                                                }
                                             }
-                                        }
                                     }
 
                                     //Right Row
@@ -1297,7 +1307,7 @@ private fun BizAddressesSection(
                                         )
                                     ) {
                                         //ConfGenCountry
-                                        address.country?.let {
+                                        address.country.let {
                                             Column(
                                                 modifier = Modifier.fillMaxWidth(),
                                                 horizontalAlignment = Alignment.Start,
@@ -1318,25 +1328,26 @@ private fun BizAddressesSection(
                                         }
 
                                         //Additional Info
-                                        address.additionalInfo?.let {
-                                            Column(
-                                                modifier = Modifier.fillMaxWidth(),
-                                                horizontalAlignment = Alignment.Start,
-                                                verticalArrangement = Arrangement.Center
-                                            ) {
-                                                Text(
-                                                    text = stringResource(R.string.str_additional_info),
-                                                    maxLines = 1,
-                                                    fontWeight = FontWeight.Bold,
-                                                    style = MaterialTheme.typography.labelSmall,
-                                                    overflow = TextOverflow.Ellipsis
-                                                )
-                                                Text(
-                                                    text = it,
-                                                    style = MaterialTheme.typography.bodyMedium
-                                                )
+                                        address.additionalInfo
+                                            .takeIf{ it.isNotBlank() }?.let {
+                                                Column(
+                                                    modifier = Modifier.fillMaxWidth(),
+                                                    horizontalAlignment = Alignment.Start,
+                                                    verticalArrangement = Arrangement.Center
+                                                ) {
+                                                    Text(
+                                                        text = stringResource(R.string.str_additional_info),
+                                                        maxLines = 1,
+                                                        fontWeight = FontWeight.Bold,
+                                                        style = MaterialTheme.typography.labelSmall,
+                                                        overflow = TextOverflow.Ellipsis
+                                                    )
+                                                    Text(
+                                                        text = it,
+                                                        style = MaterialTheme.typography.bodyMedium
+                                                    )
+                                                }
                                             }
-                                        }
 
                                         //Audit Trail
                                         address.auditTrail.modifiedAt.let {
@@ -1535,13 +1546,14 @@ private fun BizContactsSection(
                                         horizontalArrangement = Arrangement.Start,
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
-                                        contact.label?.let {
-                                            Text(
-                                                text = it,
-                                                fontWeight = FontWeight.Bold,
-                                                style = MaterialTheme.typography.titleMedium
-                                            )
-                                        }
+                                        contact.label
+                                            .takeIf{ it.isNotBlank() }?.let {
+                                                Text(
+                                                    text = it,
+                                                    fontWeight = FontWeight.Bold,
+                                                    style = MaterialTheme.typography.titleMedium
+                                                )
+                                            }
                                     }
                                     Row(
                                         modifier = Modifier.weight(0.2f),
@@ -1609,46 +1621,48 @@ private fun BizContactsSection(
                                         }
 
                                         //Label
-                                        contact.label?.let {
-                                            Column(
-                                                modifier = Modifier.fillMaxWidth(),
-                                                horizontalAlignment = Alignment.Start,
-                                                verticalArrangement = Arrangement.Center
-                                            ) {
-                                                Text(
-                                                    text = stringResource(R.string.str_address_label),
-                                                    maxLines = 1,
-                                                    fontWeight = FontWeight.Bold,
-                                                    style = MaterialTheme.typography.labelSmall,
-                                                    overflow = TextOverflow.Ellipsis
-                                                )
-                                                Text(
-                                                    text = it,
-                                                    style = MaterialTheme.typography.bodyMedium
-                                                )
+                                        contact.label
+                                            .takeIf{ it.isNotBlank() }?.let {
+                                                Column(
+                                                    modifier = Modifier.fillMaxWidth(),
+                                                    horizontalAlignment = Alignment.Start,
+                                                    verticalArrangement = Arrangement.Center
+                                                ) {
+                                                    Text(
+                                                        text = stringResource(R.string.str_address_label),
+                                                        maxLines = 1,
+                                                        fontWeight = FontWeight.Bold,
+                                                        style = MaterialTheme.typography.labelSmall,
+                                                        overflow = TextOverflow.Ellipsis
+                                                    )
+                                                    Text(
+                                                        text = it,
+                                                        style = MaterialTheme.typography.bodyMedium
+                                                    )
+                                                }
                                             }
-                                        }
 
                                         //Additional Info
-                                        contact.additionalInfo?.let {
-                                            Column(
-                                                modifier = Modifier.fillMaxWidth(),
-                                                horizontalAlignment = Alignment.Start,
-                                                verticalArrangement = Arrangement.Center
-                                            ) {
-                                                Text(
-                                                    text = stringResource(R.string.str_additional_info),
-                                                    maxLines = 1,
-                                                    fontWeight = FontWeight.Bold,
-                                                    style = MaterialTheme.typography.labelSmall,
-                                                    overflow = TextOverflow.Ellipsis
-                                                )
-                                                Text(
-                                                    text = it,
-                                                    style = MaterialTheme.typography.bodyMedium
-                                                )
+                                        contact.additionalInfo
+                                            .takeIf{ it.isNotBlank() }?.let {
+                                                Column(
+                                                    modifier = Modifier.fillMaxWidth(),
+                                                    horizontalAlignment = Alignment.Start,
+                                                    verticalArrangement = Arrangement.Center
+                                                ) {
+                                                    Text(
+                                                        text = stringResource(R.string.str_additional_info),
+                                                        maxLines = 1,
+                                                        fontWeight = FontWeight.Bold,
+                                                        style = MaterialTheme.typography.labelSmall,
+                                                        overflow = TextOverflow.Ellipsis
+                                                    )
+                                                    Text(
+                                                        text = it,
+                                                        style = MaterialTheme.typography.bodyMedium
+                                                    )
+                                                }
                                             }
-                                        }
                                     }
 
                                     //Right Row
@@ -1684,25 +1698,26 @@ private fun BizContactsSection(
                                         }
 
                                         //Contact Value
-                                        contact.contactValue?.let {
-                                            Column(
-                                                modifier = Modifier.fillMaxWidth(),
-                                                horizontalAlignment = Alignment.Start,
-                                                verticalArrangement = Arrangement.Center
-                                            ) {
-                                                Text(
-                                                    text = stringResource(R.string.str_contact),
-                                                    maxLines = 1,
-                                                    fontWeight = FontWeight.Bold,
-                                                    style = MaterialTheme.typography.labelSmall,
-                                                    overflow = TextOverflow.Ellipsis
-                                                )
-                                                Text(
-                                                    text = it,
-                                                    style = MaterialTheme.typography.bodyMedium
-                                                )
+                                        contact.contactValue
+                                            .takeIf{ it.isNotBlank() }?.let {
+                                                Column(
+                                                    modifier = Modifier.fillMaxWidth(),
+                                                    horizontalAlignment = Alignment.Start,
+                                                    verticalArrangement = Arrangement.Center
+                                                ) {
+                                                    Text(
+                                                        text = stringResource(R.string.str_contact),
+                                                        maxLines = 1,
+                                                        fontWeight = FontWeight.Bold,
+                                                        style = MaterialTheme.typography.labelSmall,
+                                                        overflow = TextOverflow.Ellipsis
+                                                    )
+                                                    Text(
+                                                        text = it,
+                                                        style = MaterialTheme.typography.bodyMedium
+                                                    )
+                                                }
                                             }
-                                        }
 
                                         //Audit Trail
                                         contact.auditTrail.modifiedAt.let {
@@ -1901,13 +1916,14 @@ fun BizLinksSection(
                                         horizontalArrangement = Arrangement.Start,
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
-                                        link.label?.let {
-                                            Text(
-                                                text = it,
-                                                fontWeight = FontWeight.Bold,
-                                                style = MaterialTheme.typography.titleMedium
-                                            )
-                                        }
+                                        link.label
+                                            .takeIf{ it.isNotBlank() }?.let {
+                                                Text(
+                                                    text = it,
+                                                    fontWeight = FontWeight.Bold,
+                                                    style = MaterialTheme.typography.titleMedium
+                                                )
+                                            }
                                     }
                                     Row(
                                         modifier = Modifier.weight(0.2f),
@@ -1973,46 +1989,48 @@ fun BizLinksSection(
                                     }
 
                                     //Label
-                                    link.label?.let {
-                                        Column(
-                                            modifier = Modifier.fillMaxWidth(),
-                                            horizontalAlignment = Alignment.Start,
-                                            verticalArrangement = Arrangement.Center
-                                        ) {
-                                            Text(
-                                                text = stringResource(R.string.str_address_label),
-                                                maxLines = 1,
-                                                fontWeight = FontWeight.Bold,
-                                                style = MaterialTheme.typography.labelSmall,
-                                                overflow = TextOverflow.Ellipsis
-                                            )
-                                            Text(
-                                                text = it,
-                                                style = MaterialTheme.typography.bodyMedium
-                                            )
+                                    link.label
+                                        .takeIf{ it.isNotBlank() }?.let {
+                                            Column(
+                                                modifier = Modifier.fillMaxWidth(),
+                                                horizontalAlignment = Alignment.Start,
+                                                verticalArrangement = Arrangement.Center
+                                            ) {
+                                                Text(
+                                                    text = stringResource(R.string.str_address_label),
+                                                    maxLines = 1,
+                                                    fontWeight = FontWeight.Bold,
+                                                    style = MaterialTheme.typography.labelSmall,
+                                                    overflow = TextOverflow.Ellipsis
+                                                )
+                                                Text(
+                                                    text = it,
+                                                    style = MaterialTheme.typography.bodyMedium
+                                                )
+                                            }
                                         }
-                                    }
 
                                     //URI
-                                    link.uri?.let {
-                                        Column(
-                                            modifier = Modifier.fillMaxWidth(),
-                                            horizontalAlignment = Alignment.Start,
-                                            verticalArrangement = Arrangement.Center
-                                        ) {
-                                            Text(
-                                                text = stringResource(R.string.str_additional_info),
-                                                maxLines = 1,
-                                                fontWeight = FontWeight.Bold,
-                                                style = MaterialTheme.typography.labelSmall,
-                                                overflow = TextOverflow.Ellipsis
-                                            )
-                                            Text(
-                                                text = it,
-                                                style = MaterialTheme.typography.bodyMedium
-                                            )
+                                    link.uri
+                                        .takeIf{ it.isNotBlank() }?.let {
+                                            Column(
+                                                modifier = Modifier.fillMaxWidth(),
+                                                horizontalAlignment = Alignment.Start,
+                                                verticalArrangement = Arrangement.Center
+                                            ) {
+                                                Text(
+                                                    text = stringResource(R.string.str_additional_info),
+                                                    maxLines = 1,
+                                                    fontWeight = FontWeight.Bold,
+                                                    style = MaterialTheme.typography.labelSmall,
+                                                    overflow = TextOverflow.Ellipsis
+                                                )
+                                                Text(
+                                                    text = it,
+                                                    style = MaterialTheme.typography.bodyMedium
+                                                )
+                                            }
                                         }
-                                    }
 
                                     //Audit Trail
                                     link.auditTrail.modifiedAt.let {

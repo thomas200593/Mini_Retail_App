@@ -16,7 +16,7 @@ import javax.inject.Inject
 @Serializable
 data class LegalType(
     val identifierKey: String,
-    val additionalInfo: String? = null,
+    val additionalInfo: String = String(),
     val legalDocumentType: LegalDocumentType? = null,
     val auditTrail: AuditTrail = AuditTrail()
 )

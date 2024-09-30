@@ -37,13 +37,13 @@ data class BizProfile(
     val bizIdentity: BizIdentity,
 
     @ColumnInfo(name = "addresses")
-    val addresses: List<Address>? = null,
+    val addresses: List<Address> = emptyList(),
 
     @ColumnInfo(name = "contacts")
-    val contacts: List<Contact>? = null,
+    val contacts: List<Contact> = emptyList(),
 
     @ColumnInfo(name = "links")
-    val links: List<Link>? = null,
+    val links: List<Link> = emptyList(),
 ): BaseEntity
 
 fun BizProfile.toBizProfileShort() = BizProfileShort(

@@ -17,8 +17,12 @@ data class AuditTrail(
 
 class TypeConvAuditTrail{
     @TypeConverter
-    fun toJson(auditTrail: AuditTrail?): String = Json.encodeToString(value = auditTrail)
+    fun toJson(auditTrail: AuditTrail): String =
+        runCatching { Json.encodeToString(value = auditTrail) }
+            .getOrElse { throw it }
 
     @TypeConverter
-    fun fromJson(json: String): AuditTrail? = Json.decodeFromString(json)
+    fun fromJson(json: String): AuditTrail =
+        runCatching { Json.decodeFromString<AuditTrail>(json) }
+            .getOrElse { AuditTrail() }
 }

@@ -3,6 +3,7 @@ package com.thomas200593.mini_retail_app.core.data.local.database.entity_common
 import android.content.Context
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers.Dispatchers.IO
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.di.Dispatcher
+import com.thomas200593.mini_retail_app.core.design_system.util.HlpCountry
 import com.thomas200593.mini_retail_app.core.design_system.util.HlpStringArray.Handler.StringArrayResource
 import com.thomas200593.mini_retail_app.core.design_system.util.HlpStringArray.StringArrayResources.BizTaxationType
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.domain.UCGetConfCountry
@@ -20,8 +21,8 @@ import javax.inject.Inject
 @Serializable
 data class Taxation(
     val identifierKey: String,
-    val taxIdDocNumber: String? = null,
-    val taxIssuerCountry: Country? = null,
+    val taxIdDocNumber: String = String(),
+    val taxIssuerCountry: Country = HlpCountry.COUNTRY_DEFAULT,
     val taxRatePercentage: Double = 0.00,
     val taxIncluded: Boolean = false,
     val auditTrail: AuditTrail = AuditTrail()

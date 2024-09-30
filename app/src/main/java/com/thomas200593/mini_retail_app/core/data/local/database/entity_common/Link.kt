@@ -10,21 +10,29 @@ import ulid.ULID.Companion.randomULID
 data class Link(
     val genId: String = randomULID(),
     val identifierKey: Int,
-    val uri: String? = null,
-    val label: String? = null,
+    val uri: String = String(),
+    val label: String = String(),
     val auditTrail: AuditTrail = AuditTrail()
 )
 
 class TypeConvLinks{
     @TypeConverter
-    fun toJson(link: Link?): String = Json.encodeToString(value = link)
+    fun toJson(link: Link?): String =
+        runCatching { Json.encodeToString(value = link) }
+            .getOrElse { throw it }
 
     @TypeConverter
-    fun toJsonArray(link: List<Link>?): String = Json.encodeToString(value = link)
+    fun toJsonArray(link: List<Link>): String =
+        runCatching { Json.encodeToString(value = link) }
+            .getOrElse { throw it }
 
     @TypeConverter
-    fun fromJson(json: String): Link? = Json.decodeFromString(json)
+    fun fromJson(json: String): Link =
+        runCatching { Json.decodeFromString<Link>(json) }
+            .getOrElse { throw it }
 
     @TypeConverter
-    fun fromJsonArray(json: String): List<Link>? = Json.decodeFromString(json)
+    fun fromJsonArray(json: String): List<Link> =
+        runCatching { Json.decodeFromString<List<Link>>(json) }
+            .getOrElse { throw it }
 }

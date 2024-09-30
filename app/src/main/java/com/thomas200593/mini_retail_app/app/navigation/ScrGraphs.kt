@@ -293,5 +293,6 @@ fun KType.defaultValue(): Any? = when (this) {
     String::class.createType() -> String()
     Int::class.createType() -> 0
     Boolean::class.createType() -> false
+    Double::class.createType() -> 0.0
     else -> null
 }

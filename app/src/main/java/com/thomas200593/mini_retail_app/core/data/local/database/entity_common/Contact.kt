@@ -10,23 +10,31 @@ import ulid.ULID.Companion.randomULID
 data class Contact(
     val genId: String = randomULID(),
     val identifierKey: Int,
-    val additionalInfo: String? = null,
-    val label: String? = null,
+    val additionalInfo: String = String(),
+    val label: String = String(),
     val mediaIdentifierKey: Int,
-    val contactValue: String? = null,
+    val contactValue: String = String(),
     val auditTrail: AuditTrail = AuditTrail()
 )
 
 class TypeConvContact{
     @TypeConverter
-    fun toJson(contact: Contact?): String = Json.encodeToString(value = contact)
+    fun toJson(contact: Contact): String =
+        runCatching { Json.encodeToString(value = contact) }
+            .getOrElse { throw it }
 
     @TypeConverter
-    fun toJsonArray(contact: List<Contact>?): String = Json.encodeToString(value = contact)
+    fun toJsonArray(contact: List<Contact>): String =
+        runCatching { Json.encodeToString(value = contact) }
+            .getOrElse { throw it }
 
     @TypeConverter
-    fun fromJson(json: String): Contact? = Json.decodeFromString(json)
+    fun fromJson(json: String): Contact =
+        runCatching { Json.decodeFromString<Contact>(json) }
+            .getOrElse { throw it }
 
     @TypeConverter
-    fun fromJsonArray(json: String): List<Contact>? = Json.decodeFromString(json)
+    fun fromJsonArray(json: String): List<Contact> =
+        runCatching { Json.decodeFromString<List<Contact>>(json) }
+            .getOrElse { throw it }
 }

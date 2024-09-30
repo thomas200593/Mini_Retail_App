@@ -8,15 +8,15 @@ import kotlinx.serialization.json.Json
 
 @Serializable
 data class BizName(
-    val legalName: String? = null,
-    val commonName: String? = null,
+    val legalName: String = String(),
+    val commonName: String = String(),
     val auditTrail: AuditTrail = AuditTrail()
 )
 
 class TypeConvBizName{
     @TypeConverter
-    fun toJson(bizName: BizName?): String = Json.encodeToString(value = bizName)
+    fun toJson(bizName: BizName): String = Json.encodeToString(value = bizName)
 
     @TypeConverter
-    fun fromJson(json: String): BizName? = Json.decodeFromString(json)
+    fun fromJson(json: String): BizName = Json.decodeFromString(json) ?: BizName()
 }
