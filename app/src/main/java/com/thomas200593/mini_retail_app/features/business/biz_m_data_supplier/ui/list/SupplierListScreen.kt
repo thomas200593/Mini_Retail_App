@@ -25,6 +25,7 @@ import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -49,8 +50,8 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import com.thomas200593.mini_retail_app.R
-import com.thomas200593.mini_retail_app.app.ui.StateApp
 import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
+import com.thomas200593.mini_retail_app.app.ui.StateApp
 import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.App.app
 import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.Data.master_data
 import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar
@@ -171,7 +172,7 @@ private fun ScreenContent(
                     TextField(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .menuAnchor(),
+                            .menuAnchor(MenuAnchorType.PrimaryNotEditable, true),
                         readOnly = true,
                         value = sortBy.title,
                         onValueChange = {},
@@ -301,17 +302,18 @@ private fun SupplierListItem(
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Start
                 )
-                supplier.sprLegalName?.let {
-                    Text(
-                        text = it,
-                        style = MaterialTheme.typography.labelLarge,
-                        fontWeight = FontWeight.Bold,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Start
-                    )
-                }
+                supplier.sprLegalName
+                    .takeIf{ it.isNotBlank() }?.let {
+                        Text(
+                            text = it,
+                            style = MaterialTheme.typography.labelLarge,
+                            fontWeight = FontWeight.Bold,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.Start
+                        )
+                    }
                 Text(
                     text = "Updated: ${supplier.auditTrail.modifiedAt}",
                     style = MaterialTheme.typography.labelSmall,
