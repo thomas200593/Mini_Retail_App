@@ -1,5 +1,47 @@
 package com.thomas200593.mini_retail_app.features.user_profile.ui
 
+import androidx.lifecycle.ViewModel
+import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs
+import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
+import com.thomas200593.mini_retail_app.features.user_profile.ui.VMUserProfile.UiEvents.OnOpenEvents
+import com.thomas200593.mini_retail_app.features.user_profile.ui.VMUserProfile.UiStateUserProfile.Loading
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import javax.inject.Inject
+
+@HiltViewModel
+class VMUserProfile @Inject constructor(
+
+): ViewModel() {
+    sealed interface UiStateUserProfile {
+        data object Loading : UiStateUserProfile
+    }
+    data class UiState(
+        val currentUserSession: UiStateUserProfile = Loading
+    )
+    sealed interface UiEvents {
+        data class OnOpenEvents(
+            val sessionState: SessionState,
+            val currentScreen: ScrGraphs
+        ) : UiEvents
+    }
+
+    private val _uiState = MutableStateFlow(UiState())
+    val uiState = _uiState.asStateFlow()
+
+    fun onEvent(events: UiEvents) {
+        when(events) {
+            is OnOpenEvents -> onOpenEvent(events.sessionState, events.currentScreen)
+        }
+    }
+
+    private fun onOpenEvent(sessionState: SessionState, currentScreen: ScrGraphs) {
+
+    }
+}
+
+/*
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -22,8 +64,6 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
-private val TAG = VMUserProfile::class.simpleName
-
 @HiltViewModel
 class VMUserProfile @Inject constructor(
     private val repoAuth: RepoAuth,
@@ -40,13 +80,11 @@ class VMUserProfile @Inject constructor(
     val businessProfileSummary = _businessProfileSummary
 
     fun onOpen(validSession: SessionState.Valid) = viewModelScope.launch(ioDispatcher){
-        Timber.d("Called : fun $TAG.onOpen()")
         getCurrentSessionUserData(validSession)
         getBusinessProfileSummary()
     }
 
     private fun getCurrentSessionUserData(validSession: SessionState.Valid) = viewModelScope.launch(ioDispatcher){
-        Timber.d("Called : fun $TAG.getCurrentUserSession()")
         _currentSessionUserData.value = Loading
         _currentSessionUserData.value = try{
             Success(validSession.userData)
@@ -56,7 +94,6 @@ class VMUserProfile @Inject constructor(
     }
 
     private fun getBusinessProfileSummary() = viewModelScope.launch(ioDispatcher){
-        Timber.d("Called : fun $TAG.getBusinessProfile()")
         _businessProfileSummary.value = Loading
         ucGetBizProfileShort.invoke().collect{ bps ->
             _businessProfileSummary.value = bps
@@ -64,8 +101,7 @@ class VMUserProfile @Inject constructor(
     }
 
     fun handleSignOut() = viewModelScope.launch(ioDispatcher){
-        Timber.d("Called : fun $TAG.handleSignOut()")
         _currentSessionUserData.value = Loading
         repoAuth.clearAuthSessionToken()
     }
-}
+}*/

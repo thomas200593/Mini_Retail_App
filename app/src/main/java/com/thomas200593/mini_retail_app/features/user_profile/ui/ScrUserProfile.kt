@@ -1,5 +1,164 @@
 package com.thomas200593.mini_retail_app.features.user_profile.ui
 
+import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ExitToApp
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.thomas200593.mini_retail_app.R
+import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs
+import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
+import com.thomas200593.mini_retail_app.app.ui.StateApp
+import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons
+import com.thomas200593.mini_retail_app.core.ui.common.CustomThemes
+import com.thomas200593.mini_retail_app.core.ui.component.CustomButton.Common.AppIconButton
+import com.thomas200593.mini_retail_app.core.ui.component.CustomScreenUtil.LockScreenOrientation
+import com.thomas200593.mini_retail_app.features.user_profile.ui.VMUserProfile.UiEvents.OnOpenEvents
+
+@Composable
+fun ScrUserProfile(
+    vm: VMUserProfile = hiltViewModel(),
+    stateApp: StateApp = LocalStateApp.current
+) {
+    LockScreenOrientation(SCREEN_ORIENTATION_PORTRAIT)
+
+    val uiState by vm.uiState.collectAsStateWithLifecycle()
+    val sessionState by stateApp.isSessionValid.collectAsStateWithLifecycle()
+    val currentScreen = ScrGraphs.getByRoute(stateApp.destCurrent)
+
+    LaunchedEffect(sessionState, currentScreen)
+    { currentScreen?.let { vm.onEvent(OnOpenEvents(sessionState, it)) } }
+
+    ScrUserProfile(
+        currentScreen = currentScreen,
+        onNavToAppConfig = { /*TODO*/ },
+        onBtnSignOutClicked = { /*TODO*/ }
+    )
+}
+
+@Composable
+private fun ScrUserProfile(
+    currentScreen: ScrGraphs?,
+    onNavToAppConfig: () -> Unit,
+    onBtnSignOutClicked: () -> Unit
+) {
+    currentScreen?.let {
+        HandleDialogs(currentScreen = it)
+    }
+    ScreenContent(
+        onNavToAppConfig = onNavToAppConfig,
+        onBtnSignOutClicked = onBtnSignOutClicked
+    )
+}
+
+@Composable
+private fun HandleDialogs(
+    currentScreen: ScrGraphs
+) { /*TODO*/ }
+
+@Composable
+private fun ScreenContent(
+    onNavToAppConfig: () -> Unit,
+    onBtnSignOutClicked: () -> Unit
+) {
+    Surface {
+        Column(
+            modifier = Modifier
+                .fillMaxSize().padding(8.dp)
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(10.dp, Alignment.Top),
+        ) {
+            NavigationAppConfigSection(onNavToAppConfig = onNavToAppConfig)
+            CurrentUserSessionSection()
+            BizProfileSummaryData()
+            SignOutSection(
+                onBtnSignOutClicked = onBtnSignOutClicked
+            )
+        }
+    }
+}
+
+@Composable
+private fun NavigationAppConfigSection(
+    onNavToAppConfig: () -> Unit
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.End
+    ) {
+        Surface(
+            modifier = Modifier.size(ButtonDefaults.IconSize),
+            onClick = { onNavToAppConfig() }
+        ) {
+            Icon(
+                imageVector = ImageVector.vectorResource(id = CustomIcons.Setting.settings),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurface
+            )
+        }
+    }
+}
+
+@Composable
+private fun CurrentUserSessionSection() {
+    Text("Current User Session Section")
+}
+
+@Composable
+private fun BizProfileSummaryData() {
+    Text("Biz Profile Summary Data")
+}
+
+@Composable
+private fun SignOutSection(
+    onBtnSignOutClicked : () -> Unit
+) {
+    AppIconButton(
+        onClick = onBtnSignOutClicked,
+        icon = Icons.AutoMirrored.Filled.ExitToApp,
+        text = stringResource(id = R.string.str_auth_sign_out),
+        containerColor = MaterialTheme.colorScheme.errorContainer,
+        contentColor = MaterialTheme.colorScheme.onErrorContainer
+    )
+}
+
+@Composable
+@Preview
+private fun Preview() = CustomThemes.ApplicationTheme {
+    ScrUserProfile(
+        currentScreen = ScrGraphs.UserProfile,
+        onNavToAppConfig = {},
+        onBtnSignOutClicked = {}
+    )
+}
+
+/*
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -350,4 +509,4 @@ private fun SignOutSection(
         containerColor = MaterialTheme.colorScheme.errorContainer,
         contentColor = MaterialTheme.colorScheme.onErrorContainer
     )
-}
+}*/

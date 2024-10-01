@@ -146,11 +146,6 @@ class VMBizProfile @Inject constructor(
             }
         }
     }
-    sealed class UiEvents2 {
-        sealed class Internal: UiEvents2() {
-            data object OnClick: Internal()
-        }
-    }
 
     private val _uiState = MutableStateFlow(UiState())
     val uiState = _uiState.asStateFlow()
