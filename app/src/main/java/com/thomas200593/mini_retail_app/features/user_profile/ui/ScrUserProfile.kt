@@ -1,6 +1,7 @@
 package com.thomas200593.mini_retail_app.features.user_profile.ui
 
 import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,10 +10,18 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -20,24 +29,54 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
+import coil.transform.CircleCropTransformation
 import com.thomas200593.mini_retail_app.R
-import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs
 import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
 import com.thomas200593.mini_retail_app.app.ui.StateApp
+import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.AuditTrail
+import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.Industries
+import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.LegalType
+import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.Taxation
 import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons
 import com.thomas200593.mini_retail_app.core.ui.common.CustomThemes
 import com.thomas200593.mini_retail_app.core.ui.component.CustomButton.Common.AppIconButton
+import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.TextContentWithIcon
 import com.thomas200593.mini_retail_app.core.ui.component.CustomScreenUtil.LockScreenOrientation
+import com.thomas200593.mini_retail_app.features.app_conf.app_config.entity.AppConfig.ConfigCurrent
+import com.thomas200593.mini_retail_app.features.auth.entity.AuthSessionToken
+import com.thomas200593.mini_retail_app.features.auth.entity.OAuth2UserMetadata
+import com.thomas200593.mini_retail_app.features.auth.entity.OAuthProvider
+import com.thomas200593.mini_retail_app.features.auth.entity.UserData
+import com.thomas200593.mini_retail_app.features.business.biz_profile.entity.BizName
+import com.thomas200593.mini_retail_app.features.business.biz_profile.entity.BizProfileShort
+import com.thomas200593.mini_retail_app.features.user_profile.ui.VMUserProfile.DialogState
 import com.thomas200593.mini_retail_app.features.user_profile.ui.VMUserProfile.UiEvents.OnOpenEvents
+import com.thomas200593.mini_retail_app.features.user_profile.ui.VMUserProfile.UiState
+import com.thomas200593.mini_retail_app.features.user_profile.ui.VMUserProfile.UiStateUserProfile.Idle
+import com.thomas200593.mini_retail_app.features.user_profile.ui.VMUserProfile.UiStateUserProfile.Loading
+import com.thomas200593.mini_retail_app.features.user_profile.ui.VMUserProfile.UiStateUserProfile.Success
+import ulid.ULID
+import java.time.Instant
 
 @Composable
 fun ScrUserProfile(
@@ -48,13 +87,11 @@ fun ScrUserProfile(
 
     val uiState by vm.uiState.collectAsStateWithLifecycle()
     val sessionState by stateApp.isSessionValid.collectAsStateWithLifecycle()
-    val currentScreen = ScrGraphs.getByRoute(stateApp.destCurrent)
 
-    LaunchedEffect(sessionState, currentScreen)
-    { currentScreen?.let { vm.onEvent(OnOpenEvents(sessionState, it)) } }
+    LaunchedEffect(sessionState) { vm.onEvent(OnOpenEvents(sessionState)) }
 
     ScrUserProfile(
-        currentScreen = currentScreen,
+        uiState = uiState,
         onNavToAppConfig = { /*TODO*/ },
         onBtnSignOutClicked = { /*TODO*/ }
     )
@@ -62,43 +99,37 @@ fun ScrUserProfile(
 
 @Composable
 private fun ScrUserProfile(
-    currentScreen: ScrGraphs?,
+    uiState: UiState,
     onNavToAppConfig: () -> Unit,
     onBtnSignOutClicked: () -> Unit
 ) {
-    currentScreen?.let {
-        HandleDialogs(currentScreen = it)
-    }
+    HandleDialogs()
     ScreenContent(
+        uiState = uiState,
         onNavToAppConfig = onNavToAppConfig,
         onBtnSignOutClicked = onBtnSignOutClicked
     )
 }
 
 @Composable
-private fun HandleDialogs(
-    currentScreen: ScrGraphs
-) { /*TODO*/ }
+private fun HandleDialogs() { /*TODO*/ }
 
 @Composable
 private fun ScreenContent(
+    uiState: UiState,
     onNavToAppConfig: () -> Unit,
     onBtnSignOutClicked: () -> Unit
 ) {
     Surface {
         Column(
-            modifier = Modifier
-                .fillMaxSize().padding(8.dp)
-                .verticalScroll(rememberScrollState()),
+            modifier = Modifier.fillMaxSize().padding(8.dp).verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(10.dp, Alignment.Top),
         ) {
             NavigationAppConfigSection(onNavToAppConfig = onNavToAppConfig)
-            CurrentUserSessionSection()
-            BizProfileSummaryData()
-            SignOutSection(
-                onBtnSignOutClicked = onBtnSignOutClicked
-            )
+            CurrentUserSessionSection(uiState = uiState, onBtnSignOutClicked = onBtnSignOutClicked)
+            BizProfileSummaryData(uiState = uiState)
+            SignOutSection(onBtnSignOutClicked = onBtnSignOutClicked)
         }
     }
 }
@@ -126,12 +157,107 @@ private fun NavigationAppConfigSection(
 }
 
 @Composable
-private fun CurrentUserSessionSection() {
-    Text("Current User Session Section")
+private fun CurrentUserSessionSection(
+    uiState: UiState,
+    onBtnSignOutClicked : () -> Unit
+) {
+    when(uiState.userProfileData){
+        Idle -> Unit
+        Loading -> CircularProgressIndicator()
+        is Success -> {
+            val userData = uiState.userProfileData.data.first
+            when(val provider = userData.authSessionToken?.authProvider) {
+                OAuthProvider.GOOGLE -> UserProfileGoogle(
+                    provider = provider,
+                    userData = (userData.oAuth2UserMetadata as OAuth2UserMetadata.Google)
+                )
+                null -> onBtnSignOutClicked()
+            }
+        }
+    }
 }
 
 @Composable
-private fun BizProfileSummaryData() {
+fun UserProfileGoogle(
+    provider: OAuthProvider,
+    userData: OAuth2UserMetadata.Google
+) {
+    Column(
+        modifier = Modifier.fillMaxWidth().padding(8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterVertically)
+    ) {
+        var infoExpanded by remember { mutableStateOf(false) }
+
+        AsyncImage(
+            model = ImageRequest
+                .Builder(LocalContext.current)
+                .crossfade(1000)
+                .data(data = userData.pictureUri)
+                .transformations(CircleCropTransformation()).build(),
+            contentDescription = null,
+            modifier = Modifier.size(100.dp).border(2.dp, Color.Gray, CircleShape),
+            contentScale = ContentScale.Crop
+        )
+        Row(
+            modifier = Modifier.fillMaxWidth(1.0f),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ){
+            Text(
+                modifier = Modifier.weight(0.9f),
+                text = userData.name,
+                color = MaterialTheme.colorScheme.onSurface,
+                fontSize = MaterialTheme.typography.titleLarge.fontSize,
+                fontWeight = FontWeight.Bold,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                textAlign = TextAlign.Center
+            )
+            Surface(
+                modifier = Modifier.weight(0.1f),
+                color = MaterialTheme.colorScheme.tertiaryContainer,
+                shape = MaterialTheme.shapes.extraSmall,
+                onClick = { infoExpanded = !infoExpanded }
+            ) {
+                Icon(
+                    imageVector =
+                    if(!infoExpanded) Icons.Default.KeyboardArrowDown
+                    else Icons.Default.KeyboardArrowUp,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onTertiaryContainer
+                )
+            }
+        }
+
+        if(infoExpanded){
+            TextContentWithIcon(
+                icon = Icons.Default.Email,
+                text = userData.email
+            )
+            TextContentWithIcon(
+                icon = Icons.Default.Check,
+                text = when(userData.emailVerified){
+                    "true" -> stringResource(id = R.string.str_email_verified)
+                    "false" -> stringResource(id = R.string.str_email_not_verified)
+                    else -> stringResource(id = R.string.str_email_not_verified)
+                }
+            )
+            TextContentWithIcon(
+                icon = Icons.Default.Lock,
+                text = provider.title
+            )
+            TextContentWithIcon(
+                icon = ImageVector.vectorResource(id = CustomIcons.Auth.session_expire),
+                text = Instant.ofEpochSecond(userData.expiredAt.toLong()).toString()
+            )
+        }
+        HorizontalDivider(thickness = 2.dp)
+    }
+}
+
+@Composable
+private fun BizProfileSummaryData(uiState: UiState) {
     Text("Biz Profile Summary Data")
 }
 
@@ -152,9 +278,42 @@ private fun SignOutSection(
 @Preview
 private fun Preview() = CustomThemes.ApplicationTheme {
     ScrUserProfile(
-        currentScreen = ScrGraphs.UserProfile,
         onNavToAppConfig = {},
-        onBtnSignOutClicked = {}
+        onBtnSignOutClicked = {},
+        uiState = UiState(
+            dialogState = DialogState(),
+            userProfileData = //Loading
+            Success(
+                data = Triple(
+                    first = UserData(
+                        authSessionToken = AuthSessionToken(),
+                        oAuth2UserMetadata = OAuth2UserMetadata.Google(
+                            email = "thomas200593@gmail.com",
+                            name = "Thomas Richard",
+                            emailVerified = "true",
+                            pictureUri = "",
+                            expiredAt = "9999199999"
+                        )
+                    ),
+                    second = BizProfileShort(
+                        seqId = 0,
+                        genId = ULID.randomULID(),
+                        bizName = BizName(
+                            legalName = "PT Company",
+                            commonName = "My Company"
+                        ),
+                        bizIndustry = Industries(
+                            identityKey = "biz_industry_00001",
+                            additionalInfo = "Construction Industry"
+                        ),
+                        bizLegalType = LegalType(identifierKey = ""),
+                        bizTaxation = Taxation(identifierKey = ""),
+                        auditTrail = AuditTrail()
+                    ),
+                    third = ConfigCurrent()
+                )
+            )
+        )
     )
 }
 
