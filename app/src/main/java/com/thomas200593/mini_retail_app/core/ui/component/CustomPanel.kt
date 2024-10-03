@@ -18,7 +18,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons.Default
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme.colorScheme
@@ -30,7 +29,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Color.Companion.DarkGray
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
@@ -54,31 +52,6 @@ import com.thomas200593.mini_retail_app.core.ui.common.CustomShapes
 import kotlin.Int.Companion.MAX_VALUE
 
 object CustomPanel{
-
-    @Composable
-    fun LoadingPanelCircularIndicator(
-        modifier: Modifier = Modifier
-    ){
-        Surface(
-            modifier = modifier.fillMaxWidth(),
-            shape = shapes.medium,
-            border = BorderStroke(1.dp, DarkGray)
-        ) {
-            Column(
-                modifier = modifier.padding(8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ){
-                CircularProgressIndicator()
-                Text(
-                    text = stringResource(id = R.string.str_loading),
-                    fontWeight = SemiBold,
-                    color = colorScheme.primary,
-                    modifier = Modifier
-                )
-            }
-        }
-    }
 
     @Composable
     fun LoadingScreen(
@@ -212,186 +185,18 @@ object CustomPanel{
     }
 
     @Composable
-    fun ErrorPanel(
-        modifier: Modifier = Modifier,
-        showIcon: Boolean= false,
-        @DrawableRes iconRes: Int? = null,
-        title: String?= null,
-        errorMessage: String? = null
-    ){
-        Surface(
-            modifier = modifier.fillMaxWidth(),
-            shape = shapes.medium,
-            border = BorderStroke(1.dp, DarkGray),
-            color = colorScheme.errorContainer,
-            contentColor = colorScheme.onErrorContainer
-        ) {
-            Column(
-                modifier = modifier.fillMaxWidth().padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Top),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                if(showIcon){
-                    Surface(
-                        modifier = modifier.fillMaxWidth().height(60.dp),
-                        color = colorScheme.errorContainer,
-                        contentColor = colorScheme.onErrorContainer
-                    ) {
-                        Icon(
-                            imageVector = if(iconRes == null) { Default.Warning }
-                            else { ImageVector.vectorResource(id = iconRes) },
-                            contentDescription = null
-                        )
-                    }
-                    HorizontalDivider(thickness = 2.dp, color = colorScheme.error)
-                }
-                if(title != null){
-                    Text(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = title,
-                        textAlign = Center,
-                        fontSize = typography.titleLarge.fontSize,
-                        fontWeight = typography.titleLarge.fontWeight
-                    )
-                    HorizontalDivider(thickness = 2.dp, color = colorScheme.error)
-                }
-                if(errorMessage != null){
-                    Text(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = errorMessage,
-                        textAlign = Start,
-                        fontSize = typography.bodyLarge.fontSize,
-                        fontWeight = typography.bodyLarge.fontWeight
-                    )
-                }
-            }
-        }
-    }
-
-    @Composable
-    fun EmptyScreen(
-        modifier: Modifier = Modifier,
-        showIcon: Boolean = false,
-        @DrawableRes iconRes: Int? = null,
-        title: String? = null,
-        emptyMessage: String? = null
-    ) {
-        Surface(
-            modifier = modifier.fillMaxSize().padding(16.dp),
-            shape = shapes.medium,
-            color = colorScheme.surfaceContainerHighest,
-            contentColor = colorScheme.onSurfaceVariant
-        ){
-            Column(
-                modifier = modifier.fillMaxSize().padding(16.dp).verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Top),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                if(showIcon){
-                    Surface(
-                        modifier = modifier.fillMaxWidth().height(60.dp),
-                        color = colorScheme.errorContainer,
-                        contentColor = colorScheme.onErrorContainer
-                    ) {
-                        Icon(
-                            imageVector = if(iconRes == null) { ImageVector.vectorResource(id = CustomIcons.Content.empty) }
-                            else { ImageVector.vectorResource(id = iconRes) },
-                            contentDescription = null,
-                        )
-                    }
-                    HorizontalDivider(thickness = 2.dp, color = colorScheme.surfaceVariant)
-                }
-                if(title != null){
-                    Text(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = title,
-                        textAlign = Center,
-                        fontSize = typography.titleLarge.fontSize,
-                        fontWeight = typography.titleLarge.fontWeight
-                    )
-                    HorizontalDivider(thickness = 2.dp, color = colorScheme.surfaceVariant)
-                }
-                if(emptyMessage != null){
-                    Text(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = emptyMessage,
-                        textAlign = Start,
-                        fontSize = typography.bodyLarge.fontSize,
-                        fontWeight = typography.bodyLarge.fontWeight
-                    )
-                }
-            }
-        }
-    }
-
-    @Composable
-    fun EmptyPanel(
-        modifier: Modifier = Modifier,
-        showIcon: Boolean = false,
-        @DrawableRes iconRes: Int? = null,
-        title: String? = null,
-        emptyMessage: String? = null
-    ){
-        Surface(
-            modifier = modifier.fillMaxWidth(),
-            shape = shapes.medium,
-            border = BorderStroke(1.dp, DarkGray),
-            color = colorScheme.surfaceContainerHighest,
-            contentColor = colorScheme.onSurface
-        ) {
-            Column(
-                modifier = modifier.fillMaxWidth().padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Top),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                if(showIcon){
-                    Surface(
-                        modifier = modifier.fillMaxWidth().padding(16.dp),
-                        color = colorScheme.surfaceContainerHighest,
-                        contentColor = colorScheme.onSurface
-                    ) {
-                        Icon(
-                            imageVector = if(iconRes == null){ ImageVector.vectorResource(id = CustomIcons.Content.empty) }
-                            else { ImageVector.vectorResource(id = iconRes) },
-                            contentDescription = null
-                        )
-                    }
-                    HorizontalDivider(thickness = 2.dp, color = colorScheme.surfaceVariant)
-                }
-                if(title != null){
-                    Text(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = title,
-                        textAlign = Center,
-                        fontSize = typography.titleLarge.fontSize,
-                        fontWeight = typography.titleLarge.fontWeight
-                    )
-                    HorizontalDivider(thickness = 2.dp, color = colorScheme.surfaceVariant)
-                }
-                if(emptyMessage != null){
-                    Text(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = emptyMessage,
-                        textAlign = Start,
-                        fontSize = typography.bodyLarge.fontSize,
-                        fontWeight = typography.bodyLarge.fontWeight
-                    )
-                }
-            }
-        }
-    }
-
-    @Composable
     fun TextContentWithIcon(
         icon: ImageVector,
         text: String,
         iconShape: Shape = shapes.extraSmall,
         iconTint: Color = colorScheme.onPrimaryContainer,
         iconSize: Dp = ButtonDefaults.IconSize,
+        iconBoxColor: Color = colorScheme.primaryContainer,
         textColor: Color = colorScheme.onSurface,
         textMaxLines: Int = 1,
         textOverflow: TextOverflow = TextOverflow.Ellipsis,
         textAlign: TextAlign = Start,
+        fontWeight: FontWeight = FontWeight.Normal,
         iconWidthRatio: Float = 0.1f,
         textWidthRatio: Float = 0.9f
     ){
@@ -402,6 +207,7 @@ object CustomPanel{
         ) {
             Surface(
                 modifier = Modifier.weight(iconWidthRatio).size(iconSize),
+                color = iconBoxColor,
                 shape = iconShape,
             ) {
                 Icon(
@@ -416,7 +222,8 @@ object CustomPanel{
                 color = textColor,
                 maxLines = textMaxLines,
                 overflow = textOverflow,
-                textAlign = textAlign
+                textAlign = textAlign,
+                fontWeight = fontWeight
             )
         }
     }

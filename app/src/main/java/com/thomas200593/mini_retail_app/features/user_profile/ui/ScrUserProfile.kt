@@ -14,6 +14,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -57,15 +58,19 @@ import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.A
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.Industries
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.LegalType
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.Taxation
+import com.thomas200593.mini_retail_app.core.design_system.util.HlpStringArray.Handler.StringArrayResource
+import com.thomas200593.mini_retail_app.core.design_system.util.HlpStringArray.StringArrayResources.BizIndustries
 import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons
+import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.Country.country
 import com.thomas200593.mini_retail_app.core.ui.common.CustomThemes
 import com.thomas200593.mini_retail_app.core.ui.component.CustomButton.Common.AppIconButton
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.TextContentWithIcon
 import com.thomas200593.mini_retail_app.core.ui.component.CustomScreenUtil.LockScreenOrientation
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.entity.AppConfig.ConfigCurrent
 import com.thomas200593.mini_retail_app.features.auth.entity.AuthSessionToken
-import com.thomas200593.mini_retail_app.features.auth.entity.OAuth2UserMetadata
+import com.thomas200593.mini_retail_app.features.auth.entity.OAuth2UserMetadata.Google
 import com.thomas200593.mini_retail_app.features.auth.entity.OAuthProvider
+import com.thomas200593.mini_retail_app.features.auth.entity.OAuthProvider.GOOGLE
 import com.thomas200593.mini_retail_app.features.auth.entity.UserData
 import com.thomas200593.mini_retail_app.features.business.biz_profile.entity.BizName
 import com.thomas200593.mini_retail_app.features.business.biz_profile.entity.BizProfileShort
@@ -93,6 +98,7 @@ fun ScrUserProfile(
     ScrUserProfile(
         uiState = uiState,
         onNavToAppConfig = { /*TODO*/ },
+        onNavToBizProfile = { /*TODO*/ },
         onBtnSignOutClicked = { /*TODO*/ }
     )
 }
@@ -101,12 +107,14 @@ fun ScrUserProfile(
 private fun ScrUserProfile(
     uiState: UiState,
     onNavToAppConfig: () -> Unit,
+    onNavToBizProfile: () -> Unit,
     onBtnSignOutClicked: () -> Unit
 ) {
     HandleDialogs()
     ScreenContent(
         uiState = uiState,
         onNavToAppConfig = onNavToAppConfig,
+        onNavToBizProfile = onNavToBizProfile,
         onBtnSignOutClicked = onBtnSignOutClicked
     )
 }
@@ -118,6 +126,7 @@ private fun HandleDialogs() { /*TODO*/ }
 private fun ScreenContent(
     uiState: UiState,
     onNavToAppConfig: () -> Unit,
+    onNavToBizProfile: () -> Unit,
     onBtnSignOutClicked: () -> Unit
 ) {
     Surface {
@@ -127,8 +136,14 @@ private fun ScreenContent(
             verticalArrangement = Arrangement.spacedBy(10.dp, Alignment.Top),
         ) {
             NavigationAppConfigSection(onNavToAppConfig = onNavToAppConfig)
-            CurrentUserSessionSection(uiState = uiState, onBtnSignOutClicked = onBtnSignOutClicked)
-            BizProfileSummaryData(uiState = uiState)
+            CurrentUserSessionSection(
+                uiState = uiState,
+                onBtnSignOutClicked = onBtnSignOutClicked
+            )
+            BizProfileSummaryData(
+                uiState = uiState,
+                onNavToBizProfile = onNavToBizProfile
+            )
             SignOutSection(onBtnSignOutClicked = onBtnSignOutClicked)
         }
     }
@@ -167,11 +182,10 @@ private fun CurrentUserSessionSection(
         is Success -> {
             val userData = uiState.userProfileData.data.first
             when(val provider = userData.authSessionToken?.authProvider) {
-                OAuthProvider.GOOGLE -> UserProfileGoogle(
-                    provider = provider,
-                    userData = (userData.oAuth2UserMetadata as OAuth2UserMetadata.Google)
-                )
-                null -> onBtnSignOutClicked()
+                GOOGLE ->
+                    UserProfileGoogle(provider = provider, userData = userData.oAuth2UserMetadata as Google)
+                null ->
+                    onBtnSignOutClicked()
             }
         }
     }
@@ -180,7 +194,7 @@ private fun CurrentUserSessionSection(
 @Composable
 fun UserProfileGoogle(
     provider: OAuthProvider,
-    userData: OAuth2UserMetadata.Google
+    userData: Google
 ) {
     Column(
         modifier = Modifier.fillMaxWidth().padding(8.dp),
@@ -188,13 +202,10 @@ fun UserProfileGoogle(
         verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterVertically)
     ) {
         var infoExpanded by remember { mutableStateOf(false) }
-
         AsyncImage(
             model = ImageRequest
-                .Builder(LocalContext.current)
-                .crossfade(1000)
-                .data(data = userData.pictureUri)
-                .transformations(CircleCropTransformation()).build(),
+                .Builder(LocalContext.current).crossfade(1000)
+                .data(data = userData.pictureUri).transformations(CircleCropTransformation()).build(),
             contentDescription = null,
             modifier = Modifier.size(100.dp).border(2.dp, Color.Gray, CircleShape),
             contentScale = ContentScale.Crop
@@ -257,8 +268,161 @@ fun UserProfileGoogle(
 }
 
 @Composable
-private fun BizProfileSummaryData(uiState: UiState) {
-    Text("Biz Profile Summary Data")
+private fun BizProfileSummaryData(
+    uiState: UiState,
+    onNavToBizProfile: () -> Unit
+) {
+    when(uiState.userProfileData){
+        Idle -> Unit
+        Loading -> CircularProgressIndicator()
+        is Success -> Surface(
+            modifier = Modifier.fillMaxWidth().padding(8.dp),
+            shape = MaterialTheme.shapes.medium,
+            color = MaterialTheme.colorScheme.secondaryContainer,
+            contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+        ) {
+            val bizProfile = uiState.userProfileData.data.second
+
+            Column(
+                modifier = Modifier.fillMaxWidth().padding(8.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Text(
+                    text = stringResource(id = R.string.str_business_profile),
+                    modifier = Modifier,
+                    textAlign = TextAlign.Center,
+                    fontWeight = FontWeight.Bold
+                )
+                Surface(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = MaterialTheme.shapes.medium,
+                    color = MaterialTheme.colorScheme.secondaryContainer
+                ) {
+                    Column(
+                        modifier = Modifier.fillMaxWidth().padding(8.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        TextContentWithIcon(
+                            icon = ImageVector.vectorResource(id = country),
+                            iconBoxColor = MaterialTheme.colorScheme.secondaryContainer,
+                            text = stringResource(R.string.str_biz_name),
+                            fontWeight = FontWeight.Bold
+                        )
+
+                        bizProfile.bizName.legalName
+                            .takeIf { it.isNotBlank() }?.let {
+                                Column(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalAlignment = Alignment.Start,
+                                    verticalArrangement = Arrangement.Center
+                                ) {
+                                    Text(
+                                        text = stringResource(R.string.str_biz_legal_name),
+                                        maxLines = 1,
+                                        fontWeight = FontWeight.Bold,
+                                        style = MaterialTheme.typography.labelSmall,
+                                        overflow = TextOverflow.Ellipsis
+                                    )
+                                    Text(
+                                        text = it,
+                                        style = MaterialTheme.typography.bodyMedium
+                                    )
+                                }
+                            }
+
+                        bizProfile.bizName.commonName
+                            .takeIf { it.isNotBlank() }?.let {
+                                Column(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalAlignment = Alignment.Start,
+                                    verticalArrangement = Arrangement.Center
+                                ) {
+                                    Text(
+                                        text = stringResource(R.string.str_biz_common_name),
+                                        maxLines = 1,
+                                        fontWeight = FontWeight.Bold,
+                                        style = MaterialTheme.typography.labelSmall,
+                                        overflow = TextOverflow.Ellipsis
+                                    )
+                                    Text(
+                                        text = it,
+                                        style = MaterialTheme.typography.bodyMedium
+                                    )
+                                }
+                            }
+                    }
+                }
+                Surface(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = MaterialTheme.shapes.medium,
+                    color = MaterialTheme.colorScheme.secondaryContainer
+                ) {
+                    Column(
+                        modifier = Modifier.fillMaxWidth().padding(8.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        TextContentWithIcon(
+                            icon = ImageVector.vectorResource(id = country),
+                            iconBoxColor = MaterialTheme.colorScheme.secondaryContainer,
+                            text = stringResource(R.string.str_biz_industry),
+                            fontWeight = FontWeight.Bold
+                        )
+
+                        bizProfile.bizIndustry.identityKey.let {
+                            StringArrayResource(BizIndustries).findByKey(it)?.let {
+                                Column(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalAlignment = Alignment.Start,
+                                    verticalArrangement = Arrangement.Center
+                                ) {
+                                    Text(
+                                        text = stringResource(R.string.str_biz_industry),
+                                        maxLines = 1,
+                                        fontWeight = FontWeight.Bold,
+                                        style = MaterialTheme.typography.labelSmall,
+                                        overflow = TextOverflow.Ellipsis
+                                    )
+                                    Text(
+                                        text = it,
+                                        style = MaterialTheme.typography.bodyMedium
+                                    )
+                                }
+                            }
+                        }
+
+                        bizProfile.bizIndustry.additionalInfo
+                            .takeIf{ it.isNotBlank() }?.let {
+                                Column(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalAlignment = Alignment.Start,
+                                    verticalArrangement = Arrangement.Center
+                                ) {
+                                    Text(
+                                        text = stringResource(R.string.str_additional_info),
+                                        maxLines = 1,
+                                        fontWeight = FontWeight.Bold,
+                                        style = MaterialTheme.typography.labelSmall,
+                                        overflow = TextOverflow.Ellipsis
+                                    )
+                                    Text(
+                                        text = it,
+                                        style = MaterialTheme.typography.bodyMedium
+                                    )
+                                }
+                            }
+                    }
+                }
+                AppIconButton(
+                    onClick = onNavToBizProfile,
+                    icon = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                    text = stringResource(id = R.string.str_detail)
+                )
+            }
+        }
+    }
 }
 
 @Composable
@@ -279,6 +443,7 @@ private fun SignOutSection(
 private fun Preview() = CustomThemes.ApplicationTheme {
     ScrUserProfile(
         onNavToAppConfig = {},
+        onNavToBizProfile = {},
         onBtnSignOutClicked = {},
         uiState = UiState(
             dialogState = DialogState(),
@@ -287,7 +452,7 @@ private fun Preview() = CustomThemes.ApplicationTheme {
                 data = Triple(
                     first = UserData(
                         authSessionToken = AuthSessionToken(),
-                        oAuth2UserMetadata = OAuth2UserMetadata.Google(
+                        oAuth2UserMetadata = Google(
                             email = "thomas200593@gmail.com",
                             name = "Thomas Richard",
                             emailVerified = "true",
