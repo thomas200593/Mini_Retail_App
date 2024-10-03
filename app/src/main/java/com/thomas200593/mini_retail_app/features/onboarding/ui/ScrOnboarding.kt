@@ -12,8 +12,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.Icons.AutoMirrored
-import androidx.compose.material.icons.Icons.Default
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.DropdownMenuItem
@@ -125,30 +125,22 @@ private fun ScreenContent(
     onFinishedOnboarding: () -> Unit
 ) {
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .testTag(Tags.TAG_ONBOARD_SCREEN)
+        modifier = Modifier.fillMaxSize().testTag(Tags.TAG_ONBOARD_SCREEN)
     ) {
         OnboardingLanguages(
             configLanguages = configLanguages,
             onSelectLanguage = onSelectLanguage
         )
         OnboardingImages(
-            modifier = Modifier
-                .weight(1.0f)
-                .fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().weight(1.0f),
             currentPage = onboardingPages[screenState.currentPageIndex]
         )
         OnboardingDetails(
-            modifier = Modifier
-                .weight(1.0f)
-                .padding(16.dp),
+            modifier = Modifier.weight(1.0f).padding(16.dp),
             currentPage = onboardingPages[screenState.currentPageIndex]
         )
         OnboardingNavigation(
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(top = 16.dp),
+            modifier = Modifier.align(Alignment.CenterHorizontally).padding(top = 16.dp),
             currentPageIndex = screenState.currentPageIndex,
             maxPageIndex = screenState.maxPageIndex,
             onBtnNextClicked = onBtnNextClicked,
@@ -305,22 +297,17 @@ private fun OnboardingNavigation(
     onFinishedOnboarding: () -> Unit
 ) {
     AppIconButton(
-        modifier = modifier
-            .testTag(Tags.TAG_ONBOARD_SCREEN_NAV_BUTTON)
-            .fillMaxWidth(0.8f),
+        modifier = modifier.testTag(Tags.TAG_ONBOARD_SCREEN_NAV_BUTTON).fillMaxWidth(0.8f),
         onClick = {
-            if (currentPageIndex < maxPageIndex) {
-                onBtnNextClicked()
-            } else {
-                onFinishedOnboarding()
-            }
+            if (currentPageIndex < maxPageIndex) onBtnNextClicked()
+            else onFinishedOnboarding()
         },
         icon =
-        if (currentPageIndex < maxPageIndex) AutoMirrored.Filled.KeyboardArrowRight
-        else Default.Check,
+            if (currentPageIndex < maxPageIndex) AutoMirrored.Filled.KeyboardArrowRight
+            else Icons.Default.Check,
         text =
-        if (currentPageIndex < maxPageIndex) stringResource(id = string.str_onboarding_next)
-        else stringResource(id = string.str_onboarding_get_started)
+            if (currentPageIndex < maxPageIndex) stringResource(id = string.str_onboarding_next)
+            else stringResource(id = string.str_onboarding_get_started)
     )
 }
 
@@ -333,9 +320,7 @@ private fun OnboardingTabSelector(
 ) {
     TabRow(
         selectedTabIndex = currentPage,
-        modifier = modifier
-            .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.primary)
+        modifier = modifier.fillMaxWidth().background(MaterialTheme.colorScheme.primary)
             .testTag(Tags.TAG_ONBOARD_TAG_ROW)
     ) {
         onboardingPages.forEachIndexed { index, _ ->
@@ -345,11 +330,11 @@ private fun OnboardingTabSelector(
                 onClick = { onTabSelected(index) }
             ) {
                 Box(
-                    modifier = Modifier
-                        .testTag(Tags.TAG_ONBOARD_TAG_ROW + index)
-                        .size(8.dp)
+                    modifier = Modifier.testTag(Tags.TAG_ONBOARD_TAG_ROW + index).size(8.dp)
                         .background(
-                            color = if (index == currentPage) MaterialTheme.colorScheme.onPrimary else Color.LightGray,
+                            color =
+                                if (index == currentPage) MaterialTheme.colorScheme.onPrimary
+                                else Color.LightGray,
                             shape = RoundedCornerShape(4.dp)
                         )
                 )

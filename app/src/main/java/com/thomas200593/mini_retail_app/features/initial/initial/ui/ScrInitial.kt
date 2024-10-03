@@ -1,15 +1,15 @@
 package com.thomas200593.mini_retail_app.features.initial.initial.ui
 
 import android.widget.Toast
-import android.widget.Toast.LENGTH_SHORT
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavOptions.Builder
+import androidx.navigation.NavOptions
 import com.thomas200593.mini_retail_app.R.string
 import com.thomas200593.mini_retail_app.app.navigation.NavGraph.G_INITIAL
 import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
@@ -33,6 +33,7 @@ import com.thomas200593.mini_retail_app.features.initial.initialization.navigati
 import com.thomas200593.mini_retail_app.features.onboarding.entity.OnboardingStatus.HIDE
 import com.thomas200593.mini_retail_app.features.onboarding.entity.OnboardingStatus.SHOW
 import com.thomas200593.mini_retail_app.features.onboarding.navigation.navToOnboarding
+import kotlinx.coroutines.launch
 
 @Composable
 fun ScrInitial(
@@ -40,27 +41,34 @@ fun ScrInitial(
     stateApp: StateApp = LocalStateApp.current
 ) {
     val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
     val uiState by vm.uiState.collectAsStateWithLifecycle()
     LaunchedEffect(Unit) { vm.onEvent(UiEvents.OnOpenEvents) }
     ScrInitial(
         uiState = uiState,
-        onNavToOnboarding = { stateApp.navController.navToOnboarding() },
-        onNavToInitialization = { stateApp.navController.navToInitialization() },
-        onNavToAuth = { stateApp.navController.navToAuth() },
+        onNavToOnboarding = {
+            coroutineScope.launch { stateApp.navController.navToOnboarding() }
+        },
+        onNavToInitialization = {
+            coroutineScope.launch { stateApp.navController.navToInitialization() }
+        },
+        onNavToAuth = {
+            coroutineScope.launch { stateApp.navController.navToAuth() }
+        },
         onNavToDashboard = { welcomeMessage, userData ->
-            val navOpt = Builder()
-                .setPopUpTo(route = G_INITIAL, inclusive = true, saveState = true)
-                .setLaunchSingleTop(true).setRestoreState(true).build()
+            val navOpt = NavOptions.Builder()
+                .setPopUpTo(route = G_INITIAL, inclusive = true, saveState = true).setRestoreState(true)
+                .setLaunchSingleTop(true).build()
             when (userData.authSessionToken?.authProvider) {
-                GOOGLE -> Toast.makeText(
-                    context,
-                    "$welcomeMessage! ${(userData.oAuth2UserMetadata as Google).name}.",
-                    LENGTH_SHORT
-                ).show()
-
+                GOOGLE ->
+                    Toast.makeText(
+                        context,
+                        "$welcomeMessage! ${(userData.oAuth2UserMetadata as Google).name}.",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 else -> Unit
             }
-            stateApp.navController.navToDashboard(navOpt)
+            coroutineScope.launch { stateApp.navController.navToDashboard(navOpt) }
         }
     )
 }
@@ -79,7 +87,6 @@ private fun ScrInitial(
         errorMessage = "${uiState.initial.t.message} : ${uiState.initial.t.cause}",
         showIcon = true
     )
-
     is Success -> ScreenContent(
         initial = uiState.initial.initial,
         onNavToOnboarding = onNavToOnboarding,
@@ -101,7 +108,6 @@ private fun ScreenContent(
         SHOW -> onNavToOnboarding.invoke()
         HIDE -> onNavToInitialization.invoke()
     }
-
     NO -> when (initial.configCurrent.onboardingStatus) {
         SHOW -> onNavToOnboarding.invoke()
         HIDE -> when (initial.session == null) {
