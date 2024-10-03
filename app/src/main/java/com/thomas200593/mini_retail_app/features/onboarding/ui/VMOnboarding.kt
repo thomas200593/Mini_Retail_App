@@ -35,9 +35,7 @@ class VMOnboarding @Inject constructor(
 ): ViewModel() {
     sealed interface UiStateOnboardingPages{
         data object Loading: UiStateOnboardingPages
-        data class Success(
-            val onboardingData: Onboarding.OnboardingData
-        ): UiStateOnboardingPages
+        data class Success(val onboardingData: Onboarding.OnboardingData) : UiStateOnboardingPages
     }
     data class UiState(
         val onboardingPages: UiStateOnboardingPages = Loading,
@@ -84,7 +82,6 @@ class VMOnboarding @Inject constructor(
         repoConfGenLanguage.setLanguage(language)
         setApplicationLocales( create(Locale(language.code)) )
     }
-
     private fun onOpenEvent() = viewModelScope.launch(ioDispatcher) {
         ucGetOnboardingData.invoke().collectLatest { data ->
             _uiState.update {
@@ -99,10 +96,20 @@ class VMOnboarding @Inject constructor(
     }
     private fun btnNextOnClickEvent() = _uiState.update {
         val nextPage = (it.screenState.currentPageIndex + 1).coerceAtMost(it.screenState.maxPageIndex)
-        it.copy(screenState = it.screenState.copy(currentPageIndex = nextPage))
+        it.copy(
+            screenState = it.screenState.copy(
+                currentPageIndex = nextPage
+            )
+        )
     }
-    private fun tabPageOnSelectEvent(index: Int) =
-        _uiState.update { it.copy(screenState = it.screenState.copy(currentPageIndex = index)) }
-    private fun onFinishedOnboardingEvent() =
-        viewModelScope.launch(ioDispatcher) { repoOnboarding.hideOnboarding() }
+    private fun tabPageOnSelectEvent(index: Int) = _uiState.update {
+        it.copy(
+            screenState = it.screenState.copy(
+                currentPageIndex = index
+            )
+        )
+    }
+    private fun onFinishedOnboardingEvent() = viewModelScope.launch(ioDispatcher) {
+        repoOnboarding.hideOnboarding()
+    }
 }

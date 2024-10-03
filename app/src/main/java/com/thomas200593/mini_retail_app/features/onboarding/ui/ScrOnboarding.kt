@@ -40,7 +40,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -62,7 +61,6 @@ import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_language.enti
 import com.thomas200593.mini_retail_app.features.initial.initialization.navigation.navToInitialization
 import com.thomas200593.mini_retail_app.features.onboarding.entity.Onboarding
 import com.thomas200593.mini_retail_app.features.onboarding.entity.Onboarding.OnboardingPage
-import com.thomas200593.mini_retail_app.features.onboarding.entity.Onboarding.Tags
 import com.thomas200593.mini_retail_app.features.onboarding.ui.VMOnboarding.ScreenState
 import com.thomas200593.mini_retail_app.features.onboarding.ui.VMOnboarding.UiEvents.ButtonEvents.BtnNextEvents
 import com.thomas200593.mini_retail_app.features.onboarding.ui.VMOnboarding.UiEvents.DropdownEvents.DropdownLanguagesEvents
@@ -128,9 +126,7 @@ private fun ScreenContent(
     onFinishedOnboarding: () -> Unit
 ) {
     Surface {
-        Column(
-            modifier = Modifier.fillMaxSize().testTag(Tags.TAG_ONBOARD_SCREEN)
-        ) {
+        Column(modifier = Modifier.fillMaxSize()) {
             OnboardingLanguages(
                 configLanguages = configLanguages,
                 onSelectLanguage = onSelectLanguage
@@ -236,9 +232,7 @@ private fun OnboardingLanguages(
 
 @Composable
 private fun OnboardingImages(modifier: Modifier, currentPage: OnboardingPage) {
-    Box(
-        modifier = modifier.testTag(Tags.TAG_ONBOARD_SCREEN_IMAGE_VIEW + currentPage.title)
-    ) {
+    Box(modifier = modifier) {
         Image(
             painter = painterResource(id = currentPage.imageRes),
             contentDescription = null,
@@ -298,7 +292,7 @@ private fun OnboardingNavigation(
     onFinishedOnboarding: () -> Unit
 ) {
     AppIconButton(
-        modifier = modifier.testTag(Tags.TAG_ONBOARD_SCREEN_NAV_BUTTON).fillMaxWidth(0.8f),
+        modifier = modifier.fillMaxWidth(0.8f),
         onClick = {
             if (currentPageIndex < maxPageIndex) onBtnNextClicked()
             else onFinishedOnboarding()
@@ -322,7 +316,6 @@ private fun OnboardingTabSelector(
     TabRow(
         selectedTabIndex = currentPage,
         modifier = modifier.fillMaxWidth().background(MaterialTheme.colorScheme.primary)
-            .testTag(Tags.TAG_ONBOARD_TAG_ROW)
     ) {
         onboardingPages.forEachIndexed { index, _ ->
             Tab(
@@ -331,13 +324,12 @@ private fun OnboardingTabSelector(
                 onClick = { onTabSelected(index) }
             ) {
                 Box(
-                    modifier = Modifier.testTag(Tags.TAG_ONBOARD_TAG_ROW + index).size(8.dp)
-                        .background(
-                            color =
-                                if (index == currentPage) MaterialTheme.colorScheme.onPrimary
-                                else Color.LightGray,
-                            shape = RoundedCornerShape(4.dp)
-                        )
+                    modifier = Modifier.size(8.dp).background(
+                        color =
+                            if (index == currentPage) MaterialTheme.colorScheme.onPrimary
+                            else Color.LightGray,
+                        shape = RoundedCornerShape(4.dp)
+                    )
                 )
             }
         }

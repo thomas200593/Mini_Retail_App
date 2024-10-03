@@ -3,7 +3,7 @@ package com.thomas200593.mini_retail_app.features.onboarding.domain
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers.Dispatchers.IO
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.di.Dispatcher
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_language.domain.UCGetConfGenLanguage
-import com.thomas200593.mini_retail_app.features.onboarding.entity.Onboarding
+import com.thomas200593.mini_retail_app.features.onboarding.entity.Onboarding.OnboardingData
 import com.thomas200593.mini_retail_app.features.onboarding.repository.RepoOnboarding
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.combine
@@ -20,9 +20,6 @@ class UCGetOnboardingData @Inject constructor(
         flow = ucGetConfGenLanguage.invoke(),
         flow2 = flow { emit(repoOnboarding.getOnboardingPages()) }
     ) { langConfig, onboardingPages ->
-        Onboarding.OnboardingData(
-            listOfOnboardingPages = onboardingPages,
-            configLanguages = langConfig
-        )
+        OnboardingData(listOfOnboardingPages = onboardingPages, configLanguages = langConfig)
     }.flowOn(ioDispatcher)
 }
