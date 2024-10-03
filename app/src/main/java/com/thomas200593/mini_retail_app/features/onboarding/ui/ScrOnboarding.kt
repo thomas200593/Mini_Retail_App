@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.Icons.AutoMirrored
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.DropdownMenuItem
@@ -47,17 +46,21 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.thomas200593.mini_retail_app.R.string
+import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
 import com.thomas200593.mini_retail_app.app.ui.StateApp
+import com.thomas200593.mini_retail_app.core.ui.common.CustomThemes
 import com.thomas200593.mini_retail_app.core.ui.component.CustomButton.Common.AppIconButton
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.LoadingScreen
+import com.thomas200593.mini_retail_app.features.app_conf.app_config.entity.AppConfig.ConfigCurrent
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_language.entity.ConfigLanguages
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_language.entity.Language
 import com.thomas200593.mini_retail_app.features.initial.initialization.navigation.navToInitialization
+import com.thomas200593.mini_retail_app.features.onboarding.entity.Onboarding
 import com.thomas200593.mini_retail_app.features.onboarding.entity.Onboarding.OnboardingPage
 import com.thomas200593.mini_retail_app.features.onboarding.entity.Onboarding.Tags
 import com.thomas200593.mini_retail_app.features.onboarding.ui.VMOnboarding.ScreenState
@@ -124,34 +127,36 @@ private fun ScreenContent(
     onTabSelected: (Int) -> Unit,
     onFinishedOnboarding: () -> Unit
 ) {
-    Column(
-        modifier = Modifier.fillMaxSize().testTag(Tags.TAG_ONBOARD_SCREEN)
-    ) {
-        OnboardingLanguages(
-            configLanguages = configLanguages,
-            onSelectLanguage = onSelectLanguage
-        )
-        OnboardingImages(
-            modifier = Modifier.fillMaxWidth().weight(1.0f),
-            currentPage = onboardingPages[screenState.currentPageIndex]
-        )
-        OnboardingDetails(
-            modifier = Modifier.weight(1.0f).padding(16.dp),
-            currentPage = onboardingPages[screenState.currentPageIndex]
-        )
-        OnboardingNavigation(
-            modifier = Modifier.align(Alignment.CenterHorizontally).padding(top = 16.dp),
-            currentPageIndex = screenState.currentPageIndex,
-            maxPageIndex = screenState.maxPageIndex,
-            onBtnNextClicked = onBtnNextClicked,
-            onFinishedOnboarding = onFinishedOnboarding
-        )
-        OnboardingTabSelector(
-            modifier = Modifier.padding(top = 16.dp),
-            onboardingPages = onboardingPages,
-            currentPage = screenState.currentPageIndex,
-            onTabSelected = onTabSelected
-        )
+    Surface {
+        Column(
+            modifier = Modifier.fillMaxSize().testTag(Tags.TAG_ONBOARD_SCREEN)
+        ) {
+            OnboardingLanguages(
+                configLanguages = configLanguages,
+                onSelectLanguage = onSelectLanguage
+            )
+            OnboardingImages(
+                modifier = Modifier.fillMaxWidth().weight(1.0f),
+                currentPage = onboardingPages[screenState.currentPageIndex]
+            )
+            OnboardingDetails(
+                modifier = Modifier.weight(1.0f).padding(16.dp),
+                currentPage = onboardingPages[screenState.currentPageIndex]
+            )
+            OnboardingNavigation(
+                modifier = Modifier.align(Alignment.CenterHorizontally).padding(top = 16.dp),
+                currentPageIndex = screenState.currentPageIndex,
+                maxPageIndex = screenState.maxPageIndex,
+                onBtnNextClicked = onBtnNextClicked,
+                onFinishedOnboarding = onFinishedOnboarding
+            )
+            OnboardingTabSelector(
+                modifier = Modifier.padding(top = 16.dp),
+                onboardingPages = onboardingPages,
+                currentPage = screenState.currentPageIndex,
+                onTabSelected = onTabSelected
+            )
+        }
     }
 }
 
@@ -232,8 +237,7 @@ private fun OnboardingLanguages(
 @Composable
 private fun OnboardingImages(modifier: Modifier, currentPage: OnboardingPage) {
     Box(
-        modifier = modifier
-            .testTag(Tags.TAG_ONBOARD_SCREEN_IMAGE_VIEW + currentPage.title)
+        modifier = modifier.testTag(Tags.TAG_ONBOARD_SCREEN_IMAGE_VIEW + currentPage.title)
     ) {
         Image(
             painter = painterResource(id = currentPage.imageRes),
@@ -300,11 +304,11 @@ private fun OnboardingNavigation(
             else onFinishedOnboarding()
         },
         icon =
-            if (currentPageIndex < maxPageIndex) AutoMirrored.Filled.KeyboardArrowRight
+            if (currentPageIndex < maxPageIndex) Icons.AutoMirrored.Filled.KeyboardArrowRight
             else Icons.Default.Check,
         text =
-            if (currentPageIndex < maxPageIndex) stringResource(id = string.str_onboarding_next)
-            else stringResource(id = string.str_onboarding_get_started)
+            if (currentPageIndex < maxPageIndex) stringResource(id = R.string.str_onboarding_next)
+            else stringResource(id = R.string.str_onboarding_get_started)
     )
 }
 
@@ -338,4 +342,45 @@ private fun OnboardingTabSelector(
             }
         }
     }
+}
+
+@Composable
+@Preview
+private fun Preview() = CustomThemes.ApplicationTheme {
+    ScrOnboarding(
+        onSelectLanguage = {},
+        onFinishedOnboarding = {},
+        onBtnNextClicked = {},
+        onTabSelected = {},
+        uiState = UiState(
+            onboardingPages = Success(
+                onboardingData = Onboarding.OnboardingData(
+                    listOfOnboardingPages = listOf(
+                        OnboardingPage(
+                            imageRes = R.drawable.onboard_image_1,
+                            title = R.string.onboarding_title_1,
+                            description = R.string.onboarding_desc_1
+                        ),
+                        OnboardingPage(
+                            imageRes = R.drawable.onboard_image_2,
+                            title =  R.string.onboarding_title_2,
+                            description = R.string.onboarding_desc_2
+                        ),
+                        OnboardingPage(
+                            imageRes = R.drawable.onboard_image_3,
+                            title =  R.string.onboarding_title_3,
+                            description = R.string.onboarding_desc_3
+                        )
+                    ),
+                    configLanguages = ConfigLanguages(
+                        configCurrent = ConfigCurrent(),
+                        languages = setOf(
+                            Language.EN,
+                            Language.ID
+                        )
+                    )
+                )
+            )
+        )
+    )
 }
