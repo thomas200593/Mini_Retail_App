@@ -241,11 +241,8 @@ private fun OnboardingImages(modifier: Modifier, currentPage: OnboardingPage) {
             contentScale = ContentScale.FillWidth,
             modifier = Modifier.fillMaxSize()
         )
-        Box(modifier = Modifier
-            .fillMaxSize()
-            .align(Alignment.BottomCenter)
-            .graphicsLayer { alpha = 0.6f }
-            .background(
+        Box(modifier = Modifier.fillMaxSize().align(Alignment.BottomCenter)
+            .graphicsLayer { alpha = 0.6f }.background(
                 verticalGradient(
                     colorStops = arrayOf(
                         Pair(0.8f, Color.Transparent),
