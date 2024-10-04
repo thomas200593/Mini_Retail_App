@@ -215,7 +215,7 @@ private fun NavigationAppConfigSection(
     onNavToAppConfig: () -> Unit
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth().padding(8.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.End
     ) {
@@ -226,7 +226,8 @@ private fun NavigationAppConfigSection(
             Icon(
                 imageVector = ImageVector.vectorResource(id = CustomIcons.Setting.settings),
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSurface
+                tint = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier
             )
         }
     }
