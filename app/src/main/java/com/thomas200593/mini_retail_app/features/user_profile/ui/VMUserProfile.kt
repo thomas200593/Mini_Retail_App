@@ -11,10 +11,12 @@ import com.thomas200593.mini_retail_app.features.app_conf.app_config.entity.AppC
 import com.thomas200593.mini_retail_app.features.auth.entity.UserData
 import com.thomas200593.mini_retail_app.features.business.biz_profile.domain.UCGetBizProfileShort
 import com.thomas200593.mini_retail_app.features.business.biz_profile.entity.BizProfileShort
+import com.thomas200593.mini_retail_app.features.user_profile.ui.VMUserProfile.UiEvents.ButtonEvents.BtnAppConfigEvents
+import com.thomas200593.mini_retail_app.features.user_profile.ui.VMUserProfile.UiEvents.ButtonEvents.BtnSignOutEvents
+import com.thomas200593.mini_retail_app.features.user_profile.ui.VMUserProfile.UiEvents.DialogEvents.DlgDenyAccessEvents
 import com.thomas200593.mini_retail_app.features.user_profile.ui.VMUserProfile.UiEvents.OnOpenEvents
 import com.thomas200593.mini_retail_app.features.user_profile.ui.VMUserProfile.UiStateUserProfile.Idle
 import com.thomas200593.mini_retail_app.features.user_profile.ui.VMUserProfile.UiStateUserProfile.Loading
-import com.thomas200593.mini_retail_app.features.user_profile.ui.VMUserProfile.UiStateUserProfile.Success
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -44,6 +46,19 @@ class VMUserProfile @Inject constructor(
     )
     sealed interface UiEvents {
         data class OnOpenEvents(val sessionState: SessionState) : UiEvents
+        sealed interface ButtonEvents : UiEvents {
+            sealed interface BtnAppConfigEvents : ButtonEvents {
+                data object OnClick : BtnAppConfigEvents
+            }
+            sealed interface BtnSignOutEvents : ButtonEvents {
+                data object OnClick: BtnSignOutEvents
+            }
+        }
+        sealed interface DialogEvents : UiEvents {
+            sealed interface DlgDenyAccessEvents : DialogEvents {
+                data object OnDismiss :DlgDenyAccessEvents
+            }
+        }
     }
 
     private val _uiState = MutableStateFlow(UiState())
@@ -52,11 +67,15 @@ class VMUserProfile @Inject constructor(
     fun onEvent(events: UiEvents) {
         when(events) {
             is OnOpenEvents -> onOpenEvent(events.sessionState)
+            is BtnAppConfigEvents.OnClick -> resetDialogState()
+            is BtnSignOutEvents.OnClick -> resetDialogAndUiState()
+            is DlgDenyAccessEvents.OnDismiss -> resetDialogAndUiState()
         }
     }
 
     private fun resetDialogState() = _uiState.update { it.copy(dialogState = DialogState()) }
     private fun resetUiStateUserProfile() = _uiState.update { it.copy(userProfileData = Idle) }
+    private fun resetDialogAndUiState() { resetDialogState(); resetUiStateUserProfile() }
 
     private fun onOpenEvent(sessionState: SessionState) {
         when(sessionState) {
@@ -64,26 +83,36 @@ class VMUserProfile @Inject constructor(
                 resetDialogState()
                 _uiState.update { it.copy(userProfileData = Loading) }
             }
-            is SessionState.Invalid -> viewModelScope.launch{
-                resetDialogState(); resetUiStateUserProfile()
-                _uiState.update {
-                    it.copy(
-                        dialogState = it.dialogState.copy(dlgDenySession = mutableStateOf(true))
-                    )
-                }
-            }
+            is SessionState.Invalid -> onDenyAccess()
             is SessionState.Valid -> viewModelScope.launch{
                 resetDialogState()
                 _uiState.update { it.copy(userProfileData = Loading) }
                 ucGetBizProfileShort.invoke().flowOn(ioDispatcher).collectLatest { data ->
                     _uiState.update {
                         it.copy(
-                            userProfileData = Success(data = Triple(sessionState.userData, data.first, data.second)),
+                            userProfileData = UiStateUserProfile.Success(
+                                data = Triple(
+                                    sessionState.userData,
+                                    data.first,
+                                    data.second
+                                )
+                            ),
                             dialogState = DialogState()
                         )
                     }
                 }
             }
+        }
+    }
+
+    private fun onDenyAccess() {
+        resetDialogState(); resetUiStateUserProfile()
+        _uiState.update {
+            it.copy(
+                dialogState = it.dialogState.copy(
+                    dlgDenySession = mutableStateOf(true)
+                )
+            )
         }
     }
 }

@@ -16,6 +16,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
@@ -32,6 +33,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -64,22 +66,30 @@ import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons
 import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.Country.country
 import com.thomas200593.mini_retail_app.core.ui.common.CustomThemes
 import com.thomas200593.mini_retail_app.core.ui.component.CustomButton.Common.AppIconButton
+import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AlertDialogContext
+import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AppAlertDialog
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.TextContentWithIcon
 import com.thomas200593.mini_retail_app.core.ui.component.CustomScreenUtil.LockScreenOrientation
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.entity.AppConfig.ConfigCurrent
+import com.thomas200593.mini_retail_app.features.app_conf.app_config.navigation.navToAppConfig
 import com.thomas200593.mini_retail_app.features.auth.entity.AuthSessionToken
 import com.thomas200593.mini_retail_app.features.auth.entity.OAuth2UserMetadata.Google
 import com.thomas200593.mini_retail_app.features.auth.entity.OAuthProvider
 import com.thomas200593.mini_retail_app.features.auth.entity.OAuthProvider.GOOGLE
 import com.thomas200593.mini_retail_app.features.auth.entity.UserData
+import com.thomas200593.mini_retail_app.features.auth.navigation.navToAuth
 import com.thomas200593.mini_retail_app.features.business.biz_profile.entity.BizName
 import com.thomas200593.mini_retail_app.features.business.biz_profile.entity.BizProfileShort
 import com.thomas200593.mini_retail_app.features.user_profile.ui.VMUserProfile.DialogState
+import com.thomas200593.mini_retail_app.features.user_profile.ui.VMUserProfile.UiEvents.ButtonEvents.BtnAppConfigEvents
+import com.thomas200593.mini_retail_app.features.user_profile.ui.VMUserProfile.UiEvents.ButtonEvents.BtnSignOutEvents
 import com.thomas200593.mini_retail_app.features.user_profile.ui.VMUserProfile.UiEvents.OnOpenEvents
 import com.thomas200593.mini_retail_app.features.user_profile.ui.VMUserProfile.UiState
 import com.thomas200593.mini_retail_app.features.user_profile.ui.VMUserProfile.UiStateUserProfile.Idle
 import com.thomas200593.mini_retail_app.features.user_profile.ui.VMUserProfile.UiStateUserProfile.Loading
 import com.thomas200593.mini_retail_app.features.user_profile.ui.VMUserProfile.UiStateUserProfile.Success
+import com.thomas200593.mini_retail_app.work.workers.session_monitor.manager.ManagerWorkSessionMonitor
+import kotlinx.coroutines.launch
 import ulid.ULID
 import java.time.Instant
 
@@ -90,6 +100,8 @@ fun ScrUserProfile(
 ) {
     LockScreenOrientation(SCREEN_ORIENTATION_PORTRAIT)
 
+    val appContext = LocalContext.current.applicationContext
+    val coroutineScope = rememberCoroutineScope()
     val uiState by vm.uiState.collectAsStateWithLifecycle()
     val sessionState by stateApp.isSessionValid.collectAsStateWithLifecycle()
 
@@ -97,9 +109,16 @@ fun ScrUserProfile(
 
     ScrUserProfile(
         uiState = uiState,
-        onNavToAppConfig = { /*TODO*/ },
+        onNavToAppConfig = {
+            vm.onEvent(BtnAppConfigEvents.OnClick)
+                .also { coroutineScope.launch { stateApp.navController.navToAppConfig() } }
+        },
         onNavToBizProfile = { /*TODO*/ },
-        onBtnSignOutClicked = { /*TODO*/ }
+        onBtnSignOutClicked = {
+            ManagerWorkSessionMonitor.terminate(appContext)
+            vm.onEvent(BtnSignOutEvents.OnClick)
+                .also{ coroutineScope.launch { stateApp.navController.navToAuth() } }
+        }
     )
 }
 
@@ -110,7 +129,10 @@ private fun ScrUserProfile(
     onNavToBizProfile: () -> Unit,
     onBtnSignOutClicked: () -> Unit
 ) {
-    HandleDialogs()
+    HandleDialogs(
+        uiState = uiState,
+        onBtnSignOutClicked = onBtnSignOutClicked
+    )
     ScreenContent(
         uiState = uiState,
         onNavToAppConfig = onNavToAppConfig,
@@ -120,7 +142,35 @@ private fun ScrUserProfile(
 }
 
 @Composable
-private fun HandleDialogs() { /*TODO*/ }
+private fun HandleDialogs(
+    uiState: UiState,
+    onBtnSignOutClicked: () -> Unit
+) {
+    AppAlertDialog(
+        showDialog = uiState.dialogState.dlgDenySession,
+        dialogContext = AlertDialogContext.ERROR,
+        showTitle = true,
+        title = { Text(text = stringResource(id = R.string.str_session_expired)) },
+        showBody = true,
+        body = {
+            Column(
+                modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) { Text(text = stringResource(id = R.string.str_deny_access_auth_required)) }
+        },
+        useDismissButton = true,
+        dismissButton = {
+            AppIconButton(
+                onClick = onBtnSignOutClicked,
+                icon = Icons.Default.Close,
+                text = stringResource(id = R.string.str_close),
+                containerColor = MaterialTheme.colorScheme.error,
+                contentColor = MaterialTheme.colorScheme.onError
+            )
+        }
+    )
+}
 
 @Composable
 private fun ScreenContent(
@@ -204,7 +254,7 @@ fun UserProfileGoogle(
         var infoExpanded by remember { mutableStateOf(false) }
         AsyncImage(
             model = ImageRequest
-                .Builder(LocalContext.current).crossfade(1000)
+                .Builder(LocalContext.current).crossfade(250)
                 .data(data = userData.pictureUri).transformations(CircleCropTransformation()).build(),
             contentDescription = null,
             modifier = Modifier.size(100.dp).border(2.dp, Color.Gray, CircleShape),
