@@ -50,6 +50,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.navOptions
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import coil.transform.CircleCropTransformation
@@ -78,10 +79,13 @@ import com.thomas200593.mini_retail_app.features.auth.entity.OAuthProvider
 import com.thomas200593.mini_retail_app.features.auth.entity.OAuthProvider.GOOGLE
 import com.thomas200593.mini_retail_app.features.auth.entity.UserData
 import com.thomas200593.mini_retail_app.features.auth.navigation.navToAuth
+import com.thomas200593.mini_retail_app.features.business.biz.navigation.DestBiz
+import com.thomas200593.mini_retail_app.features.business.biz.navigation.navToBiz
 import com.thomas200593.mini_retail_app.features.business.biz_profile.entity.BizName
 import com.thomas200593.mini_retail_app.features.business.biz_profile.entity.BizProfileShort
 import com.thomas200593.mini_retail_app.features.user_profile.ui.VMUserProfile.DialogState
 import com.thomas200593.mini_retail_app.features.user_profile.ui.VMUserProfile.UiEvents.ButtonEvents.BtnAppConfigEvents
+import com.thomas200593.mini_retail_app.features.user_profile.ui.VMUserProfile.UiEvents.ButtonEvents.BtnBizProfileEvents
 import com.thomas200593.mini_retail_app.features.user_profile.ui.VMUserProfile.UiEvents.ButtonEvents.BtnSignOutEvents
 import com.thomas200593.mini_retail_app.features.user_profile.ui.VMUserProfile.UiEvents.OnOpenEvents
 import com.thomas200593.mini_retail_app.features.user_profile.ui.VMUserProfile.UiState
@@ -113,7 +117,14 @@ fun ScrUserProfile(
             vm.onEvent(BtnAppConfigEvents.OnClick)
                 .also { coroutineScope.launch { stateApp.navController.navToAppConfig() } }
         },
-        onNavToBizProfile = { /*TODO*/ },
+        onNavToBizProfile = {
+            val navOptions = navOptions{ launchSingleTop=true; restoreState=true }
+            vm.onEvent(BtnBizProfileEvents.OnClick).also {
+                coroutineScope.launch {
+                    stateApp.navController.navToBiz(navOptions, DestBiz.BIZ_PROFILE)
+                }
+            }
+        },
         onBtnSignOutClicked = {
             ManagerWorkSessionMonitor.terminate(appContext)
             vm.onEvent(BtnSignOutEvents.OnClick)

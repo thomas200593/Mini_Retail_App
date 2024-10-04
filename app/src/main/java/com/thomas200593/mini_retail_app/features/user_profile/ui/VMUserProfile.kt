@@ -12,6 +12,7 @@ import com.thomas200593.mini_retail_app.features.auth.entity.UserData
 import com.thomas200593.mini_retail_app.features.business.biz_profile.domain.UCGetBizProfileShort
 import com.thomas200593.mini_retail_app.features.business.biz_profile.entity.BizProfileShort
 import com.thomas200593.mini_retail_app.features.user_profile.ui.VMUserProfile.UiEvents.ButtonEvents.BtnAppConfigEvents
+import com.thomas200593.mini_retail_app.features.user_profile.ui.VMUserProfile.UiEvents.ButtonEvents.BtnBizProfileEvents
 import com.thomas200593.mini_retail_app.features.user_profile.ui.VMUserProfile.UiEvents.ButtonEvents.BtnSignOutEvents
 import com.thomas200593.mini_retail_app.features.user_profile.ui.VMUserProfile.UiEvents.DialogEvents.DlgDenyAccessEvents
 import com.thomas200593.mini_retail_app.features.user_profile.ui.VMUserProfile.UiEvents.OnOpenEvents
@@ -53,6 +54,9 @@ class VMUserProfile @Inject constructor(
             sealed interface BtnSignOutEvents : ButtonEvents {
                 data object OnClick: BtnSignOutEvents
             }
+            sealed interface BtnBizProfileEvents : ButtonEvents {
+                data object OnClick : BtnBizProfileEvents
+            }
         }
         sealed interface DialogEvents : UiEvents {
             sealed interface DlgDenyAccessEvents : DialogEvents {
@@ -70,6 +74,7 @@ class VMUserProfile @Inject constructor(
             is BtnAppConfigEvents.OnClick -> resetDialogState()
             is BtnSignOutEvents.OnClick -> resetDialogAndUiState()
             is DlgDenyAccessEvents.OnDismiss -> resetDialogAndUiState()
+            is BtnBizProfileEvents.OnClick -> resetDialogState()
         }
     }
 
