@@ -44,6 +44,8 @@ timber = "5.0.1"
 toolsCore = "1.0.0-alpha10"
 tracing = "1.2.0"
 ui = "1.7.3"
+uiTestJunit4 = "1.7.3"
+uiTestManifest = "1.7.3"
 ulidKotlin = "1.3.0"
 workRuntimeKtx = "2.9.1"
 
@@ -87,6 +89,8 @@ androidx-room-testing = { module = "androidx.room:room-testing", version.ref = "
 androidx-security-crypto = { module = "androidx.security:security-crypto", version.ref = "securityCrypto" }
 androidx-tools-core = { module = "androidx.privacysandbox.tools:tools-core", version.ref = "toolsCore" }
 androidx-ui = { module = "androidx.compose.ui:ui", version.ref = "ui" }
+androidx-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4", version.ref = "uiTestJunit4" }
+androidx-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "uiTestManifest" }
 androidx-ui-text = { module = "androidx.compose.ui:ui-text", version.ref = "ui" }
 androidx-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
 androidx-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
