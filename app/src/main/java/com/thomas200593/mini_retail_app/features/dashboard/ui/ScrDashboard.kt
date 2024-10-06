@@ -1,18 +1,20 @@
 package com.thomas200593.mini_retail_app.features.dashboard.ui
 
+import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons.Default
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -23,98 +25,173 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.thomas200593.mini_retail_app.R
+import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs
 import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
 import com.thomas200593.mini_retail_app.app.ui.StateApp
-import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
-import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons
-import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar
-import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.LoadingScreen
-import com.thomas200593.mini_retail_app.features.initial.initial.navigation.navToInitial
-import timber.log.Timber
-
-private const val TAG = "DashboardScreen"
+import com.thomas200593.mini_retail_app.core.ui.common.CustomThemes
+import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar.ProvideTopAppBarAction
+import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar.ProvideTopAppBarTitle
+import com.thomas200593.mini_retail_app.core.ui.component.CustomButton.Common.AppIconButton
+import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AlertDialogContext
+import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AppAlertDialog
+import com.thomas200593.mini_retail_app.core.ui.component.CustomScreenUtil.LockScreenOrientation
+import com.thomas200593.mini_retail_app.features.dashboard.ui.VMDashboard.UiEvents.ButtonEvents.BtnScrDescEvents
+import com.thomas200593.mini_retail_app.features.dashboard.ui.VMDashboard.UiEvents.OnOpenEvents
+import com.thomas200593.mini_retail_app.features.dashboard.ui.VMDashboard.UiState
 
 @Composable
 fun ScrDashboard(
-    viewModel: VMDashboard = hiltViewModel(),
+    vm: VMDashboard = hiltViewModel(),
     stateApp: StateApp = LocalStateApp.current
 ) {
-    Timber.d("Called : fun $TAG()")
+    LockScreenOrientation(SCREEN_ORIENTATION_PORTRAIT)
 
+    val uiState by vm.uiState.collectAsStateWithLifecycle()
     val sessionState by stateApp.isSessionValid.collectAsStateWithLifecycle()
+    val currentScreen = ScrGraphs.getByRoute(stateApp.destCurrent)
 
-    when(sessionState){
-        is SessionState.Invalid -> {
-            LaunchedEffect(key1 = Unit) {
-                stateApp.navController.navToInitial()
-            }
-        }
-        SessionState.Loading -> {
-            LoadingScreen()
-        }
-        is SessionState.Valid -> {
-            LaunchedEffect(Unit) {
-                viewModel.onOpen()
-            }
-        }
-    }
+    LaunchedEffect(sessionState) { vm.onEvent(OnOpenEvents(sessionState)) }
 
-    TopAppBar()
-    ScreenContent()
+    ScrDashboard(
+        uiState = uiState,
+        currentScreen = currentScreen,
+        onShowScrDesc = { vm.onEvent(BtnScrDescEvents.OnClick) },
+        onDismissDlgScrDesc = { vm.onEvent(BtnScrDescEvents.OnDismiss) }
+    )
 }
 
 @Composable
-private fun TopAppBar() {
-    CustomAppBar.ProvideTopAppBarTitle {
+private fun ScrDashboard(
+    uiState: UiState,
+    currentScreen: ScrGraphs?,
+    onShowScrDesc: (String) -> Unit,
+    onDismissDlgScrDesc: () -> Unit
+) {
+    currentScreen?.let {
+        HandleDialogs(
+            uiState = uiState,
+            currentScreen = it,
+            onDismissDlgScrDesc = onDismissDlgScrDesc
+        )
+        TopAppBar(
+            scrGraphs = it,
+            onShowScrDesc = onShowScrDesc
+        )
+        ScreenContent()
+    }
+}
+
+@Composable
+private fun HandleDialogs(
+    uiState: UiState,
+    currentScreen: ScrGraphs,
+    onDismissDlgScrDesc: () -> Unit
+) {
+    AppAlertDialog(
+        showDialog = uiState.dialogState.dlgScrDesc,
+        dialogContext = AlertDialogContext.INFORMATION,
+        showIcon = true,
+        showTitle = true,
+        title = { currentScreen.title?.let { Text(text = stringResource(id = it)) } },
+        showBody = true,
+        body = {
+            currentScreen.description?.let {
+                Column(
+                    modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState()),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) { Text(text = stringResource(id = it)) }
+            }
+        },
+        useDismissButton = true,
+        dismissButton = {
+            AppIconButton(
+                onClick = onDismissDlgScrDesc,
+                icon = Icons.Default.Close,
+                text = stringResource(id = R.string.str_close)
+            )
+        }
+    )
+}
+
+@Composable
+private fun TopAppBar(
+    scrGraphs: ScrGraphs,
+    onShowScrDesc: (String) -> Unit
+) {
+    ProvideTopAppBarTitle {
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ){
-            Icon(
-                modifier = Modifier
-                    .sizeIn(maxHeight = ButtonDefaults.IconSize),
-                imageVector = ImageVector.vectorResource(id = CustomIcons.TopLevelDestinations.dashboard),
-                contentDescription = null
-            )
-            Text(
-                text = stringResource(id = R.string.str_dashboard),
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
+        ) {
+            scrGraphs.iconRes?.let {
+                Icon(
+                    modifier = Modifier.sizeIn(maxHeight = ButtonDefaults.IconSize),
+                    imageVector = ImageVector.vectorResource(id = it),
+                    contentDescription = null
+                )
+            }
+            scrGraphs.title?.let {
+                Text(
+                    text = stringResource(id = it),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
         }
     }
-    CustomAppBar.ProvideTopAppBarAction {
-        Row(
-            modifier = Modifier.padding(end = 20.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        ){
-            Icon(
-                modifier = Modifier
-                    .sizeIn(maxHeight = ButtonDefaults.IconSize),
-                imageVector = Default.Info,
-                contentDescription = null
-            )
+    scrGraphs.description?.let {
+        ProvideTopAppBarAction {
+            Row(
+                modifier = Modifier,
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                val desc = stringResource(id = it)
+                Surface(
+                    onClick = { onShowScrDesc(desc) },
+                    modifier = Modifier.sizeIn(maxHeight = ButtonDefaults.IconSize),
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Info,
+                        contentDescription = null
+                    )
+                }
+            }
         }
     }
 }
 
 @Composable
 private fun ScreenContent() {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.spacedBy(20.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        //Show Company Profile Card
-        //Show Summary
-        //Show Notifications & Background job if any
+    Surface {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.spacedBy(20.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            //Show Company Profile Card
+            //Show Summary Master Data
+            //Show Notifications & Background job if any
+        }
     }
+}
+
+@Composable
+@Preview
+private fun Preview() = CustomThemes.ApplicationTheme {
+    ScrDashboard(
+        currentScreen = ScrGraphs.Dashboard,
+        onShowScrDesc = {},
+        onDismissDlgScrDesc = {},
+        uiState = UiState()
+    )
 }
