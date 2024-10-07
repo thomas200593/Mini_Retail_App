@@ -9,7 +9,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavOptions
+import androidx.navigation.navOptions
 import com.thomas200593.mini_retail_app.R.string
 import com.thomas200593.mini_retail_app.app.navigation.NavGraph.G_INITIAL
 import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
@@ -46,19 +46,13 @@ fun ScrInitial(
     LaunchedEffect(Unit) { vm.onEvent(UiEvents.OnOpenEvents) }
     ScrInitial(
         uiState = uiState,
-        onNavToOnboarding = {
-            coroutineScope.launch { stateApp.navController.navToOnboarding() }
-        },
-        onNavToInitialization = {
-            coroutineScope.launch { stateApp.navController.navToInitialization() }
-        },
-        onNavToAuth = {
-            coroutineScope.launch { stateApp.navController.navToAuth() }
-        },
+        onNavToOnboarding = { coroutineScope.launch { stateApp.navController.navToOnboarding() } },
+        onNavToInitialization = { coroutineScope.launch { stateApp.navController.navToInitialization() } },
+        onNavToAuth = { coroutineScope.launch { stateApp.navController.navToAuth() } },
         onNavToDashboard = { welcomeMessage, userData ->
-            val navOpt = NavOptions.Builder()
-                .setPopUpTo(route = G_INITIAL, inclusive = true, saveState = true).setRestoreState(true)
-                .setLaunchSingleTop(true).build()
+            val navOptions =
+                navOptions{ popUpTo(route = G_INITIAL) { inclusive = true; saveState = true }
+                restoreState = true; launchSingleTop = true }
             when (userData.authSessionToken?.authProvider) {
                 GOOGLE ->
                     Toast.makeText(
@@ -68,7 +62,7 @@ fun ScrInitial(
                     ).show()
                 else -> Unit
             }
-            coroutineScope.launch { stateApp.navController.navToDashboard(navOpt) }
+            coroutineScope.launch { stateApp.navController.navToDashboard(navOptions) }
         }
     )
 }
