@@ -28,6 +28,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -292,18 +293,19 @@ private fun OnboardingNavigation(
     onBtnNextClicked: () -> Unit,
     onFinishedOnboarding: () -> Unit
 ) {
+    val btnNavState by remember(currentPageIndex, maxPageIndex) {
+        derivedStateOf {
+            if (currentPageIndex < maxPageIndex)
+                Triple(onBtnNextClicked, Icons.AutoMirrored.Filled.KeyboardArrowRight, R.string.str_onboarding_next)
+            else
+                Triple(onFinishedOnboarding, Icons.Default.Check, R.string.str_onboarding_get_started)
+        }
+    }
     AppIconButton(
         modifier = modifier.fillMaxWidth(0.8f),
-        onClick = {
-            if (currentPageIndex < maxPageIndex) onBtnNextClicked()
-            else onFinishedOnboarding()
-        },
-        icon =
-            if (currentPageIndex < maxPageIndex) Icons.AutoMirrored.Filled.KeyboardArrowRight
-            else Icons.Default.Check,
-        text =
-            if (currentPageIndex < maxPageIndex) stringResource(id = R.string.str_onboarding_next)
-            else stringResource(id = R.string.str_onboarding_get_started)
+        onClick = btnNavState.first,
+        icon = btnNavState.second,
+        text = stringResource(btnNavState.third)
     )
 }
 
