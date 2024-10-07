@@ -215,16 +215,13 @@ class VMInitialization @Inject constructor(
             is CommonNameEvents.ValueChanged -> frmValChgCommonName(events.commonName)
             is DDIndustry.OnSelect -> frmValChgIndustry(events.industryKey)
             is IndustryAdditionalInfoEvents.ValueChanged ->
-                if(events.additionalInfo.length <= 100) frmValChgIndustryAdditionalInfo(events.additionalInfo)
-                else frmValChgIndustryAdditionalInfo(events.additionalInfo.substring(0, 100))
+                frmValChgIndustryAdditionalInfo(events.additionalInfo.take(100))
             is DDLegalType.OnSelect -> frmValChgLegalType(events.legalTypeKey)
             is LegalTypeAdditionalInfoEvents.ValueChanged ->
-                if(events.additionalInfo.length <= 100) frmValChgLegalTypeAdditionalInfo(events.additionalInfo)
-                else frmValChgLegalTypeAdditionalInfo(events.additionalInfo.substring(0, 100))
+                frmValChgLegalTypeAdditionalInfo(events.additionalInfo.take(100))
             is DDLegalDocType.OnSelect -> frmValChgLegalDocType(events.legalDocTypeKey)
             is LegalDocTypeAdditionalInfoEvents.ValueChanged ->
-                if(events.additionalInfo.length <= 100) frmValChgLegalDocTypeAdditionalInfo(events.additionalInfo)
-                else frmValChgLegalDocTypeAdditionalInfo(events.additionalInfo.substring(0, 100))
+                frmValChgLegalDocTypeAdditionalInfo(events.additionalInfo.take(100))
             is DDTaxationType.OnSelect -> frmValChgTaxationType(events.taxationTypeKey)
             is TaxIdDocNumberEvents.ValueChanged -> frmValChgTaxIdDocNumber(events.taxIdDocNumber)
             is DDTaxIssuerCountry.OnSelect -> frmValChgTaxIssuerCountry(events.taxIssuerCountry)
@@ -265,7 +262,6 @@ class VMInitialization @Inject constructor(
             is DlgResError.OnDismiss -> doResetUiState()
         }
     }
-
     private fun updateDialogState(
         dlgResLoading: Boolean = false,
         dlgResSuccess: Boolean = false,
