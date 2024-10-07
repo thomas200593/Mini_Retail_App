@@ -264,9 +264,7 @@ private fun AppTitleSection() {
             imageVector = ImageVector.vectorResource(id = CustomIcons.App.app),
             contentDescription = stringResource(id = R.string.app_name),
             alignment = Alignment.Center,
-            modifier = Modifier
-                .height(150.dp)
-                .fillMaxWidth()
+            modifier = Modifier.fillMaxWidth().height(150.dp)
         )
         Text(
             text = stringResource(id = R.string.app_name),
