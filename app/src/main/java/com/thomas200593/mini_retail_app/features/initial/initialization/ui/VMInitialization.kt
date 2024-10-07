@@ -138,7 +138,7 @@ class VMInitialization @Inject constructor(
                 data class ValueChanged(val taxRatePercentage: Int): TaxRatePercentageEvents
             }
             sealed interface BtnSubmitEvents: InputFormEvents {
-                data class OnClick(val bizProfileShort: BizProfileShort): BtnSubmitEvents
+                data object OnClick: BtnSubmitEvents
             }
             sealed interface BtnCancelEvents: InputFormEvents {
                 data object OnClick: BtnCancelEvents
@@ -230,7 +230,38 @@ class VMInitialization @Inject constructor(
             is DDTaxIssuerCountry.OnSelect -> frmValChgTaxIssuerCountry(events.taxIssuerCountry)
             is TaxRatePercentageEvents.ValueChanged -> frmValChgTaxRatePercentage(events.taxRatePercentage)
             is BtnToggleTaxInclusionEvents.OnClick -> frmValChgTaxIncluded(events.taxIncluded)
-            is BtnSubmitEvents.OnClick -> doInitBizProfile(events.bizProfileShort)
+            is BtnSubmitEvents.OnClick -> {
+                doInitBizProfile(
+                    BizProfileShort(
+                        seqId = 0,
+                        genId = ULID.randomULID(),
+                        bizName = BizName(
+                            legalName = uiState.value.panelInputFormState.legalName.trim(),
+                            commonName = uiState.value.panelInputFormState.commonName.trim()
+                        ),
+                        bizIndustry = Industries(
+                            identityKey = uiState.value.panelInputFormState.industryKey,
+                            additionalInfo = uiState.value.panelInputFormState.industryAdditionalInfo.trim()
+                        ),
+                        bizLegalType = LegalType(
+                            identifierKey = uiState.value.panelInputFormState.legalTypeKey,
+                            additionalInfo = uiState.value.panelInputFormState.legalTypeAdditionalInfo.trim(),
+                            legalDocumentType = LegalDocumentType(
+                                identifierKey = uiState.value.panelInputFormState.legalDocTypeKey,
+                                additionalInfo = uiState.value.panelInputFormState.legalDocTypeAdditionalInfo.trim()
+                            )
+                        ),
+                        bizTaxation = Taxation(
+                            identifierKey = uiState.value.panelInputFormState.taxationTypeKey,
+                            taxIdDocNumber = uiState.value.panelInputFormState.taxIdDocNumber.trim(),
+                            taxIncluded = uiState.value.panelInputFormState.taxIncluded,
+                            taxIssuerCountry = uiState.value.panelInputFormState.taxIssuerCountry,
+                            taxRatePercentage = uiState.value.panelInputFormState.taxRatePercentage
+                        ),
+                        auditTrail = AuditTrail()
+                    )
+                )
+            }
             is BtnCancelEvents.OnClick -> doResetUiState()
             is DlgResSuccess.OnConfirm -> doResetUiState()
             is DlgResError.OnDismiss -> doResetUiState()

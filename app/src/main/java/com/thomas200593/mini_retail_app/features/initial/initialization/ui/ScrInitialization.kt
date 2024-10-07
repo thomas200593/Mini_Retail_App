@@ -25,6 +25,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -48,11 +49,6 @@ import com.thomas200593.mini_retail_app.BuildConfig
 import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
 import com.thomas200593.mini_retail_app.app.ui.StateApp
-import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.AuditTrail
-import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.Industries
-import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.LegalDocumentType
-import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.LegalType
-import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.Taxation
 import com.thomas200593.mini_retail_app.core.design_system.util.HlpStringArray.Handler.StringArrayResource
 import com.thomas200593.mini_retail_app.core.design_system.util.HlpStringArray.StringArrayResources.BizIndustries
 import com.thomas200593.mini_retail_app.core.design_system.util.HlpStringArray.StringArrayResources.BizLegalDocType
@@ -69,8 +65,6 @@ import com.thomas200593.mini_retail_app.core.ui.component.form.CustomForm.TextIn
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.entity.AppConfig.ConfigCurrent
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.entity.Country
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_language.entity.Language
-import com.thomas200593.mini_retail_app.features.business.biz_profile.entity.BizName
-import com.thomas200593.mini_retail_app.features.business.biz_profile.entity.BizProfileShort
 import com.thomas200593.mini_retail_app.features.initial.initial.navigation.navToInitial
 import com.thomas200593.mini_retail_app.features.initial.initialization.entity.Initialization
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.PanelInputFormState
@@ -99,7 +93,6 @@ import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMIni
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiStateInitialization.Loading
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiStateInitialization.Success
 import kotlinx.coroutines.launch
-import ulid.ULID
 
 @Composable
 fun ScrInitialization(
@@ -129,7 +122,7 @@ fun ScrInitialization(
         onTaxIssuerCountryValueChanged = { vm.onEvent(DDTaxIssuerCountry.OnSelect(it)) },
         onTaxRatePercentageValueChanged = { vm.onEvent(TaxRatePercentageEvents.ValueChanged(it)) },
         onTaxIncludedValueChanged = { vm.onEvent(BtnToggleTaxInclusionEvents.OnClick(it)) },
-        onFormSubmitBtnClicked = { vm.onEvent(BtnSubmitEvents.OnClick(it)) },
+        onFormSubmitBtnClicked = { vm.onEvent(BtnSubmitEvents.OnClick) },
         onFormCancelBtnClicked = { vm.onEvent(BtnCancelEvents.OnClick) },
         onInitBizProfileSuccess = {
             vm.onEvent(DlgResSuccess.OnConfirm)
@@ -161,7 +154,7 @@ private fun ScrInitialization(
     onTaxIssuerCountryValueChanged: (Country) -> Unit,
     onTaxRatePercentageValueChanged: (Int) -> Unit,
     onTaxIncludedValueChanged: (Boolean) -> Unit,
-    onFormSubmitBtnClicked: (BizProfileShort) -> Unit,
+    onFormSubmitBtnClicked: () -> Unit,
     onFormCancelBtnClicked: () -> Unit,
     onInitBizProfileSuccess: () -> Unit,
     onInitBizProfileError: () -> Unit
@@ -269,7 +262,7 @@ private fun ScreenContent(
     onTaxIssuerCountryValueChanged: (Country) -> Unit,
     onTaxRatePercentageValueChanged: (Int) -> Unit,
     onTaxIncludedValueChanged: (Boolean) -> Unit,
-    onFormSubmitBtnClicked: (BizProfileShort) -> Unit,
+    onFormSubmitBtnClicked: () -> Unit,
     onFormCancelBtnClicked: () -> Unit
 ) {
     Surface {
@@ -481,7 +474,7 @@ private fun PanelFormInitManualBizProfile(
     onTaxIssuerCountryValueChanged: (Country) -> Unit,
     onTaxRatePercentageValueChanged: (Int) -> Unit,
     onTaxIncludedValueChanged: (Boolean) -> Unit,
-    onFormSubmitBtnClicked: (BizProfileShort) -> Unit,
+    onFormSubmitBtnClicked: () -> Unit,
     onFormCancelBtnClicked: () -> Unit
 ) {
     Surface(
@@ -980,10 +973,14 @@ private fun PanelFormInitManualBizProfile(
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
+                        val text by remember(inputFormState.taxIncluded) {
+                            derivedStateOf{
+                                if(inputFormState.taxIncluded) R.string.str_yes
+                                else R.string.str_no
+                            }
+                        }
                         Text(
-                            text =
-                                if(inputFormState.taxIncluded) stringResource(R.string.str_yes)
-                                else stringResource(R.string.str_no),
+                            text = stringResource(text),
                             textAlign = TextAlign.Start,
                             modifier = Modifier.fillMaxWidth()
                         )
@@ -1010,47 +1007,25 @@ private fun PanelFormInitManualBizProfile(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                if (inputFormState.fldSubmitBtnEnabled) {
+                val btnSubmitWeight by remember(inputFormState.fldSubmitBtnEnabled) { derivedStateOf {
+                    if (inputFormState.fldSubmitBtnEnabled) 0.5f else 1.0f
+                } }
+                val btnCancelWeight by remember(inputFormState.fldSubmitBtnEnabled) { derivedStateOf {
+                    if (inputFormState.fldSubmitBtnEnabled) 0.5f else 1.0f
+                } }
+                val showSubmitButton by remember(inputFormState.fldSubmitBtnEnabled) { derivedStateOf {
+                    inputFormState.fldSubmitBtnEnabled
+                } }
+                if (showSubmitButton) {
                     AppIconButton(
-                        modifier = Modifier.weight(0.5f),
-                        onClick = {
-                            onFormSubmitBtnClicked(
-                                BizProfileShort(
-                                    seqId = 0,
-                                    genId = ULID.randomULID(),
-                                    bizName = BizName(
-                                        legalName = inputFormState.legalName.trim(),
-                                        commonName = inputFormState.commonName.trim()
-                                    ),
-                                    bizIndustry = Industries(
-                                        identityKey = inputFormState.industryKey,
-                                        additionalInfo = inputFormState.industryAdditionalInfo.trim()
-                                    ),
-                                    bizLegalType = LegalType(
-                                        identifierKey = inputFormState.legalTypeKey,
-                                        additionalInfo = inputFormState.legalTypeAdditionalInfo.trim(),
-                                        legalDocumentType = LegalDocumentType(
-                                            identifierKey = inputFormState.legalDocTypeKey,
-                                            additionalInfo = inputFormState.legalDocTypeAdditionalInfo.trim()
-                                        )
-                                    ),
-                                    bizTaxation = Taxation(
-                                        identifierKey = inputFormState.taxationTypeKey,
-                                        taxIdDocNumber = inputFormState.taxIdDocNumber.trim(),
-                                        taxIncluded = inputFormState.taxIncluded,
-                                        taxIssuerCountry = inputFormState.taxIssuerCountry,
-                                        taxRatePercentage = inputFormState.taxRatePercentage
-                                    ),
-                                    auditTrail = AuditTrail()
-                                )
-                            )
-                        },
+                        modifier = Modifier.weight(btnSubmitWeight),
+                        onClick = onFormSubmitBtnClicked,
                         icon = ImageVector.vectorResource(id = CustomIcons.Emotion.neutral),
                         text = stringResource(id = R.string.str_save)
                     )
                 }
                 AppIconButton(
-                    modifier = Modifier.weight(if (inputFormState.fldSubmitBtnEnabled) 0.5f else 1.0f),
+                    modifier = Modifier.weight(btnCancelWeight),
                     onClick = onFormCancelBtnClicked,
                     icon = ImageVector.vectorResource(id = CustomIcons.Emotion.neutral),
                     text = stringResource(id = R.string.str_cancel),
