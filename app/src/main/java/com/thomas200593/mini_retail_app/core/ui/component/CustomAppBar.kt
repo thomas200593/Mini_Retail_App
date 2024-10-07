@@ -19,6 +19,8 @@ import androidx.navigation.FloatingWindow
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.compose.LocalOwnersProvider
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.filterNot
 
 object CustomAppBar {
@@ -85,7 +87,7 @@ object CustomAppBar {
         }
     }
 
-    @OptIn(ExperimentalMaterial3Api::class)
+    @OptIn(ExperimentalMaterial3Api::class, FlowPreview::class)
     @Composable
     private fun AppBar(
         navController: NavController,
@@ -94,6 +96,7 @@ object CustomAppBar {
         val currentContentBackStackEntry by produceState(
             initialValue = null as NavBackStackEntry?,
             producer = { navController.currentBackStackEntryFlow
+                .debounce(100)
                 .filterNot { it.destination is FloatingWindow }
                 .collect{ value = it }
             }

@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.navigation.NavDestination
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -66,7 +67,7 @@ class StateApp(
     )
 
     val destCurrent: NavDestination?
-        @Composable get() = navController.currentBackStackEntryAsState().value?.destination
+        @Composable get() = rememberUpdatedState(navController.currentBackStackEntryAsState().value?.destination).value
 
     val destTopLevels: List<DestTopLevel> = entries
 

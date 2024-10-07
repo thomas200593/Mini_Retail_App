@@ -82,8 +82,8 @@ private fun ScrDashboard(
             scrGraphs = it,
             onShowScrDesc = onShowScrDesc
         )
-        ScreenContent()
     }
+    ScreenContent()
 }
 
 @Composable
