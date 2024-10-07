@@ -1007,15 +1007,15 @@ private fun PanelFormInitManualBizProfile(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                val btnSubmitWeight by remember(inputFormState.fldSubmitBtnEnabled) { derivedStateOf {
-                    if (inputFormState.fldSubmitBtnEnabled) 0.5f else 1.0f
-                } }
-                val btnCancelWeight by remember(inputFormState.fldSubmitBtnEnabled) { derivedStateOf {
-                    if (inputFormState.fldSubmitBtnEnabled) 0.5f else 1.0f
-                } }
-                val showSubmitButton by remember(inputFormState.fldSubmitBtnEnabled) { derivedStateOf {
-                    inputFormState.fldSubmitBtnEnabled
-                } }
+                val btnSubmitWeight by remember(inputFormState.fldSubmitBtnEnabled) {
+                    derivedStateOf { if (inputFormState.fldSubmitBtnEnabled) 0.5f else 1.0f }
+                }
+                val btnCancelWeight by remember(inputFormState.fldSubmitBtnEnabled) {
+                    derivedStateOf { if (inputFormState.fldSubmitBtnEnabled) 0.5f else 1.0f }
+                }
+                val showSubmitButton by remember(inputFormState.fldSubmitBtnEnabled) {
+                    derivedStateOf { inputFormState.fldSubmitBtnEnabled }
+                }
                 if (showSubmitButton) {
                     AppIconButton(
                         modifier = Modifier.weight(btnSubmitWeight),
