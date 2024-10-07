@@ -36,6 +36,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Unspecified
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.text.style.TextAlign.Companion.Center
@@ -51,6 +52,7 @@ import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential.Companion.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential.Companion.createFrom
 import com.thomas200593.mini_retail_app.BuildConfig
+import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.core.design_system.util.HlpJwt.GoogleOAuth2
 import com.thomas200593.mini_retail_app.core.design_system.util.HlpJwt.GoogleOAuth2.validateToken
 import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.Google.google_logo
@@ -120,7 +122,7 @@ object CustomButton {
             btnLoadingState: Boolean = false,
             btnShape: Shape = shapes.medium,
             btnBorderStrokeWidth: Dp = 1.dp,
-            btnBorderColor: Color = Color(0xFF747775),
+            btnBorderColor: Color = colorResource(R.color.charcoal_gray),
             btnColor: Color = MaterialTheme.colorScheme.surface,
             btnShadowElevation: Dp = 9.dp,
             progressIndicatorColor: Color = MaterialTheme.colorScheme.primary,
@@ -136,7 +138,7 @@ object CustomButton {
                     onClick = onClick
                 ),
                 shape = btnShape,
-                border = BorderStroke(width = btnBorderStrokeWidth, color = btnBorderColor),
+                border = BorderStroke(btnBorderStrokeWidth, btnBorderColor),
                 color = btnColor,
                 shadowElevation = btnShadowElevation
             ) {

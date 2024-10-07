@@ -38,6 +38,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
@@ -1130,7 +1131,7 @@ private fun BizAddressesSection(
                         Surface(
                             modifier = Modifier.fillMaxWidth(),
                             shape = MaterialTheme.shapes.medium,
-                            border = BorderStroke(1.dp, Color.DarkGray)
+                            border = BorderStroke(1.dp, colorResource(R.color.charcoal_gray))
                         ) {
                             Column(
                                 modifier = Modifier
@@ -1445,7 +1446,7 @@ private fun BizContactsSection(
                             .fillMaxWidth()
                             .padding(8.dp),
                         shape = MaterialTheme.shapes.medium,
-                        border = BorderStroke(1.dp, color = Color.DarkGray)
+                        border = BorderStroke(1.dp, colorResource(R.color.charcoal_gray))
                     ) {
                         Column(
                             modifier = Modifier
@@ -1522,7 +1523,7 @@ private fun BizContactsSection(
                         Surface(
                             modifier = Modifier.fillMaxWidth(),
                             shape = MaterialTheme.shapes.medium,
-                            border = BorderStroke(1.dp, Color.DarkGray)
+                            border = BorderStroke(1.dp, colorResource(R.color.charcoal_gray))
                         ) {
                             Column(
                                 modifier = Modifier
@@ -1815,7 +1816,7 @@ fun BizLinksSection(
                             .fillMaxWidth()
                             .padding(8.dp),
                         shape = MaterialTheme.shapes.medium,
-                        border = BorderStroke(1.dp, color = Color.DarkGray)
+                        border = BorderStroke(1.dp, colorResource(R.color.charcoal_gray))
                     ) {
                         Column(
                             modifier = Modifier
@@ -1892,7 +1893,7 @@ fun BizLinksSection(
                         Surface(
                             modifier = Modifier.fillMaxWidth(),
                             shape = MaterialTheme.shapes.medium,
-                            border = BorderStroke(1.dp, Color.DarkGray)
+                            border = BorderStroke(1.dp, colorResource(R.color.charcoal_gray))
                         ) {
                             Column(
                                 modifier = Modifier

@@ -34,6 +34,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -338,7 +339,7 @@ private fun LanguageSection(
         ) {
             TextButton(
                 modifier = Modifier.fillMaxWidth().menuAnchor(PrimaryNotEditable, true),
-                border = BorderStroke(1.dp, Color(0xFF747775)),
+                border = BorderStroke(1.dp, colorResource(R.color.charcoal_gray)),
                 shape = MaterialTheme.shapes.medium,
                 onClick = { expanded = true }) {
                 Row(
@@ -578,7 +579,7 @@ private fun PanelFormInitManualBizProfile(
                 ) {
                     TextButton(
                         modifier = Modifier.fillMaxWidth().menuAnchor(PrimaryNotEditable, true),
-                        border = BorderStroke(1.dp, Color(0xFF747775)),
+                        border = BorderStroke(1.dp, colorResource(R.color.charcoal_gray)),
                         shape = MaterialTheme.shapes.small,
                         enabled = !(inputFormState.industryKey.isEmpty() || inputFormState.industryKey.isBlank()),
                         onClick = { expanded = true }
@@ -659,7 +660,7 @@ private fun PanelFormInitManualBizProfile(
                         modifier = Modifier
                             .fillMaxWidth()
                             .menuAnchor(PrimaryNotEditable, true),
-                        border = BorderStroke(1.dp, Color(0xFF747775)),
+                        border = BorderStroke(1.dp, colorResource(R.color.charcoal_gray)),
                         shape = MaterialTheme.shapes.small,
                         enabled = !(inputFormState.legalTypeKey.isEmpty() || inputFormState.legalTypeKey.isBlank()),
                         onClick = { expanded = true }
@@ -740,7 +741,7 @@ private fun PanelFormInitManualBizProfile(
                         modifier = Modifier
                             .fillMaxWidth()
                             .menuAnchor(PrimaryNotEditable, true),
-                        border = BorderStroke(1.dp, Color(0xFF747775)),
+                        border = BorderStroke(1.dp, colorResource(R.color.charcoal_gray)),
                         shape = MaterialTheme.shapes.small,
                         enabled = !(inputFormState.legalDocTypeKey.isEmpty() || inputFormState.legalDocTypeKey.isBlank()),
                         onClick = { expanded = true }
@@ -830,7 +831,7 @@ private fun PanelFormInitManualBizProfile(
                         modifier = Modifier
                             .fillMaxWidth()
                             .menuAnchor(PrimaryNotEditable, true),
-                        border = BorderStroke(1.dp, Color(0xFF747775)),
+                        border = BorderStroke(1.dp, colorResource(R.color.charcoal_gray)),
                         shape = MaterialTheme.shapes.small,
                         enabled = !(inputFormState.taxationTypeKey.isEmpty() || inputFormState.taxationTypeKey.isBlank()),
                         onClick = { expanded = true }
@@ -903,7 +904,7 @@ private fun PanelFormInitManualBizProfile(
                         modifier = Modifier
                             .fillMaxWidth()
                             .menuAnchor(PrimaryNotEditable, true),
-                        border = BorderStroke(1.dp, Color(0xFF747775)),
+                        border = BorderStroke(1.dp, colorResource(R.color.charcoal_gray)),
                         shape = MaterialTheme.shapes.small,
                         enabled = !(inputFormState.taxIssuerCountry.displayName.isEmpty() || inputFormState.taxIssuerCountry.displayName.isBlank()),
                         onClick = { expanded = true }

@@ -36,8 +36,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontStyle
@@ -265,7 +265,7 @@ private fun SupplierListItem(
         onClick = { onClick(supplier) },
         modifier = modifier,
         shape = MaterialTheme.shapes.medium,
-        border = BorderStroke(width = 2.dp, color = Color.DarkGray)
+        border = BorderStroke(1.dp, colorResource(R.color.charcoal_gray))
     ) {
         Row(
             modifier = commonModifier,
@@ -278,7 +278,7 @@ private fun SupplierListItem(
                     .weight(0.2f)
                     .padding(4.dp),
                 shape = MaterialTheme.shapes.medium,
-                border = BorderStroke(1.dp, Color.DarkGray)
+                border = BorderStroke(1.dp, colorResource(R.color.charcoal_gray))
             ) {
                 Image(
                     imageVector = ImageVector.vectorResource(id = app),

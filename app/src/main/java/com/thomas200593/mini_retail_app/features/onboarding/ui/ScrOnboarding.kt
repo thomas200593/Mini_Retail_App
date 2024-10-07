@@ -40,6 +40,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -175,7 +176,7 @@ private fun OnboardingLanguages(
         ) {
             TextButton(
                 modifier = Modifier.fillMaxWidth().padding(4.dp).menuAnchor(PrimaryNotEditable, true),
-                border = BorderStroke(1.dp, Color(0xFF747775)),
+                border = BorderStroke(1.dp, colorResource(R.color.charcoal_gray)),
                 shape = MaterialTheme.shapes.medium,
                 onClick = { expanded = true }
             ) {

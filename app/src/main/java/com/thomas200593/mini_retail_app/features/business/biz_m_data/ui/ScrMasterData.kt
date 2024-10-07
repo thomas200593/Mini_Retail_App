@@ -28,8 +28,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
@@ -317,7 +317,7 @@ private fun ScreenContent(
                 modifier = Modifier.fillMaxWidth().padding(4.dp),
                 onClick = { onNavToMenu(menu) },
                 shape = MaterialTheme.shapes.medium,
-                border = BorderStroke(1.dp, Color.DarkGray),
+                border = BorderStroke(1.dp, colorResource(R.color.charcoal_gray)),
             ) {
                 Column (
                     modifier = Modifier.fillMaxSize().padding(8.dp),

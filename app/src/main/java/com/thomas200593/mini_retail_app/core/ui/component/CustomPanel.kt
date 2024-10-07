@@ -31,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
@@ -235,7 +236,7 @@ object CustomPanel{
         title: String,
         subtitle: String,
         cardShape: Shape = shapes.medium,
-        cardBorder: BorderStroke = BorderStroke(width = 1.dp, color = Color(0xFF747775)),
+        cardBorder: BorderStroke = BorderStroke(1.dp, colorResource(R.color.charcoal_gray)),
         iconWidthRatio: Float = 0.2f,
         textWidthRatio: Float = 0.8f,
         titleTextMaxLine: Int? = 1,
@@ -286,7 +287,7 @@ object CustomPanel{
     @Composable
     fun ThreeRowCardItem(
         cardShape: Shape = shapes.medium,
-        cardBorder: BorderStroke = BorderStroke(width = 1.dp, color = Color(0xFF747775)),
+        cardBorder: BorderStroke = BorderStroke(1.dp, colorResource(R.color.charcoal_gray)),
         firstRowContent: @Composable ColumnScope.() -> Unit,
         secondRowContent: @Composable ColumnScope.() -> Unit,
         thirdRowContent: @Composable ColumnScope.() -> Unit
