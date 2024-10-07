@@ -894,9 +894,7 @@ private fun PanelFormInitManualBizProfile(
                     onExpandedChange = { expanded = expanded.not() }
                 ) {
                     TextButton(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .menuAnchor(PrimaryNotEditable, true),
+                        modifier = Modifier.fillMaxWidth().menuAnchor(PrimaryNotEditable, true),
                         border = BorderStroke(1.dp, colorResource(R.color.charcoal_gray)),
                         shape = MaterialTheme.shapes.small,
                         enabled = !(inputFormState.taxIssuerCountry.displayName.isEmpty() || inputFormState.taxIssuerCountry.displayName.isBlank()),
@@ -974,10 +972,7 @@ private fun PanelFormInitManualBizProfile(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         val text by remember(inputFormState.taxIncluded) {
-                            derivedStateOf{
-                                if(inputFormState.taxIncluded) R.string.str_yes
-                                else R.string.str_no
-                            }
+                            derivedStateOf { if(inputFormState.taxIncluded) R.string.str_yes else R.string.str_no }
                         }
                         Text(
                             text = stringResource(text),
