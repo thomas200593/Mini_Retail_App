@@ -9,6 +9,7 @@ import com.thomas200593.mini_retail_app.features.dashboard.ui.VMDashboard.UiEven
 import com.thomas200593.mini_retail_app.features.dashboard.ui.VMDashboard.UiEvents.OnOpenEvents
 import com.thomas200593.mini_retail_app.features.dashboard.ui.VMDashboard.UiStateDashboard.Idle
 import com.thomas200593.mini_retail_app.features.dashboard.ui.VMDashboard.UiStateDashboard.Loading
+import com.thomas200593.mini_retail_app.features.dashboard.ui.VMDashboard.UiStateDashboard.Success
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -21,14 +22,14 @@ class VMDashboard @Inject constructor() : ViewModel() {
     sealed interface UiStateDashboard {
         data object Idle : UiStateDashboard
         data object Loading : UiStateDashboard
-        data object Success: UiStateDashboard
+        data class Success(val data: Boolean): UiStateDashboard
     }
     data class UiState(
         val uiStateDashboard: UiStateDashboard = Idle,
         val dialogState: DialogState = DialogState()
     )
     data class DialogState(
-        val dlgDenySession: MutableState<Boolean> = mutableStateOf(false),
+        val dlgSessionInvalid: MutableState<Boolean> = mutableStateOf(false),
         val dlgScrDesc: MutableState<Boolean> = mutableStateOf(false)
     )
     sealed interface UiEvents {
@@ -54,11 +55,11 @@ class VMDashboard @Inject constructor() : ViewModel() {
     }
 
     private fun updateDialogState(
-        dlgDenySession: Boolean = false,
+        dlgSessionExpired: Boolean = false,
         dlgScrDesc: Boolean = false
     ) = _uiState.update { it.copy(
         dialogState = it.dialogState.copy(
-            dlgDenySession = mutableStateOf(dlgDenySession),
+            dlgSessionInvalid = mutableStateOf(dlgSessionExpired),
             dlgScrDesc = mutableStateOf(dlgScrDesc)
         )
     ) }
@@ -66,17 +67,13 @@ class VMDashboard @Inject constructor() : ViewModel() {
     private fun resetUiStateDashboard() = _uiState.update { it.copy(uiStateDashboard = Idle) }
     private fun resetDialogAndUiState() { resetDialogState(); resetUiStateDashboard() }
     private fun onOpenEvent(sessionState: SessionState) {
-        resetUiStateDashboard(); resetDialogState()
+        resetDialogAndUiState()
         when(sessionState) {
-            SessionState.Loading -> viewModelScope.launch {
-                resetDialogState()
-                _uiState.update { it.copy(uiStateDashboard = Loading) }
-            }
+            SessionState.Loading -> _uiState.update { it.copy(uiStateDashboard = Loading) }
             is SessionState.Invalid -> onDenyAccess()
             is SessionState.Valid -> viewModelScope.launch {
-                resetDialogState()
                 _uiState.update { it.copy(uiStateDashboard = Loading) }
-                /*TODO*/
+                _uiState.update { it.copy(uiStateDashboard = Success(true)) }
             }
         }
     }
@@ -85,7 +82,7 @@ class VMDashboard @Inject constructor() : ViewModel() {
         _uiState.update {
             it.copy(
                 dialogState = it.dialogState.copy(
-                    dlgDenySession = mutableStateOf(true)
+                    dlgSessionInvalid = mutableStateOf(true)
                 )
             )
         }

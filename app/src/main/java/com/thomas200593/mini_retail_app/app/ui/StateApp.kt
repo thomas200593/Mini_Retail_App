@@ -67,7 +67,9 @@ class StateApp(
     )
 
     val destCurrent: NavDestination?
-        @Composable get() = rememberUpdatedState(navController.currentBackStackEntryAsState().value?.destination).value
+        @Composable get() =
+            rememberUpdatedState(navController.currentBackStackEntryAsState().value?.destination)
+                .value
 
     val destTopLevels: List<DestTopLevel> = entries
 
@@ -78,15 +80,15 @@ class StateApp(
         @Composable get() = destCurrent?.route in getScreenRoutesUsesTopBar()
 
     fun navToDestTopLevel(destTopLevel: DestTopLevel){
-        val destTopLevelNavOptions = navOptions {
+        val navOptions = navOptions {
             popUpTo(id = navController.graph.findStartDestination().id){ saveState = true }
             launchSingleTop = true; restoreState = true
         }
         when(destTopLevel){
-            DASHBOARD -> { navController.navToDashboard(navOptions = destTopLevelNavOptions) }
-            BUSINESS -> { navController.navToBiz(navOptions = destTopLevelNavOptions) }
-            REPORTING -> { navController.navToReporting(navOptions = destTopLevelNavOptions) }
-            USER_PROFILE -> { navController.navToUserProfile(navOptions = destTopLevelNavOptions) }
+            DASHBOARD -> { navController.navToDashboard(navOptions = navOptions) }
+            BUSINESS -> { navController.navToBiz(navOptions = navOptions) }
+            REPORTING -> { navController.navToReporting(navOptions = navOptions) }
+            USER_PROFILE -> { navController.navToUserProfile(navOptions = navOptions) }
         }
     }
 

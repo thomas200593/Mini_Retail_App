@@ -14,6 +14,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -39,10 +40,14 @@ import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar.ProvideTo
 import com.thomas200593.mini_retail_app.core.ui.component.CustomButton.Common.AppIconButton
 import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AlertDialogContext
 import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AppAlertDialog
+import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.LoadingScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CustomScreenUtil.LockScreenOrientation
 import com.thomas200593.mini_retail_app.features.dashboard.ui.VMDashboard.UiEvents.ButtonEvents.BtnScrDescEvents
 import com.thomas200593.mini_retail_app.features.dashboard.ui.VMDashboard.UiEvents.OnOpenEvents
 import com.thomas200593.mini_retail_app.features.dashboard.ui.VMDashboard.UiState
+import com.thomas200593.mini_retail_app.features.dashboard.ui.VMDashboard.UiStateDashboard.Idle
+import com.thomas200593.mini_retail_app.features.dashboard.ui.VMDashboard.UiStateDashboard.Loading
+import com.thomas200593.mini_retail_app.features.dashboard.ui.VMDashboard.UiStateDashboard.Success
 
 @Composable
 fun ScrDashboard(
@@ -61,7 +66,8 @@ fun ScrDashboard(
         uiState = uiState,
         currentScreen = currentScreen,
         onShowScrDesc = { vm.onEvent(BtnScrDescEvents.OnClick) },
-        onDismissDlgScrDesc = { vm.onEvent(BtnScrDescEvents.OnDismiss) }
+        onDismissDlgScrDesc = { vm.onEvent(BtnScrDescEvents.OnDismiss) },
+        onDismissDlgSessionInvalid = { /*TODO*/ }
     )
 }
 
@@ -70,28 +76,61 @@ private fun ScrDashboard(
     uiState: UiState,
     currentScreen: ScrGraphs?,
     onShowScrDesc: (String) -> Unit,
-    onDismissDlgScrDesc: () -> Unit
+    onDismissDlgScrDesc: () -> Unit,
+    onDismissDlgSessionInvalid: () -> Unit
 ) {
     currentScreen?.let {
         HandleDialogs(
             uiState = uiState,
             currentScreen = it,
-            onDismissDlgScrDesc = onDismissDlgScrDesc
+            onDismissDlgScrDesc = onDismissDlgScrDesc,
+            onDismissDlgSessionInvalid = onDismissDlgSessionInvalid
         )
         TopAppBar(
             scrGraphs = it,
             onShowScrDesc = onShowScrDesc
         )
     }
-    ScreenContent()
+    when(uiState.uiStateDashboard) {
+        Idle -> Unit
+        Loading -> LoadingScreen()
+        is Success -> ScreenContent(
+            data = Success(uiState.uiStateDashboard.data)
+        )
+    }
 }
 
 @Composable
 private fun HandleDialogs(
     uiState: UiState,
     currentScreen: ScrGraphs,
-    onDismissDlgScrDesc: () -> Unit
+    onDismissDlgScrDesc: () -> Unit,
+    onDismissDlgSessionInvalid: () -> Unit
 ) {
+    AppAlertDialog(
+        showDialog = uiState.dialogState.dlgSessionInvalid,
+        dialogContext = AlertDialogContext.ERROR,
+        showTitle = true,
+        title = { Text(text = stringResource(id = R.string.str_error)) },
+        showBody = true,
+        body = {
+            Column(
+                modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) { Text(text = stringResource(id = R.string.str_deny_access_auth_required)) }
+        },
+        useDismissButton = true,
+        dismissButton = {
+            AppIconButton(
+                onClick = onDismissDlgSessionInvalid,
+                icon = Icons.Default.Close,
+                text = stringResource(id = R.string.str_close),
+                containerColor = MaterialTheme.colorScheme.error,
+                contentColor = MaterialTheme.colorScheme.onError
+            )
+        }
+    )
     AppAlertDialog(
         showDialog = uiState.dialogState.dlgScrDesc,
         dialogContext = AlertDialogContext.INFORMATION,
@@ -169,16 +208,15 @@ private fun TopAppBar(
 }
 
 @Composable
-private fun ScreenContent() {
+private fun ScreenContent(data: Success) {
     Surface {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState()),
+            modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(20.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             //Show Company Profile Card
+            Text("Data: ${data.data}")
             //Show Summary Master Data
             //Show Notifications & Background job if any
         }
@@ -192,6 +230,7 @@ private fun Preview() = CustomThemes.ApplicationTheme {
         currentScreen = ScrGraphs.Dashboard,
         onShowScrDesc = {},
         onDismissDlgScrDesc = {},
+        onDismissDlgSessionInvalid = {},
         uiState = UiState()
     )
 }

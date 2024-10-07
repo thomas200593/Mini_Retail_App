@@ -250,18 +250,19 @@ private fun ScreenContent(
                         Icon(
                             modifier = Modifier.padding(8.dp),
                             imageVector = menu.scrGraphs.iconRes
-                                ?.let { icon -> ImageVector.vectorResource(icon) } ?: Icons.Default.Info,
+                                ?.let { ImageVector.vectorResource(it) } ?: Icons.Default.Info,
                             contentDescription = null
                         )
                     }
-                    Text(
-                        text = menu.scrGraphs.title
-                            ?.let { title -> stringResource(id = title) }.orEmpty(),
-                        modifier = Modifier.fillMaxWidth(),
-                        color = MaterialTheme.colorScheme.onTertiaryContainer,
-                        textAlign = TextAlign.Center,
-                        overflow = TextOverflow.Ellipsis
-                    )
+                    menu.scrGraphs.title?.let{
+                        Text(
+                            text = stringResource(id = it),
+                            modifier = Modifier.fillMaxWidth(),
+                            color = MaterialTheme.colorScheme.onTertiaryContainer,
+                            textAlign = TextAlign.Center,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
                 }
             }
         }

@@ -79,7 +79,7 @@ object CustomAppBar {
     }
 
     @Composable
-    private fun TopAppBarNavIcon(navBackStackEntry: NavBackStackEntry?){
+    private fun TopAppBarNavIcon(navBackStackEntry: NavBackStackEntry?) {
         val stateHolder = rememberSaveableStateHolder()
         navBackStackEntry?.LocalOwnersProvider(stateHolder){
             val actionViewModel = viewModel(initializer = { TopAppBarViewModel() })
@@ -92,12 +92,11 @@ object CustomAppBar {
     private fun AppBar(
         navController: NavController,
         modifier: Modifier = Modifier
-    ){
+    ) {
         val currentContentBackStackEntry by produceState(
             initialValue = null as NavBackStackEntry?,
             producer = { navController.currentBackStackEntryFlow
-                .debounce(100)
-                .filterNot { it.destination is FloatingWindow }
+                .debounce(100).filterNot { it.destination is FloatingWindow }
                 .collect{ value = it }
             }
         )
@@ -109,7 +108,7 @@ object CustomAppBar {
         )
     }
 
-    private class TopAppBarViewModel: ViewModel(){
+    private class TopAppBarViewModel: ViewModel() {
         var navIconState by
         mutableStateOf(null as (@Composable () -> Unit)?, referentialEqualityPolicy())
         var titleState by
