@@ -31,6 +31,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -39,6 +40,7 @@ import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs
 import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
 import com.thomas200593.mini_retail_app.app.ui.StateApp
 import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
+import com.thomas200593.mini_retail_app.core.ui.common.CustomThemes
 import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar.ProvideTopAppBarAction
 import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar.ProvideTopAppBarNavigationIcon
 import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar.ProvideTopAppBarTitle
@@ -49,6 +51,7 @@ import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.ClickableC
 import com.thomas200593.mini_retail_app.core.ui.component.CustomScreenUtil.LockScreenOrientation
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.navigation.DestAppConfig
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.navigation.navToAppConfig
+import com.thomas200593.mini_retail_app.features.app_conf.app_config.ui.VMAppConfig.DialogState
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.ui.VMAppConfig.UiEvents.ButtonEvents.BtnMenuSelectionEvents
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.ui.VMAppConfig.UiEvents.ButtonEvents.BtnNavBackEvents
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.ui.VMAppConfig.UiEvents.ButtonEvents.BtnScrDescEvents
@@ -180,7 +183,7 @@ private fun HandleDialogs(
         }
     )
     AppAlertDialog(
-        showDialog = uiState.dialogState.dlgDenyAccessMenu,
+        showDialog = uiState.dialogState.dlgSessionInvalid,
         dialogContext = AlertDialogContext.ERROR,
         showTitle = true,
         title = { Text(text = stringResource(id = R.string.str_error)) },
@@ -315,4 +318,26 @@ private fun ScreenContent(
             )
         }
     }
+}
+
+@Composable
+@Preview
+private fun Preview() = CustomThemes.ApplicationTheme {
+    ScrAppConfig(
+        currentScreen = ScrGraphs.AppConfig,
+        onNavigateBack = {},
+        onShowScrDesc = {},
+        onDismissDlgScrDesc = {},
+        onDismissDlgDenyAccessMenu = {},
+        onNavToMenu = {},
+        uiState = UiState(
+            dialogState = DialogState(),
+            destAppConfig = Success(
+                destAppConfig = setOf(
+                    DestAppConfig.APP_CONFIG_GENERAL,
+                    DestAppConfig.APP_CONFIG_DATA
+                )
+            )
+        )
+    )
 }

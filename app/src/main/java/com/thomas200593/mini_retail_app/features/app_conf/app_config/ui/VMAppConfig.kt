@@ -42,7 +42,7 @@ class VMAppConfig @Inject constructor(
     data class DialogState(
         val dlgLoadingAuth: MutableState<Boolean> = mutableStateOf(false),
         val dlgLoadingGetMenu: MutableState<Boolean> = mutableStateOf(false),
-        val dlgDenyAccessMenu: MutableState<Boolean> = mutableStateOf(false),
+        val dlgSessionInvalid: MutableState<Boolean> = mutableStateOf(false),
         val dlgScrDesc: MutableState<Boolean> = mutableStateOf(false)
     )
     sealed interface UiEvents {
@@ -92,7 +92,7 @@ class VMAppConfig @Inject constructor(
         dialogState = it.dialogState.copy(
             dlgLoadingAuth = mutableStateOf(dlgLoadingAuth),
             dlgLoadingGetMenu = mutableStateOf(dlgLoadingGetMenu),
-            dlgDenyAccessMenu = mutableStateOf(dlgDenyAccessMenu),
+            dlgSessionInvalid = mutableStateOf(dlgDenyAccessMenu),
             dlgScrDesc = mutableStateOf(dlgScrDesc)
         )
     ) }
