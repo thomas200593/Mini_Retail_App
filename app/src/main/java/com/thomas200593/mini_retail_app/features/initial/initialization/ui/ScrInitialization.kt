@@ -171,6 +171,11 @@ private fun ScrInitialization(
         is Success -> ScreenContent(
             uiState = uiState,
             initData = uiState.initialization.data,
+            onSelectLanguage = onSelectLanguage
+        )
+        /*ScreenContent(
+            uiState = uiState,
+            initData = uiState.initialization.data,
             onSelectLanguage = onSelectLanguage,
             onInitBizProfileDefaultBtnClicked = onInitBizProfileDefaultBtnClicked,
             onInitBizProfileManualBtnClicked = onInitBizProfileManualBtnClicked,
@@ -189,7 +194,7 @@ private fun ScrInitialization(
             onTaxIncludedValueChanged = onTaxIncludedValueChanged,
             onFormSubmitBtnClicked = onFormSubmitBtnClicked,
             onFormCancelBtnClicked = onFormCancelBtnClicked
-        )
+        )*/
     }
 }
 
@@ -242,6 +247,39 @@ private fun HandleDialogs(
             { Text(stringResource(id = R.string.str_ok)) }
         }
     )
+}
+
+@Composable
+private fun ScreenContent(
+    uiState: UiState,
+    initData: Initialization,
+    onSelectLanguage: (Language) -> Unit
+) {
+    Surface {
+        Column(
+            modifier = Modifier.fillMaxSize().padding(8.dp).imePadding(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Top)
+        ) {
+            LanguageSection(
+                languages = initData.languages,
+                configCurrent = initData.configCurrent,
+                onSelectLanguage = onSelectLanguage
+            )
+            Column(
+                modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Top)
+            ) {
+                if(uiState.panelWelcomeMessageState.visible) {
+                    PanelWelcomeMessage()
+                }
+                if(uiState.panelInputFormState.visible) {
+                    PanelFormInitManualBizProfile()
+                }
+            }
+        }
+    }
 }
 
 @Composable
@@ -387,6 +425,71 @@ private fun LanguageSection(
 }
 
 @Composable
+private fun PanelWelcomeMessage() {
+    Column(
+        modifier = Modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically)
+    ) {
+        Surface(
+            modifier = Modifier.size(150.dp),
+            color = Color.Transparent,
+            shape = MaterialTheme.shapes.medium
+        ) { Image(imageVector = ImageVector.vectorResource(id = CustomIcons.App.app), contentDescription = null) }
+        Text(
+            modifier = Modifier.fillMaxWidth(),
+            text = stringResource(id = R.string.app_name),
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.titleLarge,
+            color = MaterialTheme.colorScheme.onSurface,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
+        Text(
+            modifier = Modifier.fillMaxWidth(),
+            text = "${BuildConfig.VERSION_NAME} - ${BuildConfig.BUILD_TYPE}",
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onSurface,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
+    }
+    Surface(
+        modifier = Modifier.fillMaxWidth().padding(8.dp),
+        shape = MaterialTheme.shapes.medium,
+        color = MaterialTheme.colorScheme.primaryContainer,
+        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+    ) {
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text(
+                modifier = Modifier.fillMaxWidth().padding(16.dp),
+                text = stringResource(R.string.str_init_welcome_message),
+                style = MaterialTheme.typography.labelLarge,
+                textAlign = TextAlign.Justify
+            )
+            AppIconButton(
+                modifier = Modifier.fillMaxWidth(),
+                onClick = {/*TODO*/},
+                icon = ImageVector.vectorResource(id = CustomIcons.Emotion.happy),
+                text = stringResource(R.string.str_init_setup_yes)
+            )
+        }
+    }
+    TextButton(onClick = {/*TODO*/}) {
+        Text(
+            text = stringResource(R.string.str_init_setup_no),
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.titleMedium
+        )
+    }
+}
+
+@Composable
 private fun PanelWelcomeMessage(
     onInitBizProfileManualBtnClicked: () -> Unit,
     onInitBizProfileDefaultBtnClicked: () -> Unit
@@ -450,6 +553,34 @@ private fun PanelWelcomeMessage(
             text = stringResource(R.string.str_init_setup_no),
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.titleMedium
+        )
+    }
+}
+
+@Composable
+private fun PanelFormInitManualBizProfile() {
+    Column(
+        modifier = Modifier.fillMaxWidth().padding(12.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically)
+    ) {
+        Text(
+            modifier = Modifier.fillMaxWidth(),
+            text = stringResource(id = R.string.str_business_profile),
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.titleLarge,
+            color = MaterialTheme.colorScheme.onSurface,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
+        Text(
+            modifier = Modifier.fillMaxWidth(),
+            text = stringResource(id = R.string.str_business_profile_desc),
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onSurface,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
         )
     }
 }
@@ -1055,12 +1186,8 @@ private fun Preview() = CustomThemes.ApplicationTheme {
         onTaxIncludedValueChanged = {},
         uiState = UiState(
             dialogState = DialogState(),
-            panelInputFormState = PanelInputFormState(
-                visible = true
-            ),
-            panelWelcomeMessageState = PanelWelcomeMessageState(
-                visible = false
-            ),
+            panelWelcomeMessageState = PanelWelcomeMessageState(visible = false),
+            panelInputFormState = PanelInputFormState(visible = true),
             initBizProfileOperationResult = ResourceState.Idle,
             initialization = Success(
                 data = Initialization(
@@ -1069,10 +1196,7 @@ private fun Preview() = CustomThemes.ApplicationTheme {
                     industries = mapOf(),
                     legalType = mapOf(),
                     legalDocType = mapOf(),
-                    taxation = Pair(
-                        first = mapOf(),
-                        second = listOf()
-                    )
+                    taxation = Pair(mapOf(), listOf())
                 )
             )
         )
