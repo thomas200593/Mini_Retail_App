@@ -43,7 +43,9 @@ fun ScrInitial(
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     val uiState by vm.uiState.collectAsStateWithLifecycle()
+
     LaunchedEffect(Unit) { vm.onEvent(UiEvents.OnOpenEvents) }
+
     ScrInitial(
         uiState = uiState,
         onNavToOnboarding = { coroutineScope.launch { stateApp.navController.navToOnboarding() } },
@@ -99,14 +101,14 @@ private fun ScreenContent(
     onNavToDashboard: (String, UserData) -> Unit
 ) = when (initial.firstTimeStatus) {
     YES -> when (initial.configCurrent.onboardingStatus) {
-        SHOW -> onNavToOnboarding.invoke()
-        HIDE -> onNavToInitialization.invoke()
+        SHOW -> onNavToOnboarding()
+        HIDE -> onNavToInitialization()
     }
     NO -> when (initial.configCurrent.onboardingStatus) {
-        SHOW -> onNavToOnboarding.invoke()
+        SHOW -> onNavToOnboarding()
         HIDE -> when (initial.session == null) {
-            true -> onNavToAuth.invoke()
-            false -> onNavToDashboard.invoke(stringResource(string.str_welcome), initial.session)
+            true -> onNavToAuth()
+            false -> onNavToDashboard(stringResource(string.str_welcome), initial.session)
         }
     }
 }
