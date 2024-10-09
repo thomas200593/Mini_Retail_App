@@ -67,7 +67,9 @@ import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.entit
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_language.entity.Language
 import com.thomas200593.mini_retail_app.features.initial.initial.navigation.navToInitial
 import com.thomas200593.mini_retail_app.features.initial.initialization.entity.Initialization
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.DialogState
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.PanelInputFormState
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.PanelWelcomeMessageState
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.ButtonEvents.BtnInitDefaultBizProfileEvents
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.ButtonEvents.BtnInitManualBizProfileEvents
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.ButtonEvents.BtnToggleTaxInclusionEvents
@@ -483,9 +485,7 @@ private fun PanelFormInitManualBizProfile(
         color = MaterialTheme.colorScheme.surfaceContainerHighest
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(12.dp),
+            modifier = Modifier.fillMaxWidth().padding(12.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically)
         ) {
@@ -1002,15 +1002,12 @@ private fun PanelFormInitManualBizProfile(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                val btnSubmitWeight by remember(inputFormState.fldSubmitBtnEnabled) {
-                    derivedStateOf { if (inputFormState.fldSubmitBtnEnabled) 0.5f else 1.0f }
-                }
-                val btnCancelWeight by remember(inputFormState.fldSubmitBtnEnabled) {
-                    derivedStateOf { if (inputFormState.fldSubmitBtnEnabled) 0.5f else 1.0f }
-                }
-                val showSubmitButton by remember(inputFormState.fldSubmitBtnEnabled) {
-                    derivedStateOf { inputFormState.fldSubmitBtnEnabled }
-                }
+                val btnSubmitWeight by remember(inputFormState.fldSubmitBtnEnabled)
+                { derivedStateOf { if (inputFormState.fldSubmitBtnEnabled) 0.5f else 1.0f } }
+                val btnCancelWeight by remember(inputFormState.fldSubmitBtnEnabled)
+                { derivedStateOf { if (inputFormState.fldSubmitBtnEnabled) 0.5f else 1.0f } }
+                val showSubmitButton by remember(inputFormState.fldSubmitBtnEnabled)
+                { derivedStateOf { inputFormState.fldSubmitBtnEnabled } }
                 if (showSubmitButton) {
                     AppIconButton(
                         modifier = Modifier.weight(btnSubmitWeight),
@@ -1035,5 +1032,49 @@ private fun PanelFormInitManualBizProfile(
 @Composable
 @Preview
 private fun Preview() = CustomThemes.ApplicationTheme {
-
+    ScrInitialization(
+        onSelectLanguage = {},
+        onInitBizProfileDefaultBtnClicked = {},
+        onInitBizProfileManualBtnClicked = {},
+        onFormCancelBtnClicked = {},
+        onFormSubmitBtnClicked = {},
+        onInitBizProfileSuccess = {},
+        onInitBizProfileError = {},
+        onLegalNameValueChanged = {},
+        onCommonNameValueChanged = {},
+        onIndustryValueChanged = {},
+        onIndustryAdditionalInfoValueChanged = {},
+        onLegalTypeValueChanged = {},
+        onLegalTypeAdditionalInfoValueChanged = {},
+        onLegalDocTypeValueChanged = {},
+        onLegalDocTypeAdditionalInfoValueChanged = {},
+        onTaxationTypeValueChanged = {},
+        onTaxIssuerCountryValueChanged = {},
+        onTaxIdDocNumberValueChanged = {},
+        onTaxRatePercentageValueChanged = {},
+        onTaxIncludedValueChanged = {},
+        uiState = UiState(
+            dialogState = DialogState(),
+            panelInputFormState = PanelInputFormState(
+                visible = true
+            ),
+            panelWelcomeMessageState = PanelWelcomeMessageState(
+                visible = false
+            ),
+            initBizProfileOperationResult = ResourceState.Idle,
+            initialization = Success(
+                data = Initialization(
+                    configCurrent = ConfigCurrent(),
+                    languages = setOf(Language.EN, Language.ID),
+                    industries = mapOf(),
+                    legalType = mapOf(),
+                    legalDocType = mapOf(),
+                    taxation = Pair(
+                        first = mapOf(),
+                        second = listOf()
+                    )
+                )
+            )
+        )
+    )
 }
