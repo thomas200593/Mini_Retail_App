@@ -338,11 +338,12 @@ private fun OnboardingTabSelector(
                 selected = index == currentPage,
                 onClick = { onTabSelected(index) }
             ) {
+                val opts = Pair(MaterialTheme.colorScheme.onPrimary, Color.LightGray)
+                val color by remember(index, currentPage)
+                { derivedStateOf { if(index == currentPage) opts.first else opts.second } }
                 Box(
                     modifier = Modifier.size(8.dp).background(
-                        color =
-                            if (index == currentPage) MaterialTheme.colorScheme.onPrimary
-                            else Color.LightGray,
+                        color = color,
                         shape = RoundedCornerShape(4.dp)
                     )
                 )
