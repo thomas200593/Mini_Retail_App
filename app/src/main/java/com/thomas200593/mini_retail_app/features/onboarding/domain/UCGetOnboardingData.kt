@@ -17,9 +17,7 @@ class UCGetOnboardingData @Inject constructor(
     @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
 ) {
     operator fun invoke() = combine(
-        flow = ucGetConfGenLanguage.invoke(),
-        flow2 = flow { emit(repoOnboarding.getOnboardingPages()) }
-    ) { langConfig, onboardingPages ->
-        OnboardingData(listOfOnboardingPages = onboardingPages, configLanguages = langConfig)
-    }.flowOn(ioDispatcher)
+        ucGetConfGenLanguage.invoke(), flow { emit(repoOnboarding.getOnboardingPages()) }
+    ) { langConfig, onboardingPages -> OnboardingData(onboardingPages, langConfig) }
+        .flowOn(ioDispatcher)
 }
