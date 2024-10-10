@@ -1,5 +1,6 @@
 package com.thomas200593.mini_retail_app.features.onboarding.ui
 
+import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -353,7 +354,7 @@ private fun OnboardingTabSelector(
 }
 
 @Composable
-@Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun Preview() = CustomThemes.ApplicationTheme {
     ScrOnboarding(
         onSelectLanguage = {},
