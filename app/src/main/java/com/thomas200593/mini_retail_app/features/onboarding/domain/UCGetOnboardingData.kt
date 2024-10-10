@@ -18,6 +18,5 @@ class UCGetOnboardingData @Inject constructor(
 ) {
     operator fun invoke() = combine(
         ucGetConfGenLanguage.invoke(), flow { emit(repoOnboarding.getOnboardingPages()) }
-    ) { langConfig, onboardingPages -> OnboardingData(onboardingPages, langConfig) }
-        .flowOn(ioDispatcher)
+    ) { langConfig, onboardingPages -> OnboardingData(onboardingPages, langConfig) }.flowOn(ioDispatcher)
 }
