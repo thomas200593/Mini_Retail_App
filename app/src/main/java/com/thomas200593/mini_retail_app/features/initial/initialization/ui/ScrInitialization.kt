@@ -2,6 +2,7 @@ package com.thomas200593.mini_retail_app.features.initial.initialization.ui
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,11 +13,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuAnchorType.Companion.PrimaryNotEditable
 import androidx.compose.material3.Surface
@@ -34,6 +40,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
@@ -56,11 +63,13 @@ import com.thomas200593.mini_retail_app.core.design_system.util.HlpStringArray.S
 import com.thomas200593.mini_retail_app.core.design_system.util.HlpStringArray.StringArrayResources.BizTaxationType
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
 import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons
+import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.Country.country
 import com.thomas200593.mini_retail_app.core.ui.common.CustomThemes
 import com.thomas200593.mini_retail_app.core.ui.component.CustomButton.Common.AppIconButton
 import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AlertDialogContext
 import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AppAlertDialog
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.LoadingScreen
+import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.ThreeRowCardItem
 import com.thomas200593.mini_retail_app.core.ui.component.form.CustomForm.TextInput
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.entity.AppConfig.ConfigCurrent
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.entity.Country
@@ -559,29 +568,139 @@ private fun PanelWelcomeMessage(
 
 @Composable
 private fun PanelFormInitManualBizProfile() {
-    Column(
-        modifier = Modifier.fillMaxWidth().padding(12.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically)
+    //Top Level Form Layout
+    Surface(
+        modifier = Modifier.padding(8.dp),
+        shape = MaterialTheme.shapes.medium,
+        border = BorderStroke(1.dp, colorResource(R.color.charcoal_gray)),
+        shadowElevation = 5.dp
     ) {
-        Text(
-            modifier = Modifier.fillMaxWidth(),
-            text = stringResource(id = R.string.str_business_profile),
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.titleLarge,
-            color = MaterialTheme.colorScheme.onSurface,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
-        )
-        Text(
-            modifier = Modifier.fillMaxWidth(),
-            text = stringResource(id = R.string.str_business_profile_desc),
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.labelMedium,
-            color = MaterialTheme.colorScheme.onSurface,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
-        )
+        //Top Level Form Container
+        Column(
+            modifier = Modifier.fillMaxWidth().padding(8.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically)
+        ) {
+            //Title Section
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterVertically)
+            ) {
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = stringResource(id = R.string.str_business_profile),
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = stringResource(id = R.string.str_business_profile_desc),
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+
+            //Biz Identity
+            Column(
+                modifier = Modifier.fillMaxWidth().padding(4.dp)
+                    .border(BorderStroke(1.dp, colorResource(R.color.charcoal_gray))),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                var rowExpanded by remember { mutableStateOf(true) }
+                ThreeRowCardItem(
+                    cardShape = RectangleShape,
+                    firstRowContent = {
+                        Surface(
+                            modifier = Modifier.size(ButtonDefaults.IconSize)
+                        ) {
+                            Icon(
+                                imageVector = ImageVector.vectorResource(id = country),
+                                contentDescription = null
+                            )
+                        }
+                    },
+                    secondRowContent = { Text(stringResource(R.string.str_biz_identity)) },
+                    thirdRowContent = {
+                        Surface(
+                            onClick = { rowExpanded = rowExpanded.not() },
+                            modifier = Modifier.fillMaxWidth().size(ButtonDefaults.IconSize)
+                        ) {
+                            Icon(
+                                imageVector =
+                                if (rowExpanded) Icons.Default.KeyboardArrowDown
+                                else Icons.AutoMirrored.Default.KeyboardArrowRight,
+                                contentDescription = null
+                            )
+                        }
+                    }
+                )
+                if(rowExpanded){
+                    Column(
+                        modifier = Modifier.fillMaxWidth().padding(8.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically)
+                    ) {
+                        Text(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = stringResource(id = R.string.str_biz_name),
+                            textAlign = TextAlign.Start,
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                        TextInput(
+                            value = ""/*inputFormState.legalName*/,
+                            onValueChange = { /*onLegalNameValueChanged(it)*/ },
+                            label = stringResource(R.string.str_company_legal_name),
+                            placeholder = stringResource(R.string.str_company_legal_name),
+                            singleLine = true,
+                            //isError = inputFormState.legalNameError != null,
+                            //errorMessage = inputFormState.legalNameError
+                        )
+                        TextInput(
+                            value = ""/*inputFormState.commonName*/,
+                            onValueChange = { /*onCommonNameValueChanged(it)*/ },
+                            label = stringResource(R.string.str_company_common_name),
+                            placeholder = stringResource(R.string.str_company_common_name),
+                            singleLine = true,
+                            //isError = inputFormState.commonNameError != null,
+                            //errorMessage = inputFormState.commonNameError
+                        )
+                    }
+                }
+            }
+
+            Row(
+                modifier = Modifier.fillMaxWidth(1.0f),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                AppIconButton(
+                    modifier = Modifier.weight(0.5f),
+                    onClick = {},
+                    icon = ImageVector.vectorResource(id = CustomIcons.Emotion.neutral),
+                    text = stringResource(id = R.string.str_save)
+                )
+                AppIconButton(
+                    modifier = Modifier.weight(0.5f),
+                    onClick = {},
+                    icon = ImageVector.vectorResource(id = CustomIcons.Emotion.neutral),
+                    text = stringResource(id = R.string.str_cancel),
+                    containerColor = MaterialTheme.colorScheme.errorContainer,
+                    contentColor = MaterialTheme.colorScheme.onErrorContainer
+                )
+            }
+
+        }
     }
 }
 
