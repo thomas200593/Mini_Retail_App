@@ -32,6 +32,10 @@ import com.thomas200593.mini_retail_app.features.initial.initialization.domain.U
 import com.thomas200593.mini_retail_app.features.initial.initialization.entity.Initialization
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.ButtonEvents.BtnInitDefaultBizProfileEvents
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.ButtonEvents.BtnInitManualBizProfileEvents
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.ButtonEvents.BtnToggleIndustryAdditionalInfoEvents
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.ButtonEvents.BtnToggleLegalDocTypeAdditionalInfoEvents
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.ButtonEvents.BtnToggleLegalDocTypeUsageEvents
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.ButtonEvents.BtnToggleLegalTypeAdditionalInfoEvents
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.ButtonEvents.BtnToggleTaxInclusionEvents
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.DialogEvents.DlgResError
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.DialogEvents.DlgResSuccess
@@ -100,10 +104,14 @@ class VMInitialization @Inject constructor(
         val commonName: String = String(),
         val commonNameError: UiText? = UiText.StringResource(R.string.str_field_required),
         val industryKey: String = String(),
+        val industryAdditionalInfoUsage: Boolean = false,
         val industryAdditionalInfo: String = String(),
         val legalTypeKey: String = String(),
+        val legalTypeAdditionalInfoUsage: Boolean = false,
         val legalTypeAdditionalInfo: String = String(),
+        val legalDocTypeUsage: Boolean = false,
         val legalDocTypeKey: String = String(),
+        val legalDocTypeAdditionalInfoUsage: Boolean = false, //
         val legalDocTypeAdditionalInfo: String = String(),
         val taxationTypeKey: String = String(),
         val taxIdDocNumber: String = String(),
@@ -174,6 +182,18 @@ class VMInitialization @Inject constructor(
             sealed interface BtnToggleTaxInclusionEvents : ButtonEvents {
                 data class OnClick(val taxIncluded: Boolean): BtnToggleTaxInclusionEvents
             }
+            sealed interface BtnToggleIndustryAdditionalInfoEvents : ButtonEvents {
+                data class OnCheckedChange(val checked: Boolean): BtnToggleIndustryAdditionalInfoEvents
+            }
+            sealed interface BtnToggleLegalTypeAdditionalInfoEvents : ButtonEvents {
+                data class OnCheckedChange(val checked: Boolean): BtnToggleLegalTypeAdditionalInfoEvents
+            }
+            sealed interface BtnToggleLegalDocTypeUsageEvents : ButtonEvents {
+                data class OnCheckedChange(val checked: Boolean) : BtnToggleLegalDocTypeUsageEvents
+            }
+            sealed interface BtnToggleLegalDocTypeAdditionalInfoEvents : ButtonEvents {
+                data class OnCheckedChange(val checked: Boolean) : BtnToggleLegalDocTypeAdditionalInfoEvents
+            }
         }
         sealed interface DialogEvents: UiEvents {
             sealed interface DlgResSuccess: DialogEvents {
@@ -214,12 +234,16 @@ class VMInitialization @Inject constructor(
             is LegalNameEvents.ValueChanged -> frmValChgLegalName(events.legalName)
             is CommonNameEvents.ValueChanged -> frmValChgCommonName(events.commonName)
             is DDIndustry.OnSelect -> frmValChgIndustry(events.industryKey)
+            is BtnToggleIndustryAdditionalInfoEvents.OnCheckedChange -> frmValChgIndustryAdditionalInfoUsage(events.checked)
             is IndustryAdditionalInfoEvents.ValueChanged ->
                 frmValChgIndustryAdditionalInfo(events.additionalInfo.take(100))
             is DDLegalType.OnSelect -> frmValChgLegalType(events.legalTypeKey)
             is LegalTypeAdditionalInfoEvents.ValueChanged ->
                 frmValChgLegalTypeAdditionalInfo(events.additionalInfo.take(100))
             is DDLegalDocType.OnSelect -> frmValChgLegalDocType(events.legalDocTypeKey)
+            is BtnToggleLegalTypeAdditionalInfoEvents.OnCheckedChange -> frmValChgLegalTypeAdditionalInfoUsage(events.checked)
+            is BtnToggleLegalDocTypeUsageEvents.OnCheckedChange -> frmValChgLegalDocTypeUsage(events.checked)
+            is BtnToggleLegalDocTypeAdditionalInfoEvents.OnCheckedChange -> frmValChgLegalDocTypeAdditionalInfoUsage(events.checked)
             is LegalDocTypeAdditionalInfoEvents.ValueChanged ->
                 frmValChgLegalDocTypeAdditionalInfo(events.additionalInfo.take(100))
             is DDTaxationType.OnSelect -> frmValChgTaxationType(events.taxationTypeKey)
@@ -262,6 +286,7 @@ class VMInitialization @Inject constructor(
             is DlgResError.OnDismiss -> doResetUiState()
         }
     }
+
     private fun updateDialogState(
         dlgResLoading: Boolean = false,
         dlgResSuccess: Boolean = false,
@@ -395,6 +420,14 @@ class VMInitialization @Inject constructor(
             )
         )
     }
+    private fun frmValChgIndustryAdditionalInfoUsage(checked: Boolean) = _uiState.update {
+        it.copy(
+            panelInputFormState = it.panelInputFormState.copy(
+                industryAdditionalInfoUsage = checked,
+                industryAdditionalInfo = if (!checked) String() else it.panelInputFormState.industryAdditionalInfo
+            )
+        )
+    }
     private fun frmValChgIndustryAdditionalInfo(industryAdditionalInfo: String) = _uiState.update {
         it.copy(
             panelInputFormState = it.panelInputFormState.copy(
@@ -409,6 +442,14 @@ class VMInitialization @Inject constructor(
             )
         )
     }
+    private fun frmValChgLegalTypeAdditionalInfoUsage(checked: Boolean) = _uiState.update {
+        it.copy(
+            panelInputFormState = it.panelInputFormState.copy(
+                legalTypeAdditionalInfoUsage = checked,
+                legalTypeAdditionalInfo = if(!checked) String() else it.panelInputFormState.legalTypeAdditionalInfo
+            )
+        )
+    }
     private fun frmValChgLegalTypeAdditionalInfo(legalTypeAdditionalInfo: String) = _uiState.update {
         it.copy(
             panelInputFormState = it.panelInputFormState.copy(
@@ -416,10 +457,26 @@ class VMInitialization @Inject constructor(
             )
         )
     }
+    private fun frmValChgLegalDocTypeUsage(checked: Boolean) = _uiState.update {
+        it.copy(
+            panelInputFormState = it.panelInputFormState.copy(
+                legalDocTypeUsage = checked,
+                legalDocTypeKey = if(!checked) repoLegalDocType.getIdentityKeyDefault() else it.panelInputFormState.legalDocTypeKey
+            )
+        )
+    }
     private fun frmValChgLegalDocType(legalDocTypeKey: String) = _uiState.update {
         it.copy(
             panelInputFormState = it.panelInputFormState.copy(
                 legalDocTypeKey = legalDocTypeKey
+            )
+        )
+    }
+    private fun frmValChgLegalDocTypeAdditionalInfoUsage(checked: Boolean) = _uiState.update {
+        it.copy(
+            panelInputFormState = it.panelInputFormState.copy(
+                legalDocTypeAdditionalInfoUsage = checked,
+                legalDocTypeAdditionalInfo = if(!checked) String() else it.panelInputFormState.legalDocTypeAdditionalInfo
             )
         )
     }

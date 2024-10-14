@@ -45,6 +45,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -81,6 +82,10 @@ import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMIni
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.PanelWelcomeMessageState
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.ButtonEvents.BtnInitDefaultBizProfileEvents
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.ButtonEvents.BtnInitManualBizProfileEvents
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.ButtonEvents.BtnToggleIndustryAdditionalInfoEvents
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.ButtonEvents.BtnToggleLegalDocTypeAdditionalInfoEvents
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.ButtonEvents.BtnToggleLegalDocTypeUsageEvents
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.ButtonEvents.BtnToggleLegalTypeAdditionalInfoEvents
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.ButtonEvents.BtnToggleTaxInclusionEvents
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.DialogEvents.DlgResError
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.DialogEvents.DlgResSuccess
@@ -118,21 +123,33 @@ fun ScrInitialization(
     ScrInitialization(
         uiState = uiState,
         onSelectLanguage = { vm.onEvent(DDLanguage.OnSelect(it)) },
-        onInitBizProfileDefaultBtnClicked = { vm.onEvent(BtnInitDefaultBizProfileEvents.OnClick) },
-        onInitBizProfileManualBtnClicked = { vm.onEvent(BtnInitManualBizProfileEvents.OnClick) },
-        onLegalNameValueChanged = { vm.onEvent(LegalNameEvents.ValueChanged(it)) },
-        onCommonNameValueChanged = { vm.onEvent(CommonNameEvents.ValueChanged(it)) },
-        onIndustryValueChanged = { vm.onEvent(DDIndustry.OnSelect(it)) },
-        onIndustryAdditionalInfoValueChanged = { vm.onEvent(IndustryAdditionalInfoEvents.ValueChanged(it)) },
-        onLegalTypeValueChanged = { vm.onEvent(DDLegalType.OnSelect(it)) },
-        onLegalTypeAdditionalInfoValueChanged = { vm.onEvent(LegalTypeAdditionalInfoEvents.ValueChanged(it)) },
-        onLegalDocTypeValueChanged = { vm.onEvent(DDLegalDocType.OnSelect(it)) },
-        onLegalDocTypeAdditionalInfoValueChanged = { vm.onEvent(LegalDocTypeAdditionalInfoEvents.ValueChanged(it)) },
-        onTaxationTypeValueChanged = { vm.onEvent(DDTaxationType.OnSelect(it)) },
-        onTaxIdDocNumberValueChanged = { vm.onEvent(TaxIdDocNumberEvents.ValueChanged(it)) },
-        onTaxIssuerCountryValueChanged = { vm.onEvent(DDTaxIssuerCountry.OnSelect(it)) },
-        onTaxRatePercentageValueChanged = { vm.onEvent(TaxRatePercentageEvents.ValueChanged(it)) },
-        onTaxIncludedValueChanged = { vm.onEvent(BtnToggleTaxInclusionEvents.OnClick(it)) },
+        btnInitBizProfileDefaultOnClick = { vm.onEvent(BtnInitDefaultBizProfileEvents.OnClick) },
+        btnInitBizProfileManualOnClick = { vm.onEvent(BtnInitManualBizProfileEvents.OnClick) },
+        legalNameOnValueChange = { vm.onEvent(LegalNameEvents.ValueChanged(it)) },
+        commonNameOnValueChange = { vm.onEvent(CommonNameEvents.ValueChanged(it)) },
+        industryDDItemOnClick = { vm.onEvent(DDIndustry.OnSelect(it)) },
+        industryAdditionalInfoToggleOnCheckedChange = {
+            vm.onEvent(BtnToggleIndustryAdditionalInfoEvents.OnCheckedChange(it))
+        },
+        industryAdditionalInfoOnValueChange = { vm.onEvent(IndustryAdditionalInfoEvents.ValueChanged(it)) },
+        legalTypeDDItemOnClick = { vm.onEvent(DDLegalType.OnSelect(it)) },
+        legalTypeAdditionalInfoToggleOnCheckedChange = {
+            vm.onEvent(BtnToggleLegalTypeAdditionalInfoEvents.OnCheckedChange(it))
+        },
+        legalTypeAdditionalInfoOnValueChange = { vm.onEvent(LegalTypeAdditionalInfoEvents.ValueChanged(it)) },
+        legalDocTypeUsageToggleOnCheckedChange = { checked ->
+            vm.onEvent(BtnToggleLegalDocTypeUsageEvents.OnCheckedChange(checked))
+        },
+        legalDocTypeDDItemOnClick = { vm.onEvent(DDLegalDocType.OnSelect(it)) },
+        legalDocTypeAdditionalInfoToggleOnCheckedChange = {
+            vm.onEvent(BtnToggleLegalDocTypeAdditionalInfoEvents.OnCheckedChange(it))
+        },
+        legalDocTypeAdditionalInfoValueChange = { vm.onEvent(LegalDocTypeAdditionalInfoEvents.ValueChanged(it)) },
+        taxationTypeDDItemOnClick = { vm.onEvent(DDTaxationType.OnSelect(it)) },
+        taxIdDocNumberOnValueChange = { vm.onEvent(TaxIdDocNumberEvents.ValueChanged(it)) },
+        taxIssuerCountryDDItemOnClick = { vm.onEvent(DDTaxIssuerCountry.OnSelect(it)) },
+        taxRatePercentageOnValueChange = { vm.onEvent(TaxRatePercentageEvents.ValueChanged(it)) },
+        taxIncludedToggleOnCheckedChange = { vm.onEvent(BtnToggleTaxInclusionEvents.OnClick(it)) },
         onFormSubmitBtnClicked = { vm.onEvent(BtnSubmitEvents.OnClick) },
         onFormCancelBtnClicked = { vm.onEvent(BtnCancelEvents.OnClick) },
         onInitBizProfileSuccess = {
@@ -150,21 +167,25 @@ fun ScrInitialization(
 private fun ScrInitialization(
     uiState: UiState,
     onSelectLanguage: (Language) -> Unit,
-    onInitBizProfileDefaultBtnClicked: () -> Unit,
-    onInitBizProfileManualBtnClicked: () -> Unit,
-    onLegalNameValueChanged: (String) -> Unit,
-    onCommonNameValueChanged: (String) -> Unit,
-    onIndustryValueChanged: (String) -> Unit,
-    onIndustryAdditionalInfoValueChanged: (String) -> Unit,
-    onLegalTypeValueChanged: (String) -> Unit,
-    onLegalTypeAdditionalInfoValueChanged: (String) -> Unit,
-    onLegalDocTypeValueChanged: (String) -> Unit,
-    onLegalDocTypeAdditionalInfoValueChanged: (String) -> Unit,
-    onTaxationTypeValueChanged: (String) -> Unit,
-    onTaxIdDocNumberValueChanged: (String) -> Unit,
-    onTaxIssuerCountryValueChanged: (Country) -> Unit,
-    onTaxRatePercentageValueChanged: (Int) -> Unit,
-    onTaxIncludedValueChanged: (Boolean) -> Unit,
+    btnInitBizProfileDefaultOnClick: () -> Unit,
+    btnInitBizProfileManualOnClick: () -> Unit,
+    legalNameOnValueChange: (String) -> Unit,
+    commonNameOnValueChange: (String) -> Unit,
+    industryDDItemOnClick: (String) -> Unit,
+    industryAdditionalInfoToggleOnCheckedChange: (Boolean) -> Unit,
+    industryAdditionalInfoOnValueChange: (String) -> Unit,
+    legalTypeDDItemOnClick: (String) -> Unit,
+    legalTypeAdditionalInfoToggleOnCheckedChange: (Boolean) -> Unit,
+    legalTypeAdditionalInfoOnValueChange: (String) -> Unit,
+    legalDocTypeUsageToggleOnCheckedChange: (Boolean) -> Unit,
+    legalDocTypeDDItemOnClick: (String) -> Unit,
+    legalDocTypeAdditionalInfoToggleOnCheckedChange: (Boolean) -> Unit,
+    legalDocTypeAdditionalInfoValueChange: (String) -> Unit,
+    taxationTypeDDItemOnClick: (String) -> Unit,
+    taxIdDocNumberOnValueChange: (String) -> Unit,
+    taxIssuerCountryDDItemOnClick: (Country) -> Unit,
+    taxRatePercentageOnValueChange: (Int) -> Unit,
+    taxIncludedToggleOnCheckedChange: (Boolean) -> Unit,
     onFormSubmitBtnClicked: () -> Unit,
     onFormCancelBtnClicked: () -> Unit,
     onInitBizProfileSuccess: () -> Unit,
@@ -180,30 +201,29 @@ private fun ScrInitialization(
         is Success -> ScreenContent(
             uiState = uiState,
             initData = uiState.initialization.data,
-            onSelectLanguage = onSelectLanguage
-        )
-        /*ScreenContent(
-            uiState = uiState,
-            initData = uiState.initialization.data,
             onSelectLanguage = onSelectLanguage,
-            onInitBizProfileDefaultBtnClicked = onInitBizProfileDefaultBtnClicked,
-            onInitBizProfileManualBtnClicked = onInitBizProfileManualBtnClicked,
-            onLegalNameValueChanged = onLegalNameValueChanged,
-            onCommonNameValueChanged = onCommonNameValueChanged,
-            onIndustryValueChanged = onIndustryValueChanged,
-            onIndustryAdditionalInfoValueChanged = onIndustryAdditionalInfoValueChanged,
-            onLegalTypeValueChanged = onLegalTypeValueChanged,
-            onLegalTypeAdditionalInfoValueChanged = onLegalTypeAdditionalInfoValueChanged,
-            onLegalDocTypeValueChanged = onLegalDocTypeValueChanged,
-            onLegalDocTypeAdditionalInfoValueChanged = onLegalDocTypeAdditionalInfoValueChanged,
-            onTaxationTypeValueChanged = onTaxationTypeValueChanged,
-            onTaxIdDocNumberValueChanged = onTaxIdDocNumberValueChanged,
-            onTaxIssuerCountryValueChanged = onTaxIssuerCountryValueChanged,
-            onTaxRatePercentageValueChanged = onTaxRatePercentageValueChanged,
-            onTaxIncludedValueChanged = onTaxIncludedValueChanged,
+            btnInitBizProfileDefaultOnClick = btnInitBizProfileDefaultOnClick,
+            btnInitBizProfileManualOnClick = btnInitBizProfileManualOnClick,
+            legalNameOnValueChange = legalNameOnValueChange,
+            commonNameOnValueChange = commonNameOnValueChange,
+            industryDDItemOnClick = industryDDItemOnClick,
+            industryAdditionalInfoToggleOnCheckedChange = industryAdditionalInfoToggleOnCheckedChange,
+            industryAdditionalInfoOnValueChange = industryAdditionalInfoOnValueChange,
+            legalTypeDDItemOnClick = legalTypeDDItemOnClick,
+            legalTypeAdditionalInfoToggleOnCheckedChange = legalTypeAdditionalInfoToggleOnCheckedChange,
+            legalTypeAdditionalInfoOnValueChange = legalTypeAdditionalInfoOnValueChange,
+            legalDocTypeUsageToggleOnCheckedChange = legalDocTypeUsageToggleOnCheckedChange,
+            legalDocTypeDDItemOnClick = legalDocTypeDDItemOnClick,
+            legalDocTypeAdditionalInfoToggleOnCheckedChange = legalDocTypeAdditionalInfoToggleOnCheckedChange,
+            legalDocTypeAdditionalInfoValueChange = legalDocTypeAdditionalInfoValueChange,
+            taxationTypeDDItemOnClick = taxationTypeDDItemOnClick,
+            taxIdDocNumberOnValueChange = taxIdDocNumberOnValueChange,
+            taxIssuerCountryDDItemOnClick = taxIssuerCountryDDItemOnClick,
+            taxRatePercentageOnValueChange = taxRatePercentageOnValueChange,
+            taxIncludedToggleOnCheckedChange = taxIncludedToggleOnCheckedChange,
             onFormSubmitBtnClicked = onFormSubmitBtnClicked,
             onFormCancelBtnClicked = onFormCancelBtnClicked
-        )*/
+        )
     }
 }
 
@@ -262,7 +282,28 @@ private fun HandleDialogs(
 private fun ScreenContent(
     uiState: UiState,
     initData: Initialization,
-    onSelectLanguage: (Language) -> Unit
+    onSelectLanguage: (Language) -> Unit,
+    btnInitBizProfileManualOnClick: () -> Unit,
+    btnInitBizProfileDefaultOnClick: () -> Unit,
+    legalNameOnValueChange: (String) -> Unit,
+    commonNameOnValueChange: (String) -> Unit,
+    industryDDItemOnClick: (String) -> Unit,
+    industryAdditionalInfoToggleOnCheckedChange: (Boolean) -> Unit,
+    industryAdditionalInfoOnValueChange: (String) -> Unit,
+    legalTypeDDItemOnClick: (String) -> Unit,
+    legalTypeAdditionalInfoToggleOnCheckedChange: (Boolean) -> Unit,
+    legalTypeAdditionalInfoOnValueChange: (String) -> Unit,
+    legalDocTypeUsageToggleOnCheckedChange: (Boolean) -> Unit,
+    legalDocTypeDDItemOnClick: (String) -> Unit,
+    legalDocTypeAdditionalInfoToggleOnCheckedChange: (Boolean) -> Unit,
+    legalDocTypeAdditionalInfoValueChange: (String) -> Unit,
+    taxationTypeDDItemOnClick: (String) -> Unit,
+    taxIdDocNumberOnValueChange: (String) -> Unit,
+    taxIssuerCountryDDItemOnClick: (Country) -> Unit,
+    taxRatePercentageOnValueChange: (Int) -> Unit,
+    taxIncludedToggleOnCheckedChange: (Boolean) -> Unit,
+    onFormSubmitBtnClicked: () -> Unit,
+    onFormCancelBtnClicked: () -> Unit
 ) {
     Surface {
         Column(
@@ -281,81 +322,40 @@ private fun ScreenContent(
                 verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Top)
             ) {
                 if(uiState.panelWelcomeMessageState.visible) {
-                    PanelWelcomeMessage()
+                    PanelWelcomeMessage(
+                        btnInitBizProfileManualOnClick = btnInitBizProfileManualOnClick,
+                        btnInitBizProfileDefaultOnClick = btnInitBizProfileDefaultOnClick
+                    )
                 }
                 if(uiState.panelInputFormState.visible) {
-                    PanelFormInitManualBizProfile()
+                    PanelFormInitManualBizProfile(
+                        industries = initData.industries,
+                        legalType = initData.legalType,
+                        legalDocType = initData.legalDocType,
+                        taxationType = initData.taxation.first,
+                        taxIssuerCountry = initData.taxation.second,
+                        inputFormState = uiState.panelInputFormState,
+                        legalNameOnValueChange = legalNameOnValueChange,
+                        commonNameOnValueChange = commonNameOnValueChange,
+                        industryDDItemOnClick = industryDDItemOnClick,
+                        industryAdditionalInfoToggleOnCheckedChange = industryAdditionalInfoToggleOnCheckedChange,
+                        industryAdditionalInfoOnValueChange = industryAdditionalInfoOnValueChange,
+                        legalTypeDDItemOnClick = legalTypeDDItemOnClick,
+                        legalTypeAdditionalInfoToggleOnCheckedChange = legalTypeAdditionalInfoToggleOnCheckedChange,
+                        legalTypeAdditionalInfoOnValueChange = legalTypeAdditionalInfoOnValueChange,
+                        legalDocTypeUsageToggleOnCheckedChange = legalDocTypeUsageToggleOnCheckedChange,
+                        legalDocTypeDDItemOnClick = legalDocTypeDDItemOnClick,
+                        legalDocTypeAdditionalInfoToggleOnCheckedChange = legalDocTypeAdditionalInfoToggleOnCheckedChange,
+                        legalDocTypeAdditionalInfoValueChange = legalDocTypeAdditionalInfoValueChange,
+                        taxationTypeDDItemOnClick = taxationTypeDDItemOnClick,
+                        taxIdDocNumberOnValueChange = taxIdDocNumberOnValueChange,
+                        taxIssuerCountryDDItemOnClick = taxIssuerCountryDDItemOnClick,
+                        taxRatePercentageOnValueChange = taxRatePercentageOnValueChange,
+                        taxIncludedToggleOnCheckedChange = taxIncludedToggleOnCheckedChange,
+                        onFormSubmitBtnClicked = onFormSubmitBtnClicked,
+                        onFormCancelBtnClicked = onFormCancelBtnClicked
+                    )
                 }
-            }
-        }
-    }
-}
-
-@Composable
-private fun ScreenContent(
-    uiState: UiState,
-    initData: Initialization,
-    onSelectLanguage: (Language) -> Unit,
-    onInitBizProfileDefaultBtnClicked: () -> Unit,
-    onInitBizProfileManualBtnClicked: () -> Unit,
-    onLegalNameValueChanged: (String) -> Unit,
-    onCommonNameValueChanged: (String) -> Unit,
-    onIndustryValueChanged: (String) -> Unit,
-    onIndustryAdditionalInfoValueChanged: (String) -> Unit,
-    onLegalTypeValueChanged: (String) -> Unit,
-    onLegalTypeAdditionalInfoValueChanged: (String) -> Unit,
-    onLegalDocTypeValueChanged: (String) -> Unit,
-    onLegalDocTypeAdditionalInfoValueChanged: (String) -> Unit,
-    onTaxationTypeValueChanged: (String) -> Unit,
-    onTaxIdDocNumberValueChanged: (String) -> Unit,
-    onTaxIssuerCountryValueChanged: (Country) -> Unit,
-    onTaxRatePercentageValueChanged: (Int) -> Unit,
-    onTaxIncludedValueChanged: (Boolean) -> Unit,
-    onFormSubmitBtnClicked: () -> Unit,
-    onFormCancelBtnClicked: () -> Unit
-) {
-    Surface {
-        Column(
-            modifier = Modifier.fillMaxSize().padding(8.dp).verticalScroll(rememberScrollState())
-                .imePadding(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(30.dp, Alignment.Top)
-        ) {
-            LanguageSection(
-                languages = initData.languages,
-                configCurrent = initData.configCurrent,
-                onSelectLanguage = onSelectLanguage
-            )
-            if(uiState.panelWelcomeMessageState.visible) {
-                PanelWelcomeMessage(
-                    onInitBizProfileDefaultBtnClicked = onInitBizProfileDefaultBtnClicked,
-                    onInitBizProfileManualBtnClicked = onInitBizProfileManualBtnClicked
-                )
-            }
-            if(uiState.panelInputFormState.visible) {
-                PanelFormInitManualBizProfile(
-                    industries = initData.industries,
-                    legalType = initData.legalType,
-                    legalDocType = initData.legalDocType,
-                    taxationType = initData.taxation.first,
-                    taxIssuerCountry = initData.taxation.second,
-                    inputFormState = uiState.panelInputFormState,
-                    onLegalNameValueChanged = onLegalNameValueChanged,
-                    onCommonNameValueChanged = onCommonNameValueChanged,
-                    onIndustryValueChanged = onIndustryValueChanged,
-                    onIndustryAdditionalInfoValueChanged = onIndustryAdditionalInfoValueChanged,
-                    onLegalTypeValueChanged = onLegalTypeValueChanged,
-                    onLegalTypeAdditionalInfoValueChanged = onLegalTypeAdditionalInfoValueChanged,
-                    onLegalDocTypeValueChanged = onLegalDocTypeValueChanged,
-                    onLegalDocTypeAdditionalInfoValueChanged = onLegalDocTypeAdditionalInfoValueChanged,
-                    onTaxationTypeValueChanged = onTaxationTypeValueChanged,
-                    onTaxIdDocNumberValueChanged = onTaxIdDocNumberValueChanged,
-                    onTaxIssuerCountryValueChanged = onTaxIssuerCountryValueChanged,
-                    onTaxRatePercentageValueChanged = onTaxRatePercentageValueChanged,
-                    onTaxIncludedValueChanged = onTaxIncludedValueChanged,
-                    onFormSubmitBtnClicked = onFormSubmitBtnClicked,
-                    onFormCancelBtnClicked = onFormCancelBtnClicked
-                )
             }
         }
     }
@@ -434,7 +434,10 @@ private fun LanguageSection(
 }
 
 @Composable
-private fun PanelWelcomeMessage() {
+private fun PanelWelcomeMessage(
+    btnInitBizProfileManualOnClick: () -> Unit,
+    btnInitBizProfileDefaultOnClick: () -> Unit
+) {
     Column(
         modifier = Modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -483,13 +486,13 @@ private fun PanelWelcomeMessage() {
             )
             AppIconButton(
                 modifier = Modifier.fillMaxWidth(),
-                onClick = {/*TODO*/},
+                onClick = btnInitBizProfileManualOnClick,
                 icon = ImageVector.vectorResource(id = CustomIcons.Emotion.happy),
                 text = stringResource(R.string.str_init_setup_yes)
             )
         }
     }
-    TextButton(onClick = {/*TODO*/}) {
+    TextButton(onClick = btnInitBizProfileDefaultOnClick) {
         Text(
             text = stringResource(R.string.str_init_setup_no),
             textAlign = TextAlign.Center,
@@ -498,76 +501,35 @@ private fun PanelWelcomeMessage() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun PanelWelcomeMessage(
-    onInitBizProfileManualBtnClicked: () -> Unit,
-    onInitBizProfileDefaultBtnClicked: () -> Unit
+private fun PanelFormInitManualBizProfile(
+    industries: Map<String, String>,
+    legalType: Map<String, String>,
+    legalDocType: Map<String, String>,
+    taxationType: Map<String, String>,
+    taxIssuerCountry: List<Country>,
+    inputFormState: PanelInputFormState,
+    legalNameOnValueChange: (String) -> Unit,
+    commonNameOnValueChange: (String) -> Unit,
+    industryDDItemOnClick: (String) -> Unit,
+    industryAdditionalInfoToggleOnCheckedChange: (Boolean) -> Unit,
+    industryAdditionalInfoOnValueChange: (String) -> Unit,
+    legalTypeDDItemOnClick: (String) -> Unit,
+    legalTypeAdditionalInfoToggleOnCheckedChange: (Boolean) -> Unit,
+    legalTypeAdditionalInfoOnValueChange: (String) -> Unit,
+    legalDocTypeUsageToggleOnCheckedChange: (Boolean) -> Unit,
+    legalDocTypeDDItemOnClick: (String) -> Unit,
+    legalDocTypeAdditionalInfoToggleOnCheckedChange: (Boolean) -> Unit,
+    legalDocTypeAdditionalInfoValueChange: (String) -> Unit,
+    taxationTypeDDItemOnClick: (String) -> Unit,
+    taxIdDocNumberOnValueChange: (String) -> Unit,
+    taxIssuerCountryDDItemOnClick: (Country) -> Unit,
+    taxRatePercentageOnValueChange: (Int) -> Unit,
+    taxIncludedToggleOnCheckedChange: (Boolean) -> Unit,
+    onFormSubmitBtnClicked: () -> Unit,
+    onFormCancelBtnClicked: () -> Unit
 ) {
-    Column(
-        modifier = Modifier,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically)
-    ) {
-        Surface(
-            modifier = Modifier.size(150.dp),
-            color = Color.Transparent,
-            shape = MaterialTheme.shapes.medium
-        ) { Image(imageVector = ImageVector.vectorResource(id = CustomIcons.App.app), contentDescription = null) }
-        Text(
-            modifier = Modifier.fillMaxWidth(),
-            text = stringResource(id = R.string.app_name),
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.titleLarge,
-            color = MaterialTheme.colorScheme.onSurface,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
-        )
-        Text(
-            modifier = Modifier.fillMaxWidth(),
-            text = "${BuildConfig.VERSION_NAME} - ${BuildConfig.BUILD_TYPE}",
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.labelMedium,
-            color = MaterialTheme.colorScheme.onSurface,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
-        )
-    }
-    Surface(
-        modifier = Modifier.fillMaxWidth().padding(16.dp),
-        shape = MaterialTheme.shapes.medium,
-        color = MaterialTheme.colorScheme.primaryContainer,
-        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-    ) {
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Text(
-                modifier = Modifier.fillMaxWidth().padding(16.dp),
-                text = stringResource(R.string.str_init_welcome_message),
-                style = MaterialTheme.typography.labelLarge,
-                textAlign = TextAlign.Justify
-            )
-            AppIconButton(
-                modifier = Modifier.fillMaxWidth(),
-                onClick = { onInitBizProfileManualBtnClicked() },
-                icon = ImageVector.vectorResource(id = CustomIcons.Emotion.happy),
-                text = stringResource(R.string.str_init_setup_yes)
-            )
-        }
-    }
-    TextButton(onClick = { onInitBizProfileDefaultBtnClicked() }) {
-        Text(
-            text = stringResource(R.string.str_init_setup_no),
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.titleMedium
-        )
-    }
-}
-
-@Composable
-private fun PanelFormInitManualBizProfile() {
     //Top Level Form Layout
     Surface(
         modifier = Modifier.padding(8.dp),
@@ -587,6 +549,7 @@ private fun PanelFormInitManualBizProfile() {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterVertically)
             ) {
+                //Title
                 Text(
                     modifier = Modifier.fillMaxWidth(),
                     text = stringResource(id = R.string.str_business_profile),
@@ -596,6 +559,7 @@ private fun PanelFormInitManualBizProfile() {
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
+                //Title Desc
                 Text(
                     modifier = Modifier.fillMaxWidth(),
                     text = stringResource(id = R.string.str_business_profile_desc),
@@ -614,13 +578,11 @@ private fun PanelFormInitManualBizProfile() {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                var rowExpanded by remember { mutableStateOf(true) }
+                var sectionExpanded by remember { mutableStateOf(true) }
                 ThreeRowCardItem(
                     cardShape = RectangleShape,
                     firstRowContent = {
-                        Surface(
-                            modifier = Modifier.size(ButtonDefaults.IconSize)
-                        ) {
+                        Surface(modifier = Modifier.size(ButtonDefaults.IconSize)) {
                             Icon(
                                 imageVector = ImageVector.vectorResource(id = country),
                                 contentDescription = null
@@ -630,19 +592,19 @@ private fun PanelFormInitManualBizProfile() {
                     secondRowContent = { Text(stringResource(R.string.str_biz_identity)) },
                     thirdRowContent = {
                         Surface(
-                            onClick = { rowExpanded = rowExpanded.not() },
+                            onClick = { sectionExpanded = sectionExpanded.not() },
                             modifier = Modifier.fillMaxWidth().size(ButtonDefaults.IconSize)
                         ) {
                             Icon(
                                 imageVector =
-                                if (rowExpanded) Icons.Default.KeyboardArrowDown
-                                else Icons.AutoMirrored.Default.KeyboardArrowRight,
+                                    if (sectionExpanded) Icons.Default.KeyboardArrowDown
+                                    else Icons.AutoMirrored.Default.KeyboardArrowRight,
                                 contentDescription = null
                             )
                         }
                     }
                 )
-                if(rowExpanded){
+                if(sectionExpanded) {
                     Column(
                         modifier = Modifier.fillMaxWidth().padding(8.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -651,6 +613,14 @@ private fun PanelFormInitManualBizProfile() {
                         Text(
                             modifier = Modifier.fillMaxWidth(),
                             text = stringResource(id = R.string.str_biz_name),
+                            textAlign = TextAlign.Center,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            fontWeight = FontWeight.Bold,
+                            maxLines = 1
+                        )
+                        Text(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = stringResource(id = R.string.str_company_legal_name),
                             textAlign = TextAlign.Start,
                             style = MaterialTheme.typography.labelMedium,
                             color = MaterialTheme.colorScheme.onSurface,
@@ -658,595 +628,758 @@ private fun PanelFormInitManualBizProfile() {
                             overflow = TextOverflow.Ellipsis
                         )
                         TextInput(
-                            value = ""/*inputFormState.legalName*/,
-                            onValueChange = { /*onLegalNameValueChanged(it)*/ },
-                            label = stringResource(R.string.str_company_legal_name),
+                            value = inputFormState.legalName,
+                            onValueChange = { legalNameOnValueChange(it) },
                             placeholder = stringResource(R.string.str_company_legal_name),
                             singleLine = true,
-                            //isError = inputFormState.legalNameError != null,
-                            //errorMessage = inputFormState.legalNameError
+                            isError = inputFormState.legalNameError != null,
+                            errorMessage = inputFormState.legalNameError
+                        )
+                        Text(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = stringResource(id = R.string.str_company_common_name),
+                            textAlign = TextAlign.Start,
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
                         )
                         TextInput(
-                            value = ""/*inputFormState.commonName*/,
-                            onValueChange = { /*onCommonNameValueChanged(it)*/ },
-                            label = stringResource(R.string.str_company_common_name),
+                            value = inputFormState.commonName,
+                            onValueChange = { commonNameOnValueChange(it) },
                             placeholder = stringResource(R.string.str_company_common_name),
                             singleLine = true,
-                            //isError = inputFormState.commonNameError != null,
-                            //errorMessage = inputFormState.commonNameError
+                            isError = inputFormState.commonNameError != null,
+                            errorMessage = inputFormState.commonNameError
                         )
+                        HorizontalDivider(thickness = 2.dp, color = colorResource(R.color.charcoal_gray))
+                        Text(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = stringResource(id = R.string.str_biz_industry),
+                            textAlign = TextAlign.Center,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            fontWeight = FontWeight.Bold,
+                            maxLines = 1
+                        )
+                        Text(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = stringResource(id = R.string.str_biz_industry_id),
+                            textAlign = TextAlign.Start,
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                        Row(
+                            modifier = Modifier.fillMaxWidth(1.0f),
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            var expanded by remember { mutableStateOf(false) }
+                            ExposedDropdownMenuBox(
+                                modifier = Modifier.fillMaxWidth(1.0f),
+                                expanded = expanded,
+                                onExpandedChange = { expanded = expanded.not() }
+                            ) {
+                                TextButton(
+                                    modifier = Modifier.fillMaxWidth().menuAnchor(PrimaryNotEditable, true),
+                                    border = BorderStroke(1.dp, colorResource(R.color.charcoal_gray)),
+                                    shape = MaterialTheme.shapes.small,
+                                    enabled = !(inputFormState.industryKey.isEmpty() || inputFormState.industryKey.isBlank()),
+                                    onClick = { expanded = true }
+                                ) {
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        StringArrayResource(BizIndustries)
+                                            .findByKey(inputFormState.industryKey)?.let {
+                                                Text(
+                                                    modifier = Modifier.fillMaxWidth(),
+                                                    text = it,
+                                                    textAlign = TextAlign.Start,
+                                                    maxLines = 1,
+                                                    overflow = TextOverflow.Ellipsis
+                                                )
+                                            }
+                                    }
+                                }
+                                ExposedDropdownMenu(expanded = expanded, onDismissRequest = {expanded = false}) {
+                                    industries.forEach {
+                                        DropdownMenuItem(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            text = {
+                                                Text(
+                                                    modifier = Modifier.fillMaxWidth(),
+                                                    text = it.value
+                                                )
+                                            },
+                                            onClick = {
+                                                expanded = false
+                                                industryDDItemOnClick(it.key)
+                                            },
+                                            contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                        Text(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = stringResource(id = R.string.str_additional_info),
+                            textAlign = TextAlign.Start,
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                        Row(
+                            modifier = Modifier.fillMaxWidth(1.0f),
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.Top
+                        ) {
+                            val rowParams by remember(inputFormState.industryAdditionalInfoUsage) {
+                                derivedStateOf {
+                                    if (inputFormState.industryAdditionalInfoUsage) Triple(0.8f, 0.2f, Arrangement.End)
+                                    else Triple(1.0f, 1.0f, Arrangement.Start)
+                                }
+                            }
+                            val (leftRowWeight, rightRowWeight, rightRowArrangement) = rowParams
+                            if(inputFormState.industryAdditionalInfoUsage) {
+                                Row(
+                                    modifier = Modifier.weight(leftRowWeight),
+                                    horizontalArrangement = Arrangement.Center,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    TextInput(
+                                        value = inputFormState.industryAdditionalInfo,
+                                        onValueChange = { industryAdditionalInfoOnValueChange(it) },
+                                        placeholder = stringResource(R.string.str_additional_info),
+                                        singleLine = true
+                                    )
+                                }
+                            }
+                            Row(
+                                modifier = Modifier.weight(rightRowWeight),
+                                horizontalArrangement = rightRowArrangement,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                var checked by remember { mutableStateOf(inputFormState.industryAdditionalInfoUsage) }
+                                Switch(
+                                    modifier = Modifier,
+                                    checked = checked,
+                                    onCheckedChange = {
+                                        checked = checked.not()
+                                        industryAdditionalInfoToggleOnCheckedChange(checked)
+                                    }
+                                )
+                            }
+                        }
                     }
                 }
             }
 
-            Row(
-                modifier = Modifier.fillMaxWidth(1.0f),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                AppIconButton(
-                    modifier = Modifier.weight(0.5f),
-                    onClick = {},
-                    icon = ImageVector.vectorResource(id = CustomIcons.Emotion.neutral),
-                    text = stringResource(id = R.string.str_save)
-                )
-                AppIconButton(
-                    modifier = Modifier.weight(0.5f),
-                    onClick = {},
-                    icon = ImageVector.vectorResource(id = CustomIcons.Emotion.neutral),
-                    text = stringResource(id = R.string.str_cancel),
-                    containerColor = MaterialTheme.colorScheme.errorContainer,
-                    contentColor = MaterialTheme.colorScheme.onErrorContainer
-                )
-            }
-
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun PanelFormInitManualBizProfile(
-    industries: Map<String, String>,
-    legalType: Map<String, String>,
-    legalDocType: Map<String, String>,
-    taxationType: Map<String, String>,
-    taxIssuerCountry: List<Country>,
-    inputFormState: PanelInputFormState,
-    onLegalNameValueChanged: (String) -> Unit,
-    onCommonNameValueChanged: (String) -> Unit,
-    onIndustryValueChanged: (String) -> Unit,
-    onIndustryAdditionalInfoValueChanged: (String) -> Unit,
-    onLegalTypeValueChanged: (String) -> Unit,
-    onLegalTypeAdditionalInfoValueChanged: (String) -> Unit,
-    onLegalDocTypeValueChanged: (String) -> Unit,
-    onLegalDocTypeAdditionalInfoValueChanged: (String) -> Unit,
-    onTaxationTypeValueChanged: (String) -> Unit,
-    onTaxIdDocNumberValueChanged: (String) -> Unit,
-    onTaxIssuerCountryValueChanged: (Country) -> Unit,
-    onTaxRatePercentageValueChanged: (Int) -> Unit,
-    onTaxIncludedValueChanged: (Boolean) -> Unit,
-    onFormSubmitBtnClicked: () -> Unit,
-    onFormCancelBtnClicked: () -> Unit
-) {
-    Surface(
-        modifier = Modifier.fillMaxWidth(),
-        shape = MaterialTheme.shapes.medium,
-        color = MaterialTheme.colorScheme.surfaceContainerHighest
-    ) {
-        Column(
-            modifier = Modifier.fillMaxWidth().padding(12.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically)
-        ) {
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                text = stringResource(id = R.string.str_business_profile),
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.onSurface,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                text = stringResource(id = R.string.str_business_profile_desc),
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.onSurface,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-            HorizontalDivider(
-                thickness = 2.dp,
-                color = MaterialTheme.colorScheme.onSurface
-            )
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                text = stringResource(id = R.string.str_biz_name),
-                textAlign = TextAlign.Start,
-                style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.onSurface,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-            HorizontalDivider(
-                thickness = 2.dp,
-                color = MaterialTheme.colorScheme.onSurface
-            )
-            TextInput(
-                value = inputFormState.legalName,
-                onValueChange = { onLegalNameValueChanged(it) },
-                label = stringResource(R.string.str_company_legal_name),
-                placeholder = stringResource(R.string.str_company_legal_name),
-                singleLine = true,
-                isError = inputFormState.legalNameError != null,
-                errorMessage = inputFormState.legalNameError
-            )
-            TextInput(
-                value = inputFormState.commonName,
-                onValueChange = { onCommonNameValueChanged(it) },
-                label = stringResource(R.string.str_company_common_name),
-                placeholder = stringResource(R.string.str_company_common_name),
-                singleLine = true,
-                isError = inputFormState.commonNameError != null,
-                errorMessage = inputFormState.commonNameError
-            )
-            HorizontalDivider(
-                thickness = 2.dp,
-                color = MaterialTheme.colorScheme.onSurface
-            )
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                text = stringResource(id = R.string.str_biz_industry),
-                textAlign = TextAlign.Start,
-                style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.onSurface,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-            HorizontalDivider(
-                thickness = 2.dp,
-                color = MaterialTheme.colorScheme.onSurface
-            )
-            Row(
-                modifier = Modifier.fillMaxWidth(1.0f),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                var expanded by remember { mutableStateOf(false) }
-                ExposedDropdownMenuBox(
-                    modifier = Modifier.fillMaxWidth(1.0f),
-                    expanded = expanded,
-                    onExpandedChange = { expanded = expanded.not() }
-                ) {
-                    TextButton(
-                        modifier = Modifier.fillMaxWidth().menuAnchor(PrimaryNotEditable, true),
-                        border = BorderStroke(1.dp, colorResource(R.color.charcoal_gray)),
-                        shape = MaterialTheme.shapes.small,
-                        enabled = !(inputFormState.industryKey.isEmpty() || inputFormState.industryKey.isBlank()),
-                        onClick = { expanded = true }
-                    ) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            StringArrayResource(BizIndustries)
-                                .findByKey(inputFormState.industryKey)?.let {
-                                    Text(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        text = it,
-                                        textAlign = TextAlign.Start,
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis
-                                    )
-                                }
-                        }
-                    }
-                    ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-                        industries.forEach{
-                            DropdownMenuItem(
-                                modifier = Modifier.fillMaxWidth(),
-                                text = {
-                                    Text(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        text = it.value
-                                    )
-                                },
-                                onClick = {
-                                    expanded = false
-                                    onIndustryValueChanged(it.key)
-                                },
-                                contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
-                            )
-                        }
-                    }
-                }
-            }
-            TextInput(
-                value = inputFormState.industryAdditionalInfo,
-                onValueChange = { onIndustryAdditionalInfoValueChanged(it) },
-                label = stringResource(R.string.str_additional_info),
-                placeholder = stringResource(R.string.str_biz_industry_additional_info),
-                singleLine = true
-            )
-            HorizontalDivider(
-                thickness = 2.dp,
-                color = MaterialTheme.colorScheme.onSurface
-            )
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                text = stringResource(id = R.string.str_biz_legal),
-                textAlign = TextAlign.Start,
-                style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.onSurface,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-            HorizontalDivider(
-                thickness = 2.dp,
-                color = MaterialTheme.colorScheme.onSurface
-            )
-            Row(
-                modifier = Modifier.fillMaxWidth(1.0f),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                var expanded by remember { mutableStateOf(false) }
-                ExposedDropdownMenuBox(
-                    modifier = Modifier.fillMaxWidth(1.0f),
-                    expanded = expanded,
-                    onExpandedChange = { expanded = expanded.not() }
-                ) {
-                    TextButton(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .menuAnchor(PrimaryNotEditable, true),
-                        border = BorderStroke(1.dp, colorResource(R.color.charcoal_gray)),
-                        shape = MaterialTheme.shapes.small,
-                        enabled = !(inputFormState.legalTypeKey.isEmpty() || inputFormState.legalTypeKey.isBlank()),
-                        onClick = { expanded = true }
-                    ) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            StringArrayResource(BizLegalType)
-                                .findByKey(inputFormState.legalTypeKey)?.let {
-                                    Text(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        text = it,
-                                        textAlign = TextAlign.Start,
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis
-                                    )
-                                }
-                        }
-                    }
-                    ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-                        legalType.forEach{
-                            DropdownMenuItem(
-                                modifier = Modifier.fillMaxWidth(),
-                                text = {
-                                    Text(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        text = it.value
-                                    )
-                                },
-                                onClick = {
-                                    expanded = false
-                                    onLegalTypeValueChanged(it.key)
-                                },
-                                contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
-                            )
-                        }
-                    }
-                }
-            }
-            TextInput(
-                value = inputFormState.legalTypeAdditionalInfo,
-                onValueChange = { onLegalTypeAdditionalInfoValueChanged(it) },
-                label = stringResource(R.string.str_additional_info),
-                placeholder = stringResource(R.string.str_biz_legal_type_additional_info),
-                singleLine = true
-            )
-            HorizontalDivider(
-                thickness = 2.dp,
-                color = MaterialTheme.colorScheme.onSurface
-            )
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                text = stringResource(R.string.str_biz_legal_docs),
-                textAlign = TextAlign.Start,
-                style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.onSurface,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-            HorizontalDivider(
-                thickness = 2.dp,
-                color = MaterialTheme.colorScheme.onSurface
-            )
-            Row(
-                modifier = Modifier.fillMaxWidth(1.0f),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                var expanded by remember { mutableStateOf(false) }
-                ExposedDropdownMenuBox(
-                    modifier = Modifier.fillMaxWidth(1.0f),
-                    expanded = expanded,
-                    onExpandedChange = { expanded = expanded.not() }
-                ) {
-                    TextButton(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .menuAnchor(PrimaryNotEditable, true),
-                        border = BorderStroke(1.dp, colorResource(R.color.charcoal_gray)),
-                        shape = MaterialTheme.shapes.small,
-                        enabled = !(inputFormState.legalDocTypeKey.isEmpty() || inputFormState.legalDocTypeKey.isBlank()),
-                        onClick = { expanded = true }
-                    ) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            StringArrayResource(BizLegalDocType)
-                                .findByKey(inputFormState.legalDocTypeKey)?.let {
-                                    Text(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        text = it,
-                                        textAlign = TextAlign.Start,
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis
-                                    )
-                                }
-                        }
-                        ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-                            legalDocType.forEach{
-                                DropdownMenuItem(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    text = {
-                                        Text(
-                                            modifier = Modifier.fillMaxWidth(),
-                                            text = it.value
-                                        )
-                                    },
-                                    onClick = {
-                                        expanded = false
-                                        onLegalDocTypeValueChanged(it.key)
-                                    },
-                                    contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
-                                )
-                            }
-                        }
-                    }
-                }
-            }
-            TextInput(
-                value = inputFormState.legalDocTypeAdditionalInfo,
-                onValueChange = { onLegalDocTypeAdditionalInfoValueChanged(it) },
-                label = stringResource(R.string.str_additional_info),
-                placeholder = stringResource(R.string.str_biz_legal_doc_type_additional_info),
-                singleLine = true
-            )
-            HorizontalDivider(
-                thickness = 2.dp,
-                color = MaterialTheme.colorScheme.onSurface
-            )
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                text = stringResource(R.string.str_biz_taxation),
-                textAlign = TextAlign.Start,
-                style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.onSurface,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-            HorizontalDivider(
-                thickness = 2.dp,
-                color = MaterialTheme.colorScheme.onSurface
-            )
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                text = stringResource(R.string.str_biz_tax_type_id),
-                textAlign = TextAlign.Start,
-                style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.onSurface,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-            Row(
-                modifier = Modifier.fillMaxWidth(1.0f),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                var expanded by remember { mutableStateOf(false) }
-                ExposedDropdownMenuBox(
-                    modifier = Modifier.fillMaxWidth(1.0f),
-                    expanded = expanded,
-                    onExpandedChange = { expanded = expanded.not() }
-                ) {
-                    TextButton(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .menuAnchor(PrimaryNotEditable, true),
-                        border = BorderStroke(1.dp, colorResource(R.color.charcoal_gray)),
-                        shape = MaterialTheme.shapes.small,
-                        enabled = !(inputFormState.taxationTypeKey.isEmpty() || inputFormState.taxationTypeKey.isBlank()),
-                        onClick = { expanded = true }
-                    ) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            StringArrayResource(BizTaxationType)
-                                .findByKey(inputFormState.taxationTypeKey)?.let {
-                                    Text(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        text = it,
-                                        textAlign = TextAlign.Start,
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis
-                                    )
-                                }
-                        }
-                        ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-                            taxationType.forEach{
-                                DropdownMenuItem(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    text = {
-                                        Text(
-                                            modifier = Modifier.fillMaxWidth(),
-                                            text = it.value
-                                        )
-                                    },
-                                    onClick = {
-                                        expanded = false
-                                        onTaxationTypeValueChanged(it.key)
-                                    },
-                                    contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
-                                )
-                            }
-                        }
-                    }
-                }
-            }
-            TextInput(
-                value = inputFormState.taxIdDocNumber,
-                onValueChange = { onTaxIdDocNumberValueChanged(it) },
-                label = stringResource(R.string.str_biz_tax_id_doc_number),
-                placeholder = stringResource(R.string.str_biz_tax_id_doc_number),
-                singleLine = true
-            )
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                text = stringResource(R.string.str_biz_tax_id_issuer_country),
-                textAlign = TextAlign.Start,
-                style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.onSurface,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-            Row(
-                modifier = Modifier.fillMaxWidth(1.0f),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                var expanded by remember { mutableStateOf(false) }
-                ExposedDropdownMenuBox(
-                    modifier = Modifier.fillMaxWidth(1.0f),
-                    expanded = expanded,
-                    onExpandedChange = { expanded = expanded.not() }
-                ) {
-                    TextButton(
-                        modifier = Modifier.fillMaxWidth().menuAnchor(PrimaryNotEditable, true),
-                        border = BorderStroke(1.dp, colorResource(R.color.charcoal_gray)),
-                        shape = MaterialTheme.shapes.small,
-                        enabled = !(inputFormState.taxIssuerCountry.displayName.isEmpty() || inputFormState.taxIssuerCountry.displayName.isBlank()),
-                        onClick = { expanded = true }
-                    ) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            inputFormState.taxIssuerCountry.displayName.let{
-                                Text(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    text = it,
-                                    textAlign = TextAlign.Start,
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis
-                                )
-                            }
-                        }
-                        ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-                            taxIssuerCountry.forEach {
-                                DropdownMenuItem(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    text = {
-                                        Text(
-                                            modifier = Modifier.fillMaxWidth(),
-                                            text = it.displayName
-                                        )
-                                    },
-                                    onClick = {
-                                        expanded = false
-                                        onTaxIssuerCountryValueChanged(it)
-                                    },
-                                    contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
-                                )
-                            }
-                        }
-                    }
-                }
-            }
-            TextInput(
-                value = inputFormState.taxRatePercentage.toInt().toString(),
-                keyboardType = KeyboardType.Number,
-                onValueChange = {
-                    val newValue = it.take(3).toIntOrNull() ?: 0
-                    onTaxRatePercentageValueChanged(newValue)
-                },
-                label = stringResource(R.string.str_biz_tax_rate_percentage),
-                placeholder = stringResource(R.string.str_biz_tax_rate_percentage),
-                singleLine = true
-            )
+            //Business Legal
             Column(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().padding(4.dp)
+                    .border(BorderStroke(1.dp, colorResource(R.color.charcoal_gray))),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = stringResource(R.string.str_biz_tax_included),
-                    textAlign = TextAlign.Start,
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+                var sectionExpanded by remember { mutableStateOf(false) }
+                ThreeRowCardItem(
+                    cardShape = RectangleShape,
+                    firstRowContent = {
+                        Surface(modifier = Modifier.size(ButtonDefaults.IconSize)) {
+                            Icon(
+                                imageVector = ImageVector.vectorResource(id = country),
+                                contentDescription = null
+                            )
+                        }
+                    },
+                    secondRowContent = { Text(stringResource(R.string.str_biz_legal)) },
+                    thirdRowContent = {
+                        Surface(
+                            onClick = { sectionExpanded = sectionExpanded.not() },
+                            modifier = Modifier.fillMaxWidth().size(ButtonDefaults.IconSize)
+                        ) {
+                            Icon(
+                                imageVector =
+                                    if (sectionExpanded) Icons.Default.KeyboardArrowDown
+                                    else Icons.AutoMirrored.Default.KeyboardArrowRight,
+                                contentDescription = null
+                            )
+                        }
+                    }
                 )
-                Row(
-                    modifier = Modifier.fillMaxWidth(1.0f),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Row(
-                        modifier = Modifier.weight(0.5f),
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically
+                if(sectionExpanded) {
+                    Column(
+                        modifier = Modifier.fillMaxWidth().padding(8.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically)
                     ) {
-                        val text by remember(inputFormState.taxIncluded) {
-                            derivedStateOf { if(inputFormState.taxIncluded) R.string.str_yes else R.string.str_no }
+                        Text(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = stringResource(id = R.string.str_biz_legal),
+                            textAlign = TextAlign.Center,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            fontWeight = FontWeight.Bold,
+                            maxLines = 1
+                        )
+                        Text(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = stringResource(id = R.string.str_biz_legal_id),
+                            textAlign = TextAlign.Start,
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                        Row(
+                            modifier = Modifier.fillMaxWidth(1.0f),
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            var expanded by remember { mutableStateOf(false) }
+                            ExposedDropdownMenuBox(
+                                modifier = Modifier.fillMaxWidth(1.0f),
+                                expanded = expanded,
+                                onExpandedChange = { expanded = expanded.not() }
+                            ) {
+                                TextButton(
+                                    modifier = Modifier.fillMaxWidth().menuAnchor(PrimaryNotEditable, true),
+                                    border = BorderStroke(1.dp, colorResource(R.color.charcoal_gray)),
+                                    shape = MaterialTheme.shapes.small,
+                                    enabled = !(inputFormState.legalTypeKey.isEmpty() || inputFormState.legalTypeKey.isBlank()),
+                                    onClick = { expanded = true }
+                                ) {
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        StringArrayResource(BizLegalType)
+                                            .findByKey(inputFormState.legalTypeKey)?.let {
+                                                Text(
+                                                    modifier = Modifier.fillMaxWidth(),
+                                                    text = it,
+                                                    textAlign = TextAlign.Start,
+                                                    maxLines = 1,
+                                                    overflow = TextOverflow.Ellipsis
+                                                )
+                                            }
+                                    }
+                                }
+                                ExposedDropdownMenu(expanded = expanded, onDismissRequest = {expanded = false}) {
+                                    legalType.forEach {
+                                        DropdownMenuItem(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            text = {
+                                                Text(
+                                                    modifier = Modifier.fillMaxWidth(),
+                                                    text = it.value
+                                                )
+                                            },
+                                            onClick = {
+                                                expanded = false
+                                                legalTypeDDItemOnClick(it.key)
+                                            },
+                                            contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
+                                        )
+                                    }
+                                }
+                            }
                         }
                         Text(
-                            text = stringResource(text),
+                            modifier = Modifier.fillMaxWidth(),
+                            text = stringResource(id = R.string.str_additional_info),
                             textAlign = TextAlign.Start,
-                            modifier = Modifier.fillMaxWidth()
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
                         )
-                    }
-                    Row(
-                        modifier = Modifier.weight(0.5f),
-                        horizontalArrangement = Arrangement.End,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        var checked by remember { mutableStateOf(inputFormState.taxIncluded) }
-                        Switch(
-                            modifier = Modifier,
-                            checked = checked,
-                            onCheckedChange = {
-                                checked = checked.not()
-                                onTaxIncludedValueChanged(checked)
+                        Row(
+                            modifier = Modifier.fillMaxWidth(1.0f),
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.Top
+                        ) {
+                            val rowParams by remember(inputFormState.legalTypeAdditionalInfoUsage) {
+                                derivedStateOf {
+                                    if(inputFormState.legalTypeAdditionalInfoUsage) Triple(0.8f, 0.2f, Arrangement.End)
+                                    else Triple(1.0f, 1.0f, Arrangement.Start)
+                                }
                             }
+                            val (leftRowWeight, rightRowWeight, rightRowArrangement) = rowParams
+                            if(inputFormState.legalTypeAdditionalInfoUsage) {
+                                Row(
+                                    modifier = Modifier.weight(leftRowWeight),
+                                    horizontalArrangement = Arrangement.Center,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    TextInput(
+                                        value = inputFormState.legalTypeAdditionalInfo,
+                                        onValueChange = { legalTypeAdditionalInfoOnValueChange(it) },
+                                        placeholder = stringResource(R.string.str_additional_info),
+                                        singleLine = true
+                                    )
+                                }
+                            }
+                            Row(
+                                modifier = Modifier.weight(rightRowWeight),
+                                horizontalArrangement = rightRowArrangement,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                var checked by remember { mutableStateOf(inputFormState.legalTypeAdditionalInfoUsage) }
+                                Switch(
+                                    modifier = Modifier,
+                                    checked = checked,
+                                    onCheckedChange = {
+                                        checked = checked.not()
+                                        legalTypeAdditionalInfoToggleOnCheckedChange(checked)
+                                    }
+                                )
+                            }
+                        }
+                        if(inputFormState.legalDocTypeUsage) {
+                            HorizontalDivider(thickness = 2.dp, color = colorResource(R.color.charcoal_gray))
+                            Text(
+                                modifier = Modifier.fillMaxWidth(),
+                                text = stringResource(id = R.string.str_biz_legal_docs),
+                                textAlign = TextAlign.Center,
+                                color = MaterialTheme.colorScheme.onSurface,
+                                fontWeight = FontWeight.Bold,
+                                maxLines = 1
+                            )
+                        }
+                        Text(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = stringResource(id = R.string.str_biz_legal_doc_type_id),
+                            textAlign = TextAlign.Start,
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
                         )
+                        Row(
+                            modifier = Modifier.fillMaxWidth(1.0f),
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.Top
+                        ) {
+                            val rowParams by remember(inputFormState.legalDocTypeUsage) {
+                                derivedStateOf {
+                                    if(inputFormState.legalDocTypeUsage) Triple(0.8f, 0.2f, Arrangement.End)
+                                    else Triple(1.0f, 1.0f, Arrangement.Start)
+                                }
+                            }
+                            val (leftRowWeight, rightRowWeight, rightRowArrangement) = rowParams
+                            if(inputFormState.legalDocTypeUsage) {
+                                Row(
+                                    modifier = Modifier.weight(leftRowWeight),
+                                    horizontalArrangement = Arrangement.Center,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    var expanded by remember { mutableStateOf(false) }
+                                    ExposedDropdownMenuBox(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        expanded = expanded,
+                                        onExpandedChange = { expanded = expanded.not() }
+                                    ) {
+                                        TextButton(
+                                            modifier = Modifier.fillMaxWidth().menuAnchor(PrimaryNotEditable, true),
+                                            border = BorderStroke(1.dp, colorResource(R.color.charcoal_gray)),
+                                            shape = MaterialTheme.shapes.small,
+                                            enabled = !(inputFormState.legalDocTypeKey.isEmpty() || inputFormState.legalDocTypeKey.isBlank()),
+                                            onClick = { expanded = true }
+                                        ) {
+                                            Row(
+                                                modifier = Modifier.fillMaxWidth(),
+                                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                                verticalAlignment = Alignment.CenterVertically
+                                            ) {
+                                                StringArrayResource(BizLegalDocType)
+                                                    .findByKey(inputFormState.legalDocTypeKey)?.let {
+                                                        Text(
+                                                            modifier = Modifier.fillMaxWidth(),
+                                                            text = it,
+                                                            textAlign = TextAlign.Start,
+                                                            maxLines = 1,
+                                                            overflow = TextOverflow.Ellipsis
+                                                        )
+                                                    }
+                                            }
+                                        }
+                                        ExposedDropdownMenu(expanded = expanded, onDismissRequest = {expanded = false}) {
+                                            legalDocType.forEach {
+                                                DropdownMenuItem(
+                                                    modifier = Modifier.fillMaxWidth(),
+                                                    text = {
+                                                        Text(
+                                                            modifier = Modifier.fillMaxWidth(),
+                                                            text = it.value
+                                                        )
+                                                    },
+                                                    onClick = {
+                                                        expanded = false
+                                                        legalDocTypeDDItemOnClick(it.key)
+                                                    },
+                                                    contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
+                                                )
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            Row(
+                                modifier = Modifier.weight(rightRowWeight),
+                                horizontalArrangement = rightRowArrangement,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                var checked by remember { mutableStateOf(inputFormState.legalDocTypeUsage) }
+                                Switch(
+                                    modifier = Modifier,
+                                    checked = checked,
+                                    onCheckedChange = {
+                                        checked = checked.not()
+                                        legalDocTypeUsageToggleOnCheckedChange(checked)
+                                    }
+                                )
+                            }
+                        }
+                        Text(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = stringResource(id = R.string.str_additional_info),
+                            textAlign = TextAlign.Start,
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                        Row(
+                            modifier = Modifier.fillMaxWidth(1.0f),
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.Top
+                        ) {
+                            val rowParams by remember(inputFormState.legalDocTypeAdditionalInfoUsage) {
+                                derivedStateOf {
+                                    if (inputFormState.legalDocTypeAdditionalInfoUsage) Triple(0.8f, 0.2f, Arrangement.End)
+                                    else Triple(1.0f, 1.0f, Arrangement.Start)
+                                }
+                            }
+                            val (leftRowWeight, rightRowWeight, rightRowArrangement) = rowParams
+                            if(inputFormState.legalDocTypeAdditionalInfoUsage) {
+                                Row(
+                                    modifier = Modifier.weight(leftRowWeight),
+                                    horizontalArrangement = Arrangement.Center,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    TextInput(
+                                        value = inputFormState.legalDocTypeAdditionalInfo,
+                                        onValueChange = { legalDocTypeAdditionalInfoValueChange(it) },
+                                        placeholder = stringResource(R.string.str_additional_info),
+                                        singleLine = true
+                                    )
+                                }
+                            }
+                            Row(
+                                modifier = Modifier.weight(rightRowWeight),
+                                horizontalArrangement = rightRowArrangement,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                var checked by remember { mutableStateOf(inputFormState.legalDocTypeAdditionalInfoUsage) }
+                                Switch(
+                                    modifier = Modifier,
+                                    checked = checked,
+                                    onCheckedChange = {
+                                        checked = checked.not()
+                                        legalDocTypeAdditionalInfoToggleOnCheckedChange(checked)
+                                    }
+                                )
+                            }
+                        }
                     }
                 }
             }
+
+            //Business Taxation
+            Column(
+                modifier = Modifier.fillMaxWidth().padding(4.dp)
+                    .border(BorderStroke(1.dp, colorResource(R.color.charcoal_gray))),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                var sectionExpanded by remember { mutableStateOf(false) }
+                ThreeRowCardItem(
+                    cardShape = RectangleShape,
+                    firstRowContent = {
+                        Surface(modifier = Modifier.size(ButtonDefaults.IconSize)) {
+                            Icon(
+                                imageVector = ImageVector.vectorResource(id = country),
+                                contentDescription = null
+                            )
+                        }
+                    },
+                    secondRowContent = { Text(stringResource(R.string.str_biz_taxation)) },
+                    thirdRowContent = {
+                        Surface(
+                            onClick = { sectionExpanded = sectionExpanded.not() },
+                            modifier = Modifier.fillMaxWidth().size(ButtonDefaults.IconSize)
+                        ) {
+                            Icon(
+                                imageVector =
+                                    if (sectionExpanded) Icons.Default.KeyboardArrowDown
+                                    else Icons.AutoMirrored.Default.KeyboardArrowRight,
+                                contentDescription = null
+                            )
+                        }
+                    }
+                )
+                if(sectionExpanded) {
+                    Column(
+                        modifier = Modifier.fillMaxWidth().padding(8.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically)
+                    ) {
+                        Text(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = stringResource(id = R.string.str_biz_taxation),
+                            textAlign = TextAlign.Center,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            fontWeight = FontWeight.Bold,
+                            maxLines = 1
+                        )
+                        Text(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = stringResource(R.string.str_biz_tax_type_id),
+                            textAlign = TextAlign.Start,
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                        Row(
+                            modifier = Modifier.fillMaxWidth(1.0f),
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            var expanded by remember { mutableStateOf(false) }
+                            ExposedDropdownMenuBox(
+                                modifier = Modifier.fillMaxWidth(1.0f),
+                                expanded = expanded,
+                                onExpandedChange = { expanded = expanded.not() }
+                            ) {
+                                TextButton(
+                                    modifier = Modifier.fillMaxWidth().menuAnchor(PrimaryNotEditable, true),
+                                    border = BorderStroke(1.dp, colorResource(R.color.charcoal_gray)),
+                                    shape = MaterialTheme.shapes.small,
+                                    enabled = !(inputFormState.taxationTypeKey.isEmpty() || inputFormState.taxationTypeKey.isBlank()),
+                                    onClick = { expanded = true }
+                                ) {
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        StringArrayResource(BizTaxationType)
+                                            .findByKey(inputFormState.taxationTypeKey)?.let {
+                                                Text(
+                                                    modifier = Modifier.fillMaxWidth(),
+                                                    text = it,
+                                                    textAlign = TextAlign.Start,
+                                                    maxLines = 1,
+                                                    overflow = TextOverflow.Ellipsis
+                                                )
+                                            }
+                                    }
+                                }
+                                ExposedDropdownMenu(expanded = expanded, onDismissRequest = {expanded = false}) {
+                                    taxationType.forEach {
+                                        DropdownMenuItem(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            text = {
+                                                Text(
+                                                    modifier = Modifier.fillMaxWidth(),
+                                                    text = it.value
+                                                )
+                                            },
+                                            onClick = {
+                                                expanded = false
+                                                taxationTypeDDItemOnClick(it.key)
+                                            },
+                                            contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                        Text(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = stringResource(R.string.str_biz_tax_id_doc_number),
+                            textAlign = TextAlign.Start,
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                        TextInput(
+                            value = inputFormState.taxIdDocNumber,
+                            onValueChange = { taxIdDocNumberOnValueChange(it) },
+                            placeholder = stringResource(R.string.str_biz_tax_id_doc_number),
+                            singleLine = true
+                        )
+                        Text(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = stringResource(id = R.string.str_biz_tax_id_issuer_country),
+                            textAlign = TextAlign.Start,
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                        Row(
+                            modifier = Modifier.fillMaxWidth(1.0f),
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            var expanded by remember { mutableStateOf(false) }
+                            ExposedDropdownMenuBox(
+                                modifier = Modifier.fillMaxWidth(1.0f),
+                                expanded = expanded,
+                                onExpandedChange = { expanded = expanded.not() }
+                            ) {
+                                TextButton(
+                                    modifier = Modifier.fillMaxWidth().menuAnchor(PrimaryNotEditable, true),
+                                    border = BorderStroke(1.dp, colorResource(R.color.charcoal_gray)),
+                                    shape = MaterialTheme.shapes.small,
+                                    enabled = !(inputFormState.taxIssuerCountry.displayName.isEmpty() || inputFormState.taxIssuerCountry.displayName.isBlank()),
+                                    onClick = { expanded = true }
+                                ) {
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        inputFormState.taxIssuerCountry.displayName.let{
+                                            Text(
+                                                modifier = Modifier.fillMaxWidth(),
+                                                text = it,
+                                                textAlign = TextAlign.Start,
+                                                maxLines = 1,
+                                                overflow = TextOverflow.Ellipsis
+                                            )
+                                        }
+                                    }
+                                }
+                                ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+                                    taxIssuerCountry.forEach {
+                                        DropdownMenuItem(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            text = {
+                                                Text(
+                                                    modifier = Modifier.fillMaxWidth(),
+                                                    text = it.displayName
+                                                )
+                                            },
+                                            onClick = {
+                                                expanded = false
+                                                taxIssuerCountryDDItemOnClick(it)
+                                            },
+                                            contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                        Row(
+                            modifier = Modifier.fillMaxWidth(1.0f),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
+                            verticalAlignment = Alignment.Top
+                        ) {
+                            Column(
+                                modifier = Modifier.weight(0.5f),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically)
+                            ) {
+                                Text(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    text = stringResource(id = R.string.str_biz_tax_rate_percentage),
+                                    textAlign = TextAlign.Start,
+                                    style = MaterialTheme.typography.labelMedium,
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                                TextInput(
+                                    value = inputFormState.taxRatePercentage.toInt().toString(),
+                                    keyboardType = KeyboardType.Number,
+                                    onValueChange = {
+                                        val newValue = it.take(3).toIntOrNull() ?: 0
+                                        taxRatePercentageOnValueChange(newValue)
+                                    },
+                                    placeholder = stringResource(R.string.str_biz_tax_rate_percentage),
+                                    singleLine = true
+                                )
+                            }
+                            Column(
+                                modifier = Modifier.weight(0.5f),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically)
+                            ) {
+                                Text(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    text = stringResource(id = R.string.str_biz_tax_included),
+                                    textAlign = TextAlign.Start,
+                                    style = MaterialTheme.typography.labelMedium,
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(1.0f),
+                                    horizontalArrangement = Arrangement.Center,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Row(
+                                        modifier = Modifier.weight(0.5f),
+                                        horizontalArrangement = Arrangement.Center,
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        val text by remember(inputFormState.taxIncluded) {
+                                            derivedStateOf { if(inputFormState.taxIncluded) R.string.str_yes else R.string.str_no }
+                                        }
+                                        Text(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            text = stringResource(text),
+                                            textAlign = TextAlign.Center,
+                                            color = MaterialTheme.colorScheme.onSurface,
+                                            fontWeight = FontWeight.Bold,
+                                            maxLines = 1
+                                        )
+                                    }
+                                    Row(
+                                        modifier = Modifier.weight(0.5f),
+                                        horizontalArrangement = Arrangement.End,
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        var checked by remember { mutableStateOf(inputFormState.taxIncluded) }
+                                        Switch(
+                                            modifier = Modifier,
+                                            checked = checked,
+                                            onCheckedChange = {
+                                                checked = checked.not()
+                                                taxIncludedToggleOnCheckedChange(it)
+                                            }
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            //Interaction Button
             Row(
                 modifier = Modifier.fillMaxWidth(1.0f),
                 horizontalArrangement = Arrangement.Center,
@@ -1283,41 +1416,52 @@ private fun PanelFormInitManualBizProfile(
 @Preview
 private fun Preview() = CustomThemes.ApplicationTheme {
     ScrInitialization(
-        onSelectLanguage = {},
-        onInitBizProfileDefaultBtnClicked = {},
-        onInitBizProfileManualBtnClicked = {},
-        onFormCancelBtnClicked = {},
-        onFormSubmitBtnClicked = {},
-        onInitBizProfileSuccess = {},
-        onInitBizProfileError = {},
-        onLegalNameValueChanged = {},
-        onCommonNameValueChanged = {},
-        onIndustryValueChanged = {},
-        onIndustryAdditionalInfoValueChanged = {},
-        onLegalTypeValueChanged = {},
-        onLegalTypeAdditionalInfoValueChanged = {},
-        onLegalDocTypeValueChanged = {},
-        onLegalDocTypeAdditionalInfoValueChanged = {},
-        onTaxationTypeValueChanged = {},
-        onTaxIssuerCountryValueChanged = {},
-        onTaxIdDocNumberValueChanged = {},
-        onTaxRatePercentageValueChanged = {},
-        onTaxIncludedValueChanged = {},
         uiState = UiState(
             dialogState = DialogState(),
             panelWelcomeMessageState = PanelWelcomeMessageState(visible = false),
-            panelInputFormState = PanelInputFormState(visible = true),
+            panelInputFormState = PanelInputFormState(
+                visible = true,
+                industryKey = "biz_industry_00001"
+            ),
             initBizProfileOperationResult = ResourceState.Idle,
             initialization = Success(
                 data = Initialization(
                     configCurrent = ConfigCurrent(),
                     languages = setOf(Language.EN, Language.ID),
-                    industries = mapOf(),
+                    industries = mapOf(
+                        Pair("biz_industry_00001", "Others"),
+                        Pair("biz_industry_00002", "Agriculture; plantations; other rural sectors")
+                    ),
                     legalType = mapOf(),
                     legalDocType = mapOf(),
                     taxation = Pair(mapOf(), listOf())
                 )
             )
-        )
+        ),
+
+        onSelectLanguage = {},
+        btnInitBizProfileDefaultOnClick = {},
+        btnInitBizProfileManualOnClick = {},
+        legalNameOnValueChange = {},
+        commonNameOnValueChange = {},
+        industryDDItemOnClick = {},
+        industryAdditionalInfoToggleOnCheckedChange = {},
+        industryAdditionalInfoOnValueChange = {},
+        legalTypeDDItemOnClick = {},
+        legalTypeAdditionalInfoToggleOnCheckedChange = {},
+        legalTypeAdditionalInfoOnValueChange = {},
+        legalDocTypeUsageToggleOnCheckedChange = {},
+        legalDocTypeDDItemOnClick = {},
+        legalDocTypeAdditionalInfoToggleOnCheckedChange = {},
+        legalDocTypeAdditionalInfoValueChange = {},
+        taxationTypeDDItemOnClick = {},
+        taxIdDocNumberOnValueChange = {},
+        taxIssuerCountryDDItemOnClick = {},
+        taxRatePercentageOnValueChange = {},
+        taxIncludedToggleOnCheckedChange = {},
+        onFormSubmitBtnClicked = {},
+        onFormCancelBtnClicked = {},
+        onInitBizProfileSuccess = {},
+        onInitBizProfileError = {}
     )
 }
