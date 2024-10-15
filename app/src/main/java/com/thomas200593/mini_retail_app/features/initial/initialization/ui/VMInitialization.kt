@@ -83,11 +83,11 @@ class VMInitialization @Inject constructor(
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     companion object {
-        private const val SSH_INDUSTRY_TYPE_KEY = "ssh_industry_type_key"
-        private const val SSH_BIZ_LEGAL_TYPE_KEY = "ssh_biz_legal_type_key"
-        private const val SSH_BIZ_LEGAL_DOC_TYPE_KEY = "ssh_biz_legal_doc_type_key"
-        private const val SSH_TAXATION_TYPE_KEY = "ssh_taxation_type_key"
-        private const val SSH_TAX_ISSUER_COUNTRY_ISO_CODE_KEY = "ssh_tax_issuer_country_iso_code_key"
+        private const val SSH_KEY_INDUSTRY_TYPE_KEY = "ssh_key_industry_type_key"
+        private const val SSH_KEY_BIZ_LEGAL_TYPE_KEY = "ssh_key_biz_legal_type_key"
+        private const val SSH_KEY_BIZ_LEGAL_DOC_TYPE_KEY = "ssh_key_biz_legal_doc_type_key"
+        private const val SSH_KEY_TAXATION_TYPE_KEY = "ssh_key_taxation_type_key"
+        private const val SSH_KEY_TAX_ISSUER_COUNTRY_ISO_CODE_KEY = "ssh_key_tax_issuer_country_iso_code_key"
     }
     sealed interface UiStateInitialization{
         data object Loading: UiStateInitialization
@@ -324,11 +324,11 @@ class VMInitialization @Inject constructor(
                 it.copy(
                     initialization = Success(data = result.data),
                     panelInputFormState = it.panelInputFormState.copy(
-                        industryKey = savedStateHandle.get<String>(SSH_INDUSTRY_TYPE_KEY) ?: repoIndustries.getIdentityKeyDefault(),
-                        legalTypeKey = savedStateHandle.get<String>(SSH_BIZ_LEGAL_TYPE_KEY) ?: repoLegalType.getIdentityKeyDefault(),
-                        legalDocTypeKey = savedStateHandle.get<String>(SSH_BIZ_LEGAL_DOC_TYPE_KEY) ?: repoLegalDocType.getIdentityKeyDefault(),
-                        taxationTypeKey = savedStateHandle.get<String>(SSH_TAXATION_TYPE_KEY) ?: repoTaxation.getIdentityKeyDefault(),
-                        taxIssuerCountry = savedStateHandle.get<String>(SSH_TAX_ISSUER_COUNTRY_ISO_CODE_KEY)
+                        industryKey = savedStateHandle.get<String>(SSH_KEY_INDUSTRY_TYPE_KEY) ?: repoIndustries.getIdentityKeyDefault(),
+                        legalTypeKey = savedStateHandle.get<String>(SSH_KEY_BIZ_LEGAL_TYPE_KEY) ?: repoLegalType.getIdentityKeyDefault(),
+                        legalDocTypeKey = savedStateHandle.get<String>(SSH_KEY_BIZ_LEGAL_DOC_TYPE_KEY) ?: repoLegalDocType.getIdentityKeyDefault(),
+                        taxationTypeKey = savedStateHandle.get<String>(SSH_KEY_TAXATION_TYPE_KEY) ?: repoTaxation.getIdentityKeyDefault(),
+                        taxIssuerCountry = savedStateHandle.get<String>(SSH_KEY_TAX_ISSUER_COUNTRY_ISO_CODE_KEY)
                             ?.let { isoCode ->
                                 Country(
                                     isoCode = isoCode,
@@ -437,7 +437,7 @@ class VMInitialization @Inject constructor(
                 )
             )
         }
-        savedStateHandle[SSH_INDUSTRY_TYPE_KEY] = industryKey
+        savedStateHandle[SSH_KEY_INDUSTRY_TYPE_KEY] = industryKey
     }
     private fun frmValChgIndustryAdditionalInfoUsage(checked: Boolean) = _uiState.update {
         it.copy(
@@ -462,7 +462,7 @@ class VMInitialization @Inject constructor(
                 )
             )
         }
-        savedStateHandle[SSH_BIZ_LEGAL_TYPE_KEY] = legalTypeKey
+        savedStateHandle[SSH_KEY_BIZ_LEGAL_TYPE_KEY] = legalTypeKey
     }
     private fun frmValChgLegalTypeAdditionalInfoUsage(checked: Boolean) = _uiState.update {
         it.copy(
@@ -491,7 +491,7 @@ class VMInitialization @Inject constructor(
                 )
             )
         }
-        savedStateHandle[SSH_BIZ_LEGAL_DOC_TYPE_KEY] = updatedLegalDocTypeKey
+        savedStateHandle[SSH_KEY_BIZ_LEGAL_DOC_TYPE_KEY] = updatedLegalDocTypeKey
     }
     private fun frmValChgLegalDocType(legalDocTypeKey: String) {
         _uiState.update {
@@ -501,7 +501,7 @@ class VMInitialization @Inject constructor(
                 )
             )
         }
-        savedStateHandle[SSH_BIZ_LEGAL_DOC_TYPE_KEY] = legalDocTypeKey
+        savedStateHandle[SSH_KEY_BIZ_LEGAL_DOC_TYPE_KEY] = legalDocTypeKey
     }
     private fun frmValChgLegalDocTypeAdditionalInfoUsage(checked: Boolean) = _uiState.update {
         it.copy(
@@ -526,7 +526,7 @@ class VMInitialization @Inject constructor(
                 )
             )
         }
-        savedStateHandle[SSH_TAXATION_TYPE_KEY] = taxationTypeKey
+        savedStateHandle[SSH_KEY_TAXATION_TYPE_KEY] = taxationTypeKey
     }
     private fun frmValChgTaxIdDocNumber(taxIdDocNumber: String) = _uiState.update {
         it.copy(
@@ -543,7 +543,7 @@ class VMInitialization @Inject constructor(
                 )
             )
         }
-        savedStateHandle[SSH_TAX_ISSUER_COUNTRY_ISO_CODE_KEY] = taxIssuerCountry.isoCode
+        savedStateHandle[SSH_KEY_TAX_ISSUER_COUNTRY_ISO_CODE_KEY] = taxIssuerCountry.isoCode
     }
     private fun frmValChgTaxRatePercentage(taxRatePercentage: Int) = _uiState.update {
         it.copy(

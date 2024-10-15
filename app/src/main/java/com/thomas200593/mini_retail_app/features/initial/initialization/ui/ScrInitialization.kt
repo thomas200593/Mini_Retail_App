@@ -138,8 +138,8 @@ fun ScrInitialization(
             vm.onEvent(BtnToggleLegalTypeAdditionalInfoEvents.OnCheckedChange(it))
         },
         legalTypeAdditionalInfoOnValueChange = { vm.onEvent(LegalTypeAdditionalInfoEvents.ValueChanged(it)) },
-        legalDocTypeUsageToggleOnCheckedChange = { checked ->
-            vm.onEvent(BtnToggleLegalDocTypeUsageEvents.OnCheckedChange(checked))
+        legalDocTypeUsageToggleOnCheckedChange = {
+            vm.onEvent(BtnToggleLegalDocTypeUsageEvents.OnCheckedChange(it))
         },
         legalDocTypeDDItemOnClick = { vm.onEvent(DDLegalDocType.OnSelect(it)) },
         legalDocTypeAdditionalInfoToggleOnCheckedChange = {
@@ -357,7 +357,6 @@ private fun ScreenContent(
                 }
             }
             if(uiState.panelInputFormState.visible){
-                //Form Interaction Button
                 FormButton(
                     inputFormState = uiState.panelInputFormState,
                     onFormSubmitBtnClicked = onFormSubmitBtnClicked,
@@ -365,43 +364,6 @@ private fun ScreenContent(
                 )
             }
         }
-    }
-}
-
-@Composable
-fun FormButton(
-    inputFormState: PanelInputFormState,
-    onFormSubmitBtnClicked: () -> Unit,
-    onFormCancelBtnClicked: () -> Unit
-) {
-    //Interaction Button
-    Row(
-        modifier = Modifier.fillMaxWidth(1.0f).height(56.dp),
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        val btnSubmitWeight by remember(inputFormState.fldSubmitBtnEnabled)
-        { derivedStateOf { if (inputFormState.fldSubmitBtnEnabled) 0.5f else 1.0f } }
-        val btnCancelWeight by remember(inputFormState.fldSubmitBtnEnabled)
-        { derivedStateOf { if (inputFormState.fldSubmitBtnEnabled) 0.5f else 1.0f } }
-        val showSubmitButton by remember(inputFormState.fldSubmitBtnEnabled)
-        { derivedStateOf { inputFormState.fldSubmitBtnEnabled } }
-        if (showSubmitButton) {
-            AppIconButton(
-                modifier = Modifier.weight(btnSubmitWeight),
-                onClick = onFormSubmitBtnClicked,
-                icon = ImageVector.vectorResource(id = CustomIcons.Emotion.neutral),
-                text = stringResource(id = R.string.str_save)
-            )
-        }
-        AppIconButton(
-            modifier = Modifier.weight(btnCancelWeight),
-            onClick = onFormCancelBtnClicked,
-            icon = ImageVector.vectorResource(id = CustomIcons.Emotion.neutral),
-            text = stringResource(id = R.string.str_cancel),
-            containerColor = MaterialTheme.colorScheme.errorContainer,
-            contentColor = MaterialTheme.colorScheme.onErrorContainer
-        )
     }
 }
 
@@ -572,26 +534,22 @@ private fun PanelFormInitManualBizProfile(
     taxRatePercentageOnValueChange: (Int) -> Unit,
     taxIncludedToggleOnCheckedChange: (Boolean) -> Unit
 ) {
-    //Top Level Form Layout
     Surface(
         modifier = Modifier.padding(8.dp),
         shape = MaterialTheme.shapes.medium,
         border = BorderStroke(1.dp, colorResource(R.color.charcoal_gray)),
         shadowElevation = 5.dp
     ) {
-        //Top Level Form Container
         Column(
             modifier = Modifier.fillMaxWidth().padding(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically)
         ) {
-            //Title Section
             Column(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterVertically)
             ) {
-                //Title
                 Text(
                     modifier = Modifier.fillMaxWidth(),
                     text = stringResource(id = R.string.str_business_profile),
@@ -601,7 +559,6 @@ private fun PanelFormInitManualBizProfile(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
-                //Title Desc
                 Text(
                     modifier = Modifier.fillMaxWidth(),
                     text = stringResource(id = R.string.str_business_profile_desc),
@@ -612,8 +569,6 @@ private fun PanelFormInitManualBizProfile(
                     overflow = TextOverflow.Ellipsis
                 )
             }
-
-            //Biz Identity
             Column(
                 modifier = Modifier.fillMaxWidth().padding(4.dp)
                     .border(BorderStroke(1.dp, colorResource(R.color.charcoal_gray))),
@@ -727,7 +682,10 @@ private fun PanelFormInitManualBizProfile(
                                     modifier = Modifier.fillMaxWidth().menuAnchor(PrimaryNotEditable, true),
                                     border = BorderStroke(1.dp, colorResource(R.color.charcoal_gray)),
                                     shape = MaterialTheme.shapes.small,
-                                    enabled = !(inputFormState.industryKey.isEmpty() || inputFormState.industryKey.isBlank()),
+                                    enabled = !(
+                                        inputFormState.industryKey.isEmpty() ||
+                                        inputFormState.industryKey.isBlank()
+                                    ),
                                     onClick = { expanded = true }
                                 ) {
                                     Row(
@@ -747,7 +705,7 @@ private fun PanelFormInitManualBizProfile(
                                             }
                                     }
                                 }
-                                ExposedDropdownMenu(expanded = expanded, onDismissRequest = {expanded = false}) {
+                                ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
                                     industries.forEach {
                                         DropdownMenuItem(
                                             modifier = Modifier.fillMaxWidth(),
@@ -821,8 +779,6 @@ private fun PanelFormInitManualBizProfile(
                     }
                 }
             }
-
-            //Business Legal
             Column(
                 modifier = Modifier.fillMaxWidth().padding(4.dp)
                     .border(BorderStroke(1.dp, colorResource(R.color.charcoal_gray))),
@@ -893,7 +849,10 @@ private fun PanelFormInitManualBizProfile(
                                     modifier = Modifier.fillMaxWidth().menuAnchor(PrimaryNotEditable, true),
                                     border = BorderStroke(1.dp, colorResource(R.color.charcoal_gray)),
                                     shape = MaterialTheme.shapes.small,
-                                    enabled = !(inputFormState.legalTypeKey.isEmpty() || inputFormState.legalTypeKey.isBlank()),
+                                    enabled = !(
+                                        inputFormState.legalTypeKey.isEmpty() ||
+                                        inputFormState.legalTypeKey.isBlank()
+                                    ),
                                     onClick = { expanded = true }
                                 ) {
                                     Row(
@@ -913,7 +872,7 @@ private fun PanelFormInitManualBizProfile(
                                             }
                                     }
                                 }
-                                ExposedDropdownMenu(expanded = expanded, onDismissRequest = {expanded = false}) {
+                                ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
                                     legalType.forEach {
                                         DropdownMenuItem(
                                             modifier = Modifier.fillMaxWidth(),
@@ -1032,7 +991,10 @@ private fun PanelFormInitManualBizProfile(
                                             modifier = Modifier.fillMaxWidth().menuAnchor(PrimaryNotEditable, true),
                                             border = BorderStroke(1.dp, colorResource(R.color.charcoal_gray)),
                                             shape = MaterialTheme.shapes.small,
-                                            enabled = !(inputFormState.legalDocTypeKey.isEmpty() || inputFormState.legalDocTypeKey.isBlank()),
+                                            enabled = !(
+                                                inputFormState.legalDocTypeKey.isEmpty() ||
+                                                inputFormState.legalDocTypeKey.isBlank()
+                                            ),
                                             onClick = { expanded = true }
                                         ) {
                                             Row(
@@ -1052,7 +1014,7 @@ private fun PanelFormInitManualBizProfile(
                                                     }
                                             }
                                         }
-                                        ExposedDropdownMenu(expanded = expanded, onDismissRequest = {expanded = false}) {
+                                        ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
                                             legalDocType.forEach {
                                                 DropdownMenuItem(
                                                     modifier = Modifier.fillMaxWidth(),
@@ -1143,8 +1105,6 @@ private fun PanelFormInitManualBizProfile(
                     }
                 }
             }
-
-            //Business Taxation
             Column(
                 modifier = Modifier.fillMaxWidth().padding(4.dp)
                     .border(BorderStroke(1.dp, colorResource(R.color.charcoal_gray))),
@@ -1215,7 +1175,10 @@ private fun PanelFormInitManualBizProfile(
                                     modifier = Modifier.fillMaxWidth().menuAnchor(PrimaryNotEditable, true),
                                     border = BorderStroke(1.dp, colorResource(R.color.charcoal_gray)),
                                     shape = MaterialTheme.shapes.small,
-                                    enabled = !(inputFormState.taxationTypeKey.isEmpty() || inputFormState.taxationTypeKey.isBlank()),
+                                    enabled = !(
+                                        inputFormState.taxationTypeKey.isEmpty() ||
+                                        inputFormState.taxationTypeKey.isBlank()
+                                    ),
                                     onClick = { expanded = true }
                                 ) {
                                     Row(
@@ -1235,7 +1198,7 @@ private fun PanelFormInitManualBizProfile(
                                             }
                                     }
                                 }
-                                ExposedDropdownMenu(expanded = expanded, onDismissRequest = {expanded = false}) {
+                                ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
                                     taxationType.forEach {
                                         DropdownMenuItem(
                                             modifier = Modifier.fillMaxWidth(),
@@ -1294,7 +1257,10 @@ private fun PanelFormInitManualBizProfile(
                                     modifier = Modifier.fillMaxWidth().menuAnchor(PrimaryNotEditable, true),
                                     border = BorderStroke(1.dp, colorResource(R.color.charcoal_gray)),
                                     shape = MaterialTheme.shapes.small,
-                                    enabled = !(inputFormState.taxIssuerCountry.displayName.isEmpty() || inputFormState.taxIssuerCountry.displayName.isBlank()),
+                                    enabled = !(
+                                        inputFormState.taxIssuerCountry.displayName.isEmpty() ||
+                                        inputFormState.taxIssuerCountry.displayName.isBlank()
+                                    ),
                                     onClick = { expanded = true }
                                 ) {
                                     Row(
@@ -1425,6 +1391,42 @@ private fun PanelFormInitManualBizProfile(
 }
 
 @Composable
+private fun FormButton(
+    inputFormState: PanelInputFormState,
+    onFormSubmitBtnClicked: () -> Unit,
+    onFormCancelBtnClicked: () -> Unit
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(1.0f).height(56.dp),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        val btnSubmitWeight by remember(inputFormState.fldSubmitBtnEnabled)
+            { derivedStateOf { if (inputFormState.fldSubmitBtnEnabled) 0.5f else 1.0f } }
+        val btnCancelWeight by remember(inputFormState.fldSubmitBtnEnabled)
+            { derivedStateOf { if (inputFormState.fldSubmitBtnEnabled) 0.5f else 1.0f } }
+        val showSubmitButton by remember(inputFormState.fldSubmitBtnEnabled)
+            { derivedStateOf { inputFormState.fldSubmitBtnEnabled } }
+        if (showSubmitButton) {
+            AppIconButton(
+                modifier = Modifier.weight(btnSubmitWeight),
+                onClick = onFormSubmitBtnClicked,
+                icon = ImageVector.vectorResource(id = CustomIcons.Emotion.neutral),
+                text = stringResource(id = R.string.str_save)
+            )
+        }
+        AppIconButton(
+            modifier = Modifier.weight(btnCancelWeight),
+            onClick = onFormCancelBtnClicked,
+            icon = ImageVector.vectorResource(id = CustomIcons.Emotion.neutral),
+            text = stringResource(id = R.string.str_cancel),
+            containerColor = MaterialTheme.colorScheme.errorContainer,
+            contentColor = MaterialTheme.colorScheme.onErrorContainer
+        )
+    }
+}
+
+@Composable
 @Preview
 private fun Preview() = CustomThemes.ApplicationTheme {
     ScrInitialization(
@@ -1450,7 +1452,6 @@ private fun Preview() = CustomThemes.ApplicationTheme {
                 )
             )
         ),
-
         onSelectLanguage = {},
         btnInitBizProfileDefaultOnClick = {},
         btnInitBizProfileManualOnClick = {},
