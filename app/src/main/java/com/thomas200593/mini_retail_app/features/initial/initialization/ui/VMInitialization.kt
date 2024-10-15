@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.core.os.LocaleListCompat
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.thomas200593.mini_retail_app.R
@@ -78,8 +79,16 @@ class VMInitialization @Inject constructor(
     private val repoLegalType: RepoLegalType,
     private val repoLegalDocType: RepoLegalDocType,
     private val repoTaxation: RepoTaxation,
-    @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
+    @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
+    private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
+    companion object {
+        private const val SSH_INDUSTRY_TYPE_KEY = "ssh_industry_type_key"
+        private const val SSH_BIZ_LEGAL_TYPE_KEY = "ssh_biz_legal_type_key"
+        private const val SSH_BIZ_LEGAL_DOC_TYPE_KEY = "ssh_biz_legal_doc_type_key"
+        private const val SSH_TAXATION_TYPE_KEY = "ssh_taxation_type_key"
+        private const val SSH_TAX_ISSUER_COUNTRY_ISO_CODE_KEY = "ssh_tax_issuer_country_iso_code_key"
+    }
     sealed interface UiStateInitialization{
         data object Loading: UiStateInitialization
         data class Success(val data: Initialization): UiStateInitialization
@@ -111,7 +120,7 @@ class VMInitialization @Inject constructor(
         val legalTypeAdditionalInfo: String = String(),
         val legalDocTypeUsage: Boolean = false,
         val legalDocTypeKey: String = String(),
-        val legalDocTypeAdditionalInfoUsage: Boolean = false, //
+        val legalDocTypeAdditionalInfoUsage: Boolean = false,
         val legalDocTypeAdditionalInfo: String = String(),
         val taxationTypeKey: String = String(),
         val taxIdDocNumber: String = String(),
@@ -315,11 +324,18 @@ class VMInitialization @Inject constructor(
                 it.copy(
                     initialization = Success(data = result.data),
                     panelInputFormState = it.panelInputFormState.copy(
-                        industryKey = repoIndustries.getIdentityKeyDefault(),
-                        legalTypeKey = repoLegalType.getIdentityKeyDefault(),
-                        legalDocTypeKey = repoLegalDocType.getIdentityKeyDefault(),
-                        taxationTypeKey = repoTaxation.getIdentityKeyDefault(),
-                        taxIssuerCountry = HlpCountry.COUNTRY_DEFAULT
+                        industryKey = savedStateHandle.get<String>(SSH_INDUSTRY_TYPE_KEY) ?: repoIndustries.getIdentityKeyDefault(),
+                        legalTypeKey = savedStateHandle.get<String>(SSH_BIZ_LEGAL_TYPE_KEY) ?: repoLegalType.getIdentityKeyDefault(),
+                        legalDocTypeKey = savedStateHandle.get<String>(SSH_BIZ_LEGAL_DOC_TYPE_KEY) ?: repoLegalDocType.getIdentityKeyDefault(),
+                        taxationTypeKey = savedStateHandle.get<String>(SSH_TAXATION_TYPE_KEY) ?: repoTaxation.getIdentityKeyDefault(),
+                        taxIssuerCountry = savedStateHandle.get<String>(SSH_TAX_ISSUER_COUNTRY_ISO_CODE_KEY)
+                            ?.let { isoCode ->
+                                Country(
+                                    isoCode = isoCode,
+                                    iso03Country = Locale("", isoCode).isO3Country,
+                                    displayName = Locale("", isoCode).displayName
+                                )
+                            } ?: HlpCountry.COUNTRY_DEFAULT
                     )
                 )
             }
@@ -413,12 +429,15 @@ class VMInitialization @Inject constructor(
         }
         return result.isSuccess
     }
-    private fun frmValChgIndustry(industryKey: String) = _uiState.update {
-        it.copy(
-            panelInputFormState = it.panelInputFormState.copy(
-                industryKey = industryKey
+    private fun frmValChgIndustry(industryKey: String) {
+        _uiState.update {
+            it.copy(
+                panelInputFormState = it.panelInputFormState.copy(
+                    industryKey = industryKey
+                )
             )
-        )
+        }
+        savedStateHandle[SSH_INDUSTRY_TYPE_KEY] = industryKey
     }
     private fun frmValChgIndustryAdditionalInfoUsage(checked: Boolean) = _uiState.update {
         it.copy(
@@ -435,12 +454,15 @@ class VMInitialization @Inject constructor(
             )
         )
     }
-    private fun frmValChgLegalType(legalTypeKey: String) = _uiState.update {
-        it.copy(
-            panelInputFormState = it.panelInputFormState.copy(
-                legalTypeKey = legalTypeKey
+    private fun frmValChgLegalType(legalTypeKey: String) {
+        _uiState.update {
+            it.copy(
+                panelInputFormState = it.panelInputFormState.copy(
+                    legalTypeKey = legalTypeKey
+                )
             )
-        )
+        }
+        savedStateHandle[SSH_BIZ_LEGAL_TYPE_KEY] = legalTypeKey
     }
     private fun frmValChgLegalTypeAdditionalInfoUsage(checked: Boolean) = _uiState.update {
         it.copy(
@@ -457,20 +479,29 @@ class VMInitialization @Inject constructor(
             )
         )
     }
-    private fun frmValChgLegalDocTypeUsage(checked: Boolean) = _uiState.update {
-        it.copy(
-            panelInputFormState = it.panelInputFormState.copy(
-                legalDocTypeUsage = checked,
-                legalDocTypeKey = if(!checked) repoLegalDocType.getIdentityKeyDefault() else it.panelInputFormState.legalDocTypeKey
+    private fun frmValChgLegalDocTypeUsage(checked: Boolean) {
+        val updatedLegalDocTypeKey =
+            if (!checked) repoLegalDocType.getIdentityKeyDefault()
+            else uiState.value.panelInputFormState.legalDocTypeKey
+        _uiState.update {
+            it.copy(
+                panelInputFormState = it.panelInputFormState.copy(
+                    legalDocTypeUsage = checked,
+                    legalDocTypeKey = updatedLegalDocTypeKey
+                )
             )
-        )
+        }
+        savedStateHandle[SSH_BIZ_LEGAL_DOC_TYPE_KEY] = updatedLegalDocTypeKey
     }
-    private fun frmValChgLegalDocType(legalDocTypeKey: String) = _uiState.update {
-        it.copy(
-            panelInputFormState = it.panelInputFormState.copy(
-                legalDocTypeKey = legalDocTypeKey
+    private fun frmValChgLegalDocType(legalDocTypeKey: String) {
+        _uiState.update {
+            it.copy(
+                panelInputFormState = it.panelInputFormState.copy(
+                    legalDocTypeKey = legalDocTypeKey
+                )
             )
-        )
+        }
+        savedStateHandle[SSH_BIZ_LEGAL_DOC_TYPE_KEY] = legalDocTypeKey
     }
     private fun frmValChgLegalDocTypeAdditionalInfoUsage(checked: Boolean) = _uiState.update {
         it.copy(
@@ -487,12 +518,15 @@ class VMInitialization @Inject constructor(
             )
         )
     }
-    private fun frmValChgTaxationType(taxationTypeKey: String) = _uiState.update {
-        it.copy(
-            panelInputFormState = it.panelInputFormState.copy(
-                taxationTypeKey = taxationTypeKey
+    private fun frmValChgTaxationType(taxationTypeKey: String) {
+        _uiState.update {
+            it.copy(
+                panelInputFormState = it.panelInputFormState.copy(
+                    taxationTypeKey = taxationTypeKey
+                )
             )
-        )
+        }
+        savedStateHandle[SSH_TAXATION_TYPE_KEY] = taxationTypeKey
     }
     private fun frmValChgTaxIdDocNumber(taxIdDocNumber: String) = _uiState.update {
         it.copy(
@@ -501,12 +535,15 @@ class VMInitialization @Inject constructor(
             )
         )
     }
-    private fun frmValChgTaxIssuerCountry(taxIssuerCountry: Country) = _uiState.update {
-        it.copy(
-            panelInputFormState = it.panelInputFormState.copy(
-                taxIssuerCountry = taxIssuerCountry
+    private fun frmValChgTaxIssuerCountry(taxIssuerCountry: Country) {
+        _uiState.update {
+            it.copy(
+                panelInputFormState = it.panelInputFormState.copy(
+                    taxIssuerCountry = taxIssuerCountry
+                )
             )
-        )
+        }
+        savedStateHandle[SSH_TAX_ISSUER_COUNTRY_ISO_CODE_KEY] = taxIssuerCountry.isoCode
     }
     private fun frmValChgTaxRatePercentage(taxRatePercentage: Int) = _uiState.update {
         it.copy(

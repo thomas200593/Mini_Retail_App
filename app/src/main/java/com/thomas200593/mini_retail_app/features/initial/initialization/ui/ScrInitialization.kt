@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -307,7 +308,7 @@ private fun ScreenContent(
 ) {
     Surface {
         Column(
-            modifier = Modifier.fillMaxSize().padding(8.dp).imePadding(),
+            modifier = Modifier.fillMaxSize().imePadding(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Top)
         ) {
@@ -317,7 +318,7 @@ private fun ScreenContent(
                 onSelectLanguage = onSelectLanguage
             )
             Column(
-                modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
+                modifier = Modifier.fillMaxWidth().weight(1.0f).verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Top)
             ) {
@@ -351,13 +352,56 @@ private fun ScreenContent(
                         taxIdDocNumberOnValueChange = taxIdDocNumberOnValueChange,
                         taxIssuerCountryDDItemOnClick = taxIssuerCountryDDItemOnClick,
                         taxRatePercentageOnValueChange = taxRatePercentageOnValueChange,
-                        taxIncludedToggleOnCheckedChange = taxIncludedToggleOnCheckedChange,
-                        onFormSubmitBtnClicked = onFormSubmitBtnClicked,
-                        onFormCancelBtnClicked = onFormCancelBtnClicked
+                        taxIncludedToggleOnCheckedChange = taxIncludedToggleOnCheckedChange
                     )
                 }
             }
+            if(uiState.panelInputFormState.visible){
+                //Form Interaction Button
+                FormButton(
+                    inputFormState = uiState.panelInputFormState,
+                    onFormSubmitBtnClicked = onFormSubmitBtnClicked,
+                    onFormCancelBtnClicked = onFormCancelBtnClicked
+                )
+            }
         }
+    }
+}
+
+@Composable
+fun FormButton(
+    inputFormState: PanelInputFormState,
+    onFormSubmitBtnClicked: () -> Unit,
+    onFormCancelBtnClicked: () -> Unit
+) {
+    //Interaction Button
+    Row(
+        modifier = Modifier.fillMaxWidth(1.0f).height(56.dp),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        val btnSubmitWeight by remember(inputFormState.fldSubmitBtnEnabled)
+        { derivedStateOf { if (inputFormState.fldSubmitBtnEnabled) 0.5f else 1.0f } }
+        val btnCancelWeight by remember(inputFormState.fldSubmitBtnEnabled)
+        { derivedStateOf { if (inputFormState.fldSubmitBtnEnabled) 0.5f else 1.0f } }
+        val showSubmitButton by remember(inputFormState.fldSubmitBtnEnabled)
+        { derivedStateOf { inputFormState.fldSubmitBtnEnabled } }
+        if (showSubmitButton) {
+            AppIconButton(
+                modifier = Modifier.weight(btnSubmitWeight),
+                onClick = onFormSubmitBtnClicked,
+                icon = ImageVector.vectorResource(id = CustomIcons.Emotion.neutral),
+                text = stringResource(id = R.string.str_save)
+            )
+        }
+        AppIconButton(
+            modifier = Modifier.weight(btnCancelWeight),
+            onClick = onFormCancelBtnClicked,
+            icon = ImageVector.vectorResource(id = CustomIcons.Emotion.neutral),
+            text = stringResource(id = R.string.str_cancel),
+            containerColor = MaterialTheme.colorScheme.errorContainer,
+            contentColor = MaterialTheme.colorScheme.onErrorContainer
+        )
     }
 }
 
@@ -369,7 +413,7 @@ private fun LanguageSection(
     onSelectLanguage: (Language) -> Unit
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth(1.0f),
+        modifier = Modifier.fillMaxWidth(1.0f).padding(8.dp),
         horizontalArrangement = Arrangement.End,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -439,7 +483,7 @@ private fun PanelWelcomeMessage(
     btnInitBizProfileDefaultOnClick: () -> Unit
 ) {
     Column(
-        modifier = Modifier,
+        modifier = Modifier.padding(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically)
     ) {
@@ -526,9 +570,7 @@ private fun PanelFormInitManualBizProfile(
     taxIdDocNumberOnValueChange: (String) -> Unit,
     taxIssuerCountryDDItemOnClick: (Country) -> Unit,
     taxRatePercentageOnValueChange: (Int) -> Unit,
-    taxIncludedToggleOnCheckedChange: (Boolean) -> Unit,
-    onFormSubmitBtnClicked: () -> Unit,
-    onFormCancelBtnClicked: () -> Unit
+    taxIncludedToggleOnCheckedChange: (Boolean) -> Unit
 ) {
     //Top Level Form Layout
     Surface(
@@ -1377,36 +1419,6 @@ private fun PanelFormInitManualBizProfile(
                         }
                     }
                 }
-            }
-
-            //Interaction Button
-            Row(
-                modifier = Modifier.fillMaxWidth(1.0f),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                val btnSubmitWeight by remember(inputFormState.fldSubmitBtnEnabled)
-                { derivedStateOf { if (inputFormState.fldSubmitBtnEnabled) 0.5f else 1.0f } }
-                val btnCancelWeight by remember(inputFormState.fldSubmitBtnEnabled)
-                { derivedStateOf { if (inputFormState.fldSubmitBtnEnabled) 0.5f else 1.0f } }
-                val showSubmitButton by remember(inputFormState.fldSubmitBtnEnabled)
-                { derivedStateOf { inputFormState.fldSubmitBtnEnabled } }
-                if (showSubmitButton) {
-                    AppIconButton(
-                        modifier = Modifier.weight(btnSubmitWeight),
-                        onClick = onFormSubmitBtnClicked,
-                        icon = ImageVector.vectorResource(id = CustomIcons.Emotion.neutral),
-                        text = stringResource(id = R.string.str_save)
-                    )
-                }
-                AppIconButton(
-                    modifier = Modifier.weight(btnCancelWeight),
-                    onClick = onFormCancelBtnClicked,
-                    icon = ImageVector.vectorResource(id = CustomIcons.Emotion.neutral),
-                    text = stringResource(id = R.string.str_cancel),
-                    containerColor = MaterialTheme.colorScheme.errorContainer,
-                    contentColor = MaterialTheme.colorScheme.onErrorContainer
-                )
             }
         }
     }
