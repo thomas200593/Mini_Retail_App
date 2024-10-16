@@ -123,36 +123,36 @@ fun ScrInitialization(
 
     ScrInitialization(
         uiState = uiState,
-        onSelectLanguage = { vm.onEvent(DDLanguage.OnSelect(it)) },
-        btnInitBizProfileDefaultOnClick = { vm.onEvent(BtnInitDefaultBizProfileEvents.OnClick) },
-        btnInitBizProfileManualOnClick = { vm.onEvent(BtnInitManualBizProfileEvents.OnClick) },
-        legalNameOnValueChange = { vm.onEvent(LegalNameEvents.ValueChanged(it)) },
-        commonNameOnValueChange = { vm.onEvent(CommonNameEvents.ValueChanged(it)) },
-        industryDDItemOnClick = { vm.onEvent(DDIndustry.OnSelect(it)) },
-        industryAdditionalInfoToggleOnCheckedChange = {
+        ddLanguageOnSelect = { vm.onEvent(DDLanguage.OnSelect(it)) },
+        btnInitDefaultBizProfileOnClick = { vm.onEvent(BtnInitDefaultBizProfileEvents.OnClick) },
+        btnInitManualBizProfileOnClick = { vm.onEvent(BtnInitManualBizProfileEvents.OnClick) },
+        legalNameOnValueChange = { vm.onEvent(LegalNameEvents.ValueChange(it)) },
+        commonNameOnValueChange = { vm.onEvent(CommonNameEvents.ValueChange(it)) },
+        ddIndustryOnSelect = { vm.onEvent(DDIndustry.OnSelect(it)) },
+        btnToggleIndustryAdditionalInfoOnCheckedChange = {
             vm.onEvent(BtnToggleIndustryAdditionalInfoEvents.OnCheckedChange(it))
         },
-        industryAdditionalInfoOnValueChange = { vm.onEvent(IndustryAdditionalInfoEvents.ValueChanged(it)) },
-        legalTypeDDItemOnClick = { vm.onEvent(DDLegalType.OnSelect(it)) },
-        legalTypeAdditionalInfoToggleOnCheckedChange = {
+        industryAdditionalInfoOnValueChange = { vm.onEvent(IndustryAdditionalInfoEvents.ValueChange(it)) },
+        ddLegalTypeOnSelect = { vm.onEvent(DDLegalType.OnSelect(it)) },
+        btnToggleLegalTypeAdditionalInfoOnCheckedChange = {
             vm.onEvent(BtnToggleLegalTypeAdditionalInfoEvents.OnCheckedChange(it))
         },
-        legalTypeAdditionalInfoOnValueChange = { vm.onEvent(LegalTypeAdditionalInfoEvents.ValueChanged(it)) },
-        legalDocTypeUsageToggleOnCheckedChange = {
+        legalTypeAdditionalInfoOnValueChange = { vm.onEvent(LegalTypeAdditionalInfoEvents.ValueChange(it)) },
+        btnToggleLegalDocTypeUsageOnCheckedChange = {
             vm.onEvent(BtnToggleLegalDocTypeUsageEvents.OnCheckedChange(it))
         },
-        legalDocTypeDDItemOnClick = { vm.onEvent(DDLegalDocType.OnSelect(it)) },
-        legalDocTypeAdditionalInfoToggleOnCheckedChange = {
+        ddLegalDocTypeOnSelect = { vm.onEvent(DDLegalDocType.OnSelect(it)) },
+        btnToggleLegalDocTypeAdditionalInfoOnCheckedChange = {
             vm.onEvent(BtnToggleLegalDocTypeAdditionalInfoEvents.OnCheckedChange(it))
         },
-        legalDocTypeAdditionalInfoValueChange = { vm.onEvent(LegalDocTypeAdditionalInfoEvents.ValueChanged(it)) },
-        taxationTypeDDItemOnClick = { vm.onEvent(DDTaxationType.OnSelect(it)) },
-        taxIdDocNumberOnValueChange = { vm.onEvent(TaxIdDocNumberEvents.ValueChanged(it)) },
-        taxIssuerCountryDDItemOnClick = { vm.onEvent(DDTaxIssuerCountry.OnSelect(it)) },
-        taxRatePercentageOnValueChange = { vm.onEvent(TaxRatePercentageEvents.ValueChanged(it)) },
-        taxIncludedToggleOnCheckedChange = { vm.onEvent(BtnToggleTaxInclusionEvents.OnClick(it)) },
-        onFormSubmitBtnClicked = { vm.onEvent(BtnSubmitEvents.OnClick) },
-        onFormCancelBtnClicked = { vm.onEvent(BtnCancelEvents.OnClick) },
+        legalDocTypeAdditionalInfoValueChange = { vm.onEvent(LegalDocTypeAdditionalInfoEvents.ValueChange(it)) },
+        ddTaxationTypeOnSelect = { vm.onEvent(DDTaxationType.OnSelect(it)) },
+        taxIdDocNumberOnValueChange = { vm.onEvent(TaxIdDocNumberEvents.ValueChange(it)) },
+        ddTaxIssuerCountryOnSelect = { vm.onEvent(DDTaxIssuerCountry.OnSelect(it)) },
+        taxRatePercentageOnValueChange = { vm.onEvent(TaxRatePercentageEvents.ValueChange(it)) },
+        btnToggleTaxIncludedOnCheckedChange = { vm.onEvent(BtnToggleTaxInclusionEvents.OnCheckedChange(it)) },
+        btnSubmitOnClick = { vm.onEvent(BtnSubmitEvents.OnClick) },
+        btnCancelOnClick = { vm.onEvent(BtnCancelEvents.OnClick) },
         onInitBizProfileSuccess = {
             vm.onEvent(DlgResSuccess.OnConfirm)
                 .also { coroutineScope.launch { stateApp.navController.navToInitial() } }
@@ -167,28 +167,28 @@ fun ScrInitialization(
 @Composable
 private fun ScrInitialization(
     uiState: UiState,
-    onSelectLanguage: (Language) -> Unit,
-    btnInitBizProfileDefaultOnClick: () -> Unit,
-    btnInitBizProfileManualOnClick: () -> Unit,
+    ddLanguageOnSelect: (Language) -> Unit,
+    btnInitDefaultBizProfileOnClick: () -> Unit,
+    btnInitManualBizProfileOnClick: () -> Unit,
     legalNameOnValueChange: (String) -> Unit,
     commonNameOnValueChange: (String) -> Unit,
-    industryDDItemOnClick: (String) -> Unit,
-    industryAdditionalInfoToggleOnCheckedChange: (Boolean) -> Unit,
+    ddIndustryOnSelect: (String) -> Unit,
+    btnToggleIndustryAdditionalInfoOnCheckedChange: (Boolean) -> Unit,
     industryAdditionalInfoOnValueChange: (String) -> Unit,
-    legalTypeDDItemOnClick: (String) -> Unit,
-    legalTypeAdditionalInfoToggleOnCheckedChange: (Boolean) -> Unit,
+    ddLegalTypeOnSelect: (String) -> Unit,
+    btnToggleLegalTypeAdditionalInfoOnCheckedChange: (Boolean) -> Unit,
     legalTypeAdditionalInfoOnValueChange: (String) -> Unit,
-    legalDocTypeUsageToggleOnCheckedChange: (Boolean) -> Unit,
-    legalDocTypeDDItemOnClick: (String) -> Unit,
-    legalDocTypeAdditionalInfoToggleOnCheckedChange: (Boolean) -> Unit,
+    btnToggleLegalDocTypeUsageOnCheckedChange: (Boolean) -> Unit,
+    ddLegalDocTypeOnSelect: (String) -> Unit,
+    btnToggleLegalDocTypeAdditionalInfoOnCheckedChange: (Boolean) -> Unit,
     legalDocTypeAdditionalInfoValueChange: (String) -> Unit,
-    taxationTypeDDItemOnClick: (String) -> Unit,
+    ddTaxationTypeOnSelect: (String) -> Unit,
     taxIdDocNumberOnValueChange: (String) -> Unit,
-    taxIssuerCountryDDItemOnClick: (Country) -> Unit,
+    ddTaxIssuerCountryOnSelect: (Country) -> Unit,
     taxRatePercentageOnValueChange: (Int) -> Unit,
-    taxIncludedToggleOnCheckedChange: (Boolean) -> Unit,
-    onFormSubmitBtnClicked: () -> Unit,
-    onFormCancelBtnClicked: () -> Unit,
+    btnToggleTaxIncludedOnCheckedChange: (Boolean) -> Unit,
+    btnSubmitOnClick: () -> Unit,
+    btnCancelOnClick: () -> Unit,
     onInitBizProfileSuccess: () -> Unit,
     onInitBizProfileError: () -> Unit
 ) {
@@ -202,28 +202,28 @@ private fun ScrInitialization(
         is Success -> ScreenContent(
             uiState = uiState,
             initData = uiState.initialization.data,
-            onSelectLanguage = onSelectLanguage,
-            btnInitBizProfileDefaultOnClick = btnInitBizProfileDefaultOnClick,
-            btnInitBizProfileManualOnClick = btnInitBizProfileManualOnClick,
+            ddLanguageOnSelect = ddLanguageOnSelect,
+            btnInitBizProfileDefaultOnClick = btnInitDefaultBizProfileOnClick,
+            btnInitBizProfileManualOnClick = btnInitManualBizProfileOnClick,
             legalNameOnValueChange = legalNameOnValueChange,
             commonNameOnValueChange = commonNameOnValueChange,
-            industryDDItemOnClick = industryDDItemOnClick,
-            industryAdditionalInfoToggleOnCheckedChange = industryAdditionalInfoToggleOnCheckedChange,
+            ddIndustryOnSelect = ddIndustryOnSelect,
+            btnToggleIndustryAdditionalInfoOnCheckedChange = btnToggleIndustryAdditionalInfoOnCheckedChange,
             industryAdditionalInfoOnValueChange = industryAdditionalInfoOnValueChange,
-            legalTypeDDItemOnClick = legalTypeDDItemOnClick,
-            legalTypeAdditionalInfoToggleOnCheckedChange = legalTypeAdditionalInfoToggleOnCheckedChange,
+            ddLegalTypeOnSelect = ddLegalTypeOnSelect,
+            btnToggleLegalTypeAdditionalInfoOnCheckedChange = btnToggleLegalTypeAdditionalInfoOnCheckedChange,
             legalTypeAdditionalInfoOnValueChange = legalTypeAdditionalInfoOnValueChange,
-            legalDocTypeUsageToggleOnCheckedChange = legalDocTypeUsageToggleOnCheckedChange,
-            legalDocTypeDDItemOnClick = legalDocTypeDDItemOnClick,
-            legalDocTypeAdditionalInfoToggleOnCheckedChange = legalDocTypeAdditionalInfoToggleOnCheckedChange,
+            btnToggleLegalDocTypeUsageOnCheckedChange = btnToggleLegalDocTypeUsageOnCheckedChange,
+            ddLegalDocTypeOnSelect = ddLegalDocTypeOnSelect,
+            btnToggleLegalDocTypeAdditionalInfoOnCheckedChange = btnToggleLegalDocTypeAdditionalInfoOnCheckedChange,
             legalDocTypeAdditionalInfoValueChange = legalDocTypeAdditionalInfoValueChange,
-            taxationTypeDDItemOnClick = taxationTypeDDItemOnClick,
+            ddTaxationTypeOnSelect = ddTaxationTypeOnSelect,
             taxIdDocNumberOnValueChange = taxIdDocNumberOnValueChange,
-            taxIssuerCountryDDItemOnClick = taxIssuerCountryDDItemOnClick,
+            ddTaxIssuerCountryOnSelect = ddTaxIssuerCountryOnSelect,
             taxRatePercentageOnValueChange = taxRatePercentageOnValueChange,
-            taxIncludedToggleOnCheckedChange = taxIncludedToggleOnCheckedChange,
-            onFormSubmitBtnClicked = onFormSubmitBtnClicked,
-            onFormCancelBtnClicked = onFormCancelBtnClicked
+            btnToggleTaxIncludedOnCheckedChange = btnToggleTaxIncludedOnCheckedChange,
+            btnSubmitOnClick = btnSubmitOnClick,
+            btnCancelOnClick = btnCancelOnClick
         )
     }
 }
@@ -283,28 +283,28 @@ private fun HandleDialogs(
 private fun ScreenContent(
     uiState: UiState,
     initData: Initialization,
-    onSelectLanguage: (Language) -> Unit,
+    ddLanguageOnSelect: (Language) -> Unit,
     btnInitBizProfileManualOnClick: () -> Unit,
     btnInitBizProfileDefaultOnClick: () -> Unit,
     legalNameOnValueChange: (String) -> Unit,
     commonNameOnValueChange: (String) -> Unit,
-    industryDDItemOnClick: (String) -> Unit,
-    industryAdditionalInfoToggleOnCheckedChange: (Boolean) -> Unit,
+    ddIndustryOnSelect: (String) -> Unit,
+    btnToggleIndustryAdditionalInfoOnCheckedChange: (Boolean) -> Unit,
     industryAdditionalInfoOnValueChange: (String) -> Unit,
-    legalTypeDDItemOnClick: (String) -> Unit,
-    legalTypeAdditionalInfoToggleOnCheckedChange: (Boolean) -> Unit,
+    ddLegalTypeOnSelect: (String) -> Unit,
+    btnToggleLegalTypeAdditionalInfoOnCheckedChange: (Boolean) -> Unit,
     legalTypeAdditionalInfoOnValueChange: (String) -> Unit,
-    legalDocTypeUsageToggleOnCheckedChange: (Boolean) -> Unit,
-    legalDocTypeDDItemOnClick: (String) -> Unit,
-    legalDocTypeAdditionalInfoToggleOnCheckedChange: (Boolean) -> Unit,
+    btnToggleLegalDocTypeUsageOnCheckedChange: (Boolean) -> Unit,
+    ddLegalDocTypeOnSelect: (String) -> Unit,
+    btnToggleLegalDocTypeAdditionalInfoOnCheckedChange: (Boolean) -> Unit,
     legalDocTypeAdditionalInfoValueChange: (String) -> Unit,
-    taxationTypeDDItemOnClick: (String) -> Unit,
+    ddTaxationTypeOnSelect: (String) -> Unit,
     taxIdDocNumberOnValueChange: (String) -> Unit,
-    taxIssuerCountryDDItemOnClick: (Country) -> Unit,
+    ddTaxIssuerCountryOnSelect: (Country) -> Unit,
     taxRatePercentageOnValueChange: (Int) -> Unit,
-    taxIncludedToggleOnCheckedChange: (Boolean) -> Unit,
-    onFormSubmitBtnClicked: () -> Unit,
-    onFormCancelBtnClicked: () -> Unit
+    btnToggleTaxIncludedOnCheckedChange: (Boolean) -> Unit,
+    btnSubmitOnClick: () -> Unit,
+    btnCancelOnClick: () -> Unit
 ) {
     Surface {
         Column(
@@ -312,10 +312,10 @@ private fun ScreenContent(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Top)
         ) {
-            LanguageSection(
+            PartLang(
                 languages = initData.languages,
                 configCurrent = initData.configCurrent,
-                onSelectLanguage = onSelectLanguage
+                ddLanguageOnSelect = ddLanguageOnSelect
             )
             Column(
                 modifier = Modifier.fillMaxWidth().weight(1.0f).verticalScroll(rememberScrollState()),
@@ -323,13 +323,13 @@ private fun ScreenContent(
                 verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Top)
             ) {
                 if(uiState.panelWelcomeMessageState.visible) {
-                    PanelWelcomeMessage(
+                    PartWelcomeMsg(
                         btnInitBizProfileManualOnClick = btnInitBizProfileManualOnClick,
                         btnInitBizProfileDefaultOnClick = btnInitBizProfileDefaultOnClick
                     )
                 }
                 if(uiState.panelInputFormState.visible) {
-                    PanelFormInitManualBizProfile(
+                    PartInitBizProfile(
                         industries = initData.industries,
                         legalType = initData.legalType,
                         legalDocType = initData.legalDocType,
@@ -338,29 +338,29 @@ private fun ScreenContent(
                         inputFormState = uiState.panelInputFormState,
                         legalNameOnValueChange = legalNameOnValueChange,
                         commonNameOnValueChange = commonNameOnValueChange,
-                        industryDDItemOnClick = industryDDItemOnClick,
-                        industryAdditionalInfoToggleOnCheckedChange = industryAdditionalInfoToggleOnCheckedChange,
+                        ddIndustryOnSelect = ddIndustryOnSelect,
+                        btnToggleIndustryAdditionalInfoOnCheckedChange = btnToggleIndustryAdditionalInfoOnCheckedChange,
                         industryAdditionalInfoOnValueChange = industryAdditionalInfoOnValueChange,
-                        legalTypeDDItemOnClick = legalTypeDDItemOnClick,
-                        legalTypeAdditionalInfoToggleOnCheckedChange = legalTypeAdditionalInfoToggleOnCheckedChange,
+                        ddLegalTypeOnSelect = ddLegalTypeOnSelect,
+                        btnToggleLegalTypeAdditionalInfoOnCheckedChange = btnToggleLegalTypeAdditionalInfoOnCheckedChange,
                         legalTypeAdditionalInfoOnValueChange = legalTypeAdditionalInfoOnValueChange,
-                        legalDocTypeUsageToggleOnCheckedChange = legalDocTypeUsageToggleOnCheckedChange,
-                        legalDocTypeDDItemOnClick = legalDocTypeDDItemOnClick,
-                        legalDocTypeAdditionalInfoToggleOnCheckedChange = legalDocTypeAdditionalInfoToggleOnCheckedChange,
+                        btnToggleLegalDocTypeUsageOnCheckedChange = btnToggleLegalDocTypeUsageOnCheckedChange,
+                        ddLegalDocTypeOnSelect = ddLegalDocTypeOnSelect,
+                        btnToggleLegalDocTypeAdditionalInfoOnCheckedChange = btnToggleLegalDocTypeAdditionalInfoOnCheckedChange,
                         legalDocTypeAdditionalInfoValueChange = legalDocTypeAdditionalInfoValueChange,
-                        taxationTypeDDItemOnClick = taxationTypeDDItemOnClick,
+                        ddTaxationTypeOnSelect = ddTaxationTypeOnSelect,
                         taxIdDocNumberOnValueChange = taxIdDocNumberOnValueChange,
-                        taxIssuerCountryDDItemOnClick = taxIssuerCountryDDItemOnClick,
+                        ddTaxIssuerCountryOnSelect = ddTaxIssuerCountryOnSelect,
                         taxRatePercentageOnValueChange = taxRatePercentageOnValueChange,
-                        taxIncludedToggleOnCheckedChange = taxIncludedToggleOnCheckedChange
+                        btnToggleTaxIncludedOnCheckedChange = btnToggleTaxIncludedOnCheckedChange
                     )
                 }
             }
             if(uiState.panelInputFormState.visible){
-                FormButton(
+                PartBtnInitBizProfile(
                     inputFormState = uiState.panelInputFormState,
-                    onFormSubmitBtnClicked = onFormSubmitBtnClicked,
-                    onFormCancelBtnClicked = onFormCancelBtnClicked
+                    btnSubmitOnClick = btnSubmitOnClick,
+                    btnCancelOnClick = btnCancelOnClick
                 )
             }
         }
@@ -369,10 +369,10 @@ private fun ScreenContent(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun LanguageSection(
+private fun PartLang(
     languages: Set<Language>,
     configCurrent: ConfigCurrent,
-    onSelectLanguage: (Language) -> Unit
+    ddLanguageOnSelect: (Language) -> Unit
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(1.0f).padding(8.dp),
@@ -429,7 +429,7 @@ private fun LanguageSection(
                         },
                         onClick = {
                             expanded = false
-                            onSelectLanguage(it)
+                            ddLanguageOnSelect(it)
                         },
                         contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
                     )
@@ -440,7 +440,7 @@ private fun LanguageSection(
 }
 
 @Composable
-private fun PanelWelcomeMessage(
+private fun PartWelcomeMsg(
     btnInitBizProfileManualOnClick: () -> Unit,
     btnInitBizProfileDefaultOnClick: () -> Unit
 ) {
@@ -509,7 +509,7 @@ private fun PanelWelcomeMessage(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun PanelFormInitManualBizProfile(
+private fun PartInitBizProfile(
     industries: Map<String, String>,
     legalType: Map<String, String>,
     legalDocType: Map<String, String>,
@@ -518,21 +518,21 @@ private fun PanelFormInitManualBizProfile(
     inputFormState: PanelInputFormState,
     legalNameOnValueChange: (String) -> Unit,
     commonNameOnValueChange: (String) -> Unit,
-    industryDDItemOnClick: (String) -> Unit,
-    industryAdditionalInfoToggleOnCheckedChange: (Boolean) -> Unit,
+    ddIndustryOnSelect: (String) -> Unit,
+    btnToggleIndustryAdditionalInfoOnCheckedChange: (Boolean) -> Unit,
     industryAdditionalInfoOnValueChange: (String) -> Unit,
-    legalTypeDDItemOnClick: (String) -> Unit,
-    legalTypeAdditionalInfoToggleOnCheckedChange: (Boolean) -> Unit,
+    ddLegalTypeOnSelect: (String) -> Unit,
+    btnToggleLegalTypeAdditionalInfoOnCheckedChange: (Boolean) -> Unit,
     legalTypeAdditionalInfoOnValueChange: (String) -> Unit,
-    legalDocTypeUsageToggleOnCheckedChange: (Boolean) -> Unit,
-    legalDocTypeDDItemOnClick: (String) -> Unit,
-    legalDocTypeAdditionalInfoToggleOnCheckedChange: (Boolean) -> Unit,
+    btnToggleLegalDocTypeUsageOnCheckedChange: (Boolean) -> Unit,
+    ddLegalDocTypeOnSelect: (String) -> Unit,
+    btnToggleLegalDocTypeAdditionalInfoOnCheckedChange: (Boolean) -> Unit,
     legalDocTypeAdditionalInfoValueChange: (String) -> Unit,
-    taxationTypeDDItemOnClick: (String) -> Unit,
+    ddTaxationTypeOnSelect: (String) -> Unit,
     taxIdDocNumberOnValueChange: (String) -> Unit,
-    taxIssuerCountryDDItemOnClick: (Country) -> Unit,
+    ddTaxIssuerCountryOnSelect: (Country) -> Unit,
     taxRatePercentageOnValueChange: (Int) -> Unit,
-    taxIncludedToggleOnCheckedChange: (Boolean) -> Unit
+    btnToggleTaxIncludedOnCheckedChange: (Boolean) -> Unit
 ) {
     Surface(
         modifier = Modifier.padding(8.dp),
@@ -717,7 +717,7 @@ private fun PanelFormInitManualBizProfile(
                                             },
                                             onClick = {
                                                 expanded = false
-                                                industryDDItemOnClick(it.key)
+                                                ddIndustryOnSelect(it.key)
                                             },
                                             contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
                                         )
@@ -771,7 +771,7 @@ private fun PanelFormInitManualBizProfile(
                                     checked = checked,
                                     onCheckedChange = {
                                         checked = checked.not()
-                                        industryAdditionalInfoToggleOnCheckedChange(checked)
+                                        btnToggleIndustryAdditionalInfoOnCheckedChange(checked)
                                     }
                                 )
                             }
@@ -884,7 +884,7 @@ private fun PanelFormInitManualBizProfile(
                                             },
                                             onClick = {
                                                 expanded = false
-                                                legalTypeDDItemOnClick(it.key)
+                                                ddLegalTypeOnSelect(it.key)
                                             },
                                             contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
                                         )
@@ -938,7 +938,7 @@ private fun PanelFormInitManualBizProfile(
                                     checked = checked,
                                     onCheckedChange = {
                                         checked = checked.not()
-                                        legalTypeAdditionalInfoToggleOnCheckedChange(checked)
+                                        btnToggleLegalTypeAdditionalInfoOnCheckedChange(checked)
                                     }
                                 )
                             }
@@ -1026,7 +1026,7 @@ private fun PanelFormInitManualBizProfile(
                                                     },
                                                     onClick = {
                                                         expanded = false
-                                                        legalDocTypeDDItemOnClick(it.key)
+                                                        ddLegalDocTypeOnSelect(it.key)
                                                     },
                                                     contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
                                                 )
@@ -1046,7 +1046,7 @@ private fun PanelFormInitManualBizProfile(
                                     checked = checked,
                                     onCheckedChange = {
                                         checked = checked.not()
-                                        legalDocTypeUsageToggleOnCheckedChange(checked)
+                                        btnToggleLegalDocTypeUsageOnCheckedChange(checked)
                                     }
                                 )
                             }
@@ -1097,7 +1097,7 @@ private fun PanelFormInitManualBizProfile(
                                     checked = checked,
                                     onCheckedChange = {
                                         checked = checked.not()
-                                        legalDocTypeAdditionalInfoToggleOnCheckedChange(checked)
+                                        btnToggleLegalDocTypeAdditionalInfoOnCheckedChange(checked)
                                     }
                                 )
                             }
@@ -1210,7 +1210,7 @@ private fun PanelFormInitManualBizProfile(
                                             },
                                             onClick = {
                                                 expanded = false
-                                                taxationTypeDDItemOnClick(it.key)
+                                                ddTaxationTypeOnSelect(it.key)
                                             },
                                             contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
                                         )
@@ -1291,7 +1291,7 @@ private fun PanelFormInitManualBizProfile(
                                             },
                                             onClick = {
                                                 expanded = false
-                                                taxIssuerCountryDDItemOnClick(it)
+                                                ddTaxIssuerCountryOnSelect(it)
                                             },
                                             contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
                                         )
@@ -1376,7 +1376,7 @@ private fun PanelFormInitManualBizProfile(
                                             checked = checked,
                                             onCheckedChange = {
                                                 checked = checked.not()
-                                                taxIncludedToggleOnCheckedChange(it)
+                                                btnToggleTaxIncludedOnCheckedChange(it)
                                             }
                                         )
                                     }
@@ -1391,10 +1391,10 @@ private fun PanelFormInitManualBizProfile(
 }
 
 @Composable
-private fun FormButton(
+private fun PartBtnInitBizProfile(
     inputFormState: PanelInputFormState,
-    onFormSubmitBtnClicked: () -> Unit,
-    onFormCancelBtnClicked: () -> Unit
+    btnSubmitOnClick: () -> Unit,
+    btnCancelOnClick: () -> Unit
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(1.0f).height(56.dp),
@@ -1410,14 +1410,14 @@ private fun FormButton(
         if (showSubmitButton) {
             AppIconButton(
                 modifier = Modifier.weight(btnSubmitWeight),
-                onClick = onFormSubmitBtnClicked,
+                onClick = btnSubmitOnClick,
                 icon = ImageVector.vectorResource(id = CustomIcons.Emotion.neutral),
                 text = stringResource(id = R.string.str_save)
             )
         }
         AppIconButton(
             modifier = Modifier.weight(btnCancelWeight),
-            onClick = onFormCancelBtnClicked,
+            onClick = btnCancelOnClick,
             icon = ImageVector.vectorResource(id = CustomIcons.Emotion.neutral),
             text = stringResource(id = R.string.str_cancel),
             containerColor = MaterialTheme.colorScheme.errorContainer,
@@ -1452,28 +1452,28 @@ private fun Preview() = CustomThemes.ApplicationTheme {
                 )
             )
         ),
-        onSelectLanguage = {},
-        btnInitBizProfileDefaultOnClick = {},
-        btnInitBizProfileManualOnClick = {},
+        ddLanguageOnSelect = {},
+        btnInitDefaultBizProfileOnClick = {},
+        btnInitManualBizProfileOnClick = {},
         legalNameOnValueChange = {},
         commonNameOnValueChange = {},
-        industryDDItemOnClick = {},
-        industryAdditionalInfoToggleOnCheckedChange = {},
+        ddIndustryOnSelect = {},
+        btnToggleIndustryAdditionalInfoOnCheckedChange = {},
         industryAdditionalInfoOnValueChange = {},
-        legalTypeDDItemOnClick = {},
-        legalTypeAdditionalInfoToggleOnCheckedChange = {},
+        ddLegalTypeOnSelect = {},
+        btnToggleLegalTypeAdditionalInfoOnCheckedChange = {},
         legalTypeAdditionalInfoOnValueChange = {},
-        legalDocTypeUsageToggleOnCheckedChange = {},
-        legalDocTypeDDItemOnClick = {},
-        legalDocTypeAdditionalInfoToggleOnCheckedChange = {},
+        btnToggleLegalDocTypeUsageOnCheckedChange = {},
+        ddLegalDocTypeOnSelect = {},
+        btnToggleLegalDocTypeAdditionalInfoOnCheckedChange = {},
         legalDocTypeAdditionalInfoValueChange = {},
-        taxationTypeDDItemOnClick = {},
+        ddTaxationTypeOnSelect = {},
         taxIdDocNumberOnValueChange = {},
-        taxIssuerCountryDDItemOnClick = {},
+        ddTaxIssuerCountryOnSelect = {},
         taxRatePercentageOnValueChange = {},
-        taxIncludedToggleOnCheckedChange = {},
-        onFormSubmitBtnClicked = {},
-        onFormCancelBtnClicked = {},
+        btnToggleTaxIncludedOnCheckedChange = {},
+        btnSubmitOnClick = {},
+        btnCancelOnClick = {},
         onInitBizProfileSuccess = {},
         onInitBizProfileError = {}
     )

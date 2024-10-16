@@ -134,25 +134,25 @@ class VMInitialization @Inject constructor(
         data object OnOpenEvents: UiEvents
         sealed interface InputFormEvents: UiEvents {
             sealed interface LegalNameEvents: InputFormEvents {
-                data class ValueChanged(val legalName: String): LegalNameEvents
+                data class ValueChange(val legalName: String): LegalNameEvents
             }
             sealed interface CommonNameEvents: InputFormEvents {
-                data class ValueChanged(val commonName: String): CommonNameEvents
+                data class ValueChange(val commonName: String): CommonNameEvents
             }
             sealed interface IndustryAdditionalInfoEvents: InputFormEvents {
-                data class ValueChanged(val additionalInfo: String): IndustryAdditionalInfoEvents
+                data class ValueChange(val additionalInfo: String): IndustryAdditionalInfoEvents
             }
             sealed interface LegalTypeAdditionalInfoEvents: InputFormEvents {
-                data class ValueChanged(val additionalInfo: String): LegalTypeAdditionalInfoEvents
+                data class ValueChange(val additionalInfo: String): LegalTypeAdditionalInfoEvents
             }
             sealed interface LegalDocTypeAdditionalInfoEvents: InputFormEvents {
-                data class ValueChanged(val additionalInfo: String): LegalDocTypeAdditionalInfoEvents
+                data class ValueChange(val additionalInfo: String): LegalDocTypeAdditionalInfoEvents
             }
             sealed interface TaxIdDocNumberEvents : InputFormEvents {
-                data class ValueChanged(val taxIdDocNumber: String): TaxIdDocNumberEvents
+                data class ValueChange(val taxIdDocNumber: String): TaxIdDocNumberEvents
             }
             sealed interface TaxRatePercentageEvents : InputFormEvents {
-                data class ValueChanged(val taxRatePercentage: Int): TaxRatePercentageEvents
+                data class ValueChange(val taxRatePercentage: Int): TaxRatePercentageEvents
             }
             sealed interface BtnSubmitEvents: InputFormEvents {
                 data object OnClick: BtnSubmitEvents
@@ -189,7 +189,7 @@ class VMInitialization @Inject constructor(
                 data object OnClick: BtnInitManualBizProfileEvents
             }
             sealed interface BtnToggleTaxInclusionEvents : ButtonEvents {
-                data class OnClick(val taxIncluded: Boolean): BtnToggleTaxInclusionEvents
+                data class OnCheckedChange(val taxIncluded: Boolean): BtnToggleTaxInclusionEvents
             }
             sealed interface BtnToggleIndustryAdditionalInfoEvents : ButtonEvents {
                 data class OnCheckedChange(val checked: Boolean): BtnToggleIndustryAdditionalInfoEvents
@@ -240,26 +240,26 @@ class VMInitialization @Inject constructor(
             is DDLanguage.OnSelect -> onSelectLanguageEvent(events.language)
             is BtnInitDefaultBizProfileEvents.OnClick -> doInitBizProfile(_bizProfileDefault)
             is BtnInitManualBizProfileEvents.OnClick -> doShowPanelInputForm()
-            is LegalNameEvents.ValueChanged -> frmValChgLegalName(events.legalName)
-            is CommonNameEvents.ValueChanged -> frmValChgCommonName(events.commonName)
+            is LegalNameEvents.ValueChange -> frmValChgLegalName(events.legalName)
+            is CommonNameEvents.ValueChange -> frmValChgCommonName(events.commonName)
             is DDIndustry.OnSelect -> frmValChgIndustry(events.industryKey)
             is BtnToggleIndustryAdditionalInfoEvents.OnCheckedChange -> frmValChgIndustryAdditionalInfoUsage(events.checked)
-            is IndustryAdditionalInfoEvents.ValueChanged ->
+            is IndustryAdditionalInfoEvents.ValueChange ->
                 frmValChgIndustryAdditionalInfo(events.additionalInfo.take(100))
             is DDLegalType.OnSelect -> frmValChgLegalType(events.legalTypeKey)
-            is LegalTypeAdditionalInfoEvents.ValueChanged ->
+            is LegalTypeAdditionalInfoEvents.ValueChange ->
                 frmValChgLegalTypeAdditionalInfo(events.additionalInfo.take(100))
             is DDLegalDocType.OnSelect -> frmValChgLegalDocType(events.legalDocTypeKey)
             is BtnToggleLegalTypeAdditionalInfoEvents.OnCheckedChange -> frmValChgLegalTypeAdditionalInfoUsage(events.checked)
             is BtnToggleLegalDocTypeUsageEvents.OnCheckedChange -> frmValChgLegalDocTypeUsage(events.checked)
             is BtnToggleLegalDocTypeAdditionalInfoEvents.OnCheckedChange -> frmValChgLegalDocTypeAdditionalInfoUsage(events.checked)
-            is LegalDocTypeAdditionalInfoEvents.ValueChanged ->
+            is LegalDocTypeAdditionalInfoEvents.ValueChange ->
                 frmValChgLegalDocTypeAdditionalInfo(events.additionalInfo.take(100))
             is DDTaxationType.OnSelect -> frmValChgTaxationType(events.taxationTypeKey)
-            is TaxIdDocNumberEvents.ValueChanged -> frmValChgTaxIdDocNumber(events.taxIdDocNumber)
+            is TaxIdDocNumberEvents.ValueChange -> frmValChgTaxIdDocNumber(events.taxIdDocNumber)
             is DDTaxIssuerCountry.OnSelect -> frmValChgTaxIssuerCountry(events.taxIssuerCountry)
-            is TaxRatePercentageEvents.ValueChanged -> frmValChgTaxRatePercentage(events.taxRatePercentage)
-            is BtnToggleTaxInclusionEvents.OnClick -> frmValChgTaxIncluded(events.taxIncluded)
+            is TaxRatePercentageEvents.ValueChange -> frmValChgTaxRatePercentage(events.taxRatePercentage)
+            is BtnToggleTaxInclusionEvents.OnCheckedChange -> frmValChgTaxIncluded(events.taxIncluded)
             is BtnSubmitEvents.OnClick -> doInitBizProfile(
                 bizProfileShort = BizProfileShort(
                     seqId = 0,
