@@ -350,6 +350,7 @@ class VMInitialization @Inject constructor(
                 )
             }
         }
+        formSubmitBtnShouldEnable()
     }
     private fun onSelectLanguageEvent(language: Language) = viewModelScope.launch {
         repoConfGenLanguage.setLanguage(language)
