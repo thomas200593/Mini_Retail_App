@@ -315,8 +315,18 @@ class VMInitialization @Inject constructor(
     private fun resetPanelWelcomeMessageState() = _uiState.update {
         it.copy(panelWelcomeMessageState = PanelWelcomeMessageState())
     }
-    private fun resetPanelInputFormState() = _uiState.update {
-        it.copy(panelInputFormState = PanelInputFormState())
+    private fun resetPanelInputFormState() {
+        _uiState.update {
+            it.copy(panelInputFormState = PanelInputFormState())
+        }
+        resetSavedStateHandle()
+    }
+    private fun resetSavedStateHandle() {
+        savedStateHandle.remove<String>(SSH_KEY_INDUSTRY_TYPE_KEY)
+        savedStateHandle.remove<String>(SSH_KEY_BIZ_LEGAL_TYPE_KEY)
+        savedStateHandle.remove<String>(SSH_KEY_BIZ_LEGAL_DOC_TYPE_KEY)
+        savedStateHandle.remove<String>(SSH_KEY_TAXATION_TYPE_KEY)
+        savedStateHandle.remove<String>(SSH_KEY_TAX_ISSUER_COUNTRY_ISO_CODE_KEY)
     }
     private fun onOpenEvent() = viewModelScope.launch {
         ucGetInitializationData().flowOn(ioDispatcher).collectLatest { result ->
