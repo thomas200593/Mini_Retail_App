@@ -16,6 +16,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenuItem
@@ -88,6 +90,7 @@ import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMIni
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.ButtonEvents.BtnToggleLegalDocTypeUsageEvents
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.ButtonEvents.BtnToggleLegalTypeAdditionalInfoEvents
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.ButtonEvents.BtnToggleTaxInclusionEvents
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.DialogEvents.DlgInitBizProfileCancel
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.DialogEvents.DlgResError
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.DialogEvents.DlgResSuccess
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.DropdownEvents.DDIndustry
@@ -153,11 +156,13 @@ fun ScrInitialization(
         btnToggleTaxIncludedOnCheckedChange = { vm.onEvent(BtnToggleTaxInclusionEvents.OnCheckedChange(it)) },
         btnSubmitOnClick = { vm.onEvent(BtnSubmitEvents.OnClick) },
         btnCancelOnClick = { vm.onEvent(BtnCancelEvents.OnClick) },
-        onInitBizProfileSuccess = {
+        dlgInitBizProfileCancelOnConfirm = { vm.onEvent(DlgInitBizProfileCancel.OnConfirm) },
+        dlgInitBizProfileCancelOnDismiss = { vm.onEvent(DlgInitBizProfileCancel.OnDismiss) },
+        dlgInitBizProfileSuccessOnConfirm = {
             vm.onEvent(DlgResSuccess.OnConfirm)
                 .also { coroutineScope.launch { stateApp.navController.navToInitial() } }
         },
-        onInitBizProfileError = {
+        dlgInitBizProfileErrorOnDismiss = {
             vm.onEvent(DlgResError.OnDismiss)
                 .also { coroutineScope.launch { stateApp.navController.navToInitial() } }
         }
@@ -189,13 +194,17 @@ private fun ScrInitialization(
     btnToggleTaxIncludedOnCheckedChange: (Boolean) -> Unit,
     btnSubmitOnClick: () -> Unit,
     btnCancelOnClick: () -> Unit,
-    onInitBizProfileSuccess: () -> Unit,
-    onInitBizProfileError: () -> Unit
+    dlgInitBizProfileCancelOnConfirm: () -> Unit,
+    dlgInitBizProfileCancelOnDismiss: () -> Unit,
+    dlgInitBizProfileSuccessOnConfirm: () -> Unit,
+    dlgInitBizProfileErrorOnDismiss: () -> Unit
 ) {
     HandleDialogs(
         uiState = uiState,
-        onInitBizProfileSuccess = onInitBizProfileSuccess,
-        onInitBizProfileError = onInitBizProfileError
+        dlgInitBizProfileCancelOnConfirm = dlgInitBizProfileCancelOnConfirm,
+        dlgInitBizProfileCancelOnDismiss = dlgInitBizProfileCancelOnDismiss,
+        dlgInitBizProfileSuccessOnConfirm = dlgInitBizProfileSuccessOnConfirm,
+        dlgInitBizProfileErrorOnDismiss = dlgInitBizProfileErrorOnDismiss
     )
     when(uiState.initialization) {
         Loading -> LoadingScreen()
@@ -231,9 +240,37 @@ private fun ScrInitialization(
 @Composable
 private fun HandleDialogs(
     uiState: UiState,
-    onInitBizProfileSuccess: () -> Unit,
-    onInitBizProfileError: () -> Unit
+    dlgInitBizProfileCancelOnConfirm: () -> Unit,
+    dlgInitBizProfileCancelOnDismiss: () -> Unit,
+    dlgInitBizProfileSuccessOnConfirm: () -> Unit,
+    dlgInitBizProfileErrorOnDismiss: () -> Unit
 ) {
+    AppAlertDialog(
+        showDialog = uiState.dialogState.dlgInputBizProfileCancelConfirmation,
+        dialogContext = AlertDialogContext.CONFIRMATION,
+        showTitle = true,
+        title = { Text(stringResource(id = R.string.str_cancel_input_biz_profile)) },
+        showBody = true,
+        body = { Text(stringResource(id = R.string.str_entries_delete_body)) },
+        useConfirmButton = true,
+        confirmButton = {
+            AppIconButton(
+                onClick = dlgInitBizProfileCancelOnConfirm,
+                icon = Icons.Default.Check,
+                text = stringResource(id = R.string.str_yes),
+                containerColor = MaterialTheme.colorScheme.error,
+                contentColor = MaterialTheme.colorScheme.onError
+            )
+        },
+        useDismissButton = true,
+        dismissButton = {
+            AppIconButton(
+                onClick = dlgInitBizProfileCancelOnDismiss,
+                icon = Icons.Default.Close,
+                text = stringResource(id = R.string.str_no)
+            )
+        }
+    )
     AppAlertDialog(
         showDialog = uiState.dialogState.dlgResLoading,
         dialogContext = AlertDialogContext.INFORMATION,
@@ -253,8 +290,11 @@ private fun HandleDialogs(
         body = { Text(stringResource(id = R.string.str_biz_profile_init_success)) },
         useConfirmButton = true,
         confirmButton = {
-            TextButton (onClick = { onInitBizProfileSuccess() })
-            { Text(stringResource(id = R.string.str_ok)) }
+            AppIconButton(
+                onClick = dlgInitBizProfileSuccessOnConfirm,
+                icon = Icons.Default.Check,
+                text = stringResource(id = R.string.str_ok)
+            )
         }
     )
     AppAlertDialog(
@@ -273,8 +313,13 @@ private fun HandleDialogs(
         },
         useDismissButton = true,
         dismissButton = {
-            TextButton(onClick = { onInitBizProfileError() })
-            { Text(stringResource(id = R.string.str_ok)) }
+            AppIconButton(
+                onClick = dlgInitBizProfileErrorOnDismiss,
+                icon = Icons.Default.Close,
+                text = stringResource(id = R.string.str_close),
+                containerColor = MaterialTheme.colorScheme.error,
+                contentColor = MaterialTheme.colorScheme.onError
+            )
         }
     )
 }
@@ -308,7 +353,9 @@ private fun ScreenContent(
 ) {
     Surface {
         Column(
-            modifier = Modifier.fillMaxSize().imePadding(),
+            modifier = Modifier
+                .fillMaxSize()
+                .imePadding(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Top)
         ) {
@@ -318,7 +365,10 @@ private fun ScreenContent(
                 ddLanguageOnSelect = ddLanguageOnSelect
             )
             Column(
-                modifier = Modifier.fillMaxWidth().weight(1.0f).verticalScroll(rememberScrollState()),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1.0f)
+                    .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Top)
             ) {
@@ -375,7 +425,9 @@ private fun PartLang(
     ddLanguageOnSelect: (Language) -> Unit
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth(1.0f).padding(8.dp),
+        modifier = Modifier
+            .fillMaxWidth(1.0f)
+            .padding(8.dp),
         horizontalArrangement = Arrangement.End,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -386,7 +438,9 @@ private fun PartLang(
             onExpandedChange = { expanded = expanded.not() }
         ) {
             TextButton(
-                modifier = Modifier.fillMaxWidth().menuAnchor(PrimaryNotEditable, true),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .menuAnchor(PrimaryNotEditable, true),
                 border = BorderStroke(1.dp, colorResource(R.color.charcoal_gray)),
                 shape = MaterialTheme.shapes.medium,
                 onClick = { expanded = true }) {
@@ -474,7 +528,9 @@ private fun PartWelcomeMsg(
         )
     }
     Surface(
-        modifier = Modifier.fillMaxWidth().padding(8.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp),
         shape = MaterialTheme.shapes.medium,
         color = MaterialTheme.colorScheme.primaryContainer,
         contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
@@ -485,7 +541,9 @@ private fun PartWelcomeMsg(
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                modifier = Modifier.fillMaxWidth().padding(16.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
                 text = stringResource(R.string.str_init_welcome_message),
                 style = MaterialTheme.typography.labelLarge,
                 textAlign = TextAlign.Justify
@@ -541,7 +599,9 @@ private fun PartInitBizProfile(
         shadowElevation = 5.dp
     ) {
         Column(
-            modifier = Modifier.fillMaxWidth().padding(8.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically)
         ) {
@@ -570,7 +630,9 @@ private fun PartInitBizProfile(
                 )
             }
             Column(
-                modifier = Modifier.fillMaxWidth().padding(4.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(4.dp)
                     .border(BorderStroke(1.dp, colorResource(R.color.charcoal_gray))),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
@@ -590,7 +652,9 @@ private fun PartInitBizProfile(
                     thirdRowContent = {
                         Surface(
                             onClick = { sectionExpanded = sectionExpanded.not() },
-                            modifier = Modifier.fillMaxWidth().size(ButtonDefaults.IconSize)
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .size(ButtonDefaults.IconSize)
                         ) {
                             Icon(
                                 imageVector =
@@ -603,7 +667,9 @@ private fun PartInitBizProfile(
                 )
                 if(sectionExpanded) {
                     Column(
-                        modifier = Modifier.fillMaxWidth().padding(8.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically)
                     ) {
@@ -679,7 +745,9 @@ private fun PartInitBizProfile(
                                 onExpandedChange = { expanded = expanded.not() }
                             ) {
                                 TextButton(
-                                    modifier = Modifier.fillMaxWidth().menuAnchor(PrimaryNotEditable, true),
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .menuAnchor(PrimaryNotEditable, true),
                                     border = BorderStroke(1.dp, colorResource(R.color.charcoal_gray)),
                                     shape = MaterialTheme.shapes.small,
                                     enabled = !(
@@ -780,7 +848,9 @@ private fun PartInitBizProfile(
                 }
             }
             Column(
-                modifier = Modifier.fillMaxWidth().padding(4.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(4.dp)
                     .border(BorderStroke(1.dp, colorResource(R.color.charcoal_gray))),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
@@ -800,7 +870,9 @@ private fun PartInitBizProfile(
                     thirdRowContent = {
                         Surface(
                             onClick = { sectionExpanded = sectionExpanded.not() },
-                            modifier = Modifier.fillMaxWidth().size(ButtonDefaults.IconSize)
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .size(ButtonDefaults.IconSize)
                         ) {
                             Icon(
                                 imageVector =
@@ -813,7 +885,9 @@ private fun PartInitBizProfile(
                 )
                 if(sectionExpanded) {
                     Column(
-                        modifier = Modifier.fillMaxWidth().padding(8.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically)
                     ) {
@@ -846,7 +920,9 @@ private fun PartInitBizProfile(
                                 onExpandedChange = { expanded = expanded.not() }
                             ) {
                                 TextButton(
-                                    modifier = Modifier.fillMaxWidth().menuAnchor(PrimaryNotEditable, true),
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .menuAnchor(PrimaryNotEditable, true),
                                     border = BorderStroke(1.dp, colorResource(R.color.charcoal_gray)),
                                     shape = MaterialTheme.shapes.small,
                                     enabled = !(
@@ -988,7 +1064,9 @@ private fun PartInitBizProfile(
                                         onExpandedChange = { expanded = expanded.not() }
                                     ) {
                                         TextButton(
-                                            modifier = Modifier.fillMaxWidth().menuAnchor(PrimaryNotEditable, true),
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .menuAnchor(PrimaryNotEditable, true),
                                             border = BorderStroke(1.dp, colorResource(R.color.charcoal_gray)),
                                             shape = MaterialTheme.shapes.small,
                                             enabled = !(
@@ -1106,7 +1184,9 @@ private fun PartInitBizProfile(
                 }
             }
             Column(
-                modifier = Modifier.fillMaxWidth().padding(4.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(4.dp)
                     .border(BorderStroke(1.dp, colorResource(R.color.charcoal_gray))),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
@@ -1126,7 +1206,9 @@ private fun PartInitBizProfile(
                     thirdRowContent = {
                         Surface(
                             onClick = { sectionExpanded = sectionExpanded.not() },
-                            modifier = Modifier.fillMaxWidth().size(ButtonDefaults.IconSize)
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .size(ButtonDefaults.IconSize)
                         ) {
                             Icon(
                                 imageVector =
@@ -1139,7 +1221,9 @@ private fun PartInitBizProfile(
                 )
                 if(sectionExpanded) {
                     Column(
-                        modifier = Modifier.fillMaxWidth().padding(8.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically)
                     ) {
@@ -1172,7 +1256,9 @@ private fun PartInitBizProfile(
                                 onExpandedChange = { expanded = expanded.not() }
                             ) {
                                 TextButton(
-                                    modifier = Modifier.fillMaxWidth().menuAnchor(PrimaryNotEditable, true),
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .menuAnchor(PrimaryNotEditable, true),
                                     border = BorderStroke(1.dp, colorResource(R.color.charcoal_gray)),
                                     shape = MaterialTheme.shapes.small,
                                     enabled = !(
@@ -1254,7 +1340,9 @@ private fun PartInitBizProfile(
                                 onExpandedChange = { expanded = expanded.not() }
                             ) {
                                 TextButton(
-                                    modifier = Modifier.fillMaxWidth().menuAnchor(PrimaryNotEditable, true),
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .menuAnchor(PrimaryNotEditable, true),
                                     border = BorderStroke(1.dp, colorResource(R.color.charcoal_gray)),
                                     shape = MaterialTheme.shapes.small,
                                     enabled = !(
@@ -1397,7 +1485,9 @@ private fun PartBtnInitBizProfile(
     btnCancelOnClick: () -> Unit
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth(1.0f).height(56.dp),
+        modifier = Modifier
+            .fillMaxWidth(1.0f)
+            .height(56.dp),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -1474,7 +1564,9 @@ private fun Preview() = CustomThemes.ApplicationTheme {
         btnToggleTaxIncludedOnCheckedChange = {},
         btnSubmitOnClick = {},
         btnCancelOnClick = {},
-        onInitBizProfileSuccess = {},
-        onInitBizProfileError = {}
+        dlgInitBizProfileCancelOnConfirm = {},
+        dlgInitBizProfileCancelOnDismiss = {},
+        dlgInitBizProfileSuccessOnConfirm = {},
+        dlgInitBizProfileErrorOnDismiss = {}
     )
 }

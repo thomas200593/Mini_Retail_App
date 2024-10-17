@@ -140,4 +140,6 @@
     <string name="str_yes">Yes</string>
     <string name="str_no">No</string>
     <string name="str_invalid_format">Invalid format</string>
+    <string name="str_cancel_input_biz_profile">Cancel business profile manual setup?</string>
+    <string name="str_entries_delete_body">All entries will be deleted.</string>
 </resources>

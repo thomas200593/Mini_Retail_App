@@ -38,6 +38,7 @@ import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMIni
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.ButtonEvents.BtnToggleLegalDocTypeUsageEvents
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.ButtonEvents.BtnToggleLegalTypeAdditionalInfoEvents
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.ButtonEvents.BtnToggleTaxInclusionEvents
+import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.DialogEvents.DlgInitBizProfileCancel
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.DialogEvents.DlgResError
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.DialogEvents.DlgResSuccess
 import com.thomas200593.mini_retail_app.features.initial.initialization.ui.VMInitialization.UiEvents.DropdownEvents.DDIndustry
@@ -101,6 +102,7 @@ class VMInitialization @Inject constructor(
         val initBizProfileOperationResult: ResourceState<BizProfileShort> = ResourceState.Idle
     )
     data class DialogState(
+        val dlgInputBizProfileCancelConfirmation: MutableState<Boolean> = mutableStateOf(false),
         val dlgResLoading: MutableState<Boolean> = mutableStateOf(false),
         val dlgResSuccess: MutableState<Boolean> = mutableStateOf(false),
         val dlgResError: MutableState<Boolean> = mutableStateOf(false)
@@ -211,6 +213,10 @@ class VMInitialization @Inject constructor(
             sealed interface DlgResError: DialogEvents {
                 data object OnDismiss: DlgResError
             }
+            sealed interface DlgInitBizProfileCancel: DialogEvents {
+                data object OnConfirm : DlgInitBizProfileCancel
+                data object OnDismiss : DlgInitBizProfileCancel
+            }
         }
     }
 
@@ -290,19 +296,28 @@ class VMInitialization @Inject constructor(
                     auditTrail = AuditTrail()
                 )
             )
-            is BtnCancelEvents.OnClick -> doResetUiState()
+            is BtnCancelEvents.OnClick -> showInputCancelDlgConfirmation()
+            is DlgInitBizProfileCancel.OnConfirm -> doResetUiState()
+            is DlgInitBizProfileCancel.OnDismiss -> resetDialogState()
             is DlgResSuccess.OnConfirm -> doResetUiState()
             is DlgResError.OnDismiss -> doResetUiState()
         }
     }
 
+    private fun showInputCancelDlgConfirmation() {
+        resetDialogState()
+        updateDialogState(dlgInputBizProfileCancelConfirmation = true)
+    }
+
     private fun updateDialogState(
+        dlgInputBizProfileCancelConfirmation: Boolean = false,
         dlgResLoading: Boolean = false,
         dlgResSuccess: Boolean = false,
         dlgResError: Boolean = false
     ) = _uiState.update {
         it.copy(
             dialogState = it.dialogState.copy(
+                dlgInputBizProfileCancelConfirmation = mutableStateOf(dlgInputBizProfileCancelConfirmation),
                 dlgResLoading = mutableStateOf(dlgResLoading),
                 dlgResSuccess = mutableStateOf(dlgResSuccess),
                 dlgResError = mutableStateOf(dlgResError)
