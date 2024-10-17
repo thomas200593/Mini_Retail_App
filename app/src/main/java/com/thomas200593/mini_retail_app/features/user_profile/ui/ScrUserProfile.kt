@@ -266,8 +266,8 @@ fun UserProfileGoogle(
         var infoExpanded by remember { mutableStateOf(false) }
         AsyncImage(
             model = ImageRequest
-                .Builder(LocalContext.current).crossfade(250)
-                .data(data = userData.pictureUri).transformations(CircleCropTransformation()).build(),
+                .Builder(LocalContext.current).crossfade(250).data(data = userData.pictureUri)
+                .transformations(CircleCropTransformation()).build(),
             contentDescription = null,
             modifier = Modifier.size(100.dp).border(2.dp, Color.Gray, CircleShape),
             contentScale = ContentScale.Crop
