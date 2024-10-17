@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -21,9 +20,7 @@ import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -192,11 +189,11 @@ private fun ScreenContent(
 ) {
     Surface {
         Column(
-            modifier = Modifier.fillMaxSize().padding(8.dp).verticalScroll(rememberScrollState()),
+            modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(10.dp, Alignment.Top),
+            verticalArrangement = Arrangement.Top,
         ) {
-            NavigationAppConfigSection(onNavToAppConfig = onNavToAppConfig)
+            PartAppConfig(onNavToAppConfig = onNavToAppConfig)
             CurrentUserSessionSection(
                 uiState = uiState,
                 dlgBtnSignOutOnClick = dlgBtnSignOutOnClick
@@ -211,17 +208,17 @@ private fun ScreenContent(
 }
 
 @Composable
-private fun NavigationAppConfigSection(
+private fun PartAppConfig(
     onNavToAppConfig: () -> Unit
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth().padding(8.dp),
+        modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.End
     ) {
         Surface(
-            modifier = Modifier.size(ButtonDefaults.IconSize),
-            onClick = { onNavToAppConfig() }
+            modifier = Modifier.size(24.dp),
+            onClick = onNavToAppConfig
         ) {
             Icon(
                 imageVector = ImageVector.vectorResource(id = CustomIcons.Setting.settings),
@@ -236,7 +233,7 @@ private fun NavigationAppConfigSection(
 @Composable
 private fun CurrentUserSessionSection(
     uiState: UiState,
-    dlgBtnSignOutOnClick : () -> Unit
+    dlgBtnSignOutOnClick: () -> Unit
 ) {
     when(uiState.userProfileData){
         Idle -> Unit
@@ -259,11 +256,11 @@ fun UserProfileGoogle(
     userData: Google
 ) {
     Column(
-        modifier = Modifier.fillMaxWidth().padding(8.dp),
+        modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterVertically)
+        verticalArrangement = Arrangement.Center
     ) {
-        var infoExpanded by remember { mutableStateOf(false) }
+        var infoExpanded by remember { mutableStateOf(true) }
         AsyncImage(
             model = ImageRequest
                 .Builder(LocalContext.current).crossfade(250).data(data = userData.pictureUri)
@@ -325,7 +322,6 @@ fun UserProfileGoogle(
                 text = Instant.ofEpochSecond(userData.expiredAt.toLong()).toString()
             )
         }
-        HorizontalDivider(thickness = 2.dp)
     }
 }
 
@@ -338,17 +334,15 @@ private fun BizProfileSummaryData(
         Idle -> Unit
         Loading -> CircularProgressIndicator()
         is Success -> Surface(
-            modifier = Modifier.fillMaxWidth().padding(8.dp),
-            shape = MaterialTheme.shapes.medium,
+            modifier = Modifier.fillMaxWidth(),
             color = MaterialTheme.colorScheme.secondaryContainer,
             contentColor = MaterialTheme.colorScheme.onSecondaryContainer
         ) {
             val bizProfile = uiState.userProfileData.data.second
-
             Column(
-                modifier = Modifier.fillMaxWidth().padding(8.dp),
+                modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                verticalArrangement = Arrangement.Center
             ) {
                 Text(
                     text = stringResource(id = R.string.str_business_profile),
@@ -362,7 +356,7 @@ private fun BizProfileSummaryData(
                     color = MaterialTheme.colorScheme.secondaryContainer
                 ) {
                     Column(
-                        modifier = Modifier.fillMaxWidth().padding(8.dp),
+                        modifier = Modifier.fillMaxWidth(),
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
@@ -372,7 +366,6 @@ private fun BizProfileSummaryData(
                             text = stringResource(R.string.str_biz_name),
                             fontWeight = FontWeight.Bold
                         )
-
                         bizProfile.bizName.legalName
                             .takeIf { it.isNotBlank() }?.let {
                                 Column(
@@ -393,7 +386,6 @@ private fun BizProfileSummaryData(
                                     )
                                 }
                             }
-
                         bizProfile.bizName.commonName
                             .takeIf { it.isNotBlank() }?.let {
                                 Column(
@@ -422,7 +414,7 @@ private fun BizProfileSummaryData(
                     color = MaterialTheme.colorScheme.secondaryContainer
                 ) {
                     Column(
-                        modifier = Modifier.fillMaxWidth().padding(8.dp),
+                        modifier = Modifier.fillMaxWidth(),
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
@@ -432,7 +424,6 @@ private fun BizProfileSummaryData(
                             text = stringResource(R.string.str_biz_industry),
                             fontWeight = FontWeight.Bold
                         )
-
                         bizProfile.bizIndustry.identityKey.let {
                             StringArrayResource(BizIndustries).findByKey(it)?.let {
                                 Column(
@@ -454,7 +445,6 @@ private fun BizProfileSummaryData(
                                 }
                             }
                         }
-
                         bizProfile.bizIndustry.additionalInfo
                             .takeIf{ it.isNotBlank() }?.let {
                                 Column(
