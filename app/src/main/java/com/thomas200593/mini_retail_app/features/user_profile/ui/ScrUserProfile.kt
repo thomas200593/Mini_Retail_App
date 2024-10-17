@@ -125,7 +125,7 @@ fun ScrUserProfile(
                 }
             }
         },
-        onBtnSignOutClicked = {
+        dlgBtnSignOutOnClick = {
             ManagerWorkSessionMonitor.terminate(appContext)
             vm.onEvent(BtnSignOutEvents.OnClick)
                 .also{ coroutineScope.launch { stateApp.navController.navToAuth() } }
@@ -138,24 +138,24 @@ private fun ScrUserProfile(
     uiState: UiState,
     onNavToAppConfig: () -> Unit,
     onNavToBizProfile: () -> Unit,
-    onBtnSignOutClicked: () -> Unit
+    dlgBtnSignOutOnClick: () -> Unit
 ) {
     HandleDialogs(
         uiState = uiState,
-        onBtnSignOutClicked = onBtnSignOutClicked
+        dlgBtnSignOutOnClick = dlgBtnSignOutOnClick
     )
     ScreenContent(
         uiState = uiState,
         onNavToAppConfig = onNavToAppConfig,
         onNavToBizProfile = onNavToBizProfile,
-        onBtnSignOutClicked = onBtnSignOutClicked
+        dlgBtnSignOutOnClick = dlgBtnSignOutOnClick
     )
 }
 
 @Composable
 private fun HandleDialogs(
     uiState: UiState,
-    onBtnSignOutClicked: () -> Unit
+    dlgBtnSignOutOnClick: () -> Unit
 ) {
     AppAlertDialog(
         showDialog = uiState.dialogState.dlgDenySession,
@@ -173,7 +173,7 @@ private fun HandleDialogs(
         useDismissButton = true,
         dismissButton = {
             AppIconButton(
-                onClick = onBtnSignOutClicked,
+                onClick = dlgBtnSignOutOnClick,
                 icon = Icons.Default.Close,
                 text = stringResource(id = R.string.str_close),
                 containerColor = MaterialTheme.colorScheme.error,
@@ -188,7 +188,7 @@ private fun ScreenContent(
     uiState: UiState,
     onNavToAppConfig: () -> Unit,
     onNavToBizProfile: () -> Unit,
-    onBtnSignOutClicked: () -> Unit
+    dlgBtnSignOutOnClick: () -> Unit
 ) {
     Surface {
         Column(
@@ -199,13 +199,13 @@ private fun ScreenContent(
             NavigationAppConfigSection(onNavToAppConfig = onNavToAppConfig)
             CurrentUserSessionSection(
                 uiState = uiState,
-                onBtnSignOutClicked = onBtnSignOutClicked
+                dlgBtnSignOutOnClick = dlgBtnSignOutOnClick
             )
             BizProfileSummaryData(
                 uiState = uiState,
                 onNavToBizProfile = onNavToBizProfile
             )
-            SignOutSection(onBtnSignOutClicked = onBtnSignOutClicked)
+            SignOutSection(dlgBtnSignOutOnClick = dlgBtnSignOutOnClick)
         }
     }
 }
@@ -236,7 +236,7 @@ private fun NavigationAppConfigSection(
 @Composable
 private fun CurrentUserSessionSection(
     uiState: UiState,
-    onBtnSignOutClicked : () -> Unit
+    dlgBtnSignOutOnClick : () -> Unit
 ) {
     when(uiState.userProfileData){
         Idle -> Unit
@@ -247,7 +247,7 @@ private fun CurrentUserSessionSection(
                 GOOGLE ->
                     UserProfileGoogle(provider = provider, userData = userData.oAuth2UserMetadata as Google)
                 null ->
-                    onBtnSignOutClicked()
+                    dlgBtnSignOutOnClick()
             }
         }
     }
@@ -489,10 +489,10 @@ private fun BizProfileSummaryData(
 
 @Composable
 private fun SignOutSection(
-    onBtnSignOutClicked : () -> Unit
+    dlgBtnSignOutOnClick : () -> Unit
 ) {
     AppIconButton(
-        onClick = onBtnSignOutClicked,
+        onClick = dlgBtnSignOutOnClick,
         icon = Icons.AutoMirrored.Filled.ExitToApp,
         text = stringResource(id = R.string.str_auth_sign_out),
         containerColor = MaterialTheme.colorScheme.errorContainer,
@@ -506,7 +506,7 @@ private fun Preview() = CustomThemes.ApplicationTheme {
     ScrUserProfile(
         onNavToAppConfig = {},
         onNavToBizProfile = {},
-        onBtnSignOutClicked = {},
+        dlgBtnSignOutOnClick = {},
         uiState = UiState(
             dialogState = DialogState(),
             userProfileData = //Loading
