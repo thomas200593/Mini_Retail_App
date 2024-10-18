@@ -5,9 +5,9 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
@@ -20,6 +20,7 @@ import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -52,6 +53,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import coil.transform.CircleCropTransformation
 import com.thomas200593.mini_retail_app.R
+import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs
 import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
 import com.thomas200593.mini_retail_app.app.ui.StateApp
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.AuditTrail
@@ -63,6 +65,7 @@ import com.thomas200593.mini_retail_app.core.design_system.util.HlpStringArray.S
 import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons
 import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.Country.country
 import com.thomas200593.mini_retail_app.core.ui.common.CustomThemes
+import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar
 import com.thomas200593.mini_retail_app.core.ui.component.CustomButton.Common.AppIconButton
 import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AlertDialogContext
 import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AppAlertDialog
@@ -105,11 +108,13 @@ fun ScrUserProfile(
     val coroutineScope = rememberCoroutineScope()
     val uiState by vm.uiState.collectAsStateWithLifecycle()
     val sessionState by stateApp.isSessionValid.collectAsStateWithLifecycle()
+    val currentScreen = ScrGraphs.getByRoute(stateApp.destCurrent)
 
     LaunchedEffect(sessionState) { vm.onEvent(OnOpenEvents(sessionState)) }
 
     ScrUserProfile(
         uiState = uiState,
+        currentScreen = currentScreen,
         onNavToAppConfig = {
             vm.onEvent(BtnAppConfigEvents.OnClick)
                 .also { coroutineScope.launch { stateApp.navController.navToAppConfig() } }
@@ -133,17 +138,22 @@ fun ScrUserProfile(
 @Composable
 private fun ScrUserProfile(
     uiState: UiState,
+    currentScreen: ScrGraphs?,
     onNavToAppConfig: () -> Unit,
     onNavToBizProfile: () -> Unit,
     dlgBtnSignOutOnClick: () -> Unit
 ) {
-    HandleDialogs(
-        uiState = uiState,
-        dlgBtnSignOutOnClick = dlgBtnSignOutOnClick
-    )
+    currentScreen?.let {
+        HandleDialogs(
+            uiState = uiState,
+            dlgBtnSignOutOnClick = dlgBtnSignOutOnClick
+        )
+        TopAppBar(
+            onNavToAppConfig = onNavToAppConfig
+        )
+    }
     ScreenContent(
         uiState = uiState,
-        onNavToAppConfig = onNavToAppConfig,
         onNavToBizProfile = onNavToBizProfile,
         dlgBtnSignOutOnClick = dlgBtnSignOutOnClick
     )
@@ -181,13 +191,35 @@ private fun HandleDialogs(
 }
 
 @Composable
+private fun TopAppBar(
+    onNavToAppConfig: () -> Unit
+) {
+    CustomAppBar.ProvideTopAppBarAction {
+        Row(
+            modifier = Modifier,
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Surface(
+                onClick = onNavToAppConfig,
+                modifier = Modifier.sizeIn(maxHeight = ButtonDefaults.IconSize)
+            ) {
+                Icon(
+                    imageVector = ImageVector.vectorResource(CustomIcons.Setting.settings),
+                    contentDescription = null
+                )
+            }
+        }
+    }
+}
+
+@Composable
 private fun ScreenContent(
     uiState: UiState,
-    onNavToAppConfig: () -> Unit,
     onNavToBizProfile: () -> Unit,
     dlgBtnSignOutOnClick: () -> Unit
 ) {
-    Surface {
+    /*Surface {
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -204,30 +236,7 @@ private fun ScreenContent(
             )
             SignOutSection(dlgBtnSignOutOnClick = dlgBtnSignOutOnClick)
         }
-    }
-}
-
-@Composable
-private fun PartAppConfig(
-    onNavToAppConfig: () -> Unit
-) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.End
-    ) {
-        Surface(
-            modifier = Modifier.size(24.dp),
-            onClick = onNavToAppConfig
-        ) {
-            Icon(
-                imageVector = ImageVector.vectorResource(id = CustomIcons.Setting.settings),
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier
-            )
-        }
-    }
+    }*/
 }
 
 @Composable
@@ -494,9 +503,7 @@ private fun SignOutSection(
 @Preview
 private fun Preview() = CustomThemes.ApplicationTheme {
     ScrUserProfile(
-        onNavToAppConfig = {},
-        onNavToBizProfile = {},
-        dlgBtnSignOutOnClick = {},
+        currentScreen = ScrGraphs.UserProfile,
         uiState = UiState(
             dialogState = DialogState(),
             userProfileData = //Loading
@@ -530,6 +537,9 @@ private fun Preview() = CustomThemes.ApplicationTheme {
                     third = ConfigCurrent()
                 )
             )
-        )
+        ),
+        onNavToAppConfig = {},
+        onNavToBizProfile = {},
+        dlgBtnSignOutOnClick = {}
     )
 }

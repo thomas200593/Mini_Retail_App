@@ -1,15 +1,15 @@
-package com.thomas200593.mini_retail_app.features.dashboard.ui
+package com.thomas200593.mini_retail_app.features.reporting.ui
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
-import com.thomas200593.mini_retail_app.features.dashboard.ui.VMDashboard.UiEvents.ButtonEvents.BtnScrDescEvents
-import com.thomas200593.mini_retail_app.features.dashboard.ui.VMDashboard.UiEvents.OnOpenEvents
-import com.thomas200593.mini_retail_app.features.dashboard.ui.VMDashboard.UiStateDashboard.Idle
-import com.thomas200593.mini_retail_app.features.dashboard.ui.VMDashboard.UiStateDashboard.Loading
-import com.thomas200593.mini_retail_app.features.dashboard.ui.VMDashboard.UiStateDashboard.Success
+import com.thomas200593.mini_retail_app.features.reporting.ui.VMReporting.UiEvents.ButtonEvents.BtnScrDescEvents
+import com.thomas200593.mini_retail_app.features.reporting.ui.VMReporting.UiEvents.OnOpenEvents
+import com.thomas200593.mini_retail_app.features.reporting.ui.VMReporting.UiStateReporting.Idle
+import com.thomas200593.mini_retail_app.features.reporting.ui.VMReporting.UiStateReporting.Loading
+import com.thomas200593.mini_retail_app.features.reporting.ui.VMReporting.UiStateReporting.Success
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,14 +18,14 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class VMDashboard @Inject constructor() : ViewModel() {
-    sealed interface UiStateDashboard {
-        data object Idle : UiStateDashboard
-        data object Loading : UiStateDashboard
-        data class Success(val data: Boolean): UiStateDashboard
+class VMReporting @Inject constructor(): ViewModel() {
+    sealed interface UiStateReporting {
+        data object Idle : UiStateReporting
+        data object Loading : UiStateReporting
+        data class Success(val data: Boolean) : UiStateReporting
     }
     data class UiState(
-        val uiStateDashboard: UiStateDashboard = Idle,
+        val uiStateReporting: UiStateReporting = Idle,
         val dialogState: DialogState = DialogState()
     )
     data class DialogState(
@@ -64,16 +64,16 @@ class VMDashboard @Inject constructor() : ViewModel() {
         )
     ) }
     private fun resetDialogState() = _uiState.update { it.copy(dialogState = DialogState()) }
-    private fun resetUiStateDashboard() = _uiState.update { it.copy(uiStateDashboard = Idle) }
-    private fun resetDialogAndUiState() { resetDialogState(); resetUiStateDashboard() }
+    private fun resetUiStateReporting() = _uiState.update { it.copy(uiStateReporting = Idle) }
+    private fun resetDialogAndUiState() { resetDialogState(); resetUiStateReporting() }
     private fun onOpenEvent(sessionState: SessionState) {
         resetDialogAndUiState()
         when(sessionState) {
-            SessionState.Loading -> _uiState.update { it.copy(uiStateDashboard = Loading) }
+            SessionState.Loading -> _uiState.update { it.copy(uiStateReporting = Loading) }
             is SessionState.Invalid -> onDenyAccess()
             is SessionState.Valid -> viewModelScope.launch {
-                _uiState.update { it.copy(uiStateDashboard = Loading) }
-                _uiState.update { it.copy(uiStateDashboard = Success(true)) }
+                _uiState.update { it.copy(uiStateReporting = Loading) }
+                _uiState.update { it.copy(uiStateReporting = Success(true)) }
             }
         }
     }
