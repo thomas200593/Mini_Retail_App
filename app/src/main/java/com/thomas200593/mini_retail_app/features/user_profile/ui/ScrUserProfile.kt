@@ -1,15 +1,20 @@
 package com.thomas200593.mini_retail_app.features.user_profile.ui
 
 import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
@@ -39,6 +44,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
@@ -219,13 +225,12 @@ private fun ScreenContent(
     onNavToBizProfile: () -> Unit,
     dlgBtnSignOutOnClick: () -> Unit
 ) {
-    /*Surface {
+    Surface {
         Column(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Top,
+            verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Top),
         ) {
-            PartAppConfig(onNavToAppConfig = onNavToAppConfig)
             CurrentUserSessionSection(
                 uiState = uiState,
                 dlgBtnSignOutOnClick = dlgBtnSignOutOnClick
@@ -234,9 +239,9 @@ private fun ScreenContent(
                 uiState = uiState,
                 onNavToBizProfile = onNavToBizProfile
             )
-            SignOutSection(dlgBtnSignOutOnClick = dlgBtnSignOutOnClick)
+            PartSignOut(dlgBtnSignOutOnClick = dlgBtnSignOutOnClick)
         }
-    }*/
+    }
 }
 
 @Composable
@@ -264,72 +269,77 @@ fun UserProfileGoogle(
     provider: OAuthProvider,
     userData: Google
 ) {
-    Column(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+    Surface(
+        shape = RoundedCornerShape(bottomEnd = 30.dp, bottomStart = 30.dp),
+        border = BorderStroke(2.dp, colorResource(R.color.charcoal_gray)),
+        shadowElevation = 5.dp
     ) {
-        var infoExpanded by remember { mutableStateOf(true) }
-        AsyncImage(
-            model = ImageRequest
-                .Builder(LocalContext.current).crossfade(250).data(data = userData.pictureUri)
-                .transformations(CircleCropTransformation()).build(),
-            contentDescription = null,
-            modifier = Modifier.size(100.dp).border(2.dp, Color.Gray, CircleShape),
-            contentScale = ContentScale.Crop
-        )
-        Row(
-            modifier = Modifier.fillMaxWidth(1.0f),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        ){
-            Text(
-                modifier = Modifier.weight(0.9f),
-                text = userData.name,
-                color = MaterialTheme.colorScheme.onSurface,
-                fontSize = MaterialTheme.typography.titleLarge.fontSize,
-                fontWeight = FontWeight.Bold,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                textAlign = TextAlign.Center
+        Column(
+            modifier = Modifier.fillMaxWidth().padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            var infoExpanded by remember { mutableStateOf(true) }
+            AsyncImage(
+                model = ImageRequest
+                    .Builder(LocalContext.current).crossfade(250).data(data = userData.pictureUri)
+                    .transformations(CircleCropTransformation()).build(),
+                contentDescription = null,
+                modifier = Modifier.size(100.dp).border(2.dp, Color.Gray, CircleShape),
+                contentScale = ContentScale.Crop
             )
-            Surface(
-                modifier = Modifier.weight(0.1f),
-                color = MaterialTheme.colorScheme.tertiaryContainer,
-                shape = MaterialTheme.shapes.extraSmall,
-                onClick = { infoExpanded = !infoExpanded }
-            ) {
-                Icon(
-                    imageVector =
-                    if(!infoExpanded) Icons.Default.KeyboardArrowDown
-                    else Icons.Default.KeyboardArrowUp,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onTertiaryContainer
+            Row(
+                modifier = Modifier.fillMaxWidth(1.0f),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ){
+                Text(
+                    modifier = Modifier.weight(0.9f),
+                    text = userData.name,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    fontSize = MaterialTheme.typography.titleLarge.fontSize,
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    textAlign = TextAlign.Center
+                )
+                Surface(
+                    modifier = Modifier.weight(0.1f),
+                    color = MaterialTheme.colorScheme.tertiaryContainer,
+                    shape = MaterialTheme.shapes.extraSmall,
+                    onClick = { infoExpanded = !infoExpanded }
+                ) {
+                    Icon(
+                        imageVector =
+                            if(!infoExpanded) Icons.Default.KeyboardArrowDown
+                            else Icons.Default.KeyboardArrowUp,
+                        contentDescription = null
+                    )
+                }
+            }
+
+            if(infoExpanded){
+                TextContentWithIcon(
+                    icon = Icons.Default.Email,
+                    text = userData.email
+                )
+                TextContentWithIcon(
+                    icon = Icons.Default.Check,
+                    text = when(userData.emailVerified){
+                        "true" -> stringResource(id = R.string.str_email_verified)
+                        "false" -> stringResource(id = R.string.str_email_not_verified)
+                        else -> stringResource(id = R.string.str_email_not_verified)
+                    }
+                )
+                TextContentWithIcon(
+                    icon = Icons.Default.Lock,
+                    text = provider.title
+                )
+                TextContentWithIcon(
+                    icon = ImageVector.vectorResource(id = CustomIcons.Auth.session_expire),
+                    text = Instant.ofEpochSecond(userData.expiredAt.toLong()).toString()
                 )
             }
-        }
-
-        if(infoExpanded){
-            TextContentWithIcon(
-                icon = Icons.Default.Email,
-                text = userData.email
-            )
-            TextContentWithIcon(
-                icon = Icons.Default.Check,
-                text = when(userData.emailVerified){
-                    "true" -> stringResource(id = R.string.str_email_verified)
-                    "false" -> stringResource(id = R.string.str_email_not_verified)
-                    else -> stringResource(id = R.string.str_email_not_verified)
-                }
-            )
-            TextContentWithIcon(
-                icon = Icons.Default.Lock,
-                text = provider.title
-            )
-            TextContentWithIcon(
-                icon = ImageVector.vectorResource(id = CustomIcons.Auth.session_expire),
-                text = Instant.ofEpochSecond(userData.expiredAt.toLong()).toString()
-            )
         }
     }
 }
@@ -487,16 +497,22 @@ private fun BizProfileSummaryData(
 }
 
 @Composable
-private fun SignOutSection(
+private fun PartSignOut(
     dlgBtnSignOutOnClick : () -> Unit
 ) {
-    AppIconButton(
-        onClick = dlgBtnSignOutOnClick,
-        icon = Icons.AutoMirrored.Filled.ExitToApp,
-        text = stringResource(id = R.string.str_auth_sign_out),
-        containerColor = MaterialTheme.colorScheme.errorContainer,
-        contentColor = MaterialTheme.colorScheme.onErrorContainer
-    )
+    Row(
+        modifier = Modifier.fillMaxWidth(1.0f).height(56.dp),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        AppIconButton(
+            onClick = dlgBtnSignOutOnClick,
+            icon = Icons.AutoMirrored.Filled.ExitToApp,
+            text = stringResource(id = R.string.str_auth_sign_out),
+            containerColor = MaterialTheme.colorScheme.errorContainer,
+            contentColor = MaterialTheme.colorScheme.onErrorContainer
+        )
+    }
 }
 
 @Composable
