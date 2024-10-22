@@ -1,7 +1,9 @@
 package com.thomas200593.mini_retail_app.features.user_profile.ui
 
 import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-import androidx.compose.foundation.BorderStroke
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,21 +13,18 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -33,14 +32,12 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -51,6 +48,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -59,19 +57,14 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import coil.transform.CircleCropTransformation
 import com.thomas200593.mini_retail_app.R
-import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs
 import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
 import com.thomas200593.mini_retail_app.app.ui.StateApp
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.AuditTrail
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.Industries
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.LegalType
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.Taxation
-import com.thomas200593.mini_retail_app.core.design_system.util.HlpStringArray.Handler.StringArrayResource
-import com.thomas200593.mini_retail_app.core.design_system.util.HlpStringArray.StringArrayResources.BizIndustries
 import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons
-import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.Country.country
 import com.thomas200593.mini_retail_app.core.ui.common.CustomThemes
-import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar
 import com.thomas200593.mini_retail_app.core.ui.component.CustomButton.Common.AppIconButton
 import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AlertDialogContext
 import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AppAlertDialog
@@ -100,8 +93,8 @@ import com.thomas200593.mini_retail_app.features.user_profile.ui.VMUserProfile.U
 import com.thomas200593.mini_retail_app.features.user_profile.ui.VMUserProfile.UiStateUserProfile.Success
 import com.thomas200593.mini_retail_app.work.workers.session_monitor.manager.ManagerWorkSessionMonitor
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Instant
 import ulid.ULID
-import java.time.Instant
 
 @Composable
 fun ScrUserProfile(
@@ -114,29 +107,27 @@ fun ScrUserProfile(
     val coroutineScope = rememberCoroutineScope()
     val uiState by vm.uiState.collectAsStateWithLifecycle()
     val sessionState by stateApp.isSessionValid.collectAsStateWithLifecycle()
-    val currentScreen = ScrGraphs.getByRoute(stateApp.destCurrent)
 
     LaunchedEffect(sessionState) { vm.onEvent(OnOpenEvents(sessionState)) }
 
     ScrUserProfile(
         uiState = uiState,
-        currentScreen = currentScreen,
         onNavToAppConfig = {
-            vm.onEvent(BtnAppConfigEvents.OnClick)
-                .also { coroutineScope.launch { stateApp.navController.navToAppConfig() } }
+            vm.onEvent(BtnAppConfigEvents.OnClick).also {
+                coroutineScope.launch { stateApp.navController.navToAppConfig() }
+            }
         },
         onNavToBizProfile = {
             val navOptions = navOptions{ launchSingleTop=true; restoreState=true }
             vm.onEvent(BtnBizProfileEvents.OnClick).also {
-                coroutineScope.launch {
-                    stateApp.navController.navToBiz(navOptions, DestBiz.BIZ_PROFILE)
-                }
+                coroutineScope.launch { stateApp.navController.navToBiz(navOptions, DestBiz.BIZ_PROFILE) } 
             }
         },
         dlgBtnSignOutOnClick = {
             ManagerWorkSessionMonitor.terminate(appContext)
-            vm.onEvent(BtnSignOutEvents.OnClick)
-                .also{ coroutineScope.launch { stateApp.navController.navToAuth() } }
+            vm.onEvent(BtnSignOutEvents.OnClick).also{
+                coroutineScope.launch { stateApp.navController.navToAuth() }
+            }
         }
     )
 }
@@ -144,23 +135,18 @@ fun ScrUserProfile(
 @Composable
 private fun ScrUserProfile(
     uiState: UiState,
-    currentScreen: ScrGraphs?,
     onNavToAppConfig: () -> Unit,
     onNavToBizProfile: () -> Unit,
     dlgBtnSignOutOnClick: () -> Unit
 ) {
-    currentScreen?.let {
-        HandleDialogs(
-            uiState = uiState,
-            dlgBtnSignOutOnClick = dlgBtnSignOutOnClick
-        )
-        TopAppBar(
-            onNavToAppConfig = onNavToAppConfig
-        )
-    }
+    HandleDialogs(
+        uiState = uiState,
+        dlgBtnSignOutOnClick = dlgBtnSignOutOnClick
+    )
     ScreenContent(
         uiState = uiState,
         onNavToBizProfile = onNavToBizProfile,
+        onNavToAppConfig = onNavToAppConfig,
         dlgBtnSignOutOnClick = dlgBtnSignOutOnClick
     )
 }
@@ -178,7 +164,9 @@ private fun HandleDialogs(
         showBody = true,
         body = {
             Column(
-                modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState()),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) { Text(text = stringResource(id = R.string.str_deny_access_auth_required)) }
@@ -197,315 +185,223 @@ private fun HandleDialogs(
 }
 
 @Composable
-private fun TopAppBar(
-    onNavToAppConfig: () -> Unit
-) {
-    CustomAppBar.ProvideTopAppBarAction {
-        Row(
-            modifier = Modifier,
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        ) {
-            Surface(
-                onClick = onNavToAppConfig,
-                modifier = Modifier.sizeIn(maxHeight = ButtonDefaults.IconSize)
-            ) {
-                Icon(
-                    imageVector = ImageVector.vectorResource(CustomIcons.Setting.settings),
-                    contentDescription = null
-                )
-            }
-        }
-    }
-}
-
-@Composable
 private fun ScreenContent(
     uiState: UiState,
+    onNavToAppConfig: () -> Unit,
     onNavToBizProfile: () -> Unit,
     dlgBtnSignOutOnClick: () -> Unit
 ) {
-    Surface {
-        Column(
-            modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Top),
-        ) {
-            CurrentUserSessionSection(
+    val lazyListState = rememberLazyListState()
+    val isAtTop by remember { derivedStateOf { lazyListState.firstVisibleItemIndex == 0 } }
+    val rowHeight by animateDpAsState(if(isAtTop) 140.dp else 56.dp, tween(300), String())
+    val imageSize by animateDpAsState(if(isAtTop) 100.dp else 40.dp, tween(300), String())
+    val colImageWeight by animateFloatAsState(if(isAtTop) 0.4f else 0.2f, tween(300), label = String())
+    val colInfoWeight by animateFloatAsState(if(isAtTop) 0.6f else 0.8f, tween(300), label = String())
+
+    Surface(Modifier.fillMaxSize()) {
+        Column(Modifier.fillMaxSize()) {
+            PartHeader(
                 uiState = uiState,
+                isAtTop = isAtTop,
+                imageSize = imageSize,
+                rowHeight = rowHeight,
+                colImageWeight = colImageWeight,
+                colInfoWeight = colInfoWeight,
+                onNavToAppConfig = onNavToAppConfig,
                 dlgBtnSignOutOnClick = dlgBtnSignOutOnClick
             )
-            BizProfileSummaryData(
-                uiState = uiState,
-                onNavToBizProfile = onNavToBizProfile
-            )
-            PartSignOut(dlgBtnSignOutOnClick = dlgBtnSignOutOnClick)
-        }
-    }
-}
-
-@Composable
-private fun CurrentUserSessionSection(
-    uiState: UiState,
-    dlgBtnSignOutOnClick: () -> Unit
-) {
-    when(uiState.userProfileData){
-        Idle -> Unit
-        Loading -> CircularProgressIndicator()
-        is Success -> {
-            val userData = uiState.userProfileData.data.first
-            when(val provider = userData.authSessionToken?.authProvider) {
-                GOOGLE ->
-                    UserProfileGoogle(provider = provider, userData = userData.oAuth2UserMetadata as Google)
-                null ->
-                    dlgBtnSignOutOnClick()
+            LazyColumn(
+                modifier = Modifier.weight(1.0f),
+                state = lazyListState
+            ) {
+                item { PartBizProfileShort(onNavToBizProfile = onNavToBizProfile) }
+                item { PartSignOut(dlgBtnSignOutOnClick = dlgBtnSignOutOnClick) }
             }
         }
     }
 }
 
 @Composable
-fun UserProfileGoogle(
+private fun PartHeader(
+    uiState: UiState,
+    isAtTop: Boolean,
+    rowHeight: Dp,
+    imageSize: Dp,
+    colImageWeight: Float,
+    colInfoWeight: Float,
+    onNavToAppConfig: () -> Unit,
+    dlgBtnSignOutOnClick: () -> Unit
+) {
+    Row(modifier = Modifier.fillMaxWidth().padding(16.dp).height(rowHeight)) {
+        PartCurrentUserSession(
+            uiState = uiState,
+            modifier = Modifier.weight(0.9f),
+            isAtTop = isAtTop,
+            colImageWeight = colImageWeight,
+            imageSize = imageSize,
+            colInfoWeight = colInfoWeight,
+            dlgBtnSignOutOnClick = dlgBtnSignOutOnClick
+        )
+        PartAppConfig(
+            modifier = Modifier.weight(0.1f),
+            btnAppConfigOnClick = onNavToAppConfig
+        )
+    }
+}
+
+@Composable
+private fun PartCurrentUserSession(
+    uiState: UiState,
+    modifier: Modifier,
+    isAtTop: Boolean,
+    colImageWeight: Float,
+    imageSize: Dp,
+    colInfoWeight: Float,
+    dlgBtnSignOutOnClick: () -> Unit
+) {
+    Row(modifier = modifier) {
+        when(uiState.userProfileData) {
+            Idle -> Unit
+            Loading -> PartCurrentUserSessionLoading()
+            is Success -> {
+                val userData = uiState.userProfileData.data.first
+                when(val provider = userData.authSessionToken?.authProvider) {
+                    GOOGLE -> UserProfileGoogle(
+                        isAtTop = isAtTop,
+                        imageSize = imageSize,
+                        colImageModifier = Modifier.weight(colImageWeight),
+                        colInfoModifier = Modifier.weight(colInfoWeight),
+                        provider = provider,
+                        userData = userData.oAuth2UserMetadata as Google
+                    )
+                    null -> dlgBtnSignOutOnClick()
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun PartCurrentUserSessionLoading() {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) { CircularProgressIndicator() }
+}
+
+@Composable
+private fun UserProfileGoogle(
+    isAtTop: Boolean,
+    imageSize: Dp,
+    colImageModifier: Modifier,
+    colInfoModifier: Modifier,
     provider: OAuthProvider,
     userData: Google
 ) {
-    Surface(
-        shape = RoundedCornerShape(bottomEnd = 30.dp, bottomStart = 30.dp),
-        border = BorderStroke(2.dp, colorResource(R.color.charcoal_gray)),
-        shadowElevation = 5.dp
+    Column(modifier = colImageModifier) {
+        AsyncImage(
+            model = ImageRequest.Builder(LocalContext.current).crossfade(250)
+                .data(data = userData.pictureUri).transformations(CircleCropTransformation()).build(),
+            contentDescription = null,
+            modifier = Modifier.border(2.dp, colorResource(R.color.charcoal_gray), CircleShape).size(imageSize),
+            contentScale = ContentScale.Crop
+        )
+    }
+    Column(
+        modifier = colInfoModifier,
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        Column(
-            modifier = Modifier.fillMaxWidth().padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            var infoExpanded by remember { mutableStateOf(true) }
-            AsyncImage(
-                model = ImageRequest
-                    .Builder(LocalContext.current).crossfade(250).data(data = userData.pictureUri)
-                    .transformations(CircleCropTransformation()).build(),
-                contentDescription = null,
-                modifier = Modifier.size(100.dp).border(2.dp, Color.Gray, CircleShape),
-                contentScale = ContentScale.Crop
+        Text(
+            text = userData.name,
+            fontSize = MaterialTheme.typography.titleLarge.fontSize,
+            fontWeight = FontWeight.Bold,
+            maxLines = 1,
+            textAlign = TextAlign.Start,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.fillMaxWidth()
+        )
+        TextContentWithIcon(
+            icon = Icons.Default.Email,
+            iconBoxColor = MaterialTheme.colorScheme.surface,
+            text = userData.email,
+            iconWidthRatio = 0.2f,
+            textWidthRatio = 0.8f
+        )
+        if(isAtTop) {
+            TextContentWithIcon(
+                icon = Icons.Default.Check,
+                iconBoxColor = MaterialTheme.colorScheme.surface,
+                text = when(userData.emailVerified){
+                    "true" -> stringResource(id = R.string.str_email_verified)
+                    "false" -> stringResource(id = R.string.str_email_not_verified)
+                    else -> stringResource(id = R.string.str_email_not_verified)
+                },
+                iconWidthRatio = 0.2f,
+                textWidthRatio = 0.8f
             )
-            Row(
-                modifier = Modifier.fillMaxWidth(1.0f),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ){
-                Text(
-                    modifier = Modifier.weight(0.9f),
-                    text = userData.name,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    fontSize = MaterialTheme.typography.titleLarge.fontSize,
-                    fontWeight = FontWeight.Bold,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    textAlign = TextAlign.Center
-                )
-                Surface(
-                    modifier = Modifier.weight(0.1f),
-                    color = MaterialTheme.colorScheme.tertiaryContainer,
-                    shape = MaterialTheme.shapes.extraSmall,
-                    onClick = { infoExpanded = !infoExpanded }
-                ) {
-                    Icon(
-                        imageVector =
-                            if(!infoExpanded) Icons.Default.KeyboardArrowDown
-                            else Icons.Default.KeyboardArrowUp,
-                        contentDescription = null
-                    )
-                }
-            }
-
-            if(infoExpanded){
-                TextContentWithIcon(
-                    icon = Icons.Default.Email,
-                    text = userData.email
-                )
-                TextContentWithIcon(
-                    icon = Icons.Default.Check,
-                    text = when(userData.emailVerified){
-                        "true" -> stringResource(id = R.string.str_email_verified)
-                        "false" -> stringResource(id = R.string.str_email_not_verified)
-                        else -> stringResource(id = R.string.str_email_not_verified)
-                    }
-                )
-                TextContentWithIcon(
-                    icon = Icons.Default.Lock,
-                    text = provider.title
-                )
-                TextContentWithIcon(
-                    icon = ImageVector.vectorResource(id = CustomIcons.Auth.session_expire),
-                    text = Instant.ofEpochSecond(userData.expiredAt.toLong()).toString()
-                )
-            }
+            TextContentWithIcon(
+                icon = Icons.Default.Lock,
+                iconBoxColor = MaterialTheme.colorScheme.surface,
+                text = provider.title,
+                iconWidthRatio = 0.2f,
+                textWidthRatio = 0.8f
+            )
+            TextContentWithIcon(
+                icon = Icons.Default.Refresh,
+                iconBoxColor = MaterialTheme.colorScheme.surface,
+                text = Instant.fromEpochSeconds(userData.expiredAt.toLong()).toString(),
+                iconWidthRatio = 0.2f,
+                textWidthRatio = 0.8f
+            )
         }
     }
 }
 
 @Composable
-private fun BizProfileSummaryData(
-    uiState: UiState,
-    onNavToBizProfile: () -> Unit
+private fun PartAppConfig(
+    modifier: Modifier = Modifier,
+    btnAppConfigOnClick: () -> Unit
 ) {
-    when(uiState.userProfileData){
-        Idle -> Unit
-        Loading -> CircularProgressIndicator()
-        is Success -> Surface(
-            modifier = Modifier.fillMaxWidth(),
-            color = MaterialTheme.colorScheme.secondaryContainer,
-            contentColor = MaterialTheme.colorScheme.onSecondaryContainer
-        ) {
-            val bizProfile = uiState.userProfileData.data.second
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                Text(
-                    text = stringResource(id = R.string.str_business_profile),
-                    modifier = Modifier,
-                    textAlign = TextAlign.Center,
-                    fontWeight = FontWeight.Bold
-                )
-                Surface(
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = MaterialTheme.shapes.medium,
-                    color = MaterialTheme.colorScheme.secondaryContainer
-                ) {
-                    Column(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        TextContentWithIcon(
-                            icon = ImageVector.vectorResource(id = country),
-                            iconBoxColor = MaterialTheme.colorScheme.secondaryContainer,
-                            text = stringResource(R.string.str_biz_name),
-                            fontWeight = FontWeight.Bold
-                        )
-                        bizProfile.bizName.legalName
-                            .takeIf { it.isNotBlank() }?.let {
-                                Column(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    horizontalAlignment = Alignment.Start,
-                                    verticalArrangement = Arrangement.Center
-                                ) {
-                                    Text(
-                                        text = stringResource(R.string.str_biz_legal_name),
-                                        maxLines = 1,
-                                        fontWeight = FontWeight.Bold,
-                                        style = MaterialTheme.typography.labelSmall,
-                                        overflow = TextOverflow.Ellipsis
-                                    )
-                                    Text(
-                                        text = it,
-                                        style = MaterialTheme.typography.bodyMedium
-                                    )
-                                }
-                            }
-                        bizProfile.bizName.commonName
-                            .takeIf { it.isNotBlank() }?.let {
-                                Column(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    horizontalAlignment = Alignment.Start,
-                                    verticalArrangement = Arrangement.Center
-                                ) {
-                                    Text(
-                                        text = stringResource(R.string.str_biz_common_name),
-                                        maxLines = 1,
-                                        fontWeight = FontWeight.Bold,
-                                        style = MaterialTheme.typography.labelSmall,
-                                        overflow = TextOverflow.Ellipsis
-                                    )
-                                    Text(
-                                        text = it,
-                                        style = MaterialTheme.typography.bodyMedium
-                                    )
-                                }
-                            }
-                    }
-                }
-                Surface(
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = MaterialTheme.shapes.medium,
-                    color = MaterialTheme.colorScheme.secondaryContainer
-                ) {
-                    Column(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        TextContentWithIcon(
-                            icon = ImageVector.vectorResource(id = country),
-                            iconBoxColor = MaterialTheme.colorScheme.secondaryContainer,
-                            text = stringResource(R.string.str_biz_industry),
-                            fontWeight = FontWeight.Bold
-                        )
-                        bizProfile.bizIndustry.identityKey.let {
-                            StringArrayResource(BizIndustries).findByKey(it)?.let {
-                                Column(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    horizontalAlignment = Alignment.Start,
-                                    verticalArrangement = Arrangement.Center
-                                ) {
-                                    Text(
-                                        text = stringResource(R.string.str_biz_industry),
-                                        maxLines = 1,
-                                        fontWeight = FontWeight.Bold,
-                                        style = MaterialTheme.typography.labelSmall,
-                                        overflow = TextOverflow.Ellipsis
-                                    )
-                                    Text(
-                                        text = it,
-                                        style = MaterialTheme.typography.bodyMedium
-                                    )
-                                }
-                            }
-                        }
-                        bizProfile.bizIndustry.additionalInfo
-                            .takeIf{ it.isNotBlank() }?.let {
-                                Column(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    horizontalAlignment = Alignment.Start,
-                                    verticalArrangement = Arrangement.Center
-                                ) {
-                                    Text(
-                                        text = stringResource(R.string.str_additional_info),
-                                        maxLines = 1,
-                                        fontWeight = FontWeight.Bold,
-                                        style = MaterialTheme.typography.labelSmall,
-                                        overflow = TextOverflow.Ellipsis
-                                    )
-                                    Text(
-                                        text = it,
-                                        style = MaterialTheme.typography.bodyMedium
-                                    )
-                                }
-                            }
-                    }
-                }
-                AppIconButton(
-                    onClick = onNavToBizProfile,
-                    icon = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                    text = stringResource(id = R.string.str_detail)
-                )
-            }
-        }
+    Surface(
+        modifier = modifier,
+        onClick = btnAppConfigOnClick
+    ) {
+        Icon(
+            imageVector = ImageVector.vectorResource(CustomIcons.Setting.settings),
+            contentDescription = null,
+            modifier = Modifier.size(28.dp)
+        )
+    }
+}
+
+@Composable
+private fun PartBizProfileShort(onNavToBizProfile: () -> Unit) {
+    Row(
+        modifier = Modifier.fillMaxWidth(1.0f),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        AppIconButton(
+            modifier = Modifier.padding(16.dp),
+            onClick = onNavToBizProfile,
+            icon = ImageVector.vectorResource(CustomIcons.Business.business_profile),
+            text = stringResource(R.string.str_detail)
+        )
     }
 }
 
 @Composable
 private fun PartSignOut(
-    dlgBtnSignOutOnClick : () -> Unit
+    dlgBtnSignOutOnClick: () -> Unit
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth(1.0f).height(56.dp),
+        modifier = Modifier.fillMaxWidth(1.0f),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ) {
         AppIconButton(
+            modifier = Modifier.padding(16.dp),
             onClick = dlgBtnSignOutOnClick,
             icon = Icons.AutoMirrored.Filled.ExitToApp,
             text = stringResource(id = R.string.str_auth_sign_out),
@@ -519,7 +415,6 @@ private fun PartSignOut(
 @Preview
 private fun Preview() = CustomThemes.ApplicationTheme {
     ScrUserProfile(
-        currentScreen = ScrGraphs.UserProfile,
         uiState = UiState(
             dialogState = DialogState(),
             userProfileData = //Loading

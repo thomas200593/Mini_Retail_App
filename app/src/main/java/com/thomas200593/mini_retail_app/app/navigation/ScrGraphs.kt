@@ -285,7 +285,7 @@ sealed class ScrGraphs(
         title = string.str_user_profile,
         description = string.str_user_profile,
         usesAuth = true,
-        usesTopBar = true
+        usesTopBar = false
     )
 }
 
