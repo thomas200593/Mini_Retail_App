@@ -42,6 +42,7 @@ import androidx.compose.ui.text.style.TextAlign.Companion.Center
 import androidx.compose.ui.text.style.TextAlign.Companion.Start
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension.Companion.fillToConstraints
@@ -198,6 +199,7 @@ object CustomPanel{
         textOverflow: TextOverflow = TextOverflow.Ellipsis,
         textAlign: TextAlign = Start,
         fontWeight: FontWeight = FontWeight.Normal,
+        fontSize: TextUnit = TextUnit.Unspecified,
         iconWidthRatio: Float = 0.1f,
         textWidthRatio: Float = 0.9f
     ){
@@ -224,7 +226,8 @@ object CustomPanel{
                 maxLines = textMaxLines,
                 overflow = textOverflow,
                 textAlign = textAlign,
-                fontWeight = fontWeight
+                fontWeight = fontWeight,
+                fontSize = fontSize
             )
         }
     }

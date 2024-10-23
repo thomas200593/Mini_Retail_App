@@ -1,9 +1,16 @@
 package com.thomas200593.mini_retail_app.features.user_profile.ui
 
 import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandHorizontally
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkHorizontally
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -25,7 +32,9 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -50,6 +59,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.navOptions
@@ -164,9 +174,7 @@ private fun HandleDialogs(
         showBody = true,
         body = {
             Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .verticalScroll(rememberScrollState()),
+                modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) { Text(text = stringResource(id = R.string.str_deny_access_auth_required)) }
@@ -193,10 +201,36 @@ private fun ScreenContent(
 ) {
     val lazyListState = rememberLazyListState()
     val isAtTop by remember { derivedStateOf { lazyListState.firstVisibleItemIndex == 0 } }
-    val rowHeight by animateDpAsState(if(isAtTop) 140.dp else 56.dp, tween(300), String())
-    val imageSize by animateDpAsState(if(isAtTop) 100.dp else 40.dp, tween(300), String())
-    val colImageWeight by animateFloatAsState(if(isAtTop) 0.4f else 0.2f, tween(300), label = String())
-    val colInfoWeight by animateFloatAsState(if(isAtTop) 0.6f else 0.8f, tween(300), label = String())
+    val rowHeight by animateDpAsState(
+        targetValue = if(isAtTop) 120.dp else 56.dp,
+        animationSpec = tween(300),
+        label = String()
+    )
+    val imageSize by animateDpAsState(
+        targetValue = if(isAtTop) 60.dp else 40.dp,
+        animationSpec = tween(300),
+        label = String()
+    )
+    val colImageWeight by animateFloatAsState(
+        targetValue = if(isAtTop) 0.2f else 0.2f,
+        animationSpec = tween(300),
+        label = String()
+    )
+    val colInfoWeight by animateFloatAsState(
+        targetValue = if(isAtTop) 0.8f else 0.8f,
+        animationSpec = tween(300),
+        label = String()
+    )
+    val leftHeaderVerticalAlignment by remember {
+        derivedStateOf { if (isAtTop) Alignment.CenterVertically else Alignment.Top }
+    }
+    val nameFontSize by animateFloatAsState(
+        targetValue =
+            if (isAtTop) MaterialTheme.typography.bodyLarge.fontSize.value
+            else MaterialTheme.typography.titleMedium.fontSize.value,
+        animationSpec = tween(durationMillis = 300),
+        label = String()
+    )
 
     Surface(Modifier.fillMaxSize()) {
         Column(Modifier.fillMaxSize()) {
@@ -208,12 +242,24 @@ private fun ScreenContent(
                 colImageWeight = colImageWeight,
                 colInfoWeight = colInfoWeight,
                 onNavToAppConfig = onNavToAppConfig,
-                dlgBtnSignOutOnClick = dlgBtnSignOutOnClick
+                dlgBtnSignOutOnClick = dlgBtnSignOutOnClick,
+                leftHeaderVerticalAlignment = leftHeaderVerticalAlignment,
+                nameFontSize = nameFontSize
             )
             LazyColumn(
                 modifier = Modifier.weight(1.0f),
                 state = lazyListState
             ) {
+                item {
+                    AnimatedVisibility(
+                        visible = isAtTop,
+                        enter = fadeIn() + expandHorizontally(),
+                        exit = fadeOut() + shrinkHorizontally()
+                    ) { HorizontalDivider(thickness = 2.dp, color = colorResource(R.color.charcoal_gray)) }
+                }
+                items(30) {
+                    Text("$it", modifier = Modifier.fillMaxWidth().padding(8.dp))
+                }
                 item { PartBizProfileShort(onNavToBizProfile = onNavToBizProfile) }
                 item { PartSignOut(dlgBtnSignOutOnClick = dlgBtnSignOutOnClick) }
             }
@@ -230,9 +276,11 @@ private fun PartHeader(
     colImageWeight: Float,
     colInfoWeight: Float,
     onNavToAppConfig: () -> Unit,
-    dlgBtnSignOutOnClick: () -> Unit
+    dlgBtnSignOutOnClick: () -> Unit,
+    leftHeaderVerticalAlignment: Alignment.Vertical,
+    nameFontSize: Float
 ) {
-    Row(modifier = Modifier.fillMaxWidth().padding(16.dp).height(rowHeight)) {
+    Row(modifier = Modifier.fillMaxWidth().padding(8.dp, 16.dp, 8.dp, 8.dp).height(rowHeight)) {
         PartCurrentUserSession(
             uiState = uiState,
             modifier = Modifier.weight(0.9f),
@@ -240,7 +288,9 @@ private fun PartHeader(
             colImageWeight = colImageWeight,
             imageSize = imageSize,
             colInfoWeight = colInfoWeight,
-            dlgBtnSignOutOnClick = dlgBtnSignOutOnClick
+            dlgBtnSignOutOnClick = dlgBtnSignOutOnClick,
+            leftHeaderVerticalAlignment = leftHeaderVerticalAlignment,
+            nameFontSize = nameFontSize
         )
         PartAppConfig(
             modifier = Modifier.weight(0.1f),
@@ -257,9 +307,15 @@ private fun PartCurrentUserSession(
     colImageWeight: Float,
     imageSize: Dp,
     colInfoWeight: Float,
-    dlgBtnSignOutOnClick: () -> Unit
+    dlgBtnSignOutOnClick: () -> Unit,
+    leftHeaderVerticalAlignment: Alignment.Vertical,
+    nameFontSize: Float
 ) {
-    Row(modifier = modifier) {
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
+        verticalAlignment = leftHeaderVerticalAlignment
+    ) {
         when(uiState.userProfileData) {
             Idle -> Unit
             Loading -> PartCurrentUserSessionLoading()
@@ -272,7 +328,8 @@ private fun PartCurrentUserSession(
                         colImageModifier = Modifier.weight(colImageWeight),
                         colInfoModifier = Modifier.weight(colInfoWeight),
                         provider = provider,
-                        userData = userData.oAuth2UserMetadata as Google
+                        userData = userData.oAuth2UserMetadata as Google,
+                        nameFontSize = nameFontSize
                     )
                     null -> dlgBtnSignOutOnClick()
                 }
@@ -297,9 +354,13 @@ private fun UserProfileGoogle(
     colImageModifier: Modifier,
     colInfoModifier: Modifier,
     provider: OAuthProvider,
-    userData: Google
+    userData: Google,
+    nameFontSize: Float
 ) {
-    Column(modifier = colImageModifier) {
+    Column(
+        modifier = colImageModifier,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current).crossfade(250)
                 .data(data = userData.pictureUri).transformations(CircleCropTransformation()).build(),
@@ -310,50 +371,65 @@ private fun UserProfileGoogle(
     }
     Column(
         modifier = colInfoModifier,
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         Text(
             text = userData.name,
-            fontSize = MaterialTheme.typography.titleLarge.fontSize,
+            fontSize = nameFontSize.sp,
             fontWeight = FontWeight.Bold,
             maxLines = 1,
             textAlign = TextAlign.Start,
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier.fillMaxWidth()
         )
-        TextContentWithIcon(
-            icon = Icons.Default.Email,
-            iconBoxColor = MaterialTheme.colorScheme.surface,
-            text = userData.email,
-            iconWidthRatio = 0.2f,
-            textWidthRatio = 0.8f
-        )
-        if(isAtTop) {
-            TextContentWithIcon(
-                icon = Icons.Default.Check,
-                iconBoxColor = MaterialTheme.colorScheme.surface,
-                text = when(userData.emailVerified){
-                    "true" -> stringResource(id = R.string.str_email_verified)
-                    "false" -> stringResource(id = R.string.str_email_not_verified)
-                    else -> stringResource(id = R.string.str_email_not_verified)
-                },
-                iconWidthRatio = 0.2f,
-                textWidthRatio = 0.8f
-            )
-            TextContentWithIcon(
-                icon = Icons.Default.Lock,
-                iconBoxColor = MaterialTheme.colorScheme.surface,
-                text = provider.title,
-                iconWidthRatio = 0.2f,
-                textWidthRatio = 0.8f
-            )
-            TextContentWithIcon(
-                icon = Icons.Default.Refresh,
-                iconBoxColor = MaterialTheme.colorScheme.surface,
-                text = Instant.fromEpochSeconds(userData.expiredAt.toLong()).toString(),
-                iconWidthRatio = 0.2f,
-                textWidthRatio = 0.8f
-            )
+        AnimatedVisibility(
+            visible = !isAtTop,
+            enter = fadeIn() + expandHorizontally(),
+            exit = fadeOut() + shrinkHorizontally()
+        ) { HorizontalDivider(thickness = 2.dp, color = colorResource(R.color.charcoal_gray)) }
+        AnimatedVisibility (
+            visible = isAtTop,
+            enter = fadeIn() + expandVertically(),
+            exit = fadeOut() + shrinkVertically()
+        ) {
+            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                TextContentWithIcon(
+                    icon = Icons.Default.Email,
+                    iconBoxColor = MaterialTheme.colorScheme.surface,
+                    text = userData.email,
+                    fontSize = MaterialTheme.typography.labelLarge.fontSize,
+                    iconWidthRatio = 0.1f,
+                    textWidthRatio = 0.9f
+                )
+                TextContentWithIcon(
+                    icon = Icons.Default.Check,
+                    iconBoxColor = MaterialTheme.colorScheme.surface,
+                    text = when(userData.emailVerified){
+                        "true" -> stringResource(id = R.string.str_email_verified)
+                        "false" -> stringResource(id = R.string.str_email_not_verified)
+                        else -> stringResource(id = R.string.str_email_not_verified)
+                    },
+                    fontSize = MaterialTheme.typography.labelLarge.fontSize,
+                    iconWidthRatio = 0.1f,
+                    textWidthRatio = 0.9f
+                )
+                TextContentWithIcon(
+                    icon = Icons.Default.Lock,
+                    iconBoxColor = MaterialTheme.colorScheme.surface,
+                    text = provider.title,
+                    fontSize = MaterialTheme.typography.labelLarge.fontSize,
+                    iconWidthRatio = 0.1f,
+                    textWidthRatio = 0.9f
+                )
+                TextContentWithIcon(
+                    icon = Icons.Default.Refresh,
+                    iconBoxColor = MaterialTheme.colorScheme.surface,
+                    text = Instant.fromEpochSeconds(userData.expiredAt.toLong()).toString(),
+                    fontSize = MaterialTheme.typography.labelLarge.fontSize,
+                    iconWidthRatio = 0.1f,
+                    textWidthRatio = 0.9f
+                )
+            }
         }
     }
 }
@@ -370,7 +446,7 @@ private fun PartAppConfig(
         Icon(
             imageVector = ImageVector.vectorResource(CustomIcons.Setting.settings),
             contentDescription = null,
-            modifier = Modifier.size(28.dp)
+            modifier = Modifier.size(ButtonDefaults.IconSize)
         )
     }
 }
