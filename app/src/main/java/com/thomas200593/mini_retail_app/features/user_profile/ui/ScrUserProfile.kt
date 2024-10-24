@@ -266,10 +266,12 @@ private fun ScreenContent(
                         exit = fadeOut() + shrinkHorizontally()
                     ) { HorizontalDivider(thickness = 2.dp, color = colorResource(R.color.charcoal_gray)) }
                 }
-                items(30) {
-                    Text("$it", modifier = Modifier.fillMaxWidth().padding(8.dp))
+                item {
+                    PartBizProfileShort(
+                        uiState = uiState,
+                        onNavToBizProfile = onNavToBizProfile
+                    )
                 }
-                item { PartBizProfileShort(onNavToBizProfile = onNavToBizProfile) }
                 item { PartSignOut(dlgBtnSignOutOnClick = dlgBtnSignOutOnClick) }
             }
         }
@@ -485,18 +487,36 @@ private fun PartAppConfig(
 }
 
 @Composable
-private fun PartBizProfileShort(onNavToBizProfile: () -> Unit) {
-    Row(
-        modifier = Modifier.fillMaxWidth(1.0f),
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        AppIconButton(
-            modifier = Modifier.padding(16.dp),
-            onClick = onNavToBizProfile,
-            icon = ImageVector.vectorResource(CustomIcons.Business.business_profile),
-            text = stringResource(R.string.str_detail)
-        )
+private fun PartBizProfileShort(uiState: UiState, onNavToBizProfile: () -> Unit) {
+    when(uiState.userProfileData) {
+        Idle, Loading -> CircularProgressIndicator()
+        is Success -> {
+            val bizProfileShort = uiState.userProfileData.data.second
+            Surface(
+                modifier = Modifier.fillMaxWidth().padding(16.dp),
+                shape = MaterialTheme.shapes.medium,
+                color = MaterialTheme.colorScheme.secondaryContainer
+            ) {
+                Column(
+                    modifier = Modifier.fillMaxWidth().padding(8.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Text(
+                        text = stringResource(R.string.str_business_profile),
+                        fontSize = MaterialTheme.typography.titleMedium.fontSize,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center
+                    )
+                    HorizontalDivider(thickness = 2.dp, color = colorResource(R.color.charcoal_gray))
+                    AppIconButton(
+                        onClick = onNavToBizProfile,
+                        icon = ImageVector.vectorResource(CustomIcons.Business.business_profile),
+                        text = stringResource(R.string.str_detail)
+                    )
+                }
+            }
+        }
     }
 }
 
@@ -510,7 +530,7 @@ private fun PartSignOut(
         verticalAlignment = Alignment.CenterVertically
     ) {
         AppIconButton(
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier.padding(8.dp),
             onClick = dlgBtnSignOutOnClick,
             icon = Icons.AutoMirrored.Filled.ExitToApp,
             text = stringResource(id = R.string.str_auth_sign_out),
