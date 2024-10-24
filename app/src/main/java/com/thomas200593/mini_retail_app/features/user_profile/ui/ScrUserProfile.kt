@@ -2,6 +2,7 @@ package com.thomas200593.mini_retail_app.features.user_profile.ui
 
 import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -207,31 +208,34 @@ private fun ScreenContent(
     val lazyListState = rememberLazyListState()
     val isAtTop by remember { derivedStateOf { lazyListState.firstVisibleItemIndex == 0 } }
     val rowHeight by animateDpAsState(
-        targetValue = if(isAtTop) 130.dp else 56.dp,
+        targetValue = if(isAtTop && uiState.userProfileData is Success) 130.dp else 56.dp,
         animationSpec = tween(300),
         label = String()
     )
     val imageSize by animateDpAsState(
-        targetValue = if(isAtTop) 70.dp else 40.dp,
+        targetValue = if(isAtTop && uiState.userProfileData is Success) 70.dp else 40.dp,
         animationSpec = tween(300),
         label = String()
     )
     val colImageWeight by animateFloatAsState(
-        targetValue = if(isAtTop) 0.3f else 0.2f,
+        targetValue = if(isAtTop && uiState.userProfileData is Success) 0.3f else 0.2f,
         animationSpec = tween(300),
         label = String()
     )
     val colInfoWeight by animateFloatAsState(
-        targetValue = if(isAtTop) 0.7f else 0.8f,
+        targetValue = if(isAtTop && uiState.userProfileData is Success) 0.7f else 0.8f,
         animationSpec = tween(300),
         label = String()
     )
     val leftHeaderVerticalAlignment by remember {
-        derivedStateOf { if (isAtTop) Alignment.CenterVertically else Alignment.Top }
+        derivedStateOf {
+            if (isAtTop && uiState.userProfileData is Success) Alignment.CenterVertically
+            else Alignment.Top
+        }
     }
     val nameFontSize by animateFloatAsState(
         targetValue =
-            if (isAtTop) MaterialTheme.typography.bodyLarge.fontSize.value
+            if (isAtTop && uiState.userProfileData is Success) MaterialTheme.typography.bodyLarge.fontSize.value
             else MaterialTheme.typography.titleMedium.fontSize.value,
         animationSpec = tween(durationMillis = 300),
         label = String()
@@ -285,13 +289,17 @@ private fun PartHeader(
     leftHeaderVerticalAlignment: Alignment.Vertical,
     nameFontSize: Float
 ) {
+    val targetColor1 =
+        if (isAtTop && uiState.userProfileData is Success) MaterialTheme.colorScheme.surface.copy(0.3f)
+        else MaterialTheme.colorScheme.tertiaryContainer.copy(0.3f)
+    val targetColor2 =
+        if (isAtTop && uiState.userProfileData is Success) MaterialTheme.colorScheme.tertiaryContainer.copy(0.3f)
+        else MaterialTheme.colorScheme.surface.copy(0.3f)
+    val animatedColor1 by animateColorAsState(targetValue = targetColor1, label = String())
+    val animatedColor2 by animateColorAsState(targetValue = targetColor2, label = String())
+
     val gradientBrush = Brush.radialGradient(
-        colors = listOf(
-            MaterialTheme.colorScheme.surface.copy(0.3f), // Fade to primaryContainer color
-            MaterialTheme.colorScheme.tertiaryContainer.copy(0.3f),
-        ),
-        radius = 500f, // Adjust radius as needed
-        center = Offset.Infinite
+        colors = listOf(animatedColor1, animatedColor2), radius = 500f, center = Offset.Infinite
     )
     Row(modifier = Modifier.fillMaxWidth().height(rowHeight).background(gradientBrush)) {
         PartCurrentUserSession(
@@ -458,7 +466,8 @@ private fun PartAppConfig(
 ) {
     Row(
         modifier = modifier.fillMaxHeight(1.0f),
-        verticalAlignment = Alignment.Top
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.Top,
     ) {
         Surface(
             modifier = Modifier,
