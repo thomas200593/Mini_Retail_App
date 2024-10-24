@@ -11,10 +11,12 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -47,6 +49,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -202,22 +207,22 @@ private fun ScreenContent(
     val lazyListState = rememberLazyListState()
     val isAtTop by remember { derivedStateOf { lazyListState.firstVisibleItemIndex == 0 } }
     val rowHeight by animateDpAsState(
-        targetValue = if(isAtTop) 120.dp else 56.dp,
+        targetValue = if(isAtTop) 130.dp else 56.dp,
         animationSpec = tween(300),
         label = String()
     )
     val imageSize by animateDpAsState(
-        targetValue = if(isAtTop) 60.dp else 40.dp,
+        targetValue = if(isAtTop) 70.dp else 40.dp,
         animationSpec = tween(300),
         label = String()
     )
     val colImageWeight by animateFloatAsState(
-        targetValue = if(isAtTop) 0.2f else 0.2f,
+        targetValue = if(isAtTop) 0.3f else 0.2f,
         animationSpec = tween(300),
         label = String()
     )
     val colInfoWeight by animateFloatAsState(
-        targetValue = if(isAtTop) 0.8f else 0.8f,
+        targetValue = if(isAtTop) 0.7f else 0.8f,
         animationSpec = tween(300),
         label = String()
     )
@@ -280,10 +285,18 @@ private fun PartHeader(
     leftHeaderVerticalAlignment: Alignment.Vertical,
     nameFontSize: Float
 ) {
-    Row(modifier = Modifier.fillMaxWidth().padding(8.dp, 16.dp, 8.dp, 8.dp).height(rowHeight)) {
+    val gradientBrush = Brush.radialGradient(
+        colors = listOf(
+            MaterialTheme.colorScheme.surface.copy(0.3f), // Fade to primaryContainer color
+            MaterialTheme.colorScheme.tertiaryContainer.copy(0.3f),
+        ),
+        radius = 500f, // Adjust radius as needed
+        center = Offset.Infinite
+    )
+    Row(modifier = Modifier.fillMaxWidth().height(rowHeight).background(gradientBrush)) {
         PartCurrentUserSession(
             uiState = uiState,
-            modifier = Modifier.weight(0.9f),
+            modifier = Modifier.weight(0.9f).padding(start = 8.dp, top = 8.dp, bottom = 8.dp, end = 4.dp),
             isAtTop = isAtTop,
             colImageWeight = colImageWeight,
             imageSize = imageSize,
@@ -293,7 +306,7 @@ private fun PartHeader(
             nameFontSize = nameFontSize
         )
         PartAppConfig(
-            modifier = Modifier.weight(0.1f),
+            modifier = Modifier.weight(0.1f).padding(start = 4.dp, top = 8.dp, bottom = 8.dp, end = 8.dp),
             btnAppConfigOnClick = onNavToAppConfig
         )
     }
@@ -395,7 +408,8 @@ private fun UserProfileGoogle(
             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 TextContentWithIcon(
                     icon = Icons.Default.Email,
-                    iconBoxColor = MaterialTheme.colorScheme.surface,
+                    iconBoxColor = Color.Transparent,
+                    iconTint = MaterialTheme.colorScheme.onSurface,
                     text = userData.email,
                     fontSize = MaterialTheme.typography.labelLarge.fontSize,
                     iconWidthRatio = 0.1f,
@@ -403,7 +417,8 @@ private fun UserProfileGoogle(
                 )
                 TextContentWithIcon(
                     icon = Icons.Default.Check,
-                    iconBoxColor = MaterialTheme.colorScheme.surface,
+                    iconBoxColor = Color.Transparent,
+                    iconTint = MaterialTheme.colorScheme.onSurface,
                     text = when(userData.emailVerified){
                         "true" -> stringResource(id = R.string.str_email_verified)
                         "false" -> stringResource(id = R.string.str_email_not_verified)
@@ -415,7 +430,8 @@ private fun UserProfileGoogle(
                 )
                 TextContentWithIcon(
                     icon = Icons.Default.Lock,
-                    iconBoxColor = MaterialTheme.colorScheme.surface,
+                    iconBoxColor = Color.Transparent,
+                    iconTint = MaterialTheme.colorScheme.onSurface,
                     text = provider.title,
                     fontSize = MaterialTheme.typography.labelLarge.fontSize,
                     iconWidthRatio = 0.1f,
@@ -423,7 +439,8 @@ private fun UserProfileGoogle(
                 )
                 TextContentWithIcon(
                     icon = Icons.Default.Refresh,
-                    iconBoxColor = MaterialTheme.colorScheme.surface,
+                    iconBoxColor = Color.Transparent,
+                    iconTint = MaterialTheme.colorScheme.onSurface,
                     text = Instant.fromEpochSeconds(userData.expiredAt.toLong()).toString(),
                     fontSize = MaterialTheme.typography.labelLarge.fontSize,
                     iconWidthRatio = 0.1f,
@@ -439,15 +456,22 @@ private fun PartAppConfig(
     modifier: Modifier = Modifier,
     btnAppConfigOnClick: () -> Unit
 ) {
-    Surface(
-        modifier = modifier,
-        onClick = btnAppConfigOnClick
+    Row(
+        modifier = modifier.fillMaxHeight(1.0f),
+        verticalAlignment = Alignment.Top
     ) {
-        Icon(
-            imageVector = ImageVector.vectorResource(CustomIcons.Setting.settings),
-            contentDescription = null,
-            modifier = Modifier.size(ButtonDefaults.IconSize)
-        )
+        Surface(
+            modifier = Modifier,
+            onClick = btnAppConfigOnClick,
+            color = Color.Transparent
+        ) {
+            Icon(
+                imageVector = ImageVector.vectorResource(CustomIcons.Setting.settings),
+                contentDescription = null,
+                modifier = Modifier.size(ButtonDefaults.IconSize),
+                tint = MaterialTheme.colorScheme.onSurface
+            )
+        }
     }
 }
 
