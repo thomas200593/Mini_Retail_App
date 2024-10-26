@@ -1,8 +1,6 @@
 package com.thomas200593.mini_retail_app.core.ui.common
 
 import androidx.annotation.DrawableRes
-import com.thomas200593.mini_retail_app.R.drawable.app_flag_gb_48px
-import com.thomas200593.mini_retail_app.R.drawable.app_flag_id_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_48x48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_business_48px
 import com.thomas200593.mini_retail_app.R.drawable.app_icon_business_profile_48px
@@ -92,8 +90,6 @@ object CustomIcons {
     }
     object Language {
         @DrawableRes val language = +app_icon_language_48px
-        @DrawableRes val en = +app_flag_gb_48px
-        @DrawableRes val id = +app_flag_id_48px
     }
     object Onboarding {
         @DrawableRes val onboarding = +app_icon_onboarding_48px

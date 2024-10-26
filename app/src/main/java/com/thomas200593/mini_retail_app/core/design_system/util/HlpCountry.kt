@@ -7,12 +7,19 @@ import java.util.Locale
 import java.util.Locale.US
 
 object HlpCountry {
+    private val COUNTRY_ID = Locale(String(), Constants.ID).country
     private val COUNTRY_US = Locale(String(), US.country).country
     val COUNTRY_DEFAULT = Country(
         isoCode = COUNTRY_US,
         iso03Country = Locale(String(), COUNTRY_US).isO3Country,
         displayName = Locale(String(), COUNTRY_US).displayName,
         flag = HlpCountryFlags.getCountryFlagByCountryCode(COUNTRY_US)
+    )
+    val COUNTRY_INDONESIA = Country(
+        isoCode = COUNTRY_ID,
+        iso03Country = Locale(String(), COUNTRY_ID).isO3Country,
+        displayName = Locale(String(), COUNTRY_ID).displayName,
+        flag = HlpCountryFlags.getCountryFlagByCountryCode(COUNTRY_ID)
     )
     suspend fun getCountryList(dispatcher: CoroutineDispatcher) = withContext(dispatcher) {
         Locale.getISOCountries().map {

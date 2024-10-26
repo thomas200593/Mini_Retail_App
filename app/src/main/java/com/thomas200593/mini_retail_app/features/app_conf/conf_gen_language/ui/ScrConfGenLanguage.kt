@@ -1,13 +1,11 @@
 package com.thomas200593.mini_retail_app.features.app_conf.conf_gen_language.ui
 
 import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.lazy.LazyColumn
@@ -329,13 +327,7 @@ private fun ScreenContent(
                 val data = preferencesList.elementAt(it)
                 ThreeRowCardItem(
                     firstRowContent = {
-                        Surface(modifier = Modifier.fillMaxWidth()) {
-                            Image(
-                                modifier = Modifier.height(20.dp),
-                                imageVector = ImageVector.vectorResource(data.iconRes),
-                                contentDescription = null
-                            )
-                        }
+                        Text(data.country.flag)
                     },
                     secondRowContent = {
                         Text(

@@ -449,11 +449,7 @@ private fun PartLang(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Image(
-                        modifier = Modifier.size(24.dp),
-                        imageVector = ImageVector.vectorResource(id = configCurrent.language.iconRes),
-                        contentDescription = null
-                    )
+                    Text(configCurrent.language.country.flag)
                     Text(
                         modifier = Modifier.weight(0.8f),
                         text = stringResource(id = configCurrent.language.title),
@@ -468,11 +464,7 @@ private fun PartLang(
                     DropdownMenuItem(
                         modifier = Modifier.fillMaxWidth(),
                         leadingIcon = {
-                            Image(
-                                modifier = Modifier.size(24.dp),
-                                imageVector = ImageVector.vectorResource(id = it.iconRes),
-                                contentDescription = null
-                            )
+                            Text(it.country.flag)
                         },
                         text =
                         {

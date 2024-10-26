@@ -2,7 +2,6 @@ package com.thomas200593.mini_retail_app.features.onboarding.ui
 
 import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -41,12 +40,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush.Companion.verticalGradient
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -190,11 +187,7 @@ private fun OnboardingLanguages(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Image(
-                        modifier = Modifier.size(24.dp),
-                        imageVector = ImageVector.vectorResource(id = configLanguages.configCurrent.language.iconRes),
-                        contentDescription = null
-                    )
+                    Text(configLanguages.configCurrent.language.country.flag)
                     Text(
                         modifier = Modifier.weight(0.8f),
                         text = stringResource(id = configLanguages.configCurrent.language.title),
@@ -212,11 +205,7 @@ private fun OnboardingLanguages(
                     DropdownMenuItem(
                         modifier = Modifier.fillMaxWidth(),
                         leadingIcon = {
-                            Image(
-                                modifier = Modifier.size(24.dp),
-                                imageVector = ImageVector.vectorResource(id = it.iconRes),
-                                contentDescription = null
-                            )
+                            Text(it.country.flag)
                         },
                         text = {
                             Text(

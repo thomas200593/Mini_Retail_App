@@ -3,6 +3,8 @@ package com.thomas200593.mini_retail_app.core.design_system.util
 import java.time.Instant.now
 
 object Constants {
+    //ID
+    const val ID = "ID"
     //System
     const val SYSTEM: String = "System"
     //Current UNIX Epoch Seconds
