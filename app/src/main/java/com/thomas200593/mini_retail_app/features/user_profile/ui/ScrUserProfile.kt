@@ -34,7 +34,6 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
@@ -448,7 +447,7 @@ private fun UserProfileGoogle(
                     textWidthRatio = 0.9f
                 )
                 TextContentWithIcon(
-                    icon = Icons.Default.Refresh,
+                    icon = ImageVector.vectorResource(CustomIcons.Auth.session_expire),
                     iconBoxColor = Color.Transparent,
                     iconTint = MaterialTheme.colorScheme.onSurface,
                     text = Instant.fromEpochSeconds(userData.expiredAt.toLong()).toString(),
