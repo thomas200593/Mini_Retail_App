@@ -19,7 +19,6 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -318,7 +317,7 @@ private fun ScreenContent(
             contentColor = MaterialTheme.colorScheme.onSurface
         ) {
             Text(
-                text = "${stringResource(id = R.string.str_country)} : ${currentData.displayName}",
+                text = "${stringResource(id = R.string.str_country)}: ${currentData.flag} ${currentData.displayName}",
                 modifier = Modifier.fillMaxWidth().padding(4.dp),
                 fontWeight = FontWeight.Bold,
                 maxLines = 1,
@@ -336,19 +335,9 @@ private fun ScreenContent(
                 ThreeRowCardItem(
                     firstRowContent = {
                         Text(
-                            text = data.isoCode,
+                            text = data.flag,
                             modifier = Modifier.fillMaxWidth(),
                             textAlign = TextAlign.Center,
-                            fontWeight = FontWeight.Bold,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                        HorizontalDivider()
-                        Text(
-                            text = data.iso03Country,
-                            modifier = Modifier.fillMaxWidth(),
-                            textAlign = TextAlign.Center,
-                            fontWeight = FontWeight.Bold,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )
