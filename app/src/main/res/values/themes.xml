@@ -9,7 +9,7 @@
 
     <!-- CustomThemes.App.Starting -->
     <style name="Theme.App.Starting" parent="Theme.SplashScreen">
-        <item name="windowSplashScreenBackground">@color/white</item>
+        <item name="windowSplashScreenBackground">@color/starting_day</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/scaled_app_icon</item>
         <item name="postSplashScreenTheme">@style/Theme.Mini_Retail_App</item>
     </style>
