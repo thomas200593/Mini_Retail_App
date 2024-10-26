@@ -212,11 +212,16 @@ private fun ScreenContent(data: Success) {
     Surface {
         Column(
             modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(20.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             //Show Company Profile Card
-            Text("Data: ${data.data}")
+            data.data.forEach {
+                Text(
+                    text = "${it.isoCode} ${it.iso03Country} ${it.displayName} ${it.flag}",
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
             //Show Summary Master Data
             //Show Notifications & Background job if any
         }

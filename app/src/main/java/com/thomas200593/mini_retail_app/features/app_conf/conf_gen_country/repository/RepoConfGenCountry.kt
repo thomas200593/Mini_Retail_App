@@ -20,7 +20,7 @@ internal class RepoImplConfGenCountry @Inject constructor(
     private val dataStore: DataStorePreferences,
     @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
 ) : RepoConfGenCountry {
-    override fun getCountries(): Flow<List<Country>> = flow { emit(getCountryList()) }
+    override fun getCountries(): Flow<List<Country>> = flow { emit(getCountryList(ioDispatcher)) }
         .flowOn(ioDispatcher)
     override suspend fun setCountry(country: Country) { dataStore.setCountry(country) }
 }

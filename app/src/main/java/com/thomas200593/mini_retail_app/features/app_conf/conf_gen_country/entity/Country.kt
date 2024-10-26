@@ -7,4 +7,5 @@ data class Country(
     val isoCode: String,
     val iso03Country: String,
     val displayName: String,
+    val flag: String
 )

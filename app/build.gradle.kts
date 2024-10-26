@@ -180,6 +180,9 @@ dependencies {
     implementation(libs.timber)
     implementation(libs.tracing.trace)
     implementation(libs.ulid.kotlin)
+    implementation(libs.emoji2)
+    implementation(libs.emoji2.views)
+    implementation(libs.androidx.emoji2.views.helper)
 
     testImplementation(libs.androidx.room.testing)
     testImplementation(libs.junit)

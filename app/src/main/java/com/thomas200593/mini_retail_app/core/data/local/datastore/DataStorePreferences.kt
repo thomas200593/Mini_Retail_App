@@ -16,6 +16,7 @@ import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStoreKeys.
 import com.thomas200593.mini_retail_app.core.data.local.datastore.DataStoreKeys.AuthKeys.dsKeyAuthSessionToken
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers.Dispatchers.IO
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.di.Dispatcher
+import com.thomas200593.mini_retail_app.core.design_system.util.HlpCountryFlags
 import com.thomas200593.mini_retail_app.core.design_system.util.HlpCountry.COUNTRY_DEFAULT
 import com.thomas200593.mini_retail_app.core.design_system.util.HlpCurrency.CURRENCY_DEFAULT
 import com.thomas200593.mini_retail_app.core.design_system.util.HlpDatetime.TIMEZONE_DEFAULT
@@ -110,7 +111,8 @@ class DataStorePreferences @Inject constructor(
                 Country(
                     isoCode = country,
                     iso03Country = Locale("", country).isO3Country,
-                    displayName = Locale("", country).displayName
+                    displayName = Locale("", country).displayName,
+                    flag = HlpCountryFlags.getCountryFlagByCountryCode(country)
                 )
             } ?: COUNTRY_DEFAULT
         )

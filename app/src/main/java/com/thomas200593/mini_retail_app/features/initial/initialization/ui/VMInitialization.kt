@@ -19,6 +19,7 @@ import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.R
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.Taxation
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers.Dispatchers.IO
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.di.Dispatcher
+import com.thomas200593.mini_retail_app.core.design_system.util.HlpCountryFlags
 import com.thomas200593.mini_retail_app.core.design_system.util.HlpCountry
 import com.thomas200593.mini_retail_app.core.design_system.util.ResourceState
 import com.thomas200593.mini_retail_app.core.ui.component.form.domain.RegularTextValidation
@@ -358,7 +359,8 @@ class VMInitialization @Inject constructor(
                                 Country(
                                     isoCode = isoCode,
                                     iso03Country = Locale("", isoCode).isO3Country,
-                                    displayName = Locale("", isoCode).displayName
+                                    displayName = Locale("", isoCode).displayName,
+                                    flag = HlpCountryFlags.getCountryFlagByCountryCode(isoCode)
                                 )
                             } ?: HlpCountry.COUNTRY_DEFAULT
                     )

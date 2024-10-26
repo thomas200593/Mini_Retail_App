@@ -1,31 +1,28 @@
 package com.thomas200593.mini_retail_app.core.design_system.util
 
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.entity.Country
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import java.util.Locale
 import java.util.Locale.US
-import java.util.Locale.getISOCountries
 
 object HlpCountry {
     private val COUNTRY_US = Locale(String(), US.country).country
     val COUNTRY_DEFAULT = Country(
         isoCode = COUNTRY_US,
         iso03Country = Locale(String(), COUNTRY_US).isO3Country,
-        displayName = Locale(String(), COUNTRY_US).displayName
+        displayName = Locale(String(), COUNTRY_US).displayName,
+        flag = HlpCountryFlags.getCountryFlagByCountryCode(COUNTRY_US)
     )
-    suspend fun getCountryList() = withContext(Dispatchers.IO) {
-        val isoCountries = getISOCountries()
-        val countries = HashSet<Country>()
-        for (isoCountry in isoCountries) {
-            countries.add(
-                Country(
-                    isoCode = isoCountry,
-                    iso03Country = Locale(String(), isoCountry).isO3Country,
-                    displayName = Locale(String(), isoCountry).displayName,
-                )
+    suspend fun getCountryList(dispatcher: CoroutineDispatcher) = withContext(dispatcher) {
+        Locale.getISOCountries().map {
+            val locale = Locale(String(), it)
+            Country(
+                isoCode = it,
+                iso03Country = locale.isO3Country,
+                displayName = locale.displayName,
+                flag = HlpCountryFlags.getCountryFlagByCountryCode(it)
             )
-        }
-        countries.toList().sortedBy { it.displayName }
+        }.sortedBy { it.displayName }
     }
 }

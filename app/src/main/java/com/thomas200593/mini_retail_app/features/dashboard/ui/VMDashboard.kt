@@ -5,12 +5,17 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
+import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.Dispatchers.Dispatchers.IO
+import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.di.Dispatcher
+import com.thomas200593.mini_retail_app.core.design_system.util.HlpCountry
+import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.entity.Country
 import com.thomas200593.mini_retail_app.features.dashboard.ui.VMDashboard.UiEvents.ButtonEvents.BtnScrDescEvents
 import com.thomas200593.mini_retail_app.features.dashboard.ui.VMDashboard.UiEvents.OnOpenEvents
 import com.thomas200593.mini_retail_app.features.dashboard.ui.VMDashboard.UiStateDashboard.Idle
 import com.thomas200593.mini_retail_app.features.dashboard.ui.VMDashboard.UiStateDashboard.Loading
 import com.thomas200593.mini_retail_app.features.dashboard.ui.VMDashboard.UiStateDashboard.Success
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -18,11 +23,13 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class VMDashboard @Inject constructor() : ViewModel() {
+class VMDashboard @Inject constructor(
+    @Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher
+) : ViewModel() {
     sealed interface UiStateDashboard {
         data object Idle : UiStateDashboard
         data object Loading : UiStateDashboard
-        data class Success(val data: Boolean): UiStateDashboard
+        data class Success(val data: List<Country>): UiStateDashboard
     }
     data class UiState(
         val uiStateDashboard: UiStateDashboard = Idle,
@@ -73,7 +80,7 @@ class VMDashboard @Inject constructor() : ViewModel() {
             is SessionState.Invalid -> onDenyAccess()
             is SessionState.Valid -> viewModelScope.launch {
                 _uiState.update { it.copy(uiStateDashboard = Loading) }
-                _uiState.update { it.copy(uiStateDashboard = Success(true)) }
+                _uiState.update { it.copy(uiStateDashboard = Success(HlpCountry.getCountryList(ioDispatcher))) }
             }
         }
     }
