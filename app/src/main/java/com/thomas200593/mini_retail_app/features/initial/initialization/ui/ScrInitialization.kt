@@ -1348,11 +1348,12 @@ private fun PartInitBizProfile(
                                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
+                                        inputFormState.taxIssuerCountry.flag.let{ Text(it) }
                                         inputFormState.taxIssuerCountry.displayName.let{
                                             Text(
-                                                modifier = Modifier.fillMaxWidth(),
+                                                modifier = Modifier.weight(0.8f),
                                                 text = it,
-                                                textAlign = TextAlign.Start,
+                                                textAlign = TextAlign.Center,
                                                 maxLines = 1,
                                                 overflow = TextOverflow.Ellipsis
                                             )
@@ -1363,6 +1364,9 @@ private fun PartInitBizProfile(
                                     taxIssuerCountry.forEach {
                                         DropdownMenuItem(
                                             modifier = Modifier.fillMaxWidth(),
+                                            leadingIcon = {
+                                                Text(it.flag)
+                                            },
                                             text = {
                                                 Text(
                                                     modifier = Modifier.fillMaxWidth(),
