@@ -76,8 +76,10 @@ import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
 import com.thomas200593.mini_retail_app.app.ui.StateApp
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.AuditTrail
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.Industries
+import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.LegalDocumentType
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.LegalType
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.Taxation
+import com.thomas200593.mini_retail_app.core.design_system.util.HlpCountry
 import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons
 import com.thomas200593.mini_retail_app.core.ui.common.CustomThemes
 import com.thomas200593.mini_retail_app.core.ui.component.CustomButton.Common.AppIconButton
@@ -508,6 +510,20 @@ private fun PartBizProfileShort(uiState: UiState, onNavToBizProfile: () -> Unit)
                         textAlign = TextAlign.Center
                     )
                     HorizontalDivider(thickness = 2.dp, color = colorResource(R.color.charcoal_gray))
+                    Text(bizProfileShort.bizName.legalName)
+                    Text(bizProfileShort.bizName.commonName)
+                    Text(bizProfileShort.bizIndustry.identityKey)
+                    Text(bizProfileShort.bizIndustry.additionalInfo)
+                    Text(bizProfileShort.bizLegalType.identifierKey)
+                    Text(bizProfileShort.bizLegalType.additionalInfo)
+                    Text(bizProfileShort.bizLegalType.legalDocumentType?.identifierKey.orEmpty())
+                    Text(bizProfileShort.bizLegalType.legalDocumentType?.additionalInfo.orEmpty())
+                    Text(bizProfileShort.bizTaxation.identifierKey)
+                    Text(bizProfileShort.bizTaxation.taxIdDocNumber)
+                    Text(bizProfileShort.bizTaxation.taxIssuerCountry.toString())
+                    Text(bizProfileShort.bizTaxation.taxRatePercentage.toString())
+                    Text(bizProfileShort.bizTaxation.taxIncluded.toString())
+                    HorizontalDivider(thickness = 2.dp, color = colorResource(R.color.charcoal_gray))
                     AppIconButton(
                         onClick = onNavToBizProfile,
                         icon = ImageVector.vectorResource(CustomIcons.Business.business_profile),
@@ -569,8 +585,21 @@ private fun Preview() = CustomThemes.ApplicationTheme {
                             identityKey = "biz_industry_00001",
                             additionalInfo = "Construction Industry"
                         ),
-                        bizLegalType = LegalType(identifierKey = ""),
-                        bizTaxation = Taxation(identifierKey = ""),
+                        bizLegalType = LegalType(
+                            identifierKey = "biz_legal_type_00001",
+                            additionalInfo = "Test Biz Legal Type",
+                            legalDocumentType = LegalDocumentType(
+                                identifierKey = "biz_legal_doc_type_00001",
+                                additionalInfo = "Test Biz Legal Doc Type"
+                            )
+                        ),
+                        bizTaxation = Taxation(
+                            identifierKey = "biz_tax_type_00001",
+                            taxIdDocNumber = "1234567890",
+                            taxIssuerCountry = HlpCountry.COUNTRY_INDONESIA,
+                            taxRatePercentage = 0.11,
+                            taxIncluded = true
+                        ),
                         auditTrail = AuditTrail()
                     ),
                     third = ConfigCurrent()
