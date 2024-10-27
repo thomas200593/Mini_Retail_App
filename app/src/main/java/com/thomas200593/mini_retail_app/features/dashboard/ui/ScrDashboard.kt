@@ -94,9 +94,7 @@ private fun ScrDashboard(
     when(uiState.uiStateDashboard) {
         Idle -> Unit
         Loading -> LoadingScreen()
-        is Success -> ScreenContent(
-            data = Success(uiState.uiStateDashboard.data)
-        )
+        is Success -> ScreenContent()
     }
 }
 
@@ -208,7 +206,7 @@ private fun TopAppBar(
 }
 
 @Composable
-private fun ScreenContent(data: Success) {
+private fun ScreenContent() {
     Surface {
         Column(
             modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
@@ -216,12 +214,6 @@ private fun ScreenContent(data: Success) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             //Show Company Profile Card
-            data.data.forEach {
-                Text(
-                    text = "${it.isoCode} ${it.iso03Country} ${it.displayName} ${it.flag}",
-                    modifier = Modifier.fillMaxWidth()
-                )
-            }
             //Show Summary Master Data
             //Show Notifications & Background job if any
         }
