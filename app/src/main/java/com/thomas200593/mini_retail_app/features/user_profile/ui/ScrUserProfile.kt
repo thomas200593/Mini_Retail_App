@@ -86,6 +86,7 @@ import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.T
 import com.thomas200593.mini_retail_app.core.design_system.util.HlpCountry
 import com.thomas200593.mini_retail_app.core.design_system.util.HlpStringArray.Handler.StringArrayResource
 import com.thomas200593.mini_retail_app.core.design_system.util.HlpStringArray.StringArrayResources.BizIndustries
+import com.thomas200593.mini_retail_app.core.design_system.util.HlpStringArray.StringArrayResources.BizLegalType
 import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons
 import com.thomas200593.mini_retail_app.core.ui.common.CustomThemes
 import com.thomas200593.mini_retail_app.core.ui.component.CustomButton.Common.AppIconButton
@@ -625,8 +626,29 @@ private fun PartBizProfileShort(uiState: UiState, onNavToBizProfile: () -> Unit)
                                 textAlign = TextAlign.Center
                             )
 
-                            Text(bizProfileShort.bizLegalType.identifierKey)
-                            Text(bizProfileShort.bizLegalType.additionalInfo)
+                            bizProfileShort.bizLegalType.identifierKey.let {
+                                StringArrayResource(BizLegalType).findByKey(it)?.let { legalType ->
+                                    Column(modifier = Modifier.fillMaxWidth()) {
+                                        Text(
+                                            text = stringResource(R.string.str_biz_legal),
+                                            fontSize = MaterialTheme.typography.labelSmall.fontSize
+                                        )
+                                        Text(text = legalType, fontWeight = FontWeight.Bold)
+                                    }
+                                }
+                            }
+
+                            bizProfileShort.bizLegalType.additionalInfo.takeIf { it.isNotBlank() }
+                                ?.let { data ->
+                                    Column(modifier = Modifier.fillMaxWidth()) {
+                                        Text(
+                                            text = stringResource(R.string.str_additional_info),
+                                            fontSize = MaterialTheme.typography.labelSmall.fontSize
+                                        )
+                                        Text(text = data, fontWeight = FontWeight.Bold)
+                                    }
+                                }
+
                             Text(bizProfileShort.bizLegalType.legalDocumentType?.identifierKey.orEmpty())
                             Text(bizProfileShort.bizLegalType.legalDocumentType?.additionalInfo.orEmpty())
                             Text(bizProfileShort.bizTaxation.identifierKey)
