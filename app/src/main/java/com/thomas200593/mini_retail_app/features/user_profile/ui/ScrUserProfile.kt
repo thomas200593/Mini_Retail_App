@@ -84,6 +84,8 @@ import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.L
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.LegalType
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.Taxation
 import com.thomas200593.mini_retail_app.core.design_system.util.HlpCountry
+import com.thomas200593.mini_retail_app.core.design_system.util.HlpStringArray.Handler.StringArrayResource
+import com.thomas200593.mini_retail_app.core.design_system.util.HlpStringArray.StringArrayResources.BizIndustries
 import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons
 import com.thomas200593.mini_retail_app.core.ui.common.CustomThemes
 import com.thomas200593.mini_retail_app.core.ui.component.CustomButton.Common.AppIconButton
@@ -553,6 +555,15 @@ private fun PartBizProfileShort(uiState: UiState, onNavToBizProfile: () -> Unit)
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
+                            HorizontalDivider(thickness = 2.dp, color = colorResource(R.color.charcoal_gray))
+
+                            Text(
+                                text = stringResource(R.string.str_biz_name),
+                                fontSize = MaterialTheme.typography.titleMedium.fontSize,
+                                fontWeight = FontWeight.Bold,
+                                textAlign = TextAlign.Center
+                            )
+
                             bizProfileShort.bizName.legalName.let {
                                 Column(modifier = Modifier.fillMaxWidth()) {
                                     Text(
@@ -573,8 +584,47 @@ private fun PartBizProfileShort(uiState: UiState, onNavToBizProfile: () -> Unit)
                                 }
                             }
 
-                            Text(bizProfileShort.bizIndustry.identityKey)
-                            Text(bizProfileShort.bizIndustry.additionalInfo)
+                            HorizontalDivider(thickness = 2.dp, color = colorResource(R.color.charcoal_gray))
+
+                            Text(
+                                text = stringResource(R.string.str_biz_industry),
+                                fontSize = MaterialTheme.typography.titleMedium.fontSize,
+                                fontWeight = FontWeight.Bold,
+                                textAlign = TextAlign.Center
+                            )
+
+                            bizProfileShort.bizIndustry.identityKey.let {
+                                StringArrayResource(BizIndustries).findByKey(it)?.let { industry ->
+                                    Column(modifier = Modifier.fillMaxWidth()) {
+                                        Text(
+                                            text = stringResource(R.string.str_biz_industry),
+                                            fontSize = MaterialTheme.typography.labelSmall.fontSize
+                                        )
+                                        Text(text = industry, fontWeight = FontWeight.Bold)
+                                    }
+                                }
+                            }
+
+                            bizProfileShort.bizIndustry.additionalInfo.takeIf { it.isNotBlank() }
+                                ?.let { data ->
+                                    Column(modifier = Modifier.fillMaxWidth()) {
+                                        Text(
+                                            text = stringResource(R.string.str_additional_info),
+                                            fontSize = MaterialTheme.typography.labelSmall.fontSize
+                                        )
+                                        Text(text = data, fontWeight = FontWeight.Bold)
+                                    }
+                                }
+
+                            HorizontalDivider(thickness = 2.dp, color = colorResource(R.color.charcoal_gray))
+
+                            Text(
+                                text = stringResource(R.string.str_biz_legal),
+                                fontSize = MaterialTheme.typography.titleMedium.fontSize,
+                                fontWeight = FontWeight.Bold,
+                                textAlign = TextAlign.Center
+                            )
+
                             Text(bizProfileShort.bizLegalType.identifierKey)
                             Text(bizProfileShort.bizLegalType.additionalInfo)
                             Text(bizProfileShort.bizLegalType.legalDocumentType?.identifierKey.orEmpty())
