@@ -289,16 +289,21 @@ object CustomPanel{
 
     @Composable
     fun ThreeRowCardItem(
+        modifier: Modifier = Modifier,
         cardShape: Shape = shapes.medium,
-        cardBorder: BorderStroke = BorderStroke(1.dp, colorResource(R.color.charcoal_gray)),
+        cardBorder: BorderStroke? = BorderStroke(1.dp, colorResource(R.color.charcoal_gray)),
+        cardColor: Color = colorScheme.surface,
+        cardShadowElevation: Dp = 0.dp,
         firstRowContent: @Composable ColumnScope.() -> Unit,
         secondRowContent: @Composable ColumnScope.() -> Unit,
         thirdRowContent: @Composable ColumnScope.() -> Unit
     ){
         Surface(
-            modifier = Modifier.fillMaxWidth(1.0f),
+            modifier = modifier.fillMaxWidth(1.0f),
             shape = cardShape,
-            border = cardBorder
+            border = cardBorder,
+            color = cardColor,
+            shadowElevation = cardShadowElevation
         ){
             Row(
                 modifier = Modifier.fillMaxWidth(1.0f).padding(8.dp).height(intrinsicSize = IntrinsicSize.Max),

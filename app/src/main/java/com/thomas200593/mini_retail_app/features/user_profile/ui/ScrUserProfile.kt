@@ -33,6 +33,8 @@ import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -45,8 +47,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -86,6 +90,7 @@ import com.thomas200593.mini_retail_app.core.ui.component.CustomButton.Common.Ap
 import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AlertDialogContext
 import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AppAlertDialog
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.TextContentWithIcon
+import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.ThreeRowCardItem
 import com.thomas200593.mini_retail_app.core.ui.component.CustomScreenUtil.LockScreenOrientation
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.entity.AppConfig.ConfigCurrent
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.navigation.navToAppConfig
@@ -492,6 +497,7 @@ private fun PartBizProfileShort(uiState: UiState, onNavToBizProfile: () -> Unit)
     when(uiState.userProfileData) {
         Idle, Loading -> CircularProgressIndicator()
         is Success -> {
+            var expanded by remember { mutableStateOf(false) }
             val bizProfileShort = uiState.userProfileData.data.second
             Surface(
                 modifier = Modifier.fillMaxWidth().padding(16.dp),
@@ -503,27 +509,84 @@ private fun PartBizProfileShort(uiState: UiState, onNavToBizProfile: () -> Unit)
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Text(
-                        text = stringResource(R.string.str_business_profile),
-                        fontSize = MaterialTheme.typography.titleMedium.fontSize,
-                        fontWeight = FontWeight.Bold,
-                        textAlign = TextAlign.Center
+                    ThreeRowCardItem(
+                        cardBorder = null,
+                        cardColor = Color.Transparent,
+                        firstRowContent = {
+                            Surface(
+                                modifier = Modifier.size(ButtonDefaults.IconSize),
+                                color = MaterialTheme.colorScheme.secondaryContainer
+                            ) {
+                                Icon(
+                                    imageVector = ImageVector.vectorResource(CustomIcons.Business.business_profile),
+                                    contentDescription = null
+                                )
+                            }
+                        },
+                        secondRowContent = {
+                            Text(
+                                text = stringResource(R.string.str_business_profile),
+                                fontSize = MaterialTheme.typography.titleMedium.fontSize,
+                                fontWeight = FontWeight.Bold,
+                                textAlign = TextAlign.Center
+                            )
+                        },
+                        thirdRowContent = {
+                            Surface(
+                                modifier = Modifier.fillMaxWidth().size(ButtonDefaults.IconSize),
+                                color = MaterialTheme.colorScheme.secondaryContainer,
+                                onClick = { expanded = expanded.not() }
+                            ) {
+                                Icon(
+                                    imageVector =
+                                        if(expanded) Icons.Default.KeyboardArrowUp
+                                        else Icons.Default.KeyboardArrowDown,
+                                    contentDescription = null
+                                )
+                            }
+                        }
                     )
-                    HorizontalDivider(thickness = 2.dp, color = colorResource(R.color.charcoal_gray))
-                    Text(bizProfileShort.bizName.legalName)
-                    Text(bizProfileShort.bizName.commonName)
-                    Text(bizProfileShort.bizIndustry.identityKey)
-                    Text(bizProfileShort.bizIndustry.additionalInfo)
-                    Text(bizProfileShort.bizLegalType.identifierKey)
-                    Text(bizProfileShort.bizLegalType.additionalInfo)
-                    Text(bizProfileShort.bizLegalType.legalDocumentType?.identifierKey.orEmpty())
-                    Text(bizProfileShort.bizLegalType.legalDocumentType?.additionalInfo.orEmpty())
-                    Text(bizProfileShort.bizTaxation.identifierKey)
-                    Text(bizProfileShort.bizTaxation.taxIdDocNumber)
-                    Text(bizProfileShort.bizTaxation.taxIssuerCountry.toString())
-                    Text(bizProfileShort.bizTaxation.taxRatePercentage.toString())
-                    Text(bizProfileShort.bizTaxation.taxIncluded.toString())
-                    HorizontalDivider(thickness = 2.dp, color = colorResource(R.color.charcoal_gray))
+
+                    AnimatedVisibility(visible = expanded) {
+                        Column(
+                            modifier = Modifier.fillMaxWidth().padding(8.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            bizProfileShort.bizName.legalName.let {
+                                Column(modifier = Modifier.fillMaxWidth()) {
+                                    Text(
+                                        text = stringResource(R.string.str_company_legal_name),
+                                        fontSize = MaterialTheme.typography.labelSmall.fontSize
+                                    )
+                                    Text(text = it, fontWeight = FontWeight.Bold)
+                                }
+                            }
+
+                            bizProfileShort.bizName.commonName.let {
+                                Column(modifier = Modifier.fillMaxWidth()) {
+                                    Text(
+                                        text = stringResource(R.string.str_company_common_name),
+                                        fontSize = MaterialTheme.typography.labelSmall.fontSize
+                                    )
+                                    Text(text = it, fontWeight = FontWeight.Bold)
+                                }
+                            }
+
+                            Text(bizProfileShort.bizIndustry.identityKey)
+                            Text(bizProfileShort.bizIndustry.additionalInfo)
+                            Text(bizProfileShort.bizLegalType.identifierKey)
+                            Text(bizProfileShort.bizLegalType.additionalInfo)
+                            Text(bizProfileShort.bizLegalType.legalDocumentType?.identifierKey.orEmpty())
+                            Text(bizProfileShort.bizLegalType.legalDocumentType?.additionalInfo.orEmpty())
+                            Text(bizProfileShort.bizTaxation.identifierKey)
+                            Text(bizProfileShort.bizTaxation.taxIdDocNumber)
+                            Text(bizProfileShort.bizTaxation.taxIssuerCountry.toString())
+                            Text(bizProfileShort.bizTaxation.taxRatePercentage.toString())
+                            Text(bizProfileShort.bizTaxation.taxIncluded.toString())
+                        }
+                    }
+                    
                     AppIconButton(
                         onClick = onNavToBizProfile,
                         icon = ImageVector.vectorResource(CustomIcons.Business.business_profile),
