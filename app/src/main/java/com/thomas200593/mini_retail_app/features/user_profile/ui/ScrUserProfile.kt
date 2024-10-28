@@ -84,6 +84,8 @@ import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.L
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.LegalType
 import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.Taxation
 import com.thomas200593.mini_retail_app.core.design_system.util.HlpCountry
+import com.thomas200593.mini_retail_app.core.design_system.util.HlpDatetime.DateFormat.ISO8601
+import com.thomas200593.mini_retail_app.core.design_system.util.HlpDatetime.timestampToDatetime
 import com.thomas200593.mini_retail_app.core.design_system.util.HlpStringArray.Handler.StringArrayResource
 import com.thomas200593.mini_retail_app.core.design_system.util.HlpStringArray.StringArrayResources.BizIndustries
 import com.thomas200593.mini_retail_app.core.design_system.util.HlpStringArray.StringArrayResources.BizLegalDocType
@@ -120,7 +122,6 @@ import com.thomas200593.mini_retail_app.features.user_profile.ui.VMUserProfile.U
 import com.thomas200593.mini_retail_app.features.user_profile.ui.VMUserProfile.UiStateUserProfile.Success
 import com.thomas200593.mini_retail_app.work.workers.session_monitor.manager.ManagerWorkSessionMonitor
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Instant
 import ulid.ULID
 
 @Composable
@@ -355,15 +356,17 @@ private fun PartCurrentUserSession(
             Loading -> PartCurrentUserSessionLoading()
             is Success -> {
                 val userData = uiState.userProfileData.data.first
+                val configCurrent = uiState.userProfileData.data.third
                 when(val provider = userData.authSessionToken?.authProvider) {
                     GOOGLE -> UserProfileGoogle(
                         isAtTop = isAtTop,
                         imageSize = imageSize,
                         colImageModifier = Modifier.weight(colImageWeight),
                         colInfoModifier = Modifier.weight(colInfoWeight),
+                        nameFontSize = nameFontSize,
                         provider = provider,
                         userData = userData.oAuth2UserMetadata as Google,
-                        nameFontSize = nameFontSize
+                        configCurrent = configCurrent
                     )
                     null -> dlgBtnSignOutOnClick()
                 }
@@ -387,9 +390,10 @@ private fun UserProfileGoogle(
     imageSize: Dp,
     colImageModifier: Modifier,
     colInfoModifier: Modifier,
+    nameFontSize: Float,
     provider: OAuthProvider,
     userData: Google,
-    nameFontSize: Float
+    configCurrent: ConfigCurrent
 ) {
     Column(
         modifier = colImageModifier,
@@ -462,7 +466,11 @@ private fun UserProfileGoogle(
                     icon = ImageVector.vectorResource(CustomIcons.Auth.session_expire),
                     iconBoxColor = Color.Transparent,
                     iconTint = MaterialTheme.colorScheme.onSurface,
-                    text = Instant.fromEpochSeconds(userData.expiredAt.toLong()).toString(),
+                    text = timestampToDatetime(
+                        timestamp = userData.expiredAt.toLongOrNull()?:0,
+                        format = ISO8601,
+                        offsetString = configCurrent.timezone.timezoneOffset
+                    ),
                     fontSize = MaterialTheme.typography.labelLarge.fontSize,
                     iconWidthRatio = 0.1f,
                     textWidthRatio = 0.9f
