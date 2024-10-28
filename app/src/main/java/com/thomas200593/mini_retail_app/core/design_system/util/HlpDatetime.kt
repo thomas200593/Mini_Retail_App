@@ -41,10 +41,10 @@ object HlpDatetime {
 
     fun timestampToDatetime(
         timestamp: Long,
-        offsetString: String?,
-        format: DateFormat
+        offsetString: String = ZULU,
+        format: DateFormat = DateFormat.LONG_DATETIME_WITH_TZ
     ): String {
-        val zoneOffset = offsetString?.let {
+        val zoneOffset = offsetString.let {
             val offsetPattern = Regex("^[+-](0[0-9]|1[0-4]):([0-5][0-9])$")
             if (offsetPattern.matches(it)) ZoneOffset.of(it) else ZoneOffset.UTC
         } ?: ZoneOffset.UTC // Default to +00:00 if offsetString is null
