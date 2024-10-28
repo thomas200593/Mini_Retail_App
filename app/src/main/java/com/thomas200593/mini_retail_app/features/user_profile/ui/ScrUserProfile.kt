@@ -86,7 +86,9 @@ import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.T
 import com.thomas200593.mini_retail_app.core.design_system.util.HlpCountry
 import com.thomas200593.mini_retail_app.core.design_system.util.HlpStringArray.Handler.StringArrayResource
 import com.thomas200593.mini_retail_app.core.design_system.util.HlpStringArray.StringArrayResources.BizIndustries
+import com.thomas200593.mini_retail_app.core.design_system.util.HlpStringArray.StringArrayResources.BizLegalDocType
 import com.thomas200593.mini_retail_app.core.design_system.util.HlpStringArray.StringArrayResources.BizLegalType
+import com.thomas200593.mini_retail_app.core.design_system.util.HlpStringArray.StringArrayResources.BizTaxationType
 import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons
 import com.thomas200593.mini_retail_app.core.ui.common.CustomThemes
 import com.thomas200593.mini_retail_app.core.ui.component.CustomButton.Common.AppIconButton
@@ -649,13 +651,107 @@ private fun PartBizProfileShort(uiState: UiState, onNavToBizProfile: () -> Unit)
                                     }
                                 }
 
-                            Text(bizProfileShort.bizLegalType.legalDocumentType?.identifierKey.orEmpty())
-                            Text(bizProfileShort.bizLegalType.legalDocumentType?.additionalInfo.orEmpty())
-                            Text(bizProfileShort.bizTaxation.identifierKey)
-                            Text(bizProfileShort.bizTaxation.taxIdDocNumber)
-                            Text(bizProfileShort.bizTaxation.taxIssuerCountry.toString())
-                            Text(bizProfileShort.bizTaxation.taxRatePercentage.toString())
-                            Text(bizProfileShort.bizTaxation.taxIncluded.toString())
+                            bizProfileShort.bizLegalType.legalDocumentType?.let { legalDocType ->
+                                HorizontalDivider(thickness = 2.dp, color = colorResource(R.color.charcoal_gray))
+
+                                Text(
+                                    text = stringResource(R.string.str_biz_legal_docs),
+                                    fontSize = MaterialTheme.typography.titleMedium.fontSize,
+                                    fontWeight = FontWeight.Bold,
+                                    textAlign = TextAlign.Center
+                                )
+
+                                legalDocType.identifierKey.let {
+                                    StringArrayResource(BizLegalDocType).findByKey(it)?.let { data ->
+                                        Column(modifier = Modifier.fillMaxWidth()) {
+                                            Text(
+                                                text = stringResource(R.string.str_biz_legal_docs),
+                                                fontSize = MaterialTheme.typography.labelSmall.fontSize
+                                            )
+                                            Text(text = data, fontWeight = FontWeight.Bold)
+                                        }
+                                    }
+                                }
+
+                                legalDocType.additionalInfo.takeIf { it.isNotBlank() }
+                                    ?.let { data ->
+                                        Column(modifier = Modifier.fillMaxWidth()) {
+                                            Text(
+                                                text = stringResource(R.string.str_additional_info),
+                                                fontSize = MaterialTheme.typography.labelSmall.fontSize
+                                            )
+                                            Text(text = data, fontWeight = FontWeight.Bold)
+                                        }
+                                    }
+                            }
+
+                            HorizontalDivider(thickness = 2.dp, color = colorResource(R.color.charcoal_gray))
+
+                            Text(
+                                text = stringResource(R.string.str_biz_taxation),
+                                fontSize = MaterialTheme.typography.titleMedium.fontSize,
+                                fontWeight = FontWeight.Bold,
+                                textAlign = TextAlign.Center
+                            )
+
+                            bizProfileShort.bizTaxation.identifierKey.let {
+                                StringArrayResource(BizTaxationType).findByKey(it)?.let { taxationType ->
+                                    Column(modifier = Modifier.fillMaxWidth()) {
+                                        Text(
+                                            text = stringResource(R.string.str_biz_legal),
+                                            fontSize = MaterialTheme.typography.labelSmall.fontSize
+                                        )
+                                        Text(text = taxationType, fontWeight = FontWeight.Bold)
+                                    }
+                                }
+                            }
+
+                            bizProfileShort.bizTaxation.taxIdDocNumber.takeIf { it.isNotBlank() }
+                                ?.let { data ->
+                                    Column(modifier = Modifier.fillMaxWidth()) {
+                                        Text(
+                                            text = stringResource(R.string.str_biz_tax_id_doc_number),
+                                            fontSize = MaterialTheme.typography.labelSmall.fontSize
+                                        )
+                                        Text(text = data, fontWeight = FontWeight.Bold)
+                                    }
+                                }
+
+                            bizProfileShort.bizTaxation.taxIssuerCountry.let {
+                                Column(modifier = Modifier.fillMaxWidth()) {
+                                    Text(
+                                        text = stringResource(R.string.str_biz_tax_id_issuer_country),
+                                        fontSize = MaterialTheme.typography.labelSmall.fontSize
+                                    )
+                                    Text(text = "${it.flag} ${it.displayName}", fontWeight = FontWeight.Bold)
+                                }
+                            }
+
+                            Row(modifier = Modifier.fillMaxWidth(1.0f)) {
+                                bizProfileShort.bizTaxation.taxRatePercentage.let {
+                                    Column(modifier = Modifier.weight(0.5f)) {
+                                        Text(
+                                            text = stringResource(R.string.str_biz_tax_rate_percentage),
+                                            fontSize = MaterialTheme.typography.labelSmall.fontSize
+                                        )
+                                        Text(text = "$it %", fontWeight = FontWeight.Bold)
+                                    }
+                                }
+                                bizProfileShort.bizTaxation.taxIncluded.let {
+                                    Column(modifier = Modifier.weight(0.5f)) {
+                                        Text(
+                                            text = stringResource(R.string.str_biz_tax_included),
+                                            fontSize = MaterialTheme.typography.labelSmall.fontSize
+                                        )
+                                        Text(
+                                            text =
+                                                if(it) stringResource(R.string.str_yes)
+                                                else stringResource(R.string.str_no),
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                    }
+                                }
+                            }
                         }
                     }
                     
@@ -732,7 +828,7 @@ private fun Preview() = CustomThemes.ApplicationTheme {
                             identifierKey = "biz_tax_type_00001",
                             taxIdDocNumber = "1234567890",
                             taxIssuerCountry = HlpCountry.COUNTRY_INDONESIA,
-                            taxRatePercentage = 0.11,
+                            taxRatePercentage = 11.0,
                             taxIncluded = true
                         ),
                         auditTrail = AuditTrail()
