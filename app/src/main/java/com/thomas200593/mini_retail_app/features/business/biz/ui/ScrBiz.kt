@@ -4,6 +4,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -32,6 +33,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -39,6 +41,7 @@ import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs
 import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
 import com.thomas200593.mini_retail_app.app.ui.StateApp
+import com.thomas200593.mini_retail_app.core.ui.common.CustomThemes
 import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar.ProvideTopAppBarAction
 import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar.ProvideTopAppBarTitle
 import com.thomas200593.mini_retail_app.core.ui.component.CustomButton.Common.AppIconButton
@@ -228,20 +231,20 @@ private fun ScreenContent(
 ) {
     LazyVerticalGrid(
         modifier = Modifier.fillMaxSize().padding(8.dp),
-        columns = GridCells.Fixed(3)
+        columns = GridCells.Fixed(count = 3)
     ) {
         items(count = menuData.count()){ index ->
             val menu = menuData.elementAt(index)
             Surface(
-                modifier = Modifier.fillMaxWidth().padding(4.dp),
-                onClick = { onNavToMenu(menu) },
-                shape = MaterialTheme.shapes.medium,
+                modifier = Modifier.fillMaxWidth().padding(4.dp).aspectRatio(1.0f),
                 border = BorderStroke(1.dp, colorResource(R.color.charcoal_gray)),
+                onClick = { onNavToMenu(menu) },
+                shape = MaterialTheme.shapes.medium
             ) {
                 Column(
                     modifier = Modifier.fillMaxSize().padding(8.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterVertically)
+                    verticalArrangement = Arrangement.SpaceBetween
                 ) {
                     Surface(
                         shape = MaterialTheme.shapes.medium,
@@ -257,14 +260,39 @@ private fun ScreenContent(
                     menu.scrGraphs.title?.let{
                         Text(
                             text = stringResource(id = it),
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier.align(Alignment.CenterHorizontally),
                             color = MaterialTheme.colorScheme.onTertiaryContainer,
                             textAlign = TextAlign.Center,
-                            overflow = TextOverflow.Ellipsis
+                            overflow = TextOverflow.Ellipsis,
+                            maxLines = 2
                         )
                     }
                 }
             }
+        }
+    }
+}
+
+@Composable
+@Preview
+private fun Preview() = CustomThemes.ApplicationTheme {
+    Surface {
+        Column (modifier = Modifier.fillMaxSize()) {
+            ScrBiz(
+                currentScreen = ScrGraphs.Business,
+                onShowScrDesc = {},
+                onDismissDlgScrDesc = {},
+                onNavToMenu = {},
+                uiState = UiState(
+                    dialogState = VMBiz.DialogState(),
+                    destBiz = Success(
+                        destBiz = setOf(
+                            DestBiz.BIZ_PROFILE,
+                            DestBiz.MASTER_DATA
+                        )
+                    )
+                )
+            )
         }
     }
 }
