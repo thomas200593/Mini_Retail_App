@@ -100,7 +100,7 @@ class VMAppConfig @Inject constructor(
     private fun resetUiStateDestAppConfig() = _uiState.update { it.copy(destAppConfig = Loading) }
     private fun resetDialogAndUiState() { resetDialogState(); resetUiStateDestAppConfig() }
     private fun onOpenEvent(sessionState: SessionState) {
-        resetUiStateDestAppConfig(); resetDialogState()
+        resetDialogAndUiState()
         when (sessionState) {
             SessionState.Loading -> updateDialogState(dlgLoadingAuth = true)
             is SessionState.Invalid -> viewModelScope.launch {

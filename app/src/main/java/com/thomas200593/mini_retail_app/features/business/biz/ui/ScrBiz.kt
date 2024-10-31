@@ -41,6 +41,7 @@ import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs
 import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
 import com.thomas200593.mini_retail_app.app.ui.StateApp
+import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
 import com.thomas200593.mini_retail_app.core.ui.common.CustomThemes
 import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar.ProvideTopAppBarAction
 import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar.ProvideTopAppBarTitle
@@ -48,6 +49,7 @@ import com.thomas200593.mini_retail_app.core.ui.component.CustomButton.Common.Ap
 import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AlertDialogContext
 import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AppAlertDialog
 import com.thomas200593.mini_retail_app.features.business.biz.navigation.DestBiz
+import com.thomas200593.mini_retail_app.features.business.biz.ui.VMBiz.UiEvents.ButtonEvents.BtnScrDescEvents
 import com.thomas200593.mini_retail_app.features.business.biz.ui.VMBiz.UiEvents.OnOpenEvents
 import com.thomas200593.mini_retail_app.features.business.biz.ui.VMBiz.UiState
 import com.thomas200593.mini_retail_app.features.business.biz.ui.VMBiz.UiStateDestBiz.Loading
@@ -67,9 +69,15 @@ fun ScrBiz(
     ScrBiz(
         uiState = uiState,
         currentScreen = currentScreen,
-        onShowScrDesc = { /*TODO*/ },
-        onDismissDlgScrDesc = { /*TODO*/ },
-        onNavToMenu = { /*TODO*/ }
+        onShowScrDesc = { vm.onEvent(BtnScrDescEvents.OnClick) },
+        onDismissDlgScrDesc = { vm.onEvent(BtnScrDescEvents.OnDismiss) },
+        onNavToMenu = { menu ->
+            when (sessionState) {
+                SessionState.Loading -> Unit
+                is SessionState.Invalid -> Unit
+                is SessionState.Valid -> Unit
+            }
+        }
     )
 }
 

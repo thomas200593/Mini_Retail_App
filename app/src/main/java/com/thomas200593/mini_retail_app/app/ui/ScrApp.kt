@@ -40,12 +40,10 @@ fun ScrApp(
     val networkNotConnectedMessage = stringResource(id = R.string.str_network_not_connected)
 
     LaunchedEffect(isNetworkOffline) {
-        if(isNetworkOffline){
-            snackBarHostState.showSnackbar(
-                message = networkNotConnectedMessage,
-                duration = Indefinite
-            )
-        }
+        if(isNetworkOffline) snackBarHostState.showSnackbar(
+            message = networkNotConnectedMessage,
+            duration = Indefinite
+        )
     }
     ScrApp(snackBarHostState = snackBarHostState)
 }
@@ -63,18 +61,18 @@ internal fun ScrApp(
         contentColor = colorScheme.onBackground,
         snackbarHost = { SnackbarHost(snackBarHostState) },
         topBar = {
-            if(stateApp.shouldShowTopBar)
-            { TopAppBar(navController = stateApp.navController) }
+            if (stateApp.shouldShowTopBar) TopAppBar(
+                navController = stateApp.navController,
+                visible = stateApp.shouldShowTopBar
+            )
         },
         bottomBar = {
-            if(stateApp.shouldShowBottomBar){
-                BottomBar(
-                    destinations = stateApp.destTopLevels,
-                    onNavigateToDestination = stateApp::navToDestTopLevel,
-                    currentDestination = stateApp.destCurrent,
-                    modifier = modifier
-                )
-            }
+            if (stateApp.shouldShowBottomBar) BottomBar(
+                destinations = stateApp.destTopLevels,
+                onNavigateToDestination = stateApp::navToDestTopLevel,
+                currentDestination = stateApp.destCurrent,
+                modifier = modifier
+            )
         },
         content = { padding ->
             Surface(

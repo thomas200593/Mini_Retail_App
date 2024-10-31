@@ -1,5 +1,10 @@
 package com.thomas200593.mini_retail_app.core.ui.component
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TopAppBar
@@ -25,7 +30,11 @@ import kotlinx.coroutines.flow.filterNot
 
 object CustomAppBar {
     @Composable
-    fun TopAppBar(navController: NavController){ AppBar(navController = navController) }
+    fun TopAppBar(navController: NavController, visible: Boolean) =
+        AppBar(
+            navController = navController,
+            visible = visible
+        )
 
     @Composable
     fun ProvideTopAppBarAction(actions: @Composable RowScope.() -> Unit){
@@ -91,7 +100,8 @@ object CustomAppBar {
     @Composable
     private fun AppBar(
         navController: NavController,
-        modifier: Modifier = Modifier
+        modifier: Modifier = Modifier,
+        visible: Boolean
     ) {
         val currentContentBackStackEntry by produceState(
             initialValue = null as NavBackStackEntry?,
@@ -100,12 +110,18 @@ object CustomAppBar {
                 .collect{ value = it }
             }
         )
-        TopAppBar(
-            modifier = modifier,
-            navigationIcon = { TopAppBarNavIcon(currentContentBackStackEntry) },
-            title = { TopAppBarTitle(currentContentBackStackEntry) },
-            actions = { TopAppBarAction(currentContentBackStackEntry) }
-        )
+        AnimatedVisibility(
+            visible = visible,
+            enter = fadeIn() + expandVertically(),
+            exit = shrinkVertically() + fadeOut()
+        ) {
+            TopAppBar(
+                modifier = modifier,
+                navigationIcon = { TopAppBarNavIcon(currentContentBackStackEntry) },
+                title = { TopAppBarTitle(currentContentBackStackEntry) },
+                actions = { TopAppBarAction(currentContentBackStackEntry) }
+            )
+        }
     }
 
     private class TopAppBarViewModel: ViewModel() {

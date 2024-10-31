@@ -9,6 +9,9 @@ import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers
 import com.thomas200593.mini_retail_app.core.design_system.coroutine_dispatchers.di.Dispatcher
 import com.thomas200593.mini_retail_app.features.business.biz.navigation.DestBiz
 import com.thomas200593.mini_retail_app.features.business.biz.repository.RepoBiz
+import com.thomas200593.mini_retail_app.features.business.biz.ui.VMBiz.UiEvents.ButtonEvents.BtnMenuSelectionEvents
+import com.thomas200593.mini_retail_app.features.business.biz.ui.VMBiz.UiEvents.ButtonEvents.BtnScrDescEvents
+import com.thomas200593.mini_retail_app.features.business.biz.ui.VMBiz.UiEvents.DialogEvents.DlgDenyAccessEvents
 import com.thomas200593.mini_retail_app.features.business.biz.ui.VMBiz.UiEvents.OnOpenEvents
 import com.thomas200593.mini_retail_app.features.business.biz.ui.VMBiz.UiStateDestBiz.Loading
 import com.thomas200593.mini_retail_app.features.business.biz.ui.VMBiz.UiStateDestBiz.Success
@@ -43,6 +46,21 @@ class VMBiz @Inject constructor(
     )
     sealed interface UiEvents {
         data class OnOpenEvents(val sessionState: SessionState) : UiEvents
+        sealed interface ButtonEvents : UiEvents {
+            sealed interface BtnScrDescEvents : ButtonEvents {
+                data object OnClick : BtnScrDescEvents
+                data object OnDismiss : BtnScrDescEvents
+            }
+            sealed interface BtnMenuSelectionEvents : ButtonEvents {
+                data object OnAllow : BtnMenuSelectionEvents
+                data object OnDeny : BtnMenuSelectionEvents
+            }
+        }
+        sealed interface DialogEvents : UiEvents {
+            sealed interface DlgDenyAccessEvents : DialogEvents {
+                data object OnDismiss : DlgDenyAccessEvents
+            }
+        }
     }
 
     private val _uiState = MutableStateFlow(UiState())
@@ -51,6 +69,13 @@ class VMBiz @Inject constructor(
     fun onEvent(events: UiEvents) {
         when(events) {
             is OnOpenEvents -> onOpenEvent(events.sessionState)
+            is BtnScrDescEvents.OnClick ->
+                { resetDialogState(); updateDialogState(dlgScrDesc = true) }
+            is BtnScrDescEvents.OnDismiss -> resetDialogState()
+            is BtnMenuSelectionEvents.OnDeny ->
+                { resetDialogState(); updateDialogState(dlgDenySession = true) }
+            is BtnMenuSelectionEvents.OnAllow -> resetDialogState()
+            is DlgDenyAccessEvents.OnDismiss -> resetDialogAndUiState()
         }
     }
 
