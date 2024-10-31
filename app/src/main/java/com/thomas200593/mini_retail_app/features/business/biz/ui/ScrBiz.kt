@@ -71,13 +71,14 @@ fun ScrBiz(
         currentScreen = currentScreen,
         onShowScrDesc = { vm.onEvent(BtnScrDescEvents.OnClick) },
         onDismissDlgScrDesc = { vm.onEvent(BtnScrDescEvents.OnDismiss) },
-        onNavToMenu = { menu ->
+        onNavToMenu = {
             when (sessionState) {
                 SessionState.Loading -> Unit
-                is SessionState.Invalid -> Unit
-                is SessionState.Valid -> Unit
+                is SessionState.Invalid -> { /*TODO*/ }
+                is SessionState.Valid -> { /*TODO*/ }
             }
-        }
+        },
+        onDismissDlgDenySession = { /*TOdo*/ }
     )
 }
 
@@ -87,13 +88,15 @@ private fun ScrBiz(
     currentScreen: ScrGraphs?,
     onShowScrDesc: (String) -> Unit,
     onDismissDlgScrDesc: () -> Unit,
-    onNavToMenu: (DestBiz) -> Unit
+    onNavToMenu: (DestBiz) -> Unit,
+    onDismissDlgDenySession: () -> Unit
 ) {
     currentScreen?.let {
         HandleDialogs(
             uiState = uiState,
             currentScreen = currentScreen,
-            onDismissDlgScrDesc = onDismissDlgScrDesc
+            onDismissDlgScrDesc = onDismissDlgScrDesc,
+            onDismissDlgDenySession = onDismissDlgDenySession
         )
         TopAppBar(
             scrGraphs = it,
@@ -114,7 +117,8 @@ private fun ScrBiz(
 private fun HandleDialogs(
     uiState: UiState,
     currentScreen: ScrGraphs,
-    onDismissDlgScrDesc: () -> Unit
+    onDismissDlgScrDesc: () -> Unit,
+    onDismissDlgDenySession: () -> Unit
 ) {
     AppAlertDialog(
         showDialog = uiState.dialogState.dlgLoadingAuth,
@@ -154,6 +158,30 @@ private fun HandleDialogs(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) { Text(text = stringResource(id = R.string.str_loading_data)) }
+        }
+    )
+    AppAlertDialog(
+        showDialog = uiState.dialogState.dlgDenySession,
+        dialogContext = AlertDialogContext.ERROR,
+        showTitle = true,
+        title = { Text(text = stringResource(id = R.string.str_error)) },
+        showBody = true,
+        body = {
+            Column(
+                modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) { Text(text = stringResource(id = R.string.str_deny_access_auth_required)) }
+        },
+        useDismissButton = true,
+        dismissButton = {
+            AppIconButton(
+                onClick = onDismissDlgDenySession,
+                icon = Icons.Default.Close,
+                text = stringResource(id = R.string.str_close),
+                containerColor = MaterialTheme.colorScheme.error,
+                contentColor = MaterialTheme.colorScheme.onError
+            )
         }
     )
     AppAlertDialog(
@@ -291,6 +319,7 @@ private fun Preview() = CustomThemes.ApplicationTheme {
                 onShowScrDesc = {},
                 onDismissDlgScrDesc = {},
                 onNavToMenu = {},
+                onDismissDlgDenySession = {},
                 uiState = UiState(
                     dialogState = VMBiz.DialogState(),
                     destBiz = Success(
