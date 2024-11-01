@@ -68,13 +68,12 @@ object CustomForm {
         )
         val colorBorder by rememberUpdatedState(
             newValue = when{
-                isError -> { MaterialTheme.colorScheme.error }
-                isFocused -> { MaterialTheme.colorScheme.primary }
-                else -> { MaterialTheme.colorScheme.primary.copy(alpha = 0.3f) }
+                isError -> MaterialTheme.colorScheme.error
+                isFocused -> MaterialTheme.colorScheme.primary
+                else -> MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)
             }
         )
-        val shouldShowLabel by
-        remember(value) { derivedStateOf { value.isNotEmpty() && !label.isNullOrBlank() } }
+        val shouldShowLabel by remember(value) { derivedStateOf { value.isNotEmpty() && !label.isNullOrBlank() } }
         val placeholderText = placeholder.orEmpty()
         val labelText = label.orEmpty()
 

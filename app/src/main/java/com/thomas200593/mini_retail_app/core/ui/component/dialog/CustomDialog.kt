@@ -1,4 +1,4 @@
-package com.thomas200593.mini_retail_app.core.ui.component
+package com.thomas200593.mini_retail_app.core.ui.component.dialog
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.size
@@ -25,11 +25,11 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.window.SecureFlagPolicy
 import androidx.compose.ui.window.SecureFlagPolicy.Inherit
 import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.Emotion.sad
-import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AlertDialogContext.CONFIRMATION
-import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AlertDialogContext.ERROR
-import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AlertDialogContext.INFORMATION
-import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AlertDialogContext.SUCCESS
-import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AlertDialogContext.WARNING
+import com.thomas200593.mini_retail_app.core.ui.component.dialog.CustomDialog.AlertDialogContext.CONFIRMATION
+import com.thomas200593.mini_retail_app.core.ui.component.dialog.CustomDialog.AlertDialogContext.ERROR
+import com.thomas200593.mini_retail_app.core.ui.component.dialog.CustomDialog.AlertDialogContext.INFORMATION
+import com.thomas200593.mini_retail_app.core.ui.component.dialog.CustomDialog.AlertDialogContext.SUCCESS
+import com.thomas200593.mini_retail_app.core.ui.component.dialog.CustomDialog.AlertDialogContext.WARNING
 
 object CustomDialog {
     /**

@@ -1,0 +1,146 @@
+package com.thomas200593.mini_retail_app.core.ui.component.dialog
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
+import com.thomas200593.mini_retail_app.R
+import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs
+import com.thomas200593.mini_retail_app.core.ui.common.CustomThemes.ApplicationTheme
+import com.thomas200593.mini_retail_app.core.ui.component.CustomButton.Common.AppIconButton
+import com.thomas200593.mini_retail_app.core.ui.component.dialog.CustomDialog.AlertDialogContext.INFORMATION
+import com.thomas200593.mini_retail_app.core.ui.component.dialog.CustomDialog.AppAlertDialog
+import com.thomas200593.mini_retail_app.core.ui.component.dialog.DlgInformation.Auth
+import com.thomas200593.mini_retail_app.core.ui.component.dialog.DlgInformation.GetData
+import com.thomas200593.mini_retail_app.core.ui.component.dialog.DlgInformation.ScrDesc
+
+object DlgInformation {
+    @Composable
+    fun Auth(
+        modifier: Modifier = Modifier,
+        showDialog: MutableState<Boolean>
+    ) {
+        AppAlertDialog(
+            modifier = modifier,
+            showDialog = showDialog,
+            dialogContext = INFORMATION,
+            showTitle = true,
+            title = {
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) { CircularProgressIndicator() }
+            },
+            showBody = true,
+            body = {
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) { Text(text = stringResource(id = R.string.str_authenticating)) }
+            }
+        )
+    }
+
+    @Composable
+    fun GetData(
+        modifier: Modifier = Modifier,
+        showDialog: MutableState<Boolean>
+    ) {
+        AppAlertDialog(
+            modifier = modifier,
+            showDialog = showDialog,
+            dialogContext = INFORMATION,
+            showTitle = true,
+            title = {
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) { CircularProgressIndicator() }
+            },
+            showBody = true,
+            body = {
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) { Text(text = stringResource(id = R.string.str_loading_data)) }
+            }
+        )
+    }
+
+    @Composable
+    fun ScrDesc(
+        modifier: Modifier = Modifier,
+        showDialog: MutableState<Boolean>,
+        currentScreen: ScrGraphs,
+        onDismiss: () -> Unit
+    ) {
+        AppAlertDialog(
+            modifier = modifier,
+            dialogContext = INFORMATION,
+            showDialog = showDialog,
+            showIcon = true,
+            showTitle = true,
+            title = { currentScreen.title?.let { Text(text = stringResource(id = it)) } },
+            showBody = true,
+            body = {
+                currentScreen.description?.let {
+                    Column(
+                        modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState()),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) { Text(text = stringResource(id = it)) }
+                }
+            },
+            useDismissButton = true,
+            dismissButton = {
+                AppIconButton(
+                    onClick = onDismiss,
+                    icon = Icons.Default.Close,
+                    text = stringResource(id = R.string.str_close)
+                )
+            }
+        )
+    }
+}
+
+@Composable
+@Preview
+private fun PreviewAuth() = ApplicationTheme {
+    val showDialog = remember { mutableStateOf(true) }
+    Auth(showDialog = showDialog)
+}
+
+@Composable
+@Preview
+private fun PreviewGetData() = ApplicationTheme {
+    val showDialog = remember { mutableStateOf(true) }
+    GetData(showDialog = showDialog)
+}
+
+@Composable
+@Preview
+private fun PreviewScrDesc() = ApplicationTheme {
+    val showDialog = remember { mutableStateOf(true) }
+    ScrDesc(
+        showDialog = showDialog,
+        currentScreen = ScrGraphs.AppConfig,
+        onDismiss = {}
+    )
+}

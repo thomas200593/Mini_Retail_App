@@ -46,8 +46,8 @@ import com.thomas200593.mini_retail_app.core.ui.component.CustomButton.Common.Ap
 import com.thomas200593.mini_retail_app.core.ui.component.CustomButton.Google.SignInWithGoogle
 import com.thomas200593.mini_retail_app.core.ui.component.CustomButton.Google.handleClearCredential
 import com.thomas200593.mini_retail_app.core.ui.component.CustomButton.Google.handleSignIn
-import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog
-import com.thomas200593.mini_retail_app.core.ui.component.CustomDialog.AppAlertDialog
+import com.thomas200593.mini_retail_app.core.ui.component.dialog.CustomDialog
+import com.thomas200593.mini_retail_app.core.ui.component.dialog.CustomDialog.AppAlertDialog
 import com.thomas200593.mini_retail_app.core.ui.component.CustomScreenUtil.LockScreenOrientation
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.navigation.navToAppConfig
 import com.thomas200593.mini_retail_app.features.auth.ui.VMAuth.AuthValidationResult.Error
