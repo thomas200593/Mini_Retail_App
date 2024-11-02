@@ -9,16 +9,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowRight
 import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -45,14 +41,13 @@ import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
 import com.thomas200593.mini_retail_app.app.ui.StateApp
 import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
 import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.Timezone.timezone
+import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.ThreeRowCardItem
+import com.thomas200593.mini_retail_app.core.ui.component.CustomScreenUtil.LockScreenOrientation
 import com.thomas200593.mini_retail_app.core.ui.component.app_bar.CustomAppBar.ProvideTopAppBarAction
 import com.thomas200593.mini_retail_app.core.ui.component.app_bar.CustomAppBar.ProvideTopAppBarNavigationIcon
 import com.thomas200593.mini_retail_app.core.ui.component.app_bar.CustomAppBar.ProvideTopAppBarTitle
-import com.thomas200593.mini_retail_app.core.ui.component.CustomButton.Common.AppIconButton
-import com.thomas200593.mini_retail_app.core.ui.component.dialog.CustomDialog.AlertDialogContext
-import com.thomas200593.mini_retail_app.core.ui.component.dialog.CustomDialog.AppAlertDialog
-import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.ThreeRowCardItem
-import com.thomas200593.mini_retail_app.core.ui.component.CustomScreenUtil.LockScreenOrientation
+import com.thomas200593.mini_retail_app.core.ui.component.dialog.DlgError
+import com.thomas200593.mini_retail_app.core.ui.component.dialog.DlgInformation
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_timezone.entity.ConfigTimezones
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_timezone.entity.Timezone
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_timezone.ui.VMConfGenTimezone.UiEvents.ButtonEvents.BtnNavBackEvents
@@ -147,94 +142,16 @@ private fun HandleDialogs(
     onDismissDlgScrDesc: () -> Unit,
     onDismissDlgDenySetData: () -> Unit
 ) {
-    AppAlertDialog(
-        showDialog = uiState.dialogState.dlgLoadingAuth,
-        dialogContext = AlertDialogContext.INFORMATION,
-        showTitle = true,
-        title = {
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) { CircularProgressIndicator() }
-        },
-        showBody = true,
-        body = {
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) { Text(text = stringResource(id = R.string.str_authenticating)) }
-        }
-    )
-    AppAlertDialog(
-        showDialog = uiState.dialogState.dlgLoadingGetData,
-        dialogContext = AlertDialogContext.INFORMATION,
-        showTitle = true,
-        title = {
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) { CircularProgressIndicator() }
-        },
-        showBody = true,
-        body = {
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) { Text(text = stringResource(id = R.string.str_loading_data)) }
-        }
-    )
-    AppAlertDialog(
+    DlgInformation.Auth(showDialog = uiState.dialogState.dlgLoadingAuth)
+    DlgInformation.GetData(showDialog = uiState.dialogState.dlgLoadingGetData)
+    DlgError.SessionInvalid(
         showDialog = uiState.dialogState.dlgDenySetData,
-        dialogContext = AlertDialogContext.ERROR,
-        showTitle = true,
-        title = { Text(text = stringResource(id = R.string.str_error)) },
-        showBody = true,
-        body = {
-            Column(
-                modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState()),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) { Text(text = stringResource(id = R.string.str_deny_access_auth_required)) }
-        },
-        useDismissButton = true,
-        dismissButton = {
-            AppIconButton(
-                onClick = onDismissDlgDenySetData,
-                icon = Icons.Default.Close,
-                text = stringResource(id = R.string.str_close),
-                containerColor = MaterialTheme.colorScheme.error,
-                contentColor = MaterialTheme.colorScheme.onError
-            )
-        }
+        onDismiss = onDismissDlgDenySetData
     )
-    AppAlertDialog(
+    DlgInformation.ScrDesc(
         showDialog = uiState.dialogState.dlgScrDesc,
-        dialogContext = AlertDialogContext.INFORMATION,
-        showIcon = true,
-        showTitle = true,
-        title = { currentScreen.title?.let { Text(text = stringResource(id = it)) } },
-        showBody = true,
-        body = {
-            currentScreen.description?.let {
-                Column(
-                    modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState()),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) { Text(text = stringResource(id = it)) }
-            }
-        },
-        useDismissButton = true,
-        dismissButton = {
-            AppIconButton(
-                onClick = onDismissDlgScrDesc,
-                icon = Icons.Default.Close,
-                text = stringResource(id = R.string.str_close)
-            )
-        }
+        currentScreen = currentScreen,
+        onDismiss = onDismissDlgScrDesc
     )
 }
 
