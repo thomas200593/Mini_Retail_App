@@ -10,12 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -46,11 +40,12 @@ import com.thomas200593.mini_retail_app.core.ui.component.CustomButton.Common.Ap
 import com.thomas200593.mini_retail_app.core.ui.component.CustomButton.Google.SignInWithGoogle
 import com.thomas200593.mini_retail_app.core.ui.component.CustomButton.Google.handleClearCredential
 import com.thomas200593.mini_retail_app.core.ui.component.CustomButton.Google.handleSignIn
-import com.thomas200593.mini_retail_app.core.ui.component.dialog.CustomDialog
-import com.thomas200593.mini_retail_app.core.ui.component.dialog.CustomDialog.AppAlertDialog
 import com.thomas200593.mini_retail_app.core.ui.component.CustomScreenUtil.LockScreenOrientation
+import com.thomas200593.mini_retail_app.core.ui.component.dialog.DlgError
+import com.thomas200593.mini_retail_app.core.ui.component.dialog.DlgInformation
+import com.thomas200593.mini_retail_app.core.ui.component.dialog.DlgSuccess
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.navigation.navToAppConfig
-import com.thomas200593.mini_retail_app.features.auth.ui.VMAuth.AuthValidationResult.Error
+import com.thomas200593.mini_retail_app.features.auth.ui.VMAuth.AuthValidationResult
 import com.thomas200593.mini_retail_app.features.auth.ui.VMAuth.UiEvents.ButtonEvents.BtnAppConfigEvents
 import com.thomas200593.mini_retail_app.features.auth.ui.VMAuth.UiEvents.ButtonEvents.BtnAuthGoogleEvents
 import com.thomas200593.mini_retail_app.features.auth.ui.VMAuth.UiEvents.ButtonEvents.BtnTncEvents
@@ -143,71 +138,16 @@ private fun HandleDialogs(
     dlgAuthSuccessOnConfirm: () -> Unit,
     dlgAuthFailedOnDismiss: () -> Unit
 ) {
-    AppAlertDialog(
-        showDialog = uiState.dialogState.dlgAuthLoading,
-        dialogContext = CustomDialog.AlertDialogContext.INFORMATION,
-        showTitle = true,
-        title = {
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) { CircularProgressIndicator() }
-        },
-        showBody = true,
-        body = {
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) { Text(text = stringResource(id = R.string.str_loading)) }
-        }
-    )
-    AppAlertDialog(
-        showDialog = uiState.dialogState.dlgAuthSuccess,
-        dialogContext = CustomDialog.AlertDialogContext.SUCCESS,
-        showIcon = true,
-        showTitle = true,
-        title = { Text(text = stringResource(R.string.str_auth_success)) },
-        useConfirmButton = true,
-        confirmButton = {
-            AppIconButton(
-                onClick = dlgAuthSuccessOnConfirm,
-                icon = Icons.Default.Check,
-                text = stringResource(id = R.string.str_ok)
-            )
-        }
-    )
-    AppAlertDialog(
-        showDialog = uiState.dialogState.dlgAuthError,
-        dialogContext = CustomDialog.AlertDialogContext.ERROR,
-        showIcon = true,
-        showTitle = true,
-        title = { Text(text = stringResource(id = R.string.str_error)) },
-        showBody = true,
-        body = {
-            Column(
-                modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState()),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                when(uiState.authValidationResult) {
-                    is Error -> Text(text = uiState.authValidationResult.throwable.toString())
-                    else -> Unit
-                }
-            }
-        },
-        useDismissButton = true,
-        dismissButton = {
-            AppIconButton(
-                onClick = dlgAuthFailedOnDismiss,
-                icon = Icons.Default.Close,
-                text = stringResource(id = R.string.str_close),
-                containerColor = MaterialTheme.colorScheme.error,
-                contentColor = MaterialTheme.colorScheme.onError
-            )
-        }
-    )
+    DlgInformation.Auth(showDialog = uiState.dialogState.dlgAuthLoading)
+    DlgSuccess.AuthSuccess(showDialog = uiState.dialogState.dlgAuthSuccess, onConfirm = dlgAuthSuccessOnConfirm)
+    when(uiState.authValidationResult) {
+        is AuthValidationResult.Error -> DlgError.AuthFailure(
+            showDialog = uiState.dialogState.dlgAuthError,
+            throwable = uiState.authValidationResult.throwable,
+            onDismiss = dlgAuthFailedOnDismiss
+        )
+        else -> Unit
+    }
 }
 
 @Composable

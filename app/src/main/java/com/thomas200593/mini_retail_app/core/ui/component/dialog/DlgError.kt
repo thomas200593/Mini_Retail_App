@@ -26,6 +26,41 @@ import com.thomas200593.mini_retail_app.core.ui.component.dialog.DlgError.Sessio
 
 object DlgError {
     @Composable
+    fun AuthFailure(
+        modifier: Modifier = Modifier,
+        showDialog: MutableState<Boolean>,
+        throwable: Throwable,
+        onDismiss: () -> Unit
+    ) {
+        AppAlertDialog(
+            modifier = modifier,
+            showDialog = showDialog,
+            dialogContext = CustomDialog.AlertDialogContext.ERROR,
+            showIcon = true,
+            showTitle = true,
+            title = { Text(text = stringResource(id = R.string.str_error)) },
+            showBody = true,
+            body = {
+                Column(
+                    modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState()),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) { Text(text = throwable.toString()) }
+            },
+            useDismissButton = true,
+            dismissButton = {
+                AppIconButton(
+                    onClick = onDismiss,
+                    icon = Icons.Default.Close,
+                    text = stringResource(id = R.string.str_close),
+                    containerColor = MaterialTheme.colorScheme.error,
+                    contentColor = MaterialTheme.colorScheme.onError
+                )
+            }
+        )
+    }
+
+    @Composable
     fun SessionInvalid(
         modifier: Modifier = Modifier,
         showDialog: MutableState<Boolean>,
