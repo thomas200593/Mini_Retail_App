@@ -134,5 +134,6 @@
     <string name="str_no">Tidak</string>
     <string name="str_invalid_format">Format salah</string>
     <string name="str_cancel_input_biz_profile">Batalkan pengaturan profil bisnis?</string>
-    <string name="str_entries_delete_body">All entries will be deleted.</string>
+    <string name="str_entries_delete_body">Semua isian akan dihapus.</string>
+    <string name="str_processing">Memproses…</string>
 </resources>

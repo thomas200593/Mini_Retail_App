@@ -36,4 +36,32 @@ object DlgSuccess {
             }
         )
     }
+
+    @Composable
+    fun ProcessSuccess(
+        modifier: Modifier = Modifier,
+        showDialog: MutableState<Boolean>,
+        titleString: String = stringResource(R.string.str_success),
+        bodyString: String = stringResource(R.string.str_biz_profile_init_success),
+        onConfirm: () -> Unit
+    ) {
+        AppAlertDialog(
+            modifier = modifier,
+            dialogContext = SUCCESS,
+            showDialog = showDialog,
+            showIcon = true,
+            showTitle = true,
+            title = { Text(titleString) },
+            showBody = true,
+            body = { Text(bodyString) },
+            useConfirmButton = true,
+            confirmButton = {
+                AppIconButton(
+                    onClick = onConfirm,
+                    icon = Icons.Default.Check,
+                    text = stringResource(id = R.string.str_ok)
+                )
+            }
+        )
+    }
 }

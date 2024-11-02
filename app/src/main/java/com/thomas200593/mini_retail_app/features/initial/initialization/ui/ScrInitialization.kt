@@ -70,10 +70,12 @@ import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons
 import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.Country.country
 import com.thomas200593.mini_retail_app.core.ui.common.CustomThemes
 import com.thomas200593.mini_retail_app.core.ui.component.CustomButton.Common.AppIconButton
-import com.thomas200593.mini_retail_app.core.ui.component.dialog.CustomDialog.AlertDialogContext
-import com.thomas200593.mini_retail_app.core.ui.component.dialog.CustomDialog.AppAlertDialog
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.LoadingScreen
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.ThreeRowCardItem
+import com.thomas200593.mini_retail_app.core.ui.component.dialog.CustomDialog.AlertDialogContext
+import com.thomas200593.mini_retail_app.core.ui.component.dialog.CustomDialog.AppAlertDialog
+import com.thomas200593.mini_retail_app.core.ui.component.dialog.DlgInformation
+import com.thomas200593.mini_retail_app.core.ui.component.dialog.DlgSuccess
 import com.thomas200593.mini_retail_app.core.ui.component.form.CustomForm.TextInput
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.entity.AppConfig.ConfigCurrent
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.entity.Country
@@ -271,31 +273,16 @@ private fun HandleDialogs(
             )
         }
     )
-    AppAlertDialog(
+    DlgInformation.ProcessLoading(
         showDialog = uiState.dialogState.dlgResLoading,
-        dialogContext = AlertDialogContext.INFORMATION,
-        showIcon = true,
-        showTitle = true,
-        title = { Text(stringResource(id = R.string.str_loading)) },
-        showBody = true,
-        body = { Text(stringResource(id = R.string.str_biz_profile_init_loading)) }
+        titleString = stringResource(R.string.str_loading),
+        bodyString = stringResource(R.string.str_biz_profile_init_loading)
     )
-    AppAlertDialog(
+    DlgSuccess.ProcessSuccess(
         showDialog = uiState.dialogState.dlgResSuccess,
-        dialogContext = AlertDialogContext.SUCCESS,
-        showIcon = true,
-        showTitle = true,
-        title = { Text(stringResource(id = R.string.str_success)) },
-        showBody = true,
-        body = { Text(stringResource(id = R.string.str_biz_profile_init_success)) },
-        useConfirmButton = true,
-        confirmButton = {
-            AppIconButton(
-                onClick = dlgInitBizProfileSuccessOnConfirm,
-                icon = Icons.Default.Check,
-                text = stringResource(id = R.string.str_ok)
-            )
-        }
+        titleString = stringResource(R.string.str_success),
+        bodyString = stringResource(R.string.str_biz_profile_init_success),
+        onConfirm = dlgInitBizProfileSuccessOnConfirm
     )
     AppAlertDialog(
         showDialog = uiState.dialogState.dlgResError,

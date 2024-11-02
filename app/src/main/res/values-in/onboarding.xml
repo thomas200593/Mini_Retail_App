@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="onboarding_title_1">Selamat Datang Di Mini Retail Application</string>
-    <string name="onboarding_title_2">One-Solution untuk SME Anda</string>
+    <string name="onboarding_title_2">Satu-Solusi untuk SME Anda</string>
     <string name="onboarding_title_3">Mulai jelajahi</string>
     <string name="onboarding_desc_1">Selamat datang di Mini Retail Application, jelajahi fitur aplikasi kami.</string>
     <string name="onboarding_desc_2">Mulai dari mendaftarkan barang, kategori, karyawan, hingga manajemen shift dalam satu aplikasi.</string>
