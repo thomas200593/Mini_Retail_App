@@ -57,13 +57,14 @@ import com.thomas200593.mini_retail_app.core.data.local.database.entity_common.L
 import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
 import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.Country.country
 import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.Emotion.neutral
+import com.thomas200593.mini_retail_app.core.ui.component.CustomButton.Common.AppIconButton
+import com.thomas200593.mini_retail_app.core.ui.component.CustomScreenUtil.LockScreenOrientation
 import com.thomas200593.mini_retail_app.core.ui.component.app_bar.CustomAppBar.ProvideTopAppBarAction
 import com.thomas200593.mini_retail_app.core.ui.component.app_bar.CustomAppBar.ProvideTopAppBarNavigationIcon
 import com.thomas200593.mini_retail_app.core.ui.component.app_bar.CustomAppBar.ProvideTopAppBarTitle
-import com.thomas200593.mini_retail_app.core.ui.component.CustomButton.Common.AppIconButton
 import com.thomas200593.mini_retail_app.core.ui.component.dialog.CustomDialog.AlertDialogContext
 import com.thomas200593.mini_retail_app.core.ui.component.dialog.CustomDialog.AppAlertDialog
-import com.thomas200593.mini_retail_app.core.ui.component.CustomScreenUtil.LockScreenOrientation
+import com.thomas200593.mini_retail_app.core.ui.component.dialog.DlgInformation
 import com.thomas200593.mini_retail_app.features.business.biz_profile.entity.BizProfile
 import com.thomas200593.mini_retail_app.features.business.biz_profile.ui.VMBizProfile.UiEvents.ButtonEvents.BizIdNameBtnEvents
 import com.thomas200593.mini_retail_app.features.business.biz_profile.ui.VMBizProfile.UiEvents.ButtonEvents.BtnNavBackEvents
@@ -205,52 +206,11 @@ private fun HandleDialogs(
     currentScreen: ScrGraphs,
     onDismissDlgScrDesc: () -> Unit
 ) {
-    AppAlertDialog(
-        showDialog = uiState.dialogState.dlgLoading,
-        dialogContext = AlertDialogContext.INFORMATION,
-        showTitle = true,
-        title = {
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) { CircularProgressIndicator() }
-        },
-        showBody = true,
-        body = {
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) { Text(text = stringResource(id = R.string.str_loading)) }
-        }
-    )
-    AppAlertDialog(
+    DlgInformation.GetData(showDialog = uiState.dialogState.dlgLoading)
+    DlgInformation.ScrDesc(
         showDialog = uiState.dialogState.dlgScrDesc,
-        dialogContext = AlertDialogContext.INFORMATION,
-        showIcon = true,
-        showTitle = true,
-        title = { currentScreen.title?.let { Text(text = stringResource(id = it)) } },
-        showBody = true,
-        body = {
-            currentScreen.description?.let {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .verticalScroll(rememberScrollState()),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) { Text(text = stringResource(id = it)) }
-            }
-        },
-        useDismissButton = true,
-        dismissButton = {
-            AppIconButton(
-                onClick = onDismissDlgScrDesc,
-                icon = Icons.Default.Close,
-                text = stringResource(id = R.string.str_close)
-            )
-        }
+        currentScreen = currentScreen,
+        onDismiss = onDismissDlgScrDesc
     )
 }
 
