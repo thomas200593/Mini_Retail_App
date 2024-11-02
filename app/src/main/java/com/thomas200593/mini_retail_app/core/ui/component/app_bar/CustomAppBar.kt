@@ -1,4 +1,4 @@
-package com.thomas200593.mini_retail_app.core.ui.component
+package com.thomas200593.mini_retail_app.core.ui.component.app_bar
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically

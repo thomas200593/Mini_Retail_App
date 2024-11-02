@@ -54,7 +54,7 @@ import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
 import com.thomas200593.mini_retail_app.app.ui.StateApp
 import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.App.app
 import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.Data.master_data
-import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar
+import com.thomas200593.mini_retail_app.core.ui.component.app_bar.CustomAppBar
 import com.thomas200593.mini_retail_app.core.ui.component.CustomSearching.SearchToolBar
 import com.thomas200593.mini_retail_app.features.business.biz_m_data_supplier.entity.Supplier
 import com.thomas200593.mini_retail_app.features.business.biz_m_data_supplier.entity.dto.SortSupplier

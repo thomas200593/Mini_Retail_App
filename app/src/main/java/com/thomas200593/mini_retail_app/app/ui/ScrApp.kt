@@ -28,7 +28,7 @@ import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.app.navigation.NavHost.NavigationHost
-import com.thomas200593.mini_retail_app.core.ui.component.CustomAppBar.TopAppBar
+import com.thomas200593.mini_retail_app.core.ui.component.app_bar.CustomAppBar.TopAppBar
 import com.thomas200593.mini_retail_app.core.ui.component.CustomBottomBar.BottomBar
 
 @Composable
