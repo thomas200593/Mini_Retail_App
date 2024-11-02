@@ -25,13 +25,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
@@ -94,11 +91,10 @@ import com.thomas200593.mini_retail_app.core.design_system.util.HlpStringArray.S
 import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons
 import com.thomas200593.mini_retail_app.core.ui.common.CustomThemes
 import com.thomas200593.mini_retail_app.core.ui.component.CustomButton.Common.AppIconButton
-import com.thomas200593.mini_retail_app.core.ui.component.dialog.CustomDialog.AlertDialogContext
-import com.thomas200593.mini_retail_app.core.ui.component.dialog.CustomDialog.AppAlertDialog
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.TextContentWithIcon
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.ThreeRowCardItem
 import com.thomas200593.mini_retail_app.core.ui.component.CustomScreenUtil.LockScreenOrientation
+import com.thomas200593.mini_retail_app.core.ui.component.dialog.DlgError
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.entity.AppConfig.ConfigCurrent
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.navigation.navToAppConfig
 import com.thomas200593.mini_retail_app.features.auth.entity.AuthSessionToken
@@ -184,29 +180,9 @@ private fun HandleDialogs(
     uiState: UiState,
     dlgBtnSignOutOnClick: () -> Unit
 ) {
-    AppAlertDialog(
+    DlgError.SessionInvalid(
         showDialog = uiState.dialogState.dlgDenySession,
-        dialogContext = AlertDialogContext.ERROR,
-        showTitle = true,
-        title = { Text(text = stringResource(id = R.string.str_session_expired)) },
-        showBody = true,
-        body = {
-            Column(
-                modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState()),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) { Text(text = stringResource(id = R.string.str_deny_access_auth_required)) }
-        },
-        useDismissButton = true,
-        dismissButton = {
-            AppIconButton(
-                onClick = dlgBtnSignOutOnClick,
-                icon = Icons.Default.Close,
-                text = stringResource(id = R.string.str_close),
-                containerColor = MaterialTheme.colorScheme.error,
-                contentColor = MaterialTheme.colorScheme.onError
-            )
-        }
+        onDismiss = dlgBtnSignOutOnClick
     )
 }
 
