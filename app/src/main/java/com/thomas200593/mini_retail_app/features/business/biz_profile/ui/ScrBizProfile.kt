@@ -16,12 +16,10 @@ import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -62,8 +60,6 @@ import com.thomas200593.mini_retail_app.core.ui.component.CustomScreenUtil.LockS
 import com.thomas200593.mini_retail_app.core.ui.component.app_bar.CustomAppBar.ProvideTopAppBarAction
 import com.thomas200593.mini_retail_app.core.ui.component.app_bar.CustomAppBar.ProvideTopAppBarNavigationIcon
 import com.thomas200593.mini_retail_app.core.ui.component.app_bar.CustomAppBar.ProvideTopAppBarTitle
-import com.thomas200593.mini_retail_app.core.ui.component.dialog.CustomDialog.AlertDialogContext
-import com.thomas200593.mini_retail_app.core.ui.component.dialog.CustomDialog.AppAlertDialog
 import com.thomas200593.mini_retail_app.core.ui.component.dialog.DlgInformation
 import com.thomas200593.mini_retail_app.features.business.biz_profile.entity.BizProfile
 import com.thomas200593.mini_retail_app.features.business.biz_profile.ui.VMBizProfile.UiEvents.ButtonEvents.BizIdNameBtnEvents
