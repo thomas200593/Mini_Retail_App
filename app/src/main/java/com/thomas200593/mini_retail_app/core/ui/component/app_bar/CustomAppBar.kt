@@ -105,9 +105,9 @@ object CustomAppBar {
     ) {
         val currentContentBackStackEntry by produceState(
             initialValue = null as NavBackStackEntry?,
-            producer = { navController.currentBackStackEntryFlow
-                .debounce(100).filterNot { it.destination is FloatingWindow }
-                .collect{ value = it }
+            producer = {
+                navController.currentBackStackEntryFlow.debounce(100)
+                    .filterNot { it.destination is FloatingWindow }.collect{ value = it }
             }
         )
         AnimatedVisibility(
