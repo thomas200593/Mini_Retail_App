@@ -16,7 +16,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.ButtonDefaults
@@ -74,6 +73,7 @@ import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.LoadingScr
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.ThreeRowCardItem
 import com.thomas200593.mini_retail_app.core.ui.component.dialog.CustomDialog.AlertDialogContext
 import com.thomas200593.mini_retail_app.core.ui.component.dialog.CustomDialog.AppAlertDialog
+import com.thomas200593.mini_retail_app.core.ui.component.dialog.DlgCommonConfirmation
 import com.thomas200593.mini_retail_app.core.ui.component.dialog.DlgProcess
 import com.thomas200593.mini_retail_app.core.ui.component.form.CustomForm.TextInput
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.entity.AppConfig.ConfigCurrent
@@ -246,27 +246,10 @@ private fun HandleDialogs(
     dlgInitBizProfileSuccessOnConfirm: () -> Unit,
     dlgInitBizProfileErrorOnDismiss: () -> Unit
 ) {
-    AppAlertDialog(
+    DlgCommonConfirmation.DlgConfirmationYesNo(
         showDialog = uiState.dialogState.dlgInputBizProfileCancelConfirmation,
-        dialogContext = AlertDialogContext.CONFIRMATION,
-        title = { Text(stringResource(id = R.string.str_cancel_input_biz_profile)) },
-        body = { Text(stringResource(id = R.string.str_entries_delete_body)) },
-        confirmButton = {
-            AppIconButton(
-                onClick = dlgInitBizProfileCancelOnConfirm,
-                icon = Icons.Default.Check,
-                text = stringResource(id = R.string.str_yes),
-                containerColor = MaterialTheme.colorScheme.error,
-                contentColor = MaterialTheme.colorScheme.onError
-            )
-        },
-        dismissButton = {
-            AppIconButton(
-                onClick = dlgInitBizProfileCancelOnDismiss,
-                icon = Icons.Default.Close,
-                text = stringResource(id = R.string.str_no)
-            )
-        }
+        onConfirm = dlgInitBizProfileCancelOnConfirm,
+        onDismiss = dlgInitBizProfileCancelOnDismiss
     )
     DlgProcess.ProcessLoading(
         showDialog = uiState.dialogState.dlgResLoading,

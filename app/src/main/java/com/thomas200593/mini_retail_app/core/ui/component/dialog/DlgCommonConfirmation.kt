@@ -2,6 +2,8 @@ package com.thomas200593.mini_retail_app.core.ui.component.dialog
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -9,46 +11,39 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.core.ui.component.CustomButton.Common.AppIconButton
-import com.thomas200593.mini_retail_app.core.ui.component.dialog.CustomDialog.AlertDialogContext.INFORMATION
-import com.thomas200593.mini_retail_app.core.ui.component.dialog.CustomDialog.AlertDialogContext.SUCCESS
+import com.thomas200593.mini_retail_app.core.ui.component.dialog.CustomDialog.AlertDialogContext.CONFIRMATION
 import com.thomas200593.mini_retail_app.core.ui.component.dialog.CustomDialog.AppAlertDialog
 
-object DlgProcess {
+object DlgCommonConfirmation {
     @Composable
-    fun ProcessLoading(
+    fun DlgConfirmationYesNo(
         modifier: Modifier = Modifier,
         showDialog: MutableState<Boolean>,
-        titleString: String = stringResource(R.string.str_processing),
-        bodyString: String = stringResource(R.string.str_processing)
+        titleString: String = stringResource(R.string.str_confirm),
+        bodyString: String = stringResource(R.string.str_confirm),
+        onConfirm: () -> Unit,
+        onDismiss: () -> Unit
     ) {
         AppAlertDialog(
             modifier = modifier,
-            dialogContext = INFORMATION,
             showDialog = showDialog,
-            title = { Text(titleString) },
-            body = { Text(bodyString) }
-        )
-    }
-
-    @Composable
-    fun ProcessSuccess(
-        modifier: Modifier = Modifier,
-        showDialog: MutableState<Boolean>,
-        titleString: String = stringResource(R.string.str_success),
-        bodyString: String = stringResource(R.string.str_success),
-        onConfirm: () -> Unit
-    ) {
-        AppAlertDialog(
-            modifier = modifier,
-            dialogContext = SUCCESS,
-            showDialog = showDialog,
+            dialogContext = CONFIRMATION,
             title = { Text(titleString) },
             body = { Text(bodyString) },
             confirmButton = {
                 AppIconButton(
                     onClick = onConfirm,
                     icon = Icons.Default.Check,
-                    text = stringResource(id = R.string.str_ok)
+                    text = stringResource(id = R.string.str_yes)
+                )
+            },
+            dismissButton = {
+                AppIconButton(
+                    onClick = onDismiss,
+                    icon = Icons.Default.Close,
+                    text = stringResource(id = R.string.str_no),
+                    containerColor = MaterialTheme.colorScheme.error,
+                    contentColor = MaterialTheme.colorScheme.onError
                 )
             }
         )

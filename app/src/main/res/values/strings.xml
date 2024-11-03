@@ -143,4 +143,5 @@
     <string name="str_cancel_input_biz_profile">Cancel business profile manual setup?</string>
     <string name="str_entries_delete_body">All entries will be deleted.</string>
     <string name="str_processing">Processing…</string>
+    <string name="str_confirm">Confirm?</string>
 </resources>
