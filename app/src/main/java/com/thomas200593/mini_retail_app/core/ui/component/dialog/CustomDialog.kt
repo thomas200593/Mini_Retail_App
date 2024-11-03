@@ -100,7 +100,6 @@ object CustomDialog {
                     Surface(
                         color = getContainerColor(dialogContext),
                         contentColor = getContentColor(dialogContext),
-                        //modifier = Modifier.size(48.dp)
                     ) {
                         Icon(imageVector = icon ?: getIcon(dialogContext), contentDescription = null)
                     }
