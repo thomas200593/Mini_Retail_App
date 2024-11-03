@@ -94,7 +94,7 @@ import com.thomas200593.mini_retail_app.core.ui.component.CustomButton.Common.Ap
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.TextContentWithIcon
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.ThreeRowCardItem
 import com.thomas200593.mini_retail_app.core.ui.component.CustomScreenUtil.LockScreenOrientation
-import com.thomas200593.mini_retail_app.core.ui.component.dialog.DlgError
+import com.thomas200593.mini_retail_app.core.ui.component.dialog.DlgAuth
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.entity.AppConfig.ConfigCurrent
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.navigation.navToAppConfig
 import com.thomas200593.mini_retail_app.features.auth.entity.AuthSessionToken
@@ -180,7 +180,7 @@ private fun HandleDialogs(
     uiState: UiState,
     dlgBtnSignOutOnClick: () -> Unit
 ) {
-    DlgError.SessionInvalid(
+    DlgAuth.SessionInvalid (
         showDialog = uiState.dialogState.dlgDenySession,
         onDismiss = dlgBtnSignOutOnClick
     )

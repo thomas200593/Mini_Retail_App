@@ -7,7 +7,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -20,63 +19,7 @@ import com.thomas200593.mini_retail_app.core.ui.component.CustomButton.Common.Ap
 import com.thomas200593.mini_retail_app.core.ui.component.dialog.CustomDialog.AlertDialogContext.INFORMATION
 import com.thomas200593.mini_retail_app.core.ui.component.dialog.CustomDialog.AppAlertDialog
 
-object DlgInformation {
-    @Composable
-    fun Auth(
-        modifier: Modifier = Modifier,
-        showDialog: MutableState<Boolean>
-    ) {
-        AppAlertDialog(
-            modifier = modifier,
-            showDialog = showDialog,
-            dialogContext = INFORMATION,
-            showTitle = true,
-            title = {
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) { CircularProgressIndicator() }
-            },
-            showBody = true,
-            body = {
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) { Text(text = stringResource(id = R.string.str_authenticating)) }
-            }
-        )
-    }
-
-    @Composable
-    fun GetData(
-        modifier: Modifier = Modifier,
-        showDialog: MutableState<Boolean>
-    ) {
-        AppAlertDialog(
-            modifier = modifier,
-            showDialog = showDialog,
-            dialogContext = INFORMATION,
-            showTitle = true,
-            title = {
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) { CircularProgressIndicator() }
-            },
-            showBody = true,
-            body = {
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) { Text(text = stringResource(id = R.string.str_loading_data)) }
-            }
-        )
-    }
-
+object DlgScrGraphs {
     @Composable
     fun ScrDesc(
         modifier: Modifier = Modifier,

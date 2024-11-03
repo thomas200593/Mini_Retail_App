@@ -41,9 +41,7 @@ import com.thomas200593.mini_retail_app.core.ui.component.CustomButton.Google.Si
 import com.thomas200593.mini_retail_app.core.ui.component.CustomButton.Google.handleClearCredential
 import com.thomas200593.mini_retail_app.core.ui.component.CustomButton.Google.handleSignIn
 import com.thomas200593.mini_retail_app.core.ui.component.CustomScreenUtil.LockScreenOrientation
-import com.thomas200593.mini_retail_app.core.ui.component.dialog.DlgError
-import com.thomas200593.mini_retail_app.core.ui.component.dialog.DlgInformation
-import com.thomas200593.mini_retail_app.core.ui.component.dialog.DlgSuccess
+import com.thomas200593.mini_retail_app.core.ui.component.dialog.DlgAuth
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.navigation.navToAppConfig
 import com.thomas200593.mini_retail_app.features.auth.ui.VMAuth.AuthValidationResult
 import com.thomas200593.mini_retail_app.features.auth.ui.VMAuth.UiEvents.ButtonEvents.BtnAppConfigEvents
@@ -138,10 +136,10 @@ private fun HandleDialogs(
     dlgAuthSuccessOnConfirm: () -> Unit,
     dlgAuthFailedOnDismiss: () -> Unit
 ) {
-    DlgInformation.Auth(showDialog = uiState.dialogState.dlgAuthLoading)
-    DlgSuccess.AuthSuccess(showDialog = uiState.dialogState.dlgAuthSuccess, onConfirm = dlgAuthSuccessOnConfirm)
+    DlgAuth.AuthLoading(showDialog = uiState.dialogState.dlgAuthLoading)
+    DlgAuth.AuthSuccess(showDialog = uiState.dialogState.dlgAuthSuccess, onConfirm = dlgAuthSuccessOnConfirm)
     when(uiState.authValidationResult) {
-        is AuthValidationResult.Error -> DlgError.AuthFailure(
+        is AuthValidationResult.Error -> DlgAuth.AuthFailure(
             showDialog = uiState.dialogState.dlgAuthError,
             throwable = uiState.authValidationResult.throwable,
             onDismiss = dlgAuthFailedOnDismiss

@@ -42,8 +42,9 @@ import com.thomas200593.mini_retail_app.core.data.local.session.SessionState
 import com.thomas200593.mini_retail_app.core.ui.component.app_bar.CustomAppBar.ProvideTopAppBarAction
 import com.thomas200593.mini_retail_app.core.ui.component.app_bar.CustomAppBar.ProvideTopAppBarNavigationIcon
 import com.thomas200593.mini_retail_app.core.ui.component.app_bar.CustomAppBar.ProvideTopAppBarTitle
-import com.thomas200593.mini_retail_app.core.ui.component.dialog.DlgError
-import com.thomas200593.mini_retail_app.core.ui.component.dialog.DlgInformation
+import com.thomas200593.mini_retail_app.core.ui.component.dialog.DlgAuth
+import com.thomas200593.mini_retail_app.core.ui.component.dialog.DlgScrGraphs
+import com.thomas200593.mini_retail_app.core.ui.component.dialog.DlgCommonInformation
 import com.thomas200593.mini_retail_app.features.auth.navigation.navToAuth
 import com.thomas200593.mini_retail_app.features.business.biz_m_data.navigation.DestMasterData
 import com.thomas200593.mini_retail_app.features.business.biz_m_data.navigation.navToMasterData
@@ -144,14 +145,14 @@ private fun HandleDialogs(
     onDismissDlgScrDesc: () -> Unit,
     onDismissDlgDenyAccessMenu: () -> Unit
 ) {
-    DlgInformation.Auth(showDialog = uiState.dialogState.dlgLoadingAuth)
-    DlgInformation.GetData(showDialog = uiState.dialogState.dlgLoadingGetMenu)
-    DlgInformation.ScrDesc(
+    DlgAuth.AuthLoading(showDialog = uiState.dialogState.dlgLoadingAuth)
+    DlgCommonInformation.GetData(showDialog = uiState.dialogState.dlgLoadingGetMenu)
+    DlgScrGraphs.ScrDesc(
         showDialog = uiState.dialogState.dlgScrDesc,
         currentScreen = currentScreen,
         onDismiss = onDismissDlgScrDesc
     )
-    DlgError.SessionInvalid(
+    DlgAuth.SessionInvalid(
         showDialog = uiState.dialogState.dlgDenyAccessMenu,
         onDismiss = onDismissDlgDenyAccessMenu
     )

@@ -45,8 +45,9 @@ import com.thomas200593.mini_retail_app.core.ui.component.CustomScreenUtil.LockS
 import com.thomas200593.mini_retail_app.core.ui.component.app_bar.CustomAppBar.ProvideTopAppBarAction
 import com.thomas200593.mini_retail_app.core.ui.component.app_bar.CustomAppBar.ProvideTopAppBarNavigationIcon
 import com.thomas200593.mini_retail_app.core.ui.component.app_bar.CustomAppBar.ProvideTopAppBarTitle
-import com.thomas200593.mini_retail_app.core.ui.component.dialog.DlgError
-import com.thomas200593.mini_retail_app.core.ui.component.dialog.DlgInformation
+import com.thomas200593.mini_retail_app.core.ui.component.dialog.DlgAuth
+import com.thomas200593.mini_retail_app.core.ui.component.dialog.DlgScrGraphs
+import com.thomas200593.mini_retail_app.core.ui.component.dialog.DlgCommonInformation
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_language.entity.ConfigLanguages
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_language.entity.Language
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_language.ui.VMConfGenLanguage.UiEvents.ButtonEvents.BtnNavBackEvents
@@ -140,14 +141,14 @@ private fun HandleDialogs(
     onDismissDlgScrDesc: () -> Unit,
     onDismissDlgDenySetData: () -> Unit
 ) {
-    DlgInformation.Auth(showDialog = uiState.dialogState.dlgLoadingAuth)
-    DlgInformation.GetData(showDialog = uiState.dialogState.dlgLoadingGetData)
-    DlgInformation.ScrDesc(
+    DlgAuth.AuthLoading(showDialog = uiState.dialogState.dlgLoadingAuth)
+    DlgCommonInformation.GetData(showDialog = uiState.dialogState.dlgLoadingGetData)
+    DlgScrGraphs.ScrDesc(
         showDialog = uiState.dialogState.dlgScrDesc,
         currentScreen = currentScreen,
         onDismiss = onDismissDlgScrDesc
     )
-    DlgError.SessionInvalid(
+    DlgAuth.SessionInvalid(
         showDialog = uiState.dialogState.dlgDenySetData,
         onDismiss = onDismissDlgDenySetData
     )

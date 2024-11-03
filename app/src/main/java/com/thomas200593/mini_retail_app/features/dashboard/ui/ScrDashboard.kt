@@ -36,8 +36,8 @@ import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.LoadingScr
 import com.thomas200593.mini_retail_app.core.ui.component.CustomScreenUtil.LockScreenOrientation
 import com.thomas200593.mini_retail_app.core.ui.component.app_bar.CustomAppBar.ProvideTopAppBarAction
 import com.thomas200593.mini_retail_app.core.ui.component.app_bar.CustomAppBar.ProvideTopAppBarTitle
-import com.thomas200593.mini_retail_app.core.ui.component.dialog.DlgError
-import com.thomas200593.mini_retail_app.core.ui.component.dialog.DlgInformation
+import com.thomas200593.mini_retail_app.core.ui.component.dialog.DlgAuth
+import com.thomas200593.mini_retail_app.core.ui.component.dialog.DlgScrGraphs
 import com.thomas200593.mini_retail_app.features.dashboard.ui.VMDashboard.UiEvents.ButtonEvents.BtnScrDescEvents
 import com.thomas200593.mini_retail_app.features.dashboard.ui.VMDashboard.UiEvents.OnOpenEvents
 import com.thomas200593.mini_retail_app.features.dashboard.ui.VMDashboard.UiState
@@ -101,11 +101,11 @@ private fun HandleDialogs(
     onDismissDlgScrDesc: () -> Unit,
     onDismissDlgSessionInvalid: () -> Unit
 ) {
-    DlgError.SessionInvalid(
+    DlgAuth.SessionInvalid(
         showDialog = uiState.dialogState.dlgSessionInvalid,
         onDismiss = onDismissDlgSessionInvalid
     )
-    DlgInformation.ScrDesc(
+    DlgScrGraphs.ScrDesc(
         showDialog = uiState.dialogState.dlgScrDesc,
         currentScreen = currentScreen,
         onDismiss = onDismissDlgScrDesc

@@ -60,7 +60,8 @@ import com.thomas200593.mini_retail_app.core.ui.component.CustomScreenUtil.LockS
 import com.thomas200593.mini_retail_app.core.ui.component.app_bar.CustomAppBar.ProvideTopAppBarAction
 import com.thomas200593.mini_retail_app.core.ui.component.app_bar.CustomAppBar.ProvideTopAppBarNavigationIcon
 import com.thomas200593.mini_retail_app.core.ui.component.app_bar.CustomAppBar.ProvideTopAppBarTitle
-import com.thomas200593.mini_retail_app.core.ui.component.dialog.DlgInformation
+import com.thomas200593.mini_retail_app.core.ui.component.dialog.DlgScrGraphs
+import com.thomas200593.mini_retail_app.core.ui.component.dialog.DlgCommonInformation
 import com.thomas200593.mini_retail_app.features.business.biz_profile.entity.BizProfile
 import com.thomas200593.mini_retail_app.features.business.biz_profile.ui.VMBizProfile.UiEvents.ButtonEvents.BizIdNameBtnEvents
 import com.thomas200593.mini_retail_app.features.business.biz_profile.ui.VMBizProfile.UiEvents.ButtonEvents.BtnNavBackEvents
@@ -202,8 +203,8 @@ private fun HandleDialogs(
     currentScreen: ScrGraphs,
     onDismissDlgScrDesc: () -> Unit
 ) {
-    DlgInformation.GetData(showDialog = uiState.dialogState.dlgLoading)
-    DlgInformation.ScrDesc(
+    DlgCommonInformation.GetData(showDialog = uiState.dialogState.dlgLoading)
+    DlgScrGraphs.ScrDesc(
         showDialog = uiState.dialogState.dlgScrDesc,
         currentScreen = currentScreen,
         onDismiss = onDismissDlgScrDesc

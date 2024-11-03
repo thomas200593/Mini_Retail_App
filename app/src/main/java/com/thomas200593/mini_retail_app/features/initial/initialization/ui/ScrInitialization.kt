@@ -74,9 +74,7 @@ import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.LoadingScr
 import com.thomas200593.mini_retail_app.core.ui.component.CustomPanel.ThreeRowCardItem
 import com.thomas200593.mini_retail_app.core.ui.component.dialog.CustomDialog.AlertDialogContext
 import com.thomas200593.mini_retail_app.core.ui.component.dialog.CustomDialog.AppAlertDialog
-import com.thomas200593.mini_retail_app.core.ui.component.dialog.DlgInformation
 import com.thomas200593.mini_retail_app.core.ui.component.dialog.DlgProcess
-import com.thomas200593.mini_retail_app.core.ui.component.dialog.DlgSuccess
 import com.thomas200593.mini_retail_app.core.ui.component.form.CustomForm.TextInput
 import com.thomas200593.mini_retail_app.features.app_conf.app_config.entity.AppConfig.ConfigCurrent
 import com.thomas200593.mini_retail_app.features.app_conf.conf_gen_country.entity.Country
