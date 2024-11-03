@@ -11,18 +11,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import com.thomas200593.mini_retail_app.R
-import com.thomas200593.mini_retail_app.core.ui.common.CustomThemes.ApplicationTheme
 import com.thomas200593.mini_retail_app.core.ui.component.CustomButton.Common.AppIconButton
 import com.thomas200593.mini_retail_app.core.ui.component.dialog.CustomDialog.AlertDialogContext.ERROR
 import com.thomas200593.mini_retail_app.core.ui.component.dialog.CustomDialog.AppAlertDialog
-import com.thomas200593.mini_retail_app.core.ui.component.dialog.DlgError.SessionInvalid
 
 object DlgError {
     @Composable
@@ -92,11 +87,4 @@ object DlgError {
             }
         )
     }
-}
-
-@Composable
-@Preview
-private fun PreviewSessionInvalid() = ApplicationTheme {
-    val showDialog = remember { mutableStateOf(true) }
-    SessionInvalid(showDialog = showDialog, onDismiss = {})
 }

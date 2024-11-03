@@ -9,23 +9,47 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.core.ui.component.CustomButton.Common.AppIconButton
+import com.thomas200593.mini_retail_app.core.ui.component.dialog.CustomDialog.AlertDialogContext.INFORMATION
 import com.thomas200593.mini_retail_app.core.ui.component.dialog.CustomDialog.AlertDialogContext.SUCCESS
 import com.thomas200593.mini_retail_app.core.ui.component.dialog.CustomDialog.AppAlertDialog
 
-object DlgSuccess {
+object DlgProcess {
     @Composable
-    fun AuthSuccess(
+    fun ProcessLoading(
         modifier: Modifier = Modifier,
         showDialog: MutableState<Boolean>,
+        titleString: String = stringResource(R.string.str_processing),
+        bodyString: String = stringResource(R.string.str_processing)
+    ) {
+        AppAlertDialog(
+            modifier = modifier,
+            dialogContext = INFORMATION,
+            showDialog = showDialog,
+            showIcon = true,
+            showTitle = true,
+            title = { Text(titleString) },
+            showBody = true,
+            body = { Text(bodyString) }
+        )
+    }
+
+    @Composable
+    fun ProcessSuccess(
+        modifier: Modifier = Modifier,
+        showDialog: MutableState<Boolean>,
+        titleString: String = stringResource(R.string.str_success),
+        bodyString: String = stringResource(R.string.str_biz_profile_init_success),
         onConfirm: () -> Unit
     ) {
         AppAlertDialog(
             modifier = modifier,
-            showDialog = showDialog,
             dialogContext = SUCCESS,
+            showDialog = showDialog,
             showIcon = true,
             showTitle = true,
-            title = { Text(text = stringResource(R.string.str_auth_success)) },
+            title = { Text(titleString) },
+            showBody = true,
+            body = { Text(bodyString) },
             useConfirmButton = true,
             confirmButton = {
                 AppIconButton(

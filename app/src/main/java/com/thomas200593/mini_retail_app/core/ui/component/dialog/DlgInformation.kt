@@ -113,23 +113,4 @@ object DlgInformation {
             }
         )
     }
-
-    @Composable
-    fun ProcessLoading(
-        modifier: Modifier = Modifier,
-        showDialog: MutableState<Boolean>,
-        titleString: String = stringResource(R.string.str_processing),
-        bodyString: String = stringResource(R.string.str_processing)
-    ) {
-        AppAlertDialog(
-            modifier = modifier,
-            dialogContext = INFORMATION,
-            showDialog = showDialog,
-            showIcon = true,
-            showTitle = true,
-            title = { Text(titleString) },
-            showBody = true,
-            body = { Text(bodyString) }
-        )
-    }
 }
