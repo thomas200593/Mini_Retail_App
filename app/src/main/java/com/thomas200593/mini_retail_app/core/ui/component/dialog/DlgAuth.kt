@@ -26,6 +26,7 @@ import com.thomas200593.mini_retail_app.core.ui.component.dialog.CustomDialog.Al
 import com.thomas200593.mini_retail_app.core.ui.component.dialog.CustomDialog.AlertDialogContext.INFORMATION
 import com.thomas200593.mini_retail_app.core.ui.component.dialog.CustomDialog.AlertDialogContext.SUCCESS
 import com.thomas200593.mini_retail_app.core.ui.component.dialog.CustomDialog.AppAlertDialog
+import java.sql.SQLException
 
 object DlgAuth {
     @Composable
@@ -139,14 +140,28 @@ object DlgAuth {
 
 @Composable
 @Preview
-fun PreviewAuthLoading() = CustomThemes.ApplicationTheme {
+private fun PreviewAuthLoading() = CustomThemes.ApplicationTheme {
     val showDialog = remember { mutableStateOf(true) }
     DlgAuth.AuthLoading(showDialog = showDialog)
 }
 
 @Composable
 @Preview
-fun PreviewAuthSuccess() = CustomThemes.ApplicationTheme {
+private fun PreviewAuthSuccess() = CustomThemes.ApplicationTheme {
     val showDialog = remember { mutableStateOf(true) }
     DlgAuth.AuthSuccess(showDialog = showDialog, onConfirm = {})
+}
+
+@Composable
+@Preview
+private fun PreviewAuthFailure() = CustomThemes.ApplicationTheme {
+    val showDialog = remember { mutableStateOf(true) }
+    DlgAuth.AuthFailure(showDialog = showDialog, onDismiss = {}, throwable = Throwable(SQLException()))
+}
+
+@Composable
+@Preview
+private fun PreviewSessionInvalid() = CustomThemes.ApplicationTheme {
+    val showDialog = remember { mutableStateOf(true) }
+    DlgAuth.SessionInvalid(showDialog = showDialog, onDismiss = {})
 }
