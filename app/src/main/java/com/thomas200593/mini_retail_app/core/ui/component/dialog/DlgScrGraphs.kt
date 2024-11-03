@@ -31,10 +31,7 @@ object DlgScrGraphs {
             modifier = modifier,
             dialogContext = INFORMATION,
             showDialog = showDialog,
-            showIcon = true,
-            showTitle = true,
             title = { currentScreen.title?.let { Text(text = stringResource(id = it)) } },
-            showBody = true,
             body = {
                 currentScreen.description?.let {
                     Column(
@@ -46,7 +43,6 @@ object DlgScrGraphs {
                     ) { Text(text = stringResource(id = it)) }
                 }
             },
-            useDismissButton = true,
             dismissButton = {
                 AppIconButton(
                     onClick = onDismiss,

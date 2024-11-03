@@ -25,10 +25,7 @@ object DlgProcess {
             modifier = modifier,
             dialogContext = INFORMATION,
             showDialog = showDialog,
-            showIcon = true,
-            showTitle = true,
             title = { Text(titleString) },
-            showBody = true,
             body = { Text(bodyString) }
         )
     }
@@ -45,12 +42,8 @@ object DlgProcess {
             modifier = modifier,
             dialogContext = SUCCESS,
             showDialog = showDialog,
-            showIcon = true,
-            showTitle = true,
             title = { Text(titleString) },
-            showBody = true,
             body = { Text(bodyString) },
-            useConfirmButton = true,
             confirmButton = {
                 AppIconButton(
                     onClick = onConfirm,

@@ -33,7 +33,6 @@ object DlgAuth {
             modifier = modifier,
             showDialog = showDialog,
             dialogContext = INFORMATION,
-            showTitle = true,
             title = {
                 Column(
                     modifier = Modifier.fillMaxWidth(),
@@ -41,7 +40,6 @@ object DlgAuth {
                     verticalArrangement = Arrangement.Center
                 ) { CircularProgressIndicator() }
             },
-            showBody = true,
             body = {
                 Column(
                     modifier = Modifier.fillMaxWidth(),
@@ -62,10 +60,7 @@ object DlgAuth {
             modifier = modifier,
             showDialog = showDialog,
             dialogContext = SUCCESS,
-            showIcon = true,
-            showTitle = true,
             title = { Text(text = stringResource(R.string.str_auth_success)) },
-            useConfirmButton = true,
             confirmButton = {
                 AppIconButton(
                     onClick = onConfirm,
@@ -87,10 +82,7 @@ object DlgAuth {
             modifier = modifier,
             showDialog = showDialog,
             dialogContext = CustomDialog.AlertDialogContext.ERROR,
-            showIcon = true,
-            showTitle = true,
             title = { Text(text = stringResource(id = R.string.str_error)) },
-            showBody = true,
             body = {
                 Column(
                     modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState()),
@@ -98,7 +90,6 @@ object DlgAuth {
                     verticalArrangement = Arrangement.Center
                 ) { Text(text = throwable.toString()) }
             },
-            useDismissButton = true,
             dismissButton = {
                 AppIconButton(
                     onClick = onDismiss,
@@ -121,9 +112,7 @@ object DlgAuth {
             modifier = modifier,
             showDialog = showDialog,
             dialogContext = ERROR,
-            showTitle = true,
             title = { Text(text = stringResource(id = R.string.str_error)) },
-            showBody = true,
             body = {
                 Column(
                     modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState()),
@@ -131,7 +120,6 @@ object DlgAuth {
                     verticalArrangement = Arrangement.Center
                 ) { Text(text = stringResource(id = R.string.str_deny_access_auth_required)) }
             },
-            useDismissButton = true,
             dismissButton = {
                 AppIconButton(
                     onClick = onDismiss,

@@ -249,11 +249,8 @@ private fun HandleDialogs(
     AppAlertDialog(
         showDialog = uiState.dialogState.dlgInputBizProfileCancelConfirmation,
         dialogContext = AlertDialogContext.CONFIRMATION,
-        showTitle = true,
         title = { Text(stringResource(id = R.string.str_cancel_input_biz_profile)) },
-        showBody = true,
         body = { Text(stringResource(id = R.string.str_entries_delete_body)) },
-        useConfirmButton = true,
         confirmButton = {
             AppIconButton(
                 onClick = dlgInitBizProfileCancelOnConfirm,
@@ -263,7 +260,6 @@ private fun HandleDialogs(
                 contentColor = MaterialTheme.colorScheme.onError
             )
         },
-        useDismissButton = true,
         dismissButton = {
             AppIconButton(
                 onClick = dlgInitBizProfileCancelOnDismiss,
@@ -286,10 +282,7 @@ private fun HandleDialogs(
     AppAlertDialog(
         showDialog = uiState.dialogState.dlgResError,
         dialogContext = AlertDialogContext.ERROR,
-        showIcon = true,
-        showTitle = true,
         title = { Text(stringResource(id = R.string.str_error)) },
-        showBody = true,
         body = {
             when(uiState.initBizProfileOperationResult){
                 is ResourceState.Empty -> Text(stringResource(id = R.string.str_biz_profile_init_failed))
@@ -297,7 +290,6 @@ private fun HandleDialogs(
                 else -> Unit
             }
         },
-        useDismissButton = true,
         dismissButton = {
             AppIconButton(
                 onClick = dlgInitBizProfileErrorOnDismiss,

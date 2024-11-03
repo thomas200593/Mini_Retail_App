@@ -24,7 +24,6 @@ object DlgCommonInformation {
             modifier = modifier,
             showDialog = showDialog,
             dialogContext = INFORMATION,
-            showTitle = true,
             title = {
                 Column(
                     modifier = Modifier.fillMaxWidth(),
@@ -32,7 +31,6 @@ object DlgCommonInformation {
                     verticalArrangement = Arrangement.Center
                 ) { CircularProgressIndicator() }
             },
-            showBody = true,
             body = {
                 Column(
                     modifier = Modifier.fillMaxWidth(),
