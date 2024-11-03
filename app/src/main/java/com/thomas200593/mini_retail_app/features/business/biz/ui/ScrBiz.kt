@@ -22,6 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -34,6 +35,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.navOptions
 import com.thomas200593.mini_retail_app.R
 import com.thomas200593.mini_retail_app.app.navigation.ScrGraphs
 import com.thomas200593.mini_retail_app.app.ui.LocalStateApp
@@ -44,14 +46,18 @@ import com.thomas200593.mini_retail_app.core.ui.component.CustomScreenUtil.LockS
 import com.thomas200593.mini_retail_app.core.ui.component.app_bar.CustomAppBar.ProvideTopAppBarAction
 import com.thomas200593.mini_retail_app.core.ui.component.app_bar.CustomAppBar.ProvideTopAppBarTitle
 import com.thomas200593.mini_retail_app.core.ui.component.dialog.DlgAuth
-import com.thomas200593.mini_retail_app.core.ui.component.dialog.DlgScrGraphs
 import com.thomas200593.mini_retail_app.core.ui.component.dialog.DlgCommonInformation
+import com.thomas200593.mini_retail_app.core.ui.component.dialog.DlgScrGraphs
+import com.thomas200593.mini_retail_app.features.auth.navigation.navToAuth
 import com.thomas200593.mini_retail_app.features.business.biz.navigation.DestBiz
+import com.thomas200593.mini_retail_app.features.business.biz.navigation.navToBiz
+import com.thomas200593.mini_retail_app.features.business.biz.ui.VMBiz.UiEvents.ButtonEvents.BtnMenuSelectionEvents
 import com.thomas200593.mini_retail_app.features.business.biz.ui.VMBiz.UiEvents.ButtonEvents.BtnScrDescEvents
 import com.thomas200593.mini_retail_app.features.business.biz.ui.VMBiz.UiEvents.OnOpenEvents
 import com.thomas200593.mini_retail_app.features.business.biz.ui.VMBiz.UiState
 import com.thomas200593.mini_retail_app.features.business.biz.ui.VMBiz.UiStateDestBiz.Loading
 import com.thomas200593.mini_retail_app.features.business.biz.ui.VMBiz.UiStateDestBiz.Success
+import kotlinx.coroutines.launch
 
 @Composable
 fun ScrBiz(
@@ -60,6 +66,7 @@ fun ScrBiz(
 ) {
     LockScreenOrientation(SCREEN_ORIENTATION_PORTRAIT)
 
+    val coroutineScope = rememberCoroutineScope()
     val uiState by vm.uiState.collectAsStateWithLifecycle()
     val sessionState by stateApp.isSessionValid.collectAsStateWithLifecycle()
     val currentScreen = ScrGraphs.getByRoute(stateApp.destCurrent)
@@ -72,14 +79,28 @@ fun ScrBiz(
         currentScreen = currentScreen,
         onShowScrDesc = { vm.onEvent(BtnScrDescEvents.OnClick) },
         onDismissDlgScrDesc = { vm.onEvent(BtnScrDescEvents.OnDismiss) },
-        onNavToMenu = {
+        onNavToMenu = { menu ->
+            val navOptions = navOptions { launchSingleTop = true; restoreState = true }
             when (sessionState) {
                 SessionState.Loading -> Unit
-                is SessionState.Invalid -> { /*TODO*/ }
-                is SessionState.Valid -> { /*TODO*/ }
+                is SessionState.Invalid ->
+                    if(menu.scrGraphs.usesAuth) vm.onEvent(BtnMenuSelectionEvents.OnDeny)
+                    else vm.onEvent(BtnMenuSelectionEvents.OnAllow).also {
+                        coroutineScope.launch {
+                            stateApp.navController.navToBiz(navOptions = navOptions, destBiz = menu)
+                        }
+                    }
+                is SessionState.Valid -> vm.onEvent(BtnMenuSelectionEvents.OnAllow).also {
+                    coroutineScope.launch {
+                        stateApp.navController.navToBiz(navOptions = navOptions, destBiz = menu)
+                    }
+                }
             }
         },
-        onDismissDlgDenySession = { /*TOdo*/ }
+        onDismissDlgDenySession = {
+            vm.onEvent(VMBiz.UiEvents.DialogEvents.DlgDenyAccessEvents.OnDismiss)
+                .also { coroutineScope.launch { stateApp.navController.navToAuth() } }
+        }
     )
 }
 
