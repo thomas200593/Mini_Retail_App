@@ -1,6 +1,5 @@
 package com.thomas200593.mini_retail_app.core.ui.component.dialog
 
-import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons.Default
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Create
@@ -19,7 +18,6 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.window.SecureFlagPolicy.Inherit
 import com.thomas200593.mini_retail_app.core.ui.common.CustomIcons.Emotion.sad
@@ -29,13 +27,45 @@ import com.thomas200593.mini_retail_app.core.ui.component.dialog.CustomDialog.Al
 import com.thomas200593.mini_retail_app.core.ui.component.dialog.CustomDialog.AlertDialogContext.SUCCESS
 import com.thomas200593.mini_retail_app.core.ui.component.dialog.CustomDialog.AlertDialogContext.WARNING
 
+/**
+ * A utility object that provides a customizable alert dialog component (`AppAlertDialog`)
+ * with different contexts such as information, warning, error, success, and confirmation.
+ */
 object CustomDialog {
     /**
-     * Enum class that defines different contexts for the [AppAlertDialog].
-     * Each context specifies the purpose of the dialog and affects the icon and color scheme used.
+     * Enum class representing the context or type of alert dialog.
      */
-    enum class AlertDialogContext{ INFORMATION, WARNING, ERROR, SUCCESS, CONFIRMATION }
+    enum class AlertDialogContext{
+        /** Information context for general notifications. */
+        INFORMATION,
+        /** Warning context for cautionary messages. */
+        WARNING,
+        /** Error context for displaying error messages. */
+        ERROR,
+        /** Success context for successful operations. */
+        SUCCESS,
+        /** Confirmation context for actions that require user confirmation. */
+        CONFIRMATION
+    }
 
+    /**
+     * Displays an alert dialog with a customizable design and behavior based on the provided
+     * parameters and dialog context.
+     *
+     * @param modifier Modifier to be applied to the dialog.
+     * @param showDialog State controlling the visibility of the dialog.
+     * @param dialogContext The context/type of the dialog, such as information or error.
+     * @param confirmButton A composable for the confirm button, if any.
+     * @param dismissButton A composable for the dismiss button, if any.
+     * @param title A composable for the dialog title, if any.
+     * @param body A composable for the main body of the dialog, if any.
+     * @param icon Optional icon to display in the dialog. If null, a default icon based on
+     * the dialog context will be used.
+     * @param dlgBoxShape The shape of the dialog's container.
+     * @param dlgBoxTonalElev The tonal elevation applied to the dialog container.
+     * @param dlgProperties Properties for the dialog's behavior, such as whether it can be
+     * dismissed by clicking outside.
+     */
     @Composable
     fun AppAlertDialog(
         modifier: Modifier = Modifier,
@@ -70,7 +100,7 @@ object CustomDialog {
                     Surface(
                         color = getContainerColor(dialogContext),
                         contentColor = getContentColor(dialogContext),
-                        modifier = Modifier.size(48.dp)
+                        //modifier = Modifier.size(48.dp)
                     ) {
                         Icon(imageVector = icon ?: getIcon(dialogContext), contentDescription = null)
                     }
@@ -83,6 +113,11 @@ object CustomDialog {
         }
     }
 
+    /**
+     * Returns an icon to display based on the given dialog context.
+     * @param dialogContext The context/type of the dialog.
+     * @return ImageVector representing the icon for the specified dialog context.
+     */
     @Composable
     private fun getIcon(dialogContext: AlertDialogContext) = when(dialogContext) {
         INFORMATION -> Default.Info
@@ -92,6 +127,11 @@ object CustomDialog {
         CONFIRMATION -> Default.Create
     }
 
+    /**
+     * Returns the content color based on the given dialog context.
+     * @param dialogContext The context/type of the dialog.
+     * @return Color to use for the content of the specified dialog context.
+     */
     @Composable
     private fun getContentColor(dialogContext: AlertDialogContext) = when(dialogContext) {
         INFORMATION -> colorScheme.onPrimaryContainer
@@ -101,6 +141,12 @@ object CustomDialog {
         CONFIRMATION -> colorScheme.onSecondaryContainer
     }
 
+    /**
+     * Returns the container color based on the given dialog context.
+     *
+     * @param dialogContext The context/type of the dialog.
+     * @return Color to use for the background of the specified dialog context.
+     */
     @Composable
     private fun getContainerColor(dialogContext: AlertDialogContext) = when(dialogContext) {
         INFORMATION -> colorScheme.primaryContainer
